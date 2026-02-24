@@ -6,14 +6,35 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check": "ultracite check",
+    "fix": "ultracite fix"
   },
   "dependencies": {
+    "@base-ui/react": "^1.2.0",
+    "@tabler/icons-react": "^3.37.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "^4.1.0",
+    "embla-carousel-react": "^8.6.0",
+    "input-otp": "^1.4.2",
     "next": "16.1.6",
+    "next-themes": "^0.4.6",
+    "radix-ui": "^1.4.3",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-day-picker": "^9.13.2",
+    "react-dom": "19.2.3",
+    "react-resizable-panels": "^4.6.5",
+    "recharts": "2.15.4",
+    "shadcn": "^3.8.5",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.5.0",
+    "tw-animate-css": "^1.4.0",
+    "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -21,7 +42,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "ultracite": "7.2.3"
   },
   "ignoreScripts": [
     "sharp",
