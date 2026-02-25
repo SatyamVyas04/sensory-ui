@@ -65,7 +65,7 @@ import {
 } from "@/components/ui/combobox";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/sensory-ui/components/button";
+import { Button } from "@/components/ui/sensory-ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -82,7 +82,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/sensory-ui/components/dropdown-menu";
+} from "@/components/ui/sensory-ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -90,7 +90,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/sensory-ui/components/select";
+} from "@/components/ui/sensory-ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
 export function ComponentExample() {

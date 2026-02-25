@@ -1,6 +1,6 @@
 # sensory-ui — Sound Engine
 
-> `components/ui/sensory-ui/engine.ts`
+> `components/ui/sensory-ui/config/engine.ts`
 
 The sound engine is the single runtime module responsible for decoding audio data and scheduling playback via the Web Audio API. It is the lowest layer of sensory-ui and has no dependency on React.
 
@@ -35,7 +35,7 @@ resolveRole(role)          ← reads registry + config overrides
 getAudioContext()          ← lazy singleton, one per page lifetime
        │
        ▼
-decodeAudioData(url)       ← fetch + decode, or return from cache
+decodeAudioData(source)    ← base64 decode or fetch, then cache
        │
        ▼
 createBufferSource()
@@ -52,7 +52,7 @@ return SoundPlayback { stop() }
 ## Full Engine Implementation Spec
 
 ```ts
-// components/ui/sensory-ui/engine.ts
+// components/ui/sensory-ui/config/engine.ts
 
 let audioContext: AudioContext | null = null;
 const bufferCache = new Map<string, AudioBuffer>();
@@ -69,34 +69,17 @@ export function getAudioContext(): AudioContext {
 }
 
 /**
- * Fetch and decode an audio file URL into an AudioBuffer.
- * Results are cached by URL so each file is decoded only once.
+ * Decode a base64 data URI into an AudioBuffer.
+ * Used when sounds are embedded as base64-encoded TS modules.
  */
-export async function decodeAudioData(url: string): Promise<AudioBuffer> {
-	const cached = bufferCache.get(url);
-	if (cached) return cached;
-
-	const ctx = getAudioContext();
-	const response = await fetch(url);
-	const arrayBuffer = await response.arrayBuffer();
-	const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-
-	bufferCache.set(url, audioBuffer);
-	return audioBuffer;
-}
-
-/**
- * Alternative: decode from a base64 data URI.
- * Useful if sounds are ever inlined at build time.
- */
-export async function decodeAudioDataFromUri(
-	dataUri: string,
-): Promise<AudioBuffer> {
+async function decodeBase64DataUri(dataUri: string): Promise<AudioBuffer> {
 	const cached = bufferCache.get(dataUri);
 	if (cached) return cached;
 
 	const ctx = getAudioContext();
 	const base64 = dataUri.split(",")[1];
+	if (!base64) throw new Error("[sensory-ui] Invalid data URI");
+
 	const binaryString = atob(base64);
 	const bytes = new Uint8Array(binaryString.length);
 	for (let i = 0; i < binaryString.length; i++) {
@@ -105,6 +88,30 @@ export async function decodeAudioDataFromUri(
 
 	const audioBuffer = await ctx.decodeAudioData(bytes.buffer.slice(0));
 	bufferCache.set(dataUri, audioBuffer);
+	return audioBuffer;
+}
+
+/**
+ * Fetch and decode an audio source into an AudioBuffer.
+ * Accepts both regular URLs and base64 data URIs.
+ * Results are cached by source string so each is decoded only once.
+ */
+export async function decodeAudioData(source: string): Promise<AudioBuffer> {
+	// Handle base64 data URIs directly — no network fetch needed
+	if (source.startsWith("data:")) {
+		return decodeBase64DataUri(source);
+	}
+
+	// Regular URL path (e.g. user override pointing to /sounds/custom/...)
+	const cached = bufferCache.get(source);
+	if (cached) return cached;
+
+	const ctx = getAudioContext();
+	const response = await fetch(source);
+	const arrayBuffer = await response.arrayBuffer();
+	const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+
+	bufferCache.set(source, audioBuffer);
 	return audioBuffer;
 }
 
@@ -124,14 +131,16 @@ export interface SoundPlayback {
 
 /**
  * Core playback function.
- * Resolves the file path for a role, decodes it (or reads from cache),
- * creates a buffer source + gain node, and starts playback.
+ * Resolves the audio source (base64 data URI or URL), decodes it
+ * (or reads from cache), creates a buffer source + gain node, and
+ * starts playback.
  *
- * @param url     - Resolved file path (already looked up from registry + config)
+ * @param source  - Resolved audio source (data URI or URL, already
+ *                  looked up from registry + config)
  * @param options - Volume, playback rate, onEnd callback
  */
 export async function playSound(
-	url: string,
+	source: string,
 	options: PlaySoundOptions = {},
 ): Promise<SoundPlayback> {
 	const { volume = 1, playbackRate = 1, onEnd } = options;
@@ -143,7 +152,7 @@ export async function playSound(
 		await ctx.resume();
 	}
 
-	const buffer = await decodeAudioData(url);
+	const buffer = await decodeAudioData(source);
 	const source = ctx.createBufferSource();
 	const gain = ctx.createGain();
 
@@ -229,8 +238,9 @@ In v1.0, only the master volume from `sensory.config.js` and the optional per-ca
 
 ## Buffer Cache Behaviour
 
-- The cache key is the resolved file URL string (e.g., `/sounds/activation/primary.mp3`).
-- If a user overrides a role to a custom path in `sensory.config.js`, the custom path becomes the cache key, so the original and overridden sounds can both be cached simultaneously without collision.
+- The cache key is the audio source string — either a base64 data URI or a URL.
+- Built-in sounds use the full data URI as the cache key.
+- If a user overrides a role to a custom URL in `sensory.config.js`, the URL becomes the cache key, so the original and overridden sounds can both be cached simultaneously without collision.
 - The cache is never automatically invalidated in production. `clearBufferCache()` is available for development tooling or runtime pack switches.
 
 ---
@@ -253,4 +263,7 @@ The engine must stay under **3 KB minified + gzipped**. The implementation above
 
 ## Future: Offline / Inlined Audio
 
-In a future version, a build-time step could inline the decoded audio as base64 data URIs directly into the registry entry, eliminating the fetch step entirely. The `decodeAudioDataFromUri` function above already supports this path. This is not needed in v1.0 since Next.js static asset serving is fast and sounds are short.
+As of v1.0, audio data is already embedded as base64 data URIs in TypeScript modules
+(`sounds/*.ts`). The engine decodes these directly without any network fetch, so sounds
+work fully offline and load near-instantly. This replaces the previously planned
+`public/sounds/` fetch-based approach.

@@ -1,6 +1,6 @@
 # sensory-ui — Configuration
 
-> `sensory.config.js` (project root) + `components/ui/sensory-ui/config.ts` (runtime loader)
+> `sensory.config.js` (project root) + `components/ui/sensory-ui/config/config.ts` (runtime loader)
 
 The configuration system is split into two parts:
 
@@ -55,14 +55,16 @@ module.exports = {
 
 	// -------------------------------------------------------------------
 	// Role-level overrides.
-	// Map any SoundRole to a custom file path (relative to public/).
-	// These take precedence over the built-in registry.
-	// The "custom/" directory is the recommended location for user files.
+	// Map any SoundRole to a custom audio source.
+	// Values can be:
+	//   - A URL path to a file in public/ (e.g. "/sounds/custom/my-click.mp3")
+	//   - A base64 data URI (e.g. "data:audio/mp3;base64,//uQx...")
+	// These take precedence over the built-in base64 modules in sounds/*.ts.
 	// -------------------------------------------------------------------
 	overrides: {
 		// Example overrides (all commented out by default):
 		// "activation.primary":  "/sounds/custom/my-click.mp3",
-		// "navigation.forward":  "/sounds/custom/swoosh.mp3",
+		// "navigation.forward":  "data:audio/mp3;base64,...",
 		// "hero.complete":        "/sounds/custom/fanfare.ogg",
 	},
 
@@ -91,7 +93,7 @@ The config loader is responsible for:
 3. Exposing a typed `SensoryUIConfig` object to the provider and engine
 
 ```ts
-// components/ui/sensory-ui/config.ts
+// components/ui/sensory-ui/config/config.ts
 
 import type { SoundRole, SoundCategory } from "./sound-roles";
 import { roleRegistry } from "./registry";
@@ -131,7 +133,7 @@ const defaults: SensoryUIConfig = {
 export async function loadConfig(): Promise<SensoryUIConfig> {
 	try {
 		// Dynamic import so the config is bundled at build time in Next.js
-		const userConfig = await import("../../../sensory.config.js");
+		const userConfig = await import("../../../../sensory.config.js");
 		return mergeConfig(userConfig.default ?? userConfig);
 	} catch {
 		// sensory.config.js does not exist — use defaults silently
@@ -155,12 +157,13 @@ function mergeConfig(user: Partial<SensoryUIConfig>): SensoryUIConfig {
 }
 
 /**
- * Resolve a SoundRole to its final file URL.
+ * Resolve a SoundRole to its audio source (base64 data URI or custom URL).
  * Priority: config.overrides → roleRegistry default
  *
  * Returns null if:
  * - The role's category is disabled in config.categories
  * - The role does not exist in the registry (bad role string)
+ * - The resolved source is an empty string (placeholder)
  */
 export function resolveRole(
 	role: SoundRole,
@@ -191,7 +194,7 @@ export function resolveRole(
 | `categories.notifications` | `boolean`                                | `true`      | Enable/disable all notification sounds.      |
 | `categories.system`        | `boolean`                                | `true`      | Enable/disable all system sounds.            |
 | `categories.hero`          | `boolean`                                | `false`     | Enable/disable hero sounds (off by default). |
-| `overrides["role.name"]`   | `string`                                 | —           | Custom file path for a specific role.        |
+| `overrides["role.name"]`   | `string`                                 | —           | Custom audio source for a role.              |
 | `reducedMotion`            | `"inherit" \| "force-off" \| "force-on"` | `"inherit"` | Reduced-motion behaviour.                    |
 
 ---
@@ -227,12 +230,12 @@ All components with `sound="system.open"` or `sound="system.close"` will silentl
 
 ## Override Resolution Order
 
-When `playSound` is called with a role, the URL is resolved in this order:
+When `playSound` is called with a role, the audio source is resolved in this order:
 
 ```
-1. config.overrides["role.name"]  → if defined, use this path
-2. roleRegistry["role.name"]      → built-in default path
-3. null                           → category disabled or unknown role → no-op
+1. config.overrides["role.name"]  → if defined, use this source (URL or data URI)
+2. roleRegistry["role.name"]      → built-in base64 data URI from sounds/*.ts
+3. null                           → category disabled, unknown role, or empty placeholder → no-op
 ```
 
 ---

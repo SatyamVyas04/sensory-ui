@@ -14,7 +14,7 @@ The shadcn CLI (`npx shadcn@latest add <url>`) can install components from any U
 - Any npm package dependencies to install
 - Any tailwind config patches to apply
 
-sensory-ui will be published as a single registry entry that installs the entire `components/ui/sensory-ui/` folder, the `public/sounds/` directory, and the `sensory.config.js` template in one step.
+sensory-ui will be published as a single registry entry that installs the entire `components/ui/sensory-ui/` folder and the `sensory.config.js` template in one step. Audio data is embedded as base64-encoded TypeScript modules in `sensory-ui/sounds/` and is therefore included in the normal code file install — no separate asset download, no `public/` directory entry needed.
 
 ---
 
@@ -27,69 +27,104 @@ sensory-ui will be published as a single registry entry that installs the entire
 	"description": "Semantic, opt-in sound layer for shadcn/ui components.",
 	"files": [
 		{
-			"path": "components/ui/sensory-ui/engine.ts",
+			"path": "components/ui/sensory-ui/config/engine.ts",
 			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/engine.ts"
+			"target": "components/ui/sensory-ui/config/engine.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/provider.tsx",
+			"path": "components/ui/sensory-ui/config/provider.tsx",
 			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/provider.tsx"
+			"target": "components/ui/sensory-ui/config/provider.tsx"
 		},
 		{
-			"path": "components/ui/sensory-ui/config.ts",
+			"path": "components/ui/sensory-ui/config/config.ts",
 			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/config.ts"
+			"target": "components/ui/sensory-ui/config/config.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/sound-roles.ts",
+			"path": "components/ui/sensory-ui/config/sound-roles.ts",
 			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sound-roles.ts"
+			"target": "components/ui/sensory-ui/config/sound-roles.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/registry.ts",
+			"path": "components/ui/sensory-ui/config/registry.ts",
 			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/registry.ts"
+			"target": "components/ui/sensory-ui/config/registry.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/primitives/button.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/primitives/button.tsx"
+			"path": "components/ui/sensory-ui/config/use-play-sound.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/config/use-play-sound.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/primitives/dialog.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/primitives/dialog.tsx"
+			"path": "components/ui/sensory-ui/sounds/activation.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/activation.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/primitives/dropdown-menu.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/primitives/dropdown-menu.tsx"
+			"path": "components/ui/sensory-ui/sounds/navigation.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/navigation.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/primitives/tabs.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/primitives/tabs.tsx"
+			"path": "components/ui/sensory-ui/sounds/notifications.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/notifications.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/primitives/select.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/primitives/select.tsx"
+			"path": "components/ui/sensory-ui/sounds/system.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/system.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/primitives/checkbox.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/primitives/checkbox.tsx"
+			"path": "components/ui/sensory-ui/sounds/hero.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/hero.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/primitives/switch.tsx",
+			"path": "components/ui/sensory-ui/button.tsx",
 			"type": "registry:component",
-			"target": "components/ui/sensory-ui/primitives/switch.tsx"
+			"target": "components/ui/sensory-ui/button.tsx"
 		},
 		{
-			"path": "components/ui/sensory-ui/primitives/accordion.tsx",
+			"path": "components/ui/sensory-ui/dialog.tsx",
 			"type": "registry:component",
-			"target": "components/ui/sensory-ui/primitives/accordion.tsx"
+			"target": "components/ui/sensory-ui/dialog.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/dropdown-menu.tsx",
+			"type": "registry:component",
+			"target": "components/ui/sensory-ui/dropdown-menu.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/tabs.tsx",
+			"type": "registry:component",
+			"target": "components/ui/sensory-ui/tabs.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/select.tsx",
+			"type": "registry:component",
+			"target": "components/ui/sensory-ui/select.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/checkbox.tsx",
+			"type": "registry:component",
+			"target": "components/ui/sensory-ui/checkbox.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/switch.tsx",
+			"type": "registry:component",
+			"target": "components/ui/sensory-ui/switch.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/accordion.tsx",
+			"type": "registry:component",
+			"target": "components/ui/sensory-ui/accordion.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/sheet.tsx",
+			"type": "registry:component",
+			"target": "components/ui/sensory-ui/sheet.tsx"
 		},
 		{
 			"path": "sensory.config.js",
@@ -106,40 +141,31 @@ sensory-ui will be published as a single registry entry that installs the entire
 **Notes:**
 
 - `dependencies` is empty — sensory-ui has zero npm dependencies. All code uses native browser APIs and existing React/Radix primitives already present in the user's shadcn project.
-- Sound files (`public/sounds/`) are **not** listed in the registry manifest. They are served separately (see Hosting Sound Files below).
+- Sound data is embedded as **base64-encoded TypeScript modules** in `sensory-ui/sounds/*.ts` and is included as normal `registry:lib` file entries above. No binary assets, no `public/` directory entry, no separate download step.
 
 ---
 
 ## Sound Pack Distribution
 
-Sound files cannot be embedded directly in the registry manifest (they are binary assets). Options for distributing them:
+Audio files are distributed as **base64-encoded TypeScript modules** (e.g., `sounds/activation.ts`, `sounds/navigation.ts`, etc.) co-located inside `components/ui/sensory-ui/sounds/`. This approach:
 
-### Option A: CDN-hosted, downloaded by a post-install script
+- Keeps all library files together in one folder
+- Eliminates the need for a `public/` directory entry
+- Prevents direct URL access to audio by end-users- Works fully offline — no network fetch for built-in sounds- Enables the standard shadcn registry install flow (no post-install scripts, no CDN downloads)
 
-The registry entry triggers a `postInstall` hook that downloads the chosen sound pack as a zip from a CDN (e.g., GitHub Releases, Cloudflare R2) and extracts it to `public/sounds/`.
+Each `sounds/*.ts` module exports an object mapping role names to base64 data URIs:
 
-**Pros:** Keeps registry manifest lean, easy to version sound packs independently  
-**Cons:** Requires network access at install time, slightly more complex install UX
-
-### Option B: Base64-encoded in the registry manifest (inline)
-
-Each audio file is base64-encoded and included as a file entry in the manifest. The installer writes them to `public/sounds/` as binary files.
-
-**Pros:** Single command, no extra download step  
-**Cons:** Manifest becomes very large (~200–400 KB for 19 files), slower to parse
-
-### Option C: Separate `npx sensory-ui sounds` command
-
-The registry entry installs only the code files. A separate CLI command handles sound file setup:
-
-```bash
-npx sensory-ui sounds --pack default
+```ts
+// components/ui/sensory-ui/sounds/activation.ts
+export const activation = {
+	"activation.primary": "data:audio/mp3;base64,//uQx...",
+	"activation.subtle": "data:audio/mp3;base64,//uQx...",
+	"activation.confirm": "data:audio/mp3;base64,//uQx...",
+	"activation.error": "data:audio/mp3;base64,//uQx...",
+};
 ```
 
-**Pros:** Clean separation of code and assets, easy to update sounds independently  
-**Cons:** Two commands instead of one
-
-**Recommendation:** Option A (CDN-hosted + post-install download) for v1.0. Users get a single install command and sounds are hosted efficiently on a CDN. Pack versioning is independent of code versioning.
+The `registry.ts` file imports from these modules and builds the `roleRegistry` at module load time. `engine.ts` detects data URIs and decodes the base64 directly — no network fetch is needed for built-in sounds. User overrides pointing to regular URLs (e.g. `/sounds/custom/...`) are still fetched normally.
 
 ---
 
@@ -164,12 +190,12 @@ npx shadcn@latest add https://sensory-ui.dev/r/sensory-ui
 
 ## Versioning Strategy
 
-| Asset                                     | Version Carrier                        | Update Mechanism                                     |
-| ----------------------------------------- | -------------------------------------- | ---------------------------------------------------- |
-| Registry manifest                         | Semver via URL path `/r/v1/sensory-ui` | Users pin or use latest                              |
-| Code files (engine, provider, primitives) | Embedded in manifest                   | Re-run `add` with `--overwrite`                      |
-| Sound packs                               | Separate versioned zip on CDN          | `npx sensory-ui sounds --pack default --version 1.1` |
-| `sensory.config.js`                       | User-owned                             | Never updated automatically                          |
+| Asset                                     | Version Carrier                        | Update Mechanism                |
+| ----------------------------------------- | -------------------------------------- | ------------------------------- |
+| Registry manifest                         | Semver via URL path `/r/v1/sensory-ui` | Users pin or use latest         |
+| Code files (engine, provider, primitives) | Embedded in manifest                   | Re-run `add` with `--overwrite` |
+| Sound packs (`sounds/*.ts`)               | Embedded in manifest as TS modules     | Re-run `add` with `--overwrite` |
+| `sensory.config.js`                       | User-owned                             | Never updated automatically     |
 
 ---
 
@@ -180,8 +206,8 @@ The build pipeline for publishing a registry entry needs to:
 1. Run TypeScript compilation checks on all files in `components/ui/sensory-ui/`
 2. Bundle each file's content into the registry manifest JSON
 3. Run a size check — each code file minified must be within budget
-4. Package audio assets into versioned zip archives
-5. Upload manifest JSON and audio zips to the hosting CDN
+4. Encode audio assets as base64 strings and write `sounds/*.ts` modules (each module exports a typed Record mapping roles to data URIs)
+5. Upload manifest JSON to the hosting CDN
 6. Tag the GitHub release with the version
 
 This build process is TBD and will be designed once the runtime implementation is complete.
@@ -209,4 +235,4 @@ The original agents.md mentioned patching existing `components/ui/button.tsx` to
 2. It is unnecessary — users can import from `sensory-ui/primitives` directly
 3. Patching arbitrary component files reliably via the shadcn CLI is complex
 
-The v1.0 design keeps existing `components/ui/` files untouched. Users choose to use the sensory-ui primitive instead of the shadcn original at the point of use.
+The v1.0 design keeps existing `components/ui/` files untouched. Users choose to use the sensory-ui component instead of the shadcn original at the point of use.
