@@ -56,5 +56,5 @@ and fetch from the given path (e.g. `/sounds/custom/my-click.mp3` in `public/`).
 - Keep files **quiet at source**: the engine applies its own volume multiplier (0.35 by default).
 - **MP3 at 128 kbps** is plenty — the files are tiny and decoded into memory.
 - Total budget: ≤ 50 KB per category, ≤ 15 KB per individual sound.
-- Name them exactly as shown — the registry in `components/ui/sensory-ui/registry.ts` maps
-  every SoundRole to these exact paths.
+- Name them exactly as shown — the registry in `components/ui/sensory-ui/config/registry.ts` maps
+  every SoundRole to the corresponding base64 data URI exported from these modules.
