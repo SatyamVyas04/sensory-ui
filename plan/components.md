@@ -1,8 +1,8 @@
 # sensory-ui — Component API & Usage
 
-> `components/ui/sensory-ui/primitives/*.tsx`
+> `components/ui/sensory-ui/components/*.tsx`
 
-This document describes the component API — how the `sound` prop works, what event triggers are supported, how primitive wrappers are structured, and how to use sensory-ui with components that are not yet wrapped.
+This document describes the component API — how the `sound` prop works, what event triggers are supported, how patched source components are structured, and how to use sensory-ui with components that are not yet wrapped.
 
 ---
 
@@ -47,66 +47,52 @@ Different components fire sounds at different interaction points. The key rule i
 The Button primitive is the most commonly used sensory-ui component. It wraps the shadcn Button and adds sound playback on the primary interaction event.
 
 ```tsx
-// components/ui/sensory-ui/primitives/button.tsx
+// components/ui/sensory-ui/components/button.tsx
 
 "use client";
 
 import * as React from "react";
-import {
-	Button as ShadcnButton,
-	type ButtonProps,
-} from "@/components/ui/button";
+// Full shadcn Button source is copied here — not imported from @/components/ui/button.
+// Only the root Button function is patched; buttonVariants and sub-exports are verbatim.
 import { useSensoryUI } from "../provider";
 import type { SoundRole } from "../sound-roles";
+// ...full shadcn source...
 
-interface SensoryButtonProps extends ButtonProps {
-	/**
-	 * The sound role to play when the button is clicked.
-	 * If omitted, the button behaves exactly like a standard Button.
-	 */
-	sound?: SoundRole;
+function Button({
+	sound,
+	onClick,
+	onKeyDown,
+	...props
+}: ButtonProps & { sound?: SoundRole }) {
+	const { playSound } = useSensoryUI();
+
+	const handleClick = React.useCallback(
+		(e: React.MouseEvent<HTMLButtonElement>) => {
+			if (sound) {
+				// Fire and forget — do not await; must not delay the click handler
+				void playSound(sound);
+			}
+			onClick?.(e);
+		},
+		[sound, playSound, onClick],
+	);
+
+	const handleKeyDown = React.useCallback(
+		(e: React.KeyboardEvent<HTMLButtonElement>) => {
+			if (sound && (e.key === "Enter" || e.key === " ")) {
+				void playSound(sound);
+			}
+			onKeyDown?.(e);
+		},
+		[sound, playSound, onKeyDown],
+	);
+
+	return (
+		<button onClick={handleClick} onKeyDown={handleKeyDown} {...props} />
+	);
 }
 
-const Button = React.forwardRef<HTMLButtonElement, SensoryButtonProps>(
-	({ sound, onClick, onKeyDown, ...props }, ref) => {
-		const { playSound } = useSensoryUI();
-
-		const handleClick = React.useCallback(
-			(e: React.MouseEvent<HTMLButtonElement>) => {
-				if (sound) {
-					// Fire and forget — do not await; must not delay the click handler
-					void playSound(sound);
-				}
-				onClick?.(e);
-			},
-			[sound, playSound, onClick],
-		);
-
-		const handleKeyDown = React.useCallback(
-			(e: React.KeyboardEvent<HTMLButtonElement>) => {
-				if (sound && (e.key === "Enter" || e.key === " ")) {
-					void playSound(sound);
-				}
-				onKeyDown?.(e);
-			},
-			[sound, playSound, onKeyDown],
-		);
-
-		return (
-			<ShadcnButton
-				ref={ref}
-				onClick={handleClick}
-				onKeyDown={handleKeyDown}
-				{...props}
-			/>
-		);
-	},
-);
-
-Button.displayName = "SensoryButton";
-
-export { Button };
-export type { SensoryButtonProps as ButtonProps };
+export { Button, buttonVariants };
 ```
 
 **Key implementation details:**
@@ -114,45 +100,34 @@ export type { SensoryButtonProps as ButtonProps };
 - `void playSound(sound)` — never `await`. The click handler must return synchronously.
 - Both `onClick` and `onKeyDown` are intercepted so keyboard users get the same audio feedback as pointer users.
 - The original `onClick` and `onKeyDown` handlers (if provided) are always called, even if `playSound` throws.
-- The component uses `forwardRef` to preserve ref transparency.
+- React 19 style: no `forwardRef` needed — `ComponentProps<"button">` handles the ref natively.
 
 ---
 
-## Dialog Primitive — Detailed Spec
+## Dialog Component — Detailed Spec
 
 Dialog is more complex than Button because it has two distinct sound moments: open and close. The `sound` prop on Dialog should be interpreted as the **open sound**. The close sound is automatically the tonal complement.
 
 ```tsx
-// components/ui/sensory-ui/primitives/dialog.tsx
+// components/ui/sensory-ui/components/dialog.tsx
 
 "use client";
 
 import * as React from "react";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
+// Full shadcn Dialog source is copied here. Only the Dialog root function is patched.
+import { Dialog as DialogPrimitive } from "radix-ui"; // unified radix-ui package
 import { useSensoryUI } from "../provider";
 import type { SoundRole } from "../sound-roles";
-
-interface SensoryDialogProps extends React.ComponentPropsWithoutRef<
-	typeof DialogPrimitive.Root
-> {
-	/**
-	 * Sound to play when the dialog opens.
-	 * Defaults to "system.open" if sound category is enabled.
-	 * The close sound is automatically paired.
-	 */
-	sound?: SoundRole;
-	/**
-	 * Override the close sound separately. Defaults to "system.close".
-	 */
-	closeSound?: SoundRole;
-}
 
 function Dialog({
 	sound,
 	closeSound,
 	onOpenChange,
 	...props
-}: SensoryDialogProps) {
+}: React.ComponentProps<typeof DialogPrimitive.Root> & {
+	sound?: SoundRole;
+	closeSound?: SoundRole;
+}) {
 	const { playSound } = useSensoryUI();
 
 	const handleOpenChange = React.useCallback(
@@ -169,32 +144,39 @@ function Dialog({
 
 	return <DialogPrimitive.Root onOpenChange={handleOpenChange} {...props} />;
 }
-
-export { Dialog };
+// DialogContent, DialogHeader, DialogTitle, etc. are verbatim from shadcn.
+export {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+	DialogFooter,
+	DialogTrigger,
+	DialogClose,
+};
 ```
 
 ---
 
-## Tabs Primitive — Detailed Spec
+## Tabs Component — Detailed Spec
 
 ```tsx
-// components/ui/sensory-ui/primitives/tabs.tsx
+// components/ui/sensory-ui/components/tabs.tsx
 
 "use client";
 
 import * as React from "react";
-import * as TabsPrimitive from "@radix-ui/react-tabs";
+// Full shadcn Tabs source is copied here. Only the Tabs root function is patched.
+import { Tabs as TabsPrimitive } from "radix-ui"; // unified radix-ui package
 import { useSensoryUI } from "../provider";
 import type { SoundRole } from "../sound-roles";
 
-interface SensoryTabsProps extends React.ComponentPropsWithoutRef<
-	typeof TabsPrimitive.Root
-> {
-	/** Sound to play when the active tab changes. Default suggestion: "navigation.switch" */
-	sound?: SoundRole;
-}
-
-function Tabs({ sound, onValueChange, ...props }: SensoryTabsProps) {
+function Tabs({
+	sound,
+	onValueChange,
+	...props
+}: React.ComponentProps<typeof TabsPrimitive.Root> & { sound?: SoundRole }) {
 	const { playSound } = useSensoryUI();
 
 	const handleValueChange = React.useCallback(
@@ -208,79 +190,78 @@ function Tabs({ sound, onValueChange, ...props }: SensoryTabsProps) {
 	return <TabsPrimitive.Root onValueChange={handleValueChange} {...props} />;
 }
 
-// TabsList, TabsTrigger, TabsContent are re-exported as-is from shadcn.
-export { Tabs };
+// TabsList, TabsTrigger, TabsContent are verbatim from shadcn source.
+export { Tabs, TabsList, TabsTrigger, TabsContent };
 ```
 
 ---
 
-## General Primitive Wrapper Template
+## General Patched Component Template
 
-Every new primitive wrapper follows this exact structure:
+Every patched component follows this exact structure:
 
 ```tsx
 "use client";
 
+// Full shadcn source is copied verbatim into this file.
+// ONLY the root component function is patched — all sub-components are untouched.
+
 import * as React from "react";
-import { OriginalComponent } from "@/components/ui/<component>";
+import { SomeComponent as SomePrimitive } from "radix-ui"; // unified radix-ui package
 import { useSensoryUI } from "../provider";
 import type { SoundRole } from "../sound-roles";
+// ...rest of verbatim shadcn imports...
 
-interface SensoryComponentProps extends OriginalComponentProps {
-	sound?: SoundRole;
+// Patched root function — added sound prop + handler interception
+function Component({
+	sound,
+	onInteractionEvent,
+	...props
+}: React.ComponentProps<typeof SomePrimitive.Root> & { sound?: SoundRole }) {
+	const { playSound } = useSensoryUI();
+
+	const handleEvent = React.useCallback(
+		(eventArgs) => {
+			if (sound) void playSound(sound);
+			onInteractionEvent?.(eventArgs);
+		},
+		[sound, playSound, onInteractionEvent],
+	);
+
+	return <SomePrimitive.Root onInteractionEvent={handleEvent} {...props} />;
 }
 
-const Component = React.forwardRef<HTMLElement, SensoryComponentProps>(
-	({ sound, onInteractionEvent, ...props }, ref) => {
-		const { playSound } = useSensoryUI();
+// Verbatim sub-components from shadcn (ComponentContent, ComponentTrigger, etc.)
+// ...
 
-		const handleEvent = React.useCallback(
-			(eventArgs) => {
-				if (sound) void playSound(sound);
-				onInteractionEvent?.(eventArgs);
-			},
-			[sound, playSound, onInteractionEvent],
-		);
-
-		return (
-			<OriginalComponent
-				ref={ref}
-				onInteractionEvent={handleEvent}
-				{...props}
-			/>
-		);
-	},
-);
-
-Component.displayName = "SensoryComponent";
-export { Component };
+export { Component, ComponentContent, ComponentTrigger /* etc. */ };
 ```
 
-Rules for new wrappers:
+Rules for patched components:
 
 1. Always `"use client"` at the top
-2. Always use `React.forwardRef` unless the component has no DOM element
-3. Always call the original event handler after triggering sound
-4. Never `await playSound` — fire and forget
-5. Never add default sounds — `sound` must be explicitly provided
-6. Always re-export the original type with the `sound` prop appended
+2. Do **not** use `React.forwardRef` — React 19 `ComponentProps` handles refs natively
+3. Copy the **full** shadcn source, patch only the root function
+4. Always call the original event handler after triggering sound
+5. Never `await playSound` — fire and forget
+6. Never add default sounds — `sound` must be explicitly provided
+7. Imports use `radix-ui` (unified package), never `@radix-ui/react-*`
 
 ---
 
-## Available Primitives (v1.0)
+## Available Components (v1.0)
 
 | Component      | File                           | Primary Event   | Notes                         |
 | -------------- | ------------------------------ | --------------- | ----------------------------- |
-| `Button`       | `primitives/button.tsx`        | click + keydown | Most used                     |
-| `Dialog`       | `primitives/dialog.tsx`        | open/close      | Pairs open + close sounds     |
-| `DropdownMenu` | `primitives/dropdown-menu.tsx` | open/close      | Same pattern as Dialog        |
-| `Sheet`        | `primitives/sheet.tsx`         | open/close      | Same pattern as Dialog        |
-| `Tabs`         | `primitives/tabs.tsx`          | value change    | `navigation.switch` typical   |
-| `Select`       | `primitives/select.tsx`        | open/close      | Same pattern as Dialog        |
-| `Checkbox`     | `primitives/checkbox.tsx`      | checked change  | Check / uncheck distinction   |
-| `Switch`       | `primitives/switch.tsx`        | checked change  | Same as Checkbox              |
-| `Accordion`    | `primitives/accordion.tsx`     | value change    | Expand / collapse distinction |
-| `Alert`        | `primitives/alert.tsx`         | on render       | `notifications.*` roles       |
+| `Button`       | `components/button.tsx`        | click + keydown | Most used                     |
+| `Dialog`       | `components/dialog.tsx`        | open/close      | Pairs open + close sounds     |
+| `DropdownMenu` | `components/dropdown-menu.tsx` | open/close      | Same pattern as Dialog        |
+| `Sheet`        | `components/sheet.tsx`         | open/close      | Same pattern as Dialog        |
+| `Tabs`         | `components/tabs.tsx`          | value change    | `navigation.switch` typical   |
+| `Select`       | `components/select.tsx`        | open/close      | Same pattern as Dialog        |
+| `Checkbox`     | `components/checkbox.tsx`      | checked change  | Check / uncheck distinction   |
+| `Switch`       | `components/switch.tsx`        | checked change  | Same as Checkbox              |
+| `Accordion`    | `components/accordion.tsx`     | value change    | Expand / collapse distinction |
 
 ---
 
@@ -311,9 +292,9 @@ Usage:
 import { usePlaySound } from "@/components/ui/sensory-ui/use-play-sound";
 
 export function CustomSlider() {
-	const playSound = usePlaySound();
+	const { play } = usePlaySound({ sound: "activation.confirm" });
 
-	return <Slider onValueCommit={() => playSound("activation.confirm")} />;
+	return <Slider onValueCommit={play} />;
 }
 ```
 
@@ -388,7 +369,7 @@ toast({
 
 ## What Is NOT Supported
 
-- `sound` prop on components from `@/components/ui/` directly — must use `sensory-ui/primitives/`
+- `sound` prop on components from `@/components/ui/` directly — must use `sensory-ui/components/`
 - Hover sounds in v1.0 (`hoverSound` is planned for v1.5)
 - Multiple sounds on the same interaction (one role per event)
 - Looping sounds (all sounds play once)

@@ -30,7 +30,8 @@ import {
   IconSun,
   IconUser,
 } from "@tabler/icons-react";
-import * as React from "react";
+import Image from "next/image";
+import { useState } from "react";
 import { Example, ExampleWrapper } from "@/components/example";
 import {
   AlertDialog,
@@ -45,7 +46,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -63,6 +63,9 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/sensory-ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -79,9 +82,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/sensory-ui/components/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -89,7 +90,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/sensory-ui/components/select";
 import { Textarea } from "@/components/ui/textarea";
 
 export function ComponentExample() {
@@ -106,11 +107,13 @@ function CardExample() {
     <Example className="items-center justify-center" title="Card">
       <Card className="relative w-full max-w-sm overflow-hidden pt-0">
         <div className="absolute inset-0 z-30 aspect-video bg-primary opacity-50 mix-blend-color" />
-        <img
-          alt="Photo by mymind on Unsplash"
+        <Image
+          alt="Colorful abstract background by mymind on Unsplash"
           className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale"
+          height={1887}
           src="https://images.unsplash.com/photo-1604076850742-4c7221f3101b?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          title="Photo by mymind on Unsplash"
+          title="by mymind on Unsplash"
+          width={1887}
         />
         <CardHeader>
           <CardTitle>Observability Plus is replacing Monitoring</CardTitle>
@@ -123,7 +126,7 @@ function CardExample() {
         <CardFooter>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button>
+              <Button sound="activation.primary">
                 <IconPlus data-icon="inline-start" />
                 Show Dialog
               </Button>
@@ -163,12 +166,12 @@ const frameworks = [
 ] as const;
 
 function FormExample() {
-  const [notifications, setNotifications] = React.useState({
+  const [notifications, setNotifications] = useState({
     email: true,
     sms: false,
     push: true,
   });
-  const [theme, setTheme] = React.useState("light");
+  const [theme, setTheme] = useState("light");
 
   return (
     <Example title="Form">
@@ -177,7 +180,7 @@ function FormExample() {
           <CardTitle>User Information</CardTitle>
           <CardDescription>Please fill in your details below</CardDescription>
           <CardAction>
-            <DropdownMenu>
+            <DropdownMenu sound="system.open">
               <DropdownMenuTrigger asChild>
                 <Button size="icon" variant="ghost">
                   <IconDotsVertical />
@@ -430,7 +433,7 @@ function FormExample() {
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="small-form-role">Role</FieldLabel>
-                  <Select defaultValue="">
+                  <Select defaultValue="" sound="system.open">
                     <SelectTrigger id="small-form-role">
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
@@ -475,8 +478,14 @@ function FormExample() {
                 />
               </Field>
               <Field orientation="horizontal">
-                <Button type="submit">Submit</Button>
-                <Button type="button" variant="outline">
+                <Button sound="activation.confirm" type="submit">
+                  Submit
+                </Button>
+                <Button
+                  sound="activation.subtle"
+                  type="button"
+                  variant="outline"
+                >
                   Cancel
                 </Button>
               </Field>

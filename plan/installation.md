@@ -59,7 +59,7 @@ components/ui/sensory-ui/
   config.ts              ← Runtime config loader
   sound-roles.ts         ← SoundRole TypeScript types
   registry.ts            ← Role → file path mapping
-  primitives/
+  components/
     button.tsx
     dialog.tsx
     dropdown-menu.tsx
@@ -67,8 +67,8 @@ components/ui/sensory-ui/
     select.tsx
     checkbox.tsx
     switch.tsx
-    alert.tsx
-    toast.tsx
+    accordion.tsx
+    sheet.tsx
 
 public/sounds/
   activation/
@@ -151,10 +151,10 @@ The provider is a client component. The root layout can remain a server componen
 
 ## Step 5: Use a Sound-Enabled Component
 
-Import the Button (or any other component) from `sensory-ui/primitives` and pass a `sound` prop:
+Import the Button (or any other component) from `sensory-ui/components` and pass a `sound` prop:
 
 ```tsx
-import { Button } from "@/components/ui/sensory-ui/primitives/button";
+import { Button } from "@/components/ui/sensory-ui/components/button";
 
 export function SaveButton() {
 	return (
@@ -222,7 +222,7 @@ There is no uninstall command. To remove sensory-ui:
 | ------------------------------------------- | ------------------------- | -------------------- |
 | `components/ui/sensory-ui/engine.ts`        | sensory-ui                | On `add --overwrite` |
 | `components/ui/sensory-ui/provider.tsx`     | sensory-ui                | On `add --overwrite` |
-| `components/ui/sensory-ui/primitives/*.tsx` | sensory-ui                | On `add --overwrite` |
+| `components/ui/sensory-ui/components/*.tsx` | sensory-ui                | On `add --overwrite` |
 | `components/ui/sensory-ui/registry.ts`      | sensory-ui                | On `add --overwrite` |
 | `sensory.config.js`                         | **User**                  | Never (user-owned)   |
 | `public/sounds/activation/`                 | sensory-ui (default pack) | On `add --overwrite` |

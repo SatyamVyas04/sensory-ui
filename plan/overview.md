@@ -90,18 +90,18 @@ components/
       config.ts               ← runtime config loader
       sound-roles.ts          ← TypeScript types for all SoundRole values
       registry.ts             ← role → file path mapping
-      use-play-sound.ts       ← usePlaySound(role) hook (v1.5+)
-      primitives/
-        button.tsx            ← Button wrapper with sound prop
+      use-play-sound.ts       ← usePlaySound(role) hook
+      components/
+        button.tsx            ← patched shadcn Button with sound prop
         dialog.tsx
         dropdown-menu.tsx
         tabs.tsx
         select.tsx
         checkbox.tsx
         switch.tsx
-        alert.tsx
-        toast.tsx
-        ...                   ← one wrapper per supported component
+        accordion.tsx
+        sheet.tsx
+        ...                   ← one patched source file per supported component
 
 public/
   sounds/                     ← audio files (served statically)
@@ -198,7 +198,7 @@ export default function RootLayout({ children }) {
 
 ```tsx
 // Any component
-import { Button } from "@/components/ui/sensory-ui/primitives/button";
+import { Button } from "@/components/ui/sensory-ui/components/button";
 
 export function SaveButton() {
 	return (
