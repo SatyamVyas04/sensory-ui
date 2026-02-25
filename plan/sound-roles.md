@@ -1,6 +1,6 @@
 # sensory-ui — Sound Roles & Categories
 
-> `components/ui/sensory-ui/sound-roles.ts`
+> `components/ui/sensory-ui/config/sound-roles.ts`
 
 This document defines every semantic sound role in sensory-ui v1.0, the rationale behind the category structure, file specifications for audio assets, and the TypeScript type definitions.
 
@@ -120,7 +120,7 @@ Fired for significant completion moments — task completion, onboarding milesto
 ## TypeScript Type Definitions
 
 ```ts
-// components/ui/sensory-ui/sound-roles.ts
+// components/ui/sensory-ui/config/sound-roles.ts
 
 export type SoundCategory =
 	| "activation"
@@ -198,48 +198,30 @@ export function parseRole(role: SoundRole): {
 
 ---
 
-## Role → File Path Registry
+## Role → Base64 Data URI Registry
 
 ```ts
-// components/ui/sensory-ui/registry.ts
+// components/ui/sensory-ui/config/registry.ts
 
 import type { SoundRole } from "./sound-roles";
+import { activation } from "../sounds/activation";
+import { navigation } from "../sounds/navigation";
+import { notifications } from "../sounds/notifications";
+import { system } from "../sounds/system";
+import { hero } from "../sounds/hero";
 
 /**
- * Default role → static file path mapping.
- * Paths are relative to the Next.js public/ directory.
- * This file is NOT modified by themes or config overrides.
+ * Default role → base64 data URI mapping.
+ * Audio data is embedded as TypeScript modules in sounds/*.ts.
+ * This file is NOT modified by config overrides at runtime.
  * Overrides in sensory.config.js are applied at runtime by the config loader.
  */
 export const roleRegistry: Record<SoundRole, string> = {
-	// Activation
-	"activation.primary": "/sounds/activation/primary.mp3",
-	"activation.subtle": "/sounds/activation/subtle.mp3",
-	"activation.confirm": "/sounds/activation/confirm.mp3",
-	"activation.error": "/sounds/activation/error.mp3",
-
-	// Navigation
-	"navigation.forward": "/sounds/navigation/forward.mp3",
-	"navigation.backward": "/sounds/navigation/backward.mp3",
-	"navigation.switch": "/sounds/navigation/switch.mp3",
-	"navigation.scroll": "/sounds/navigation/scroll.mp3",
-
-	// Notifications
-	"notifications.passive": "/sounds/notifications/passive.mp3",
-	"notifications.important": "/sounds/notifications/important.mp3",
-	"notifications.success": "/sounds/notifications/success.mp3",
-	"notifications.warning": "/sounds/notifications/warning.mp3",
-
-	// System
-	"system.open": "/sounds/system/open.mp3",
-	"system.close": "/sounds/system/close.mp3",
-	"system.expand": "/sounds/system/expand.mp3",
-	"system.collapse": "/sounds/system/collapse.mp3",
-	"system.focus": "/sounds/system/focus.mp3",
-
-	// Hero
-	"hero.complete": "/sounds/hero/complete.mp3",
-	"hero.milestone": "/sounds/hero/milestone.mp3",
+	...activation,
+	...navigation,
+	...notifications,
+	...system,
+	...hero,
 };
 ```
 
@@ -268,10 +250,10 @@ All sound files distributed with sensory-ui must meet these requirements:
 
 ## Custom Sound Pack
 
-Users can replace any role's file by:
+Users can replace any role's audio in two ways:
 
-1. Placing their audio file in `public/sounds/custom/`
-2. Adding an override in `sensory.config.js`:
+1. **Edit the base64 data** directly in `sounds/*.ts` — replace the data URI string with your own base64-encoded audio.
+2. **Use config overrides** — point individual roles to a custom URL path in `sensory.config.js`:
 
 ```js
 overrides: {
@@ -280,4 +262,4 @@ overrides: {
 }
 ```
 
-Custom files must still meet the normalization and format spec above. The `custom/` directory is user-managed and is never touched by sensory-ui updates.
+Custom override URLs bypass the embedded base64 modules — the engine fetches them by URL as normal. Custom files must still meet the normalization and format spec above.

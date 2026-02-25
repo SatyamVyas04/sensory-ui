@@ -12,7 +12,7 @@ The core idea is simple: UI interactions have meaning, and sound can reinforce t
 
 **Target platform:** Next.js (App Router and Pages Router) + React  
 **Distribution:** shadcn/ui registry (CLI installable)  
-**Runtime footprint:** Minimal — no bundled audio, no global side effects, no forced re-renders
+**Runtime footprint:** Minimal — audio is base64-encoded in TS modules (no public/ assets), no global side effects, no forced re-renders
 
 ---
 
@@ -66,7 +66,7 @@ sensory-ui is composed of four runtime layers and one distribution layer:
           ▼
 ┌─────────────────────────────────────────────────────────────┐
 │         Role Registry + Config (registry.ts / config.ts)    │  ← Layer 4: Config
-│  "activation.primary" → "/sounds/activation/primary.mp3"   │
+│  "activation.primary" → "data:audio/mp3;base64,..."         │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -85,56 +85,36 @@ components/
     dialog.tsx
     ...
     sensory-ui/               ← everything sensory-ui lives here
-      engine.ts               ← Web Audio engine (core)
-      provider.tsx            ← SensoryUIProvider (React context)
-      config.ts               ← runtime config loader
-      sound-roles.ts          ← TypeScript types for all SoundRole values
-      registry.ts             ← role → file path mapping
-      use-play-sound.ts       ← usePlaySound(role) hook
-      components/
-        button.tsx            ← patched shadcn Button with sound prop
-        dialog.tsx
-        dropdown-menu.tsx
-        tabs.tsx
-        select.tsx
-        checkbox.tsx
-        switch.tsx
-        accordion.tsx
-        sheet.tsx
-        ...                   ← one patched source file per supported component
+      config/                 ← internal engine & config layer
+        engine.ts             ← Web Audio engine (core)
+        provider.tsx          ← SensoryUIProvider (React context)
+        config.ts             ← runtime config + mergeConfig + resolveRole
+        sound-roles.ts        ← TypeScript types for all SoundRole values
+        registry.ts           ← role → base64 module mapping
+        use-play-sound.ts     ← usePlaySound(role) hook
+      sounds/                 ← audio data as base64-encoded TS modules
+        activation.ts         ← activation.* role base64 data URIs
+        navigation.ts         ← navigation.* role base64 data URIs
+        notifications.ts      ← notifications.* role base64 data URIs
+        system.ts             ← system.* role base64 data URIs
+        hero.ts               ← hero.* role base64 data URIs
+        README.md             ← module format reference
+      button.tsx              ← patched shadcn Button with sound prop
+      dialog.tsx
+      dropdown-menu.tsx
+      tabs.tsx
+      select.tsx
+      checkbox.tsx
+      switch.tsx
+      accordion.tsx
+      sheet.tsx
 
-public/
-  sounds/                     ← audio files (served statically)
-    activation/
-      primary.mp3
-      subtle.mp3
-      confirm.mp3
-      error.mp3
-    navigation/
-      forward.mp3
-      backward.mp3
-      switch.mp3
-      scroll.mp3
-    notifications/
-      passive.mp3
-      important.mp3
-      success.mp3
-      warning.mp3
-    system/
-      open.mp3
-      close.mp3
-      expand.mp3
-      collapse.mp3
-      focus.mp3
-    hero/
-      complete.mp3
-      milestone.mp3
-    custom/                   ← user-managed, not tracked by sensory-ui
+> Audio data is embedded as base64-encoded TypeScript modules inside
+> `sensory-ui/sounds/`. No files are served from `public/sounds/`.
+> Sounds are fully co-located with the library code.
 
 sensory.config.js             ← optional project-root config file
 ```
-
-> Audio files live in `public/sounds/` so Next.js serves them as static assets via the `/_next/static` pipeline without any server-side involvement.
 
 ---
 
@@ -183,7 +163,7 @@ sensory.config.js             ← optional project-root config file
 
 ```tsx
 // app/layout.tsx
-import { SensoryUIProvider } from "@/components/ui/sensory-ui/provider";
+import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 
 export default function RootLayout({ children }) {
 	return (
@@ -198,7 +178,15 @@ export default function RootLayout({ children }) {
 
 ```tsx
 // Any component
-import { Button } from "@/components/ui/sensory-ui/components/button";
+import { Button } from "@/components/ui/sensory-ui/button";
+
+export function SaveButton() {
+	return (
+		<Button sound="activation.primary" onClick={handleSave}>
+			Save
+		</Button>
+	);
+}
 
 export function SaveButton() {
 	return (

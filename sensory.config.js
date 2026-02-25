@@ -3,7 +3,7 @@
 // Edit this file to customise sounds, volume, and category toggles.
 // This file is never overwritten by sensory-ui updates.
 
-/** @type {import('./components/ui/sensory-ui/config').SensoryUIConfig} */
+/** @type {import('./components/ui/sensory-ui/config/config').SensoryUIConfig} */
 module.exports = {
   // Global kill-switch. Set to false to silence all sounds everywhere.
   enabled: true,
@@ -24,7 +24,11 @@ module.exports = {
     hero: false, // Hero sounds are disabled by default — enable when needed.
   },
 
-  // Role-level path overrides. Map any SoundRole to a custom file in public/.
+  // Role-level overrides. Map any SoundRole to a custom audio source.
+  // Values can be:
+  //   - A URL path to a file in public/ (e.g. "/sounds/custom/my-click.mp3")
+  //   - A base64 data URI (e.g. "data:audio/mp3;base64,//uQx...")
+  // These override the built-in base64 modules in sounds/*.ts.
   // Example:
   //   "activation.primary": "/sounds/custom/my-click.mp3",
   overrides: {},

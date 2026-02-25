@@ -1,6 +1,6 @@
 # sensory-ui — Provider Architecture
 
-> `components/ui/sensory-ui/provider.tsx`
+> `components/ui/sensory-ui/config/provider.tsx`
 
 The `SensoryUIProvider` is a React context provider that wraps the entire application. It acts as the global configuration hub for the sound engine — managing whether sounds are enabled, what volume to use, and providing the `playSound` function to any sensory-ui component deep in the tree.
 
@@ -32,7 +32,7 @@ Without a provider, each sensory-ui component would need to independently read t
 ## Context Shape
 
 ```ts
-// components/ui/sensory-ui/provider.tsx
+// components/ui/sensory-ui/config/provider.tsx
 
 import { createContext, useContext } from "react";
 import type { SoundRole } from "./sound-roles";
@@ -90,7 +90,7 @@ export function useSensoryUI(): SensoryUIContextValue {
 ## Provider Implementation Plan
 
 ```tsx
-// components/ui/sensory-ui/provider.tsx
+// components/ui/sensory-ui/config/provider.tsx
 
 "use client"; // Required for Next.js App Router — provider uses hooks
 
@@ -139,7 +139,7 @@ export function SensoryUIProvider({
 			const category = role.split(".")[0] as SoundCategory;
 			if (config.categories[category] === false) return null;
 
-			// Resolve URL: override → registry default
+			// Resolve audio source: override → registry default (base64 data URI)
 			const url = resolveRole(role, config);
 			if (!url) return null;
 
@@ -230,7 +230,7 @@ function useReducedMotion(): boolean {
 ```tsx
 // app/layout.tsx
 
-import { SensoryUIProvider } from "@/components/ui/sensory-ui/provider";
+import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import type { ReactNode } from "react";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -253,7 +253,7 @@ Since `SensoryUIProvider` is a client component (`"use client"`), the root layou
 ```tsx
 // pages/_app.tsx
 
-import { SensoryUIProvider } from "@/components/ui/sensory-ui/provider";
+import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import type { AppProps } from "next/app";
 
 export default function App({ Component, pageProps }: AppProps) {

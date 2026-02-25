@@ -43,10 +43,10 @@ During installation the CLI will prompt:
 
 **What this choice does:**
 
-- Copies the corresponding `.mp3` files into `public/sounds/`
+- Embeds the corresponding sound data as base64 TypeScript modules in `sensory-ui/sounds/`
 - Sets the `theme` field in `sensory.config.js` to the chosen pack name
 
-All packs use the same role names and registry structure. Swapping packs later is done by replacing the files in `public/sounds/` and optionally updating `sensory.config.js`.
+All packs use the same role names and registry structure. Swapping packs later is done by re-running the installer with `--overwrite` or manually replacing the base64 data in the `sensory-ui/sounds/*.ts` modules.
 
 ---
 
@@ -54,55 +54,35 @@ All packs use the same role names and registry structure. Swapping packs later i
 
 ```
 components/ui/sensory-ui/
-  engine.ts              ← Web Audio engine
-  provider.tsx           ← SensoryUIProvider React context
-  config.ts              ← Runtime config loader
-  sound-roles.ts         ← SoundRole TypeScript types
-  registry.ts            ← Role → file path mapping
-  components/
-    button.tsx
-    dialog.tsx
-    dropdown-menu.tsx
-    tabs.tsx
-    select.tsx
-    checkbox.tsx
-    switch.tsx
-    accordion.tsx
-    sheet.tsx
-
-public/sounds/
-  activation/
-    primary.mp3
-    subtle.mp3
-    confirm.mp3
-    error.mp3
-  navigation/
-    forward.mp3
-    backward.mp3
-    switch.mp3
-    scroll.mp3
-  notifications/
-    passive.mp3
-    important.mp3
-    success.mp3
-    warning.mp3
-  system/
-    open.mp3
-    close.mp3
-    expand.mp3
-    collapse.mp3
-    focus.mp3
-  hero/
-    complete.mp3
-    milestone.mp3
-  custom/               ← empty, user-managed
+  config/
+    engine.ts
+    provider.tsx
+    config.ts
+    sound-roles.ts
+    registry.ts
+    use-play-sound.ts
+  sounds/
+    activation.ts
+    navigation.ts
+    notifications.ts
+    system.ts
+    hero.ts
+    README.md
+  button.tsx
+  dialog.tsx
+  dropdown-menu.tsx
+  tabs.tsx
+  select.tsx
+  checkbox.tsx
+  switch.tsx
+  accordion.tsx
+  sheet.tsx
 
 sensory.config.js       ← generated at project root
 ```
 
-**Design goal:** Everything stays inside `components/ui/sensory-ui/`. The only files outside that folder are:
+**Design goal:** Everything inside `components/ui/sensory-ui/`. Audio data is embedded as base64-encoded TypeScript modules in `sensory-ui/sounds/` — no files in `public/`, no separate asset serving. The only file outside that folder is:
 
-- `public/sounds/` — static audio assets (must be in `public/` for Next.js to serve them)
 - `sensory.config.js` — project-root config (optional, can be deleted to use defaults)
 
 ---
@@ -115,7 +95,7 @@ The provider must wrap the entire component tree to ensure the `AudioContext` pe
 
 ```tsx
 // app/layout.tsx
-import { SensoryUIProvider } from "@/components/ui/sensory-ui/provider";
+import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import type { ReactNode } from "react";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -133,7 +113,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
 ```tsx
 // pages/_app.tsx
-import { SensoryUIProvider } from "@/components/ui/sensory-ui/provider";
+import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import type { AppProps } from "next/app";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -151,10 +131,10 @@ The provider is a client component. The root layout can remain a server componen
 
 ## Step 5: Use a Sound-Enabled Component
 
-Import the Button (or any other component) from `sensory-ui/components` and pass a `sound` prop:
+Import the Button (or any other component) directly from `sensory-ui` and pass a `sound` prop:
 
 ```tsx
-import { Button } from "@/components/ui/sensory-ui/components/button";
+import { Button } from "@/components/ui/sensory-ui/button";
 
 export function SaveButton() {
 	return (
@@ -185,7 +165,7 @@ If you hear nothing:
 
 1. Check that `SensoryUIProvider` wraps the component you are testing
 2. Check that `sensory.config.js` has `enabled: true`
-3. Check that `public/sounds/activation/primary.mp3` exists and is accessible at `http://localhost:3000/sounds/activation/primary.mp3`
+3. Check that the `sounds/*.ts` modules were installed correctly (open `components/ui/sensory-ui/sounds/activation.ts` and verify it exports base64 data URIs)
 4. Check that the click is a direct user gesture (not triggered on mount)
 
 ---
@@ -198,9 +178,9 @@ To update the engine and primitives to a newer version:
 npx shadcn@latest add https://<registry-url>/sensory-ui --overwrite
 ```
 
-The `--overwrite` flag replaces the engine, config loader, and primitive files. Sound files in `public/sounds/` are **not overwritten** unless the user explicitly passes `--overwrite-sounds`.
+The `--overwrite` flag replaces the engine, config loader, primitive files, and the embedded sound modules in `sounds/*.ts`.
 
-Custom files in `public/sounds/custom/` are **never touched** by the installer.
+No user-owned file is ever overwritten automatically.
 
 ---
 
@@ -209,21 +189,19 @@ Custom files in `public/sounds/custom/` are **never touched** by the installer.
 There is no uninstall command. To remove sensory-ui:
 
 1. Delete `components/ui/sensory-ui/`
-2. Delete `public/sounds/`
-3. Delete `sensory.config.js`
-4. Remove `<SensoryUIProvider>` from the root layout
-5. Revert any components that import from `sensory-ui/primitives` back to their original shadcn imports
+2. Delete `sensory.config.js`
+3. Remove `<SensoryUIProvider>` from the root layout
+4. Revert any components that import from `@/components/ui/sensory-ui/*` back to their original shadcn imports
 
 ---
 
 ## File Ownership Model
 
-| File/Directory                              | Owned by                  | Auto-updated         |
-| ------------------------------------------- | ------------------------- | -------------------- |
-| `components/ui/sensory-ui/engine.ts`        | sensory-ui                | On `add --overwrite` |
-| `components/ui/sensory-ui/provider.tsx`     | sensory-ui                | On `add --overwrite` |
-| `components/ui/sensory-ui/components/*.tsx` | sensory-ui                | On `add --overwrite` |
-| `components/ui/sensory-ui/registry.ts`      | sensory-ui                | On `add --overwrite` |
-| `sensory.config.js`                         | **User**                  | Never (user-owned)   |
-| `public/sounds/activation/`                 | sensory-ui (default pack) | On `add --overwrite` |
-| `public/sounds/custom/`                     | **User**                  | Never                |
+| File/Directory                                 | Owned by                  | Auto-updated         |
+| ---------------------------------------------- | ------------------------- | -------------------- |
+| `components/ui/sensory-ui/config/engine.ts`    | sensory-ui                | On `add --overwrite` |
+| `components/ui/sensory-ui/config/provider.tsx` | sensory-ui                | On `add --overwrite` |
+| `components/ui/sensory-ui/*.tsx`               | sensory-ui                | On `add --overwrite` |
+| `components/ui/sensory-ui/config/registry.ts`  | sensory-ui                | On `add --overwrite` |
+| `components/ui/sensory-ui/sounds/*.ts`         | sensory-ui (default pack) | On `add --overwrite` |
+| `sensory.config.js`                            | **User**                  | Never (user-owned)   |

@@ -1,6 +1,6 @@
 # sensory-ui — Component API & Usage
 
-> `components/ui/sensory-ui/components/*.tsx`
+> `components/ui/sensory-ui/*.tsx`
 
 This document describes the component API — how the `sound` prop works, what event triggers are supported, how patched source components are structured, and how to use sensory-ui with components that are not yet wrapped.
 
@@ -47,15 +47,15 @@ Different components fire sounds at different interaction points. The key rule i
 The Button primitive is the most commonly used sensory-ui component. It wraps the shadcn Button and adds sound playback on the primary interaction event.
 
 ```tsx
-// components/ui/sensory-ui/components/button.tsx
+// components/ui/sensory-ui/button.tsx
 
 "use client";
 
 import * as React from "react";
 // Full shadcn Button source is copied here — not imported from @/components/ui/button.
 // Only the root Button function is patched; buttonVariants and sub-exports are verbatim.
-import { useSensoryUI } from "../provider";
-import type { SoundRole } from "../sound-roles";
+import { useSensoryUI } from "./config/provider";
+import type { SoundRole } from "./config/sound-roles";
 // ...full shadcn source...
 
 function Button({
@@ -109,15 +109,15 @@ export { Button, buttonVariants };
 Dialog is more complex than Button because it has two distinct sound moments: open and close. The `sound` prop on Dialog should be interpreted as the **open sound**. The close sound is automatically the tonal complement.
 
 ```tsx
-// components/ui/sensory-ui/components/dialog.tsx
+// components/ui/sensory-ui/dialog.tsx
 
 "use client";
 
 import * as React from "react";
 // Full shadcn Dialog source is copied here. Only the Dialog root function is patched.
 import { Dialog as DialogPrimitive } from "radix-ui"; // unified radix-ui package
-import { useSensoryUI } from "../provider";
-import type { SoundRole } from "../sound-roles";
+import { useSensoryUI } from "./config/provider";
+import type { SoundRole } from "./config/sound-roles";
 
 function Dialog({
 	sound,
@@ -162,15 +162,15 @@ export {
 ## Tabs Component — Detailed Spec
 
 ```tsx
-// components/ui/sensory-ui/components/tabs.tsx
+// components/ui/sensory-ui/tabs.tsx
 
 "use client";
 
 import * as React from "react";
 // Full shadcn Tabs source is copied here. Only the Tabs root function is patched.
 import { Tabs as TabsPrimitive } from "radix-ui"; // unified radix-ui package
-import { useSensoryUI } from "../provider";
-import type { SoundRole } from "../sound-roles";
+import { useSensoryUI } from "./config/provider";
+import type { SoundRole } from "./config/sound-roles";
 
 function Tabs({
 	sound,
@@ -208,8 +208,8 @@ Every patched component follows this exact structure:
 
 import * as React from "react";
 import { SomeComponent as SomePrimitive } from "radix-ui"; // unified radix-ui package
-import { useSensoryUI } from "../provider";
-import type { SoundRole } from "../sound-roles";
+import { useSensoryUI } from "./config/provider";
+import type { SoundRole } from "./config/sound-roles";
 // ...rest of verbatim shadcn imports...
 
 // Patched root function — added sound prop + handler interception
@@ -251,17 +251,17 @@ Rules for patched components:
 
 ## Available Components (v1.0)
 
-| Component      | File                           | Primary Event   | Notes                         |
-| -------------- | ------------------------------ | --------------- | ----------------------------- |
-| `Button`       | `components/button.tsx`        | click + keydown | Most used                     |
-| `Dialog`       | `components/dialog.tsx`        | open/close      | Pairs open + close sounds     |
-| `DropdownMenu` | `components/dropdown-menu.tsx` | open/close      | Same pattern as Dialog        |
-| `Sheet`        | `components/sheet.tsx`         | open/close      | Same pattern as Dialog        |
-| `Tabs`         | `components/tabs.tsx`          | value change    | `navigation.switch` typical   |
-| `Select`       | `components/select.tsx`        | open/close      | Same pattern as Dialog        |
-| `Checkbox`     | `components/checkbox.tsx`      | checked change  | Check / uncheck distinction   |
-| `Switch`       | `components/switch.tsx`        | checked change  | Same as Checkbox              |
-| `Accordion`    | `components/accordion.tsx`     | value change    | Expand / collapse distinction |
+| Component      | File                | Primary Event   | Notes                         |
+| -------------- | ------------------- | --------------- | ----------------------------- |
+| `Button`       | `button.tsx`        | click + keydown | Most used                     |
+| `Dialog`       | `dialog.tsx`        | open/close      | Pairs open + close sounds     |
+| `DropdownMenu` | `dropdown-menu.tsx` | open/close      | Same pattern as Dialog        |
+| `Sheet`        | `sheet.tsx`         | open/close      | Same pattern as Dialog        |
+| `Tabs`         | `tabs.tsx`          | value change    | `navigation.switch` typical   |
+| `Select`       | `select.tsx`        | open/close      | Same pattern as Dialog        |
+| `Checkbox`     | `checkbox.tsx`      | checked change  | Check / uncheck distinction   |
+| `Switch`       | `switch.tsx`        | checked change  | Same as Checkbox              |
+| `Accordion`    | `accordion.tsx`     | value change    | Expand / collapse distinction |
 
 ---
 
@@ -270,7 +270,7 @@ Rules for patched components:
 For components not yet wrapped, or for custom interaction points, the `usePlaySound` hook lets any client component trigger a sound:
 
 ```ts
-// components/ui/sensory-ui/use-play-sound.ts (v1.5+)
+// components/ui/sensory-ui/config/use-play-sound.ts
 
 import { useSensoryUI } from "./provider";
 import type { SoundRole } from "./sound-roles";
@@ -289,7 +289,7 @@ Usage:
 ```tsx
 "use client";
 
-import { usePlaySound } from "@/components/ui/sensory-ui/use-play-sound";
+import { usePlaySound } from "@/components/ui/sensory-ui/config/use-play-sound";
 
 export function CustomSlider() {
 	const { play } = usePlaySound({ sound: "activation.confirm" });
@@ -369,7 +369,7 @@ toast({
 
 ## What Is NOT Supported
 
-- `sound` prop on components from `@/components/ui/` directly — must use `sensory-ui/components/`
+- `sound` prop on components from `@/components/ui/` directly — must use `@/components/ui/sensory-ui/<component>`
 - Hover sounds in v1.0 (`hoverSound` is planned for v1.5)
 - Multiple sounds on the same interaction (one role per event)
 - Looping sounds (all sounds play once)
