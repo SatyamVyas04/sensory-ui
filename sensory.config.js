@@ -9,10 +9,24 @@ module.exports = {
   enabled: true,
 
   // Master volume multiplier (0–1). Applied to every sound before playback.
-  // Keep this low — UI sounds are better heard at 20–40% volume.
+  // Keep this low — UI sounds are generally best at 20–40% volume.
   volume: 0.35,
 
-  // Sound pack name. Informational in v1.0.
+  // -------------------------------------------------------------------
+  // Sound pack / theme.
+  //
+  // Selects which built-in sound pack to use. Sounds are generated
+  // programmatically via the Web Audio API — no audio files needed.
+  //
+  // Available packs:
+  //   "default"  → clean, modern, minimal (general-purpose SaaS)
+  //   "arcade"   → 8-bit chiptune square-wave sounds
+  //   "wind"     → airy, organic filtered-noise + wind chimes
+  //   "retro"    → synthwave / analog sawtooth, slightly gritty
+  //
+  // You can override any individual role via the `overrides` field below,
+  // regardless of which pack is active.
+  // -------------------------------------------------------------------
   theme: "default",
 
   // Per-category toggles. Set any category to false to silence it entirely.
@@ -28,7 +42,7 @@ module.exports = {
   // Values can be:
   //   - A URL path to a file in public/ (e.g. "/sounds/custom/my-click.mp3")
   //   - A base64 data URI (e.g. "data:audio/mp3;base64,//uQx...")
-  // These override the built-in base64 modules in sounds/*.ts.
+  // These override the active sound pack for that role only.
   // Example:
   //   "activation.primary": "/sounds/custom/my-click.mp3",
   overrides: {},

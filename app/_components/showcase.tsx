@@ -1,22 +1,21 @@
 "use client";
 
-import {
-  IconBell,
-  IconCursorText,
-  IconLayoutGrid,
-  IconTerminal2,
-} from "@tabler/icons-react";
+import { IconTerminal2 } from "@tabler/icons-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
-import { Button } from "@/components/ui/sensory-ui/button";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/sensory-ui/tabs";
+
+import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
+import type { SoundPackName } from "@/components/ui/sensory-ui/config/registry";
+import { ShowcaseGrid } from "./showcase/index";
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+const PACKS: { value: SoundPackName; label: string; description: string }[] = [
+  { value: "default", label: "default", description: "clean SaaS" },
+  { value: "arcade", label: "arcade", description: "8-bit chiptune" },
+  { value: "wind", label: "wind", description: "organic / airy" },
+  { value: "retro", label: "retro", description: "synthwave" },
+];
 
 const CODE_INSTALL =
   "npx shadcn@latest add https://sensory-ui.dev/r/sensory-ui";
@@ -69,47 +68,9 @@ function CodeBlock({ label, code }: { label: string; code: string }) {
   );
 }
 
-interface DemoCardProps {
-  children: React.ReactNode;
-  delay?: number;
-  description: string;
-  icon: React.ReactNode;
-  title: string;
-}
-
-function DemoCard({
-  title,
-  description,
-  icon,
-  children,
-  delay = 0,
-}: DemoCardProps) {
-  const prefersReduced = useReducedMotion();
-
-  return (
-    <motion.div
-      className="flex flex-col border border-border bg-card p-5"
-      initial={{ opacity: 0, y: prefersReduced ? 0 : 14 }}
-      transition={{ duration: 0.45, ease, delay }}
-      viewport={{ once: true, margin: "-80px" }}
-      whileInView={{ opacity: 1, y: 0 }}
-    >
-      <div className="mb-1 flex items-center gap-2 text-muted-foreground">
-        <span aria-hidden="true" className="text-primary">
-          {icon}
-        </span>
-        <span className="font-medium text-foreground text-xs">{title}</span>
-      </div>
-      <p className="mb-5 font-mono text-muted-foreground text-xs">
-        {description}
-      </p>
-      <div className="mt-auto">{children}</div>
-    </motion.div>
-  );
-}
-
 export function Showcase() {
   const prefersReduced = useReducedMotion();
+  const [selectedPack, setSelectedPack] = useState<SoundPackName>("default");
 
   return (
     <section
@@ -117,7 +78,7 @@ export function Showcase() {
       className="border-border border-t py-24"
       id="showcase"
     >
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: prefersReduced ? 0 : 16 }}
@@ -125,124 +86,88 @@ export function Showcase() {
           viewport={{ once: true, margin: "-80px" }}
           whileInView={{ opacity: 1, y: 0 }}
         >
-          <span className="font-mono text-muted-foreground text-xs uppercase tracking-widest">
-            Showcase
-          </span>
-          <h2
-            className="mt-2 text-balance font-semibold text-3xl sm:text-4xl"
-            id="showcase-heading"
-          >
-            Sound-aware by design.
-          </h2>
-          <p className="mt-3 max-w-lg text-muted-foreground text-sm/relaxed">
-            Every component accepts a semantic{" "}
-            <code className="rounded-none bg-muted px-1 py-0.5 font-mono text-xs">
-              sound
-            </code>{" "}
-            prop. Nothing plays unless you ask it to. Bring your own audio files
-            — sensory-ui handles the wiring.
-          </p>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <span className="font-mono text-muted-foreground text-xs uppercase tracking-widest">
+                Showcase
+              </span>
+              <h2
+                className="mt-2 text-balance font-semibold text-3xl sm:text-4xl"
+                id="showcase-heading"
+              >
+                Sound-aware by design.
+              </h2>
+              <p className="mt-3 max-w-lg text-muted-foreground text-sm/relaxed">
+                Every component accepts a semantic{" "}
+                <code className="rounded-none bg-muted px-1 py-0.5 font-mono text-xs">
+                  sound
+                </code>{" "}
+                prop. Nothing plays unless you ask it to. All{" "}
+                <strong className="font-medium text-foreground">
+                  19 sound roles
+                </strong>{" "}
+                across{" "}
+                <strong className="font-medium text-foreground">
+                  9 components
+                </strong>
+                .
+              </p>
+            </div>
+
+            {/* Pack selector */}
+            <div className="flex shrink-0 flex-col gap-1.5 pt-1">
+              <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
+                Sound pack
+              </span>
+              <div className="flex flex-col gap-1">
+                {PACKS.map((pack) => (
+                  <button
+                    className={[
+                      "flex items-center gap-2.5 border px-3 py-1.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      selectedPack === pack.value
+                        ? "border-primary/60 bg-primary/5 text-foreground"
+                        : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground",
+                    ].join(" ")}
+                    key={pack.value}
+                    onClick={() => setSelectedPack(pack.value)}
+                    type="button"
+                  >
+                    <span
+                      className={[
+                        "h-1.5 w-1.5 rounded-full transition-colors",
+                        selectedPack === pack.value
+                          ? "bg-primary"
+                          : "bg-muted-foreground/30",
+                      ].join(" ")}
+                    />
+                    <span className="font-mono text-xs">{pack.label}</span>
+                    <span className="text-[10px] text-muted-foreground/60">
+                      {pack.description}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </motion.div>
 
-        {/* Demo cards */}
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <DemoCard
-            delay={0.08}
-            description="activation.primary / .subtle / .error"
-            icon={<IconCursorText className="size-4" />}
-            title="Button"
-          >
-            <div className="flex flex-wrap gap-2">
-              <Button size="sm" sound="activation.primary">
-                Primary
-              </Button>
-              <Button size="sm" sound="activation.subtle" variant="outline">
-                Subtle
-              </Button>
-              <Button size="sm" sound="activation.error" variant="destructive">
-                Error
-              </Button>
-            </div>
-          </DemoCard>
-
-          <DemoCard
-            delay={0.15}
-            description="navigation.switch"
-            icon={<IconLayoutGrid className="size-4" />}
-            title="Tabs"
-          >
-            <Tabs defaultValue="preview" sound="navigation.switch">
-              <TabsList>
-                <TabsTrigger value="preview">Preview</TabsTrigger>
-                <TabsTrigger value="code">Code</TabsTrigger>
-                <TabsTrigger value="docs">Docs</TabsTrigger>
-              </TabsList>
-              <TabsContent
-                className="mt-3 text-muted-foreground text-xs"
-                value="preview"
-              >
-                Preview panel — switch tabs to trigger sound.
-              </TabsContent>
-              <TabsContent
-                className="mt-3 text-muted-foreground text-xs"
-                value="code"
-              >
-                Code panel — navigation.switch fired.
-              </TabsContent>
-              <TabsContent
-                className="mt-3 text-muted-foreground text-xs"
-                value="docs"
-              >
-                Docs panel — directional audio cue triggers.
-              </TabsContent>
-            </Tabs>
-          </DemoCard>
-
-          <DemoCard
-            delay={0.22}
-            description="Dialog · Select · Accordion · Switch · Sheet"
-            icon={<IconBell className="size-4" />}
-            title="9+ Components"
-          >
-            <p className="text-muted-foreground text-xs/relaxed">
-              Every open, close, confirm, toggle, and navigation has a semantic
-              role. One prop bridges your component to the Web Audio engine.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-1.5">
-              {[
-                "system.open",
-                "system.close",
-                "activation.confirm",
-                "notifications.success",
-              ].map((role) => (
-                <span
-                  className="border border-border bg-muted/30 px-1.5 py-0.5 font-mono text-muted-foreground text-xs"
-                  key={role}
-                >
-                  {role}
-                </span>
-              ))}
-            </div>
-          </DemoCard>
+        {/* Component gallery — wrapped in a local SensoryUIProvider to apply the selected pack */}
+        <div className="mt-12">
+          <SensoryUIProvider config={{ theme: selectedPack }}>
+            <ShowcaseGrid />
+          </SensoryUIProvider>
         </div>
 
         {/* Note about sounds */}
         <motion.p
-          className="mt-4 text-center text-muted-foreground text-xs"
+          className="mt-6 text-center text-muted-foreground text-xs"
           initial={{ opacity: 0 }}
           transition={{ duration: 0.4, ease, delay: 0.3 }}
           viewport={{ once: true, margin: "-80px" }}
           whileInView={{ opacity: 1 }}
         >
-          * Demos are interactive — sounds require audio files.{" "}
-          <a
-            className="underline underline-offset-2 hover:text-foreground"
-            href="https://m2.material.io/design/sound/sound-resources.html"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Find quality UI sounds here.
-          </a>
+          All sounds are generated in real time via the Web Audio API — no audio
+          files, no network requests.
         </motion.p>
 
         {/* Installation */}

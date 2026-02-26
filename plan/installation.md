@@ -15,7 +15,7 @@ This document describes the full installation flow, what files are created, how 
 ## Step 1: Install via shadcn CLI
 
 ```bash
-npx shadcn@latest add https://<registry-url>/sensory-ui
+npx shadcn@latest add https://sensory-ui.dev/r/sensory-ui
 ```
 
 The CLI will:
@@ -35,18 +35,18 @@ During installation the CLI will prompt:
 
 ```
 ? Choose a sound pack:
-  > default        (balanced, general-purpose UI sounds)
-    minimal        (very short, near-silent feedback only)
-    expressive     (richer, longer sounds with more character)
-    none           (no audio files — bring your own)
+  > default        (clean, modern SaaS — filtered noise clicks + sine sweeps)
+    arcade         (8-bit chiptune — square waves, stepped pitch, NES vibe)
+    wind           (organic/airy — bandpass noise bursts + wind chime hybrids)
+    retro          (synthwave — dual detuned sawtooth, chord stabs, Moog vibe)
 ```
 
 **What this choice does:**
 
-- Embeds the corresponding sound data as base64 TypeScript modules in `sensory-ui/sounds/`
 - Sets the `theme` field in `sensory.config.js` to the chosen pack name
+- At runtime, `resolveRole()` looks up `packRegistry[theme][role]` and returns a `SoundSynthesizer` function that generates audio via the Web Audio API — no audio files, no network requests
 
-All packs use the same role names and registry structure. Swapping packs later is done by re-running the installer with `--overwrite` or manually replacing the base64 data in the `sensory-ui/sounds/*.ts` modules.
+All packs use the same role names and registry structure. Swapping packs later is a one-line change in `sensory.config.js` or passing `config={{ theme: "arcade" }}` to `SensoryUIProvider`. See [sound-packs.md](./sound-packs.md) for per-pack sound design details.
 
 ---
 
@@ -67,6 +67,9 @@ components/ui/sensory-ui/
     notifications.ts
     system.ts
     hero.ts
+    arcade.ts
+    wind.ts
+    retro.ts
     README.md
   button.tsx
   dialog.tsx
@@ -81,7 +84,7 @@ components/ui/sensory-ui/
 sensory.config.js       ← generated at project root
 ```
 
-**Design goal:** Everything inside `components/ui/sensory-ui/`. Audio data is embedded as base64-encoded TypeScript modules in `sensory-ui/sounds/` — no files in `public/`, no separate asset serving. The only file outside that folder is:
+**Design goal:** Everything inside `components/ui/sensory-ui/`. Audio is generated **programmatically** via the Web Audio API inside `sensory-ui/sounds/` — no files in `public/`, no asset serving, no base64 blobs. The only file outside that folder is:
 
 - `sensory.config.js` — project-root config (optional, can be deleted to use defaults)
 
@@ -165,8 +168,9 @@ If you hear nothing:
 
 1. Check that `SensoryUIProvider` wraps the component you are testing
 2. Check that `sensory.config.js` has `enabled: true`
-3. Check that the `sounds/*.ts` modules were installed correctly (open `components/ui/sensory-ui/sounds/activation.ts` and verify it exports base64 data URIs)
+3. Check that the `sounds/*.ts` modules were installed correctly (open `components/ui/sensory-ui/sounds/activation.ts` and verify it exports `SoundSynthesizer` functions, not empty strings)
 4. Check that the click is a direct user gesture (not triggered on mount)
+5. Check that your browser has not blocked the `AudioContext` — Chrome suspends it until a user gesture. The engine resumes it automatically on the first `playSound()` call.
 
 ---
 
@@ -175,7 +179,7 @@ If you hear nothing:
 To update the engine and primitives to a newer version:
 
 ```bash
-npx shadcn@latest add https://<registry-url>/sensory-ui --overwrite
+npx shadcn@latest add https://sensory-ui.dev/r/sensory-ui --overwrite
 ```
 
 The `--overwrite` flag replaces the engine, config loader, primitive files, and the embedded sound modules in `sounds/*.ts`.
@@ -197,11 +201,11 @@ There is no uninstall command. To remove sensory-ui:
 
 ## File Ownership Model
 
-| File/Directory                                 | Owned by                  | Auto-updated         |
-| ---------------------------------------------- | ------------------------- | -------------------- |
-| `components/ui/sensory-ui/config/engine.ts`    | sensory-ui                | On `add --overwrite` |
-| `components/ui/sensory-ui/config/provider.tsx` | sensory-ui                | On `add --overwrite` |
-| `components/ui/sensory-ui/*.tsx`               | sensory-ui                | On `add --overwrite` |
-| `components/ui/sensory-ui/config/registry.ts`  | sensory-ui                | On `add --overwrite` |
-| `components/ui/sensory-ui/sounds/*.ts`         | sensory-ui (default pack) | On `add --overwrite` |
-| `sensory.config.js`                            | **User**                  | Never (user-owned)   |
+| File/Directory                                 | Owned by               | Auto-updated         |
+| ---------------------------------------------- | ---------------------- | -------------------- |
+| `components/ui/sensory-ui/config/engine.ts`    | sensory-ui             | On `add --overwrite` |
+| `components/ui/sensory-ui/config/provider.tsx` | sensory-ui             | On `add --overwrite` |
+| `components/ui/sensory-ui/*.tsx`               | sensory-ui             | On `add --overwrite` |
+| `components/ui/sensory-ui/config/registry.ts`  | sensory-ui             | On `add --overwrite` |
+| `components/ui/sensory-ui/sounds/*.ts`         | sensory-ui (all packs) | On `add --overwrite` |
+| `sensory.config.js`                            | **User**               | Never (user-owned)   |

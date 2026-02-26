@@ -3,5 +3,13 @@
   "extends": ["ultracite/biome/core", "ultracite/biome/next"],
   "files": {
     "includes": ["!components/ui/**/*"]
+  },
+
+  "linter": {
+    "rules": {
+      "nursery": {
+        "useSortedClasses": "error"
+      }
+    }
   }
 }

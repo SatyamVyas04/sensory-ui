@@ -82,6 +82,21 @@ sensory-ui will be published as a single registry entry that installs the entire
 			"target": "components/ui/sensory-ui/sounds/hero.ts"
 		},
 		{
+			"path": "components/ui/sensory-ui/sounds/arcade.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/arcade.ts"
+		},
+		{
+			"path": "components/ui/sensory-ui/sounds/wind.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/wind.ts"
+		},
+		{
+			"path": "components/ui/sensory-ui/sounds/retro.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/retro.ts"
+		},
+		{
 			"path": "components/ui/sensory-ui/button.tsx",
 			"type": "registry:component",
 			"target": "components/ui/sensory-ui/button.tsx"
@@ -147,21 +162,31 @@ sensory-ui will be published as a single registry entry that installs the entire
 
 ## Sound Pack Distribution
 
-Audio files are distributed as **base64-encoded TypeScript modules** (e.g., `sounds/activation.ts`, `sounds/navigation.ts`, etc.) co-located inside `components/ui/sensory-ui/sounds/`. This approach:
+Audio is generated **programmatically** via the Web Audio API. Each `sounds/*.ts` module exports a `SoundPack` object that maps role names to `SoundSynthesizer` functions — plain TypeScript functions that receive an `AudioContext` and return a `SoundPlayback` handle.
+
+This approach:
 
 - Keeps all library files together in one folder
-- Eliminates the need for a `public/` directory entry
-- Prevents direct URL access to audio by end-users- Works fully offline — no network fetch for built-in sounds- Enables the standard shadcn registry install flow (no post-install scripts, no CDN downloads)
+- Produces zero binary assets — no `public/` directory entry, no base64 blobs
+- Works fully offline — no network fetch for built-in sounds
+- Enables the standard shadcn registry install flow (no post-install scripts, no CDN downloads)
+- Allows multiple packs (`default`, `arcade`, `wind`, `retro`) to coexist in the same install
 
-Each `sounds/*.ts` module exports an object mapping role names to base64 data URIs:
+Each `sounds/*.ts` module exports a `SoundPack` record:
 
 ```ts
 // components/ui/sensory-ui/sounds/activation.ts
-export const activation = {
-	"activation.primary": "data:audio/mp3;base64,//uQx...",
-	"activation.subtle": "data:audio/mp3;base64,//uQx...",
-	"activation.confirm": "data:audio/mp3;base64,//uQx...",
-	"activation.error": "data:audio/mp3;base64,//uQx...",
+import type { SoundPack } from "../config/registry";
+
+export const activation: Partial<SoundPack> = {
+	"activation.primary": (ctx, options) => {
+		// Web Audio API synthesis — filtered noise click
+		const gain = ctx.createGain();
+		// ... oscillator/filter setup ...
+		gain.connect(ctx.destination);
+		return { stop: () => gain.disconnect() };
+	},
+	// ... other activation roles
 };
 ```
 

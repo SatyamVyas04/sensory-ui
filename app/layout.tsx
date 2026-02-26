@@ -15,40 +15,83 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = "https://sensory-ui.vercel.app";
+const siteTitle = "sensory-ui";
+const siteDescription =
+  "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions with 19 sound roles across 9 components — built for shadcn/ui.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "sensory-ui",
-    template: "%s — sensory-ui",
+    default: siteTitle,
+    template: `%s — ${siteTitle}`,
   },
-  description:
-    "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions — built for shadcn/ui.",
+  description: siteDescription,
   keywords: [
     "sensory-ui",
     "shadcn",
+    "shadcn/ui",
     "sound",
-    "audio",
-    "react",
-    "nextjs",
-    "ui",
-    "accessibility",
+    "audio feedback",
     "web audio",
+    "react",
+    "next.js",
+    "ui components",
+    "accessibility",
+    "sound design",
+    "interaction design",
+    "semantic sound",
   ],
-  authors: [{ name: "Satyam Vyas" }],
+  authors: [{ name: "Satyam Vyas", url: "https://x.com/SatyamVyas04" }],
   creator: "Satyam Vyas",
+  category: "technology",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: [
+      { url: "/icon-64.png", sizes: "64x64", type: "image/png" },
+      { url: "/icon-256.png", sizes: "256x256", type: "image/png" },
+    ],
+    apple: [{ url: "/icon-256.png", sizes: "256x256", type: "image/png" }],
+    shortcut: "/icon-64.png",
+  },
   openGraph: {
     type: "website",
-    title: "sensory-ui",
-    description:
-      "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions — built for shadcn/ui.",
-    siteName: "sensory-ui",
+    url: siteUrl,
+    title: siteTitle,
+    description: siteDescription,
+    siteName: siteTitle,
+    locale: "en_US",
+    images: [
+      {
+        url: "/hero-background.jpg",
+        width: 1200,
+        height: 630,
+        alt: "sensory-ui — semantic sound for React & Next.js",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "sensory-ui",
-    description:
-      "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions — built for shadcn/ui.",
+    site: "@SatyamVyas04",
+    creator: "@SatyamVyas04",
+    title: siteTitle,
+    description: siteDescription,
+    images: [
+      {
+        url: "/hero-background.jpg",
+        alt: "sensory-ui — semantic sound for React & Next.js",
+      },
+    ],
   },
-  metadataBase: new URL("https://sensory-ui.vercel.app"),
 };
 
 export default function RootLayout({

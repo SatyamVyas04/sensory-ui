@@ -1,10 +1,25 @@
 {
   "version": 1,
   "skills": {
+    "12-principles-of-animation": {
+      "source": "raphaelsalaja/userinterface-wiki",
+      "sourceType": "github",
+      "computedHash": "028c3bad9e7417460e0d2094fc0c1b9d601e56317d38c4f5d124666b06a9405b"
+    },
     "emilkowal-animations": {
       "source": "pproenca/dot-skills",
       "sourceType": "github",
       "computedHash": "53756b4bc96f580b3db5eeb0d487473f72bbbf9841297cef30fbec7b1ee43bd8"
+    },
+    "generating-sounds-with-ai": {
+      "source": "raphaelsalaja/userinterface-wiki",
+      "sourceType": "github",
+      "computedHash": "70bdd550a0affc1a79529d2c68b654b44c9430c72f07acf90295e45ef73fc4a5"
+    },
+    "sounds-on-the-web": {
+      "source": "raphaelsalaja/userinterface-wiki",
+      "sourceType": "github",
+      "computedHash": "627df5301459f549c93c9e29a8ed0e3eff7cd52b24194e44460ee703a21c24b4"
     }
   }
 }

@@ -1,7 +1,8 @@
 "use client";
 
-import { IconBrandGithub, IconBrandX, IconVolume2 } from "@tabler/icons-react";
+import { IconBrandGithub, IconBrandX } from "@tabler/icons-react";
 import { motion } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface NavbarProps {
@@ -15,7 +16,7 @@ export function Navbar({ stars }: NavbarProps) {
     <>
       {/* Skip to main content — accessibility */}
       <a
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-primary focus:px-3 focus:py-1.5 focus:font-medium focus:text-primary-foreground focus:text-xs focus-visible:ring-2 focus-visible:ring-ring"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:bg-primary focus:px-3 focus:py-1.5 focus:font-medium focus:text-primary-foreground focus:text-xs focus-visible:ring-2 focus-visible:ring-ring"
         href="#main-content"
       >
         Skip to main content
@@ -32,7 +33,14 @@ export function Navbar({ stars }: NavbarProps) {
             className="flex items-center gap-2 font-medium text-sm transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             href="/"
           >
-            <IconVolume2 aria-hidden="true" className="size-4 text-primary" />
+            <Image
+              alt=""
+              aria-hidden="true"
+              className="size-5 dark:invert"
+              height={20}
+              src="/icon-64.png"
+              width={20}
+            />
             <span>sensory-ui</span>
           </Link>
 

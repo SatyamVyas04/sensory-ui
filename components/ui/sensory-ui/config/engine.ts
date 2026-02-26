@@ -8,6 +8,30 @@ export function getAudioContext(): AudioContext {
   return audioContext;
 }
 
+// ---------------------------------------------------------------------------
+// Sound source types
+// ---------------------------------------------------------------------------
+
+/**
+ * A synthesizer function that generates sound directly via the Web Audio API.
+ * Receives the shared AudioContext and playback options, starts the sound
+ * immediately, and returns a SoundPlayback handle.
+ *
+ * Synthesizers are the preferred approach for built-in sound packs — no
+ * decoding step, no base64 bloat, zero network requests.
+ */
+export type SoundSynthesizer = (
+  ctx: AudioContext,
+  options: PlaySoundOptions
+) => SoundPlayback;
+
+/**
+ * A sound source is either:
+ * - A `SoundSynthesizer` function (programmatic Web Audio generation)
+ * - A `string` (base64 data URI or a URL to a file in public/)
+ */
+export type SoundSource = SoundSynthesizer | string;
+
 /**
  * Decode a base64 data URI into an AudioBuffer.
  * Used when sounds are embedded as base64-encoded TS modules.
@@ -69,7 +93,7 @@ export interface SoundPlayback {
 }
 
 export async function playSound(
-  source: string,
+  source: SoundSource,
   options: PlaySoundOptions = {}
 ): Promise<SoundPlayback> {
   const { volume = 1, playbackRate = 1, onEnd } = options;
@@ -78,6 +102,11 @@ export async function playSound(
 
   if (ctx.state === "suspended") {
     await ctx.resume();
+  }
+
+  // If the source is a synthesizer function, call it directly — no decoding step.
+  if (typeof source === "function") {
+    return source(ctx, { volume, playbackRate, onEnd });
   }
 
   const buffer = await decodeAudioData(source);

@@ -120,13 +120,13 @@ export function SensoryUIProvider({
       if (typeof window === "undefined") return null;
       if (!shouldPlay) return null;
 
-      const url = resolveRole(role, config);
-      if (!url) return null;
+      const source = resolveRole(role, config);
+      if (!source) return null;
 
       const finalVolume = (options.volume ?? 1) * config.volume;
 
       try {
-        return await enginePlaySound(url, { ...options, volume: finalVolume });
+        return await enginePlaySound(source, { ...options, volume: finalVolume });
       } catch (err) {
         if (process.env.NODE_ENV === "development") {
           console.warn("[sensory-ui] Failed to play sound:", role, err);

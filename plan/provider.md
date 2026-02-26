@@ -19,13 +19,13 @@ Without a provider, each sensory-ui component would need to independently read t
 
 ## Provider Responsibilities
 
-| Responsibility                                | Details                                                                          |
-| --------------------------------------------- | -------------------------------------------------------------------------------- |
-| Load `sensory.config.js` at runtime           | Read enabled/disabled, master volume, category toggles, overrides                |
-| Expose `playSound(role, options)` via context | So any child component can trigger a sound without importing the engine directly |
-| Check `prefers-reduced-motion`                | Read the media query once on mount, update on change                             |
-| Provide global mute toggle                    | For developer tooling, storybook, testing                                        |
-| Manage `AudioContext` lifecycle               | Create on first use, resume after suspension, clean up on unmount in dev         |
+| Responsibility                                | Details                                                                                         |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Accept optional `config` prop at runtime      | Merged on top of `defaultConfig` via `mergeConfig()`; pass your `sensory.config.js` values here |
+| Expose `playSound(role, options)` via context | So any child component can trigger a sound without importing the engine directly                |
+| Check `prefers-reduced-motion`                | Read the media query once on mount, update on change                                            |
+| Provide global mute toggle                    | For developer tooling, storybook, testing                                                       |
+| Manage `AudioContext` lifecycle               | Create on first use, resume after suspension, clean up on unmount in dev                        |
 
 ---
 
@@ -76,6 +76,10 @@ export const SensoryUIContext = createContext<SensoryUIContextValue | null>(
 	null,
 );
 
+> **Note:** `SensoryUIContext` is intentionally **not exported** from the actual implementation.
+> Consumers must use the `useSensoryUI()` hook, which provides a proper error message
+> if called outside the provider.
+
 export function useSensoryUI(): SensoryUIContextValue {
 	const ctx = useContext(SensoryUIContext);
 	if (!ctx) {
@@ -94,19 +98,20 @@ export function useSensoryUI(): SensoryUIContextValue {
 
 "use client"; // Required for Next.js App Router — provider uses hooks
 
-import React, {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from "react";
-import { playSound as enginePlaySound, closeAudioContext } from "./engine";
-import { resolveRole } from "./config";
+import * as React from "react";
+import {
+	closeAudioContext,
+	playSound as enginePlaySound,
+	type PlaySoundOptions,
+	type SoundPlayback,
+} from "./engine";
+import {
+	defaultConfig,
+	mergeConfig,
+	resolveRole,
+	type SensoryUIConfig,
+} from "./config";
 import type { SoundRole } from "./sound-roles";
-import type { PlaySoundOptions, SoundPlayback } from "./engine";
 
 interface SensoryUIProviderProps {
 	children: React.ReactNode;
@@ -121,13 +126,17 @@ export function SensoryUIProvider({
 	children,
 	config: configOverride,
 }: SensoryUIProviderProps) {
-	const [muted, setMuted] = useState(false);
-	const reducedMotion = useReducedMotion();
-	const config = useLoadConfig(configOverride);
+	const config = React.useMemo(
+		() => mergeConfig(configOverride ?? {}),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[JSON.stringify(configOverride)],
+	);
 
+	const [muted, setMuted] = React.useState(false);
+	const reducedMotion = useReducedMotion(config.reducedMotion);
 	const shouldPlay = config.enabled && !muted && !reducedMotion;
 
-	const playSound = useCallback(
+	const playSound = React.useCallback(
 		async (
 			role: SoundRole,
 			options: PlaySoundOptions = {},
@@ -135,19 +144,15 @@ export function SensoryUIProvider({
 			if (typeof window === "undefined") return null;
 			if (!shouldPlay) return null;
 
-			// Check if category is disabled
-			const category = role.split(".")[0] as SoundCategory;
-			if (config.categories[category] === false) return null;
-
-			// Resolve audio source: override → registry default (base64 data URI)
-			const url = resolveRole(role, config);
-			if (!url) return null;
+			// resolveRole handles category-disabled check + pack lookup
+			const source = resolveRole(role, config);
+			if (!source) return null;
 
 			// Apply master volume
 			const finalVolume = (options.volume ?? 1) * config.volume;
 
 			try {
-				return await enginePlaySound(url, {
+				return await enginePlaySound(source, {
 					...options,
 					volume: finalVolume,
 				});
@@ -167,14 +172,14 @@ export function SensoryUIProvider({
 	);
 
 	// Clean up AudioContext on unmount in development
-	useEffect(() => {
+	React.useEffect(() => {
 		if (process.env.NODE_ENV !== "development") return;
 		return () => {
-			closeAudioContext();
+			void closeAudioContext();
 		};
 	}, []);
 
-	const value = useMemo(
+	const value = React.useMemo(
 		() => ({
 			playSound,
 			enabled: shouldPlay,
@@ -200,26 +205,23 @@ export function SensoryUIProvider({
 The provider reads `prefers-reduced-motion` as a media query. The behaviour is governed by the `reducedMotion` field in `sensory.config.js`:
 
 ```ts
-function useReducedMotion(): boolean {
-	const configValue = useLoadConfig().reducedMotion; // "inherit" | "force-off" | "force-on"
-
-	if (configValue === "force-off") return true; // Always suppress sound (treat as reduced)
-	if (configValue === "force-on") return false; // Always play sound, ignore user preference
-
-	// "inherit" — respect the OS/browser setting
-	const [matches, setMatches] = useState(() => {
+function useReducedMotion(pref: SensoryUIConfig["reducedMotion"]): boolean {
+	const [matches, setMatches] = React.useState(() => {
 		if (typeof window === "undefined") return false;
 		return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 	});
 
-	useEffect(() => {
+	React.useEffect(() => {
+		if (typeof window === "undefined") return;
 		const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
 		const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
 		mq.addEventListener("change", handler);
 		return () => mq.removeEventListener("change", handler);
 	}, []);
 
-	return matches;
+	if (pref === "force-off") return true; // Always suppress (treat as reduced)
+	if (pref === "force-on") return false; // Always play, ignore user preference
+	return matches; // "inherit" — respect OS/browser setting
 }
 ```
 

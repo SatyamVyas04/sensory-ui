@@ -1,11 +1,11 @@
 # sensory-ui — Configuration
 
-> `sensory.config.js` (project root) + `components/ui/sensory-ui/config/config.ts` (runtime loader)
+> `sensory.config.js` (project root) + `components/ui/sensory-ui/config/config.ts` (runtime config)
 
 The configuration system is split into two parts:
 
-1. **`sensory.config.js`** — the user-facing config file at the project root, written in plain JavaScript
-2. **`config.ts`** — the runtime loader inside sensory-ui that reads the config and exposes a typed interface to the engine and provider
+1. **`sensory.config.js`** — the user-facing config file at the project root, written in plain JavaScript (passed to `<SensoryUIProvider config={...}>` at runtime)
+2. **`config.ts`** — exports `defaultConfig`, `mergeConfig()`, and `resolveRole()` for use by the provider and engine
 
 ---
 
@@ -84,31 +84,33 @@ module.exports = {
 
 ---
 
-## config.ts — Runtime Loader
+## config.ts — Runtime Config
 
-The config loader is responsible for:
+The config module exports:
 
-1. Importing `sensory.config.js` (in Next.js this works via a dynamic import with a server-side read, or by bundling the config as a module)
-2. Merging it with default values so missing keys never cause errors
-3. Exposing a typed `SensoryUIConfig` object to the provider and engine
+1. `defaultConfig` — sensible defaults used when no config prop is provided
+2. `mergeConfig(user)` — deep-merges user overrides on top of `defaultConfig`
+3. `resolveRole(role, config)` — looks up a `SoundSource` for a given role, respecting category toggles, user overrides, and the active pack
 
 ```ts
 // components/ui/sensory-ui/config/config.ts
 
 import type { SoundRole, SoundCategory } from "./sound-roles";
-import { roleRegistry } from "./registry";
+import { packRegistry, type SoundPackName } from "./registry";
+import type { SoundSource } from "./engine";
 
 export interface SensoryUIConfig {
 	enabled: boolean;
 	volume: number;
-	theme: string;
+	/** Active sound pack. Supports built-in pack names and arbitrary strings for custom packs. */
+	theme: SoundPackName | (string & {});
 	categories: Record<SoundCategory, boolean>;
 	overrides: Partial<Record<SoundRole, string>>;
 	reducedMotion: "inherit" | "force-off" | "force-on";
 }
 
-/** Defaults — used when sensory.config.js is absent or has missing keys. */
-const defaults: SensoryUIConfig = {
+/** Defaults — used when no config prop is passed to `<SensoryUIProvider>`. */
+export const defaultConfig: SensoryUIConfig = {
 	enabled: true,
 	volume: 0.35,
 	theme: "default",
@@ -123,60 +125,48 @@ const defaults: SensoryUIConfig = {
 	reducedMotion: "inherit",
 };
 
-/**
- * Load and merge config from sensory.config.js.
- * Falls back to defaults for any missing keys.
- *
- * This function is called once inside the provider on mount.
- * It is NOT called on every render.
- */
-export async function loadConfig(): Promise<SensoryUIConfig> {
-	try {
-		// Dynamic import so the config is bundled at build time in Next.js
-		const userConfig = await import("../../../../sensory.config.js");
-		return mergeConfig(userConfig.default ?? userConfig);
-	} catch {
-		// sensory.config.js does not exist — use defaults silently
-		return defaults;
-	}
-}
-
-function mergeConfig(user: Partial<SensoryUIConfig>): SensoryUIConfig {
+export function mergeConfig(user: Partial<SensoryUIConfig>): SensoryUIConfig {
 	return {
-		...defaults,
+		...defaultConfig,
 		...user,
 		categories: {
-			...defaults.categories,
+			...defaultConfig.categories,
 			...(user.categories ?? {}),
 		},
 		overrides: {
-			...defaults.overrides,
+			...defaultConfig.overrides,
 			...(user.overrides ?? {}),
 		},
 	};
 }
 
 /**
- * Resolve a SoundRole to its audio source (base64 data URI or custom URL).
- * Priority: config.overrides → roleRegistry default
+ * Resolve a SoundRole to its audio source.
  *
- * Returns null if:
- * - The role's category is disabled in config.categories
- * - The role does not exist in the registry (bad role string)
- * - The resolved source is an empty string (placeholder)
+ * Resolution priority:
+ *   1. config.overrides[role]    — user-defined string override (URL or base64)
+ *   2. packRegistry[theme][role] — SoundSynthesizer from the active pack
+ *   3. packRegistry.default[role]— fallback if theme is unknown
+ *   4. null                       — category disabled or role not found
  */
 export function resolveRole(
 	role: SoundRole,
 	config: SensoryUIConfig,
-): string | null {
+): SoundSource | null {
 	const category = role.split(".")[0] as SoundCategory;
 
 	if (config.categories[category] === false) return null;
 
-	const overrideUrl = config.overrides[role];
-	if (overrideUrl) return overrideUrl;
+	// User override takes highest priority (always a string/URL)
+	const override = config.overrides[role];
+	if (override) return override;
 
-	return roleRegistry[role] ?? null;
+	// Look up the active pack, fall back to "default" if pack name is unknown
+	const packName = config.theme as SoundPackName;
+	const pack = packRegistry[packName] ?? packRegistry.default;
+	const source = pack[role];
+
+	return source ?? null;
 }
 ```
 
@@ -184,18 +174,18 @@ export function resolveRole(
 
 ## Configuration Options — Quick Reference
 
-| Key                        | Type                                     | Default     | Description                                  |
-| -------------------------- | ---------------------------------------- | ----------- | -------------------------------------------- |
-| `enabled`                  | `boolean`                                | `true`      | Global on/off. `false` silences everything.  |
-| `volume`                   | `number` (0–1)                           | `0.35`      | Master volume multiplier.                    |
-| `theme`                    | `string`                                 | `"default"` | Pack name. Informational in v1.0.            |
-| `categories.activation`    | `boolean`                                | `true`      | Enable/disable all activation sounds.        |
-| `categories.navigation`    | `boolean`                                | `true`      | Enable/disable all navigation sounds.        |
-| `categories.notifications` | `boolean`                                | `true`      | Enable/disable all notification sounds.      |
-| `categories.system`        | `boolean`                                | `true`      | Enable/disable all system sounds.            |
-| `categories.hero`          | `boolean`                                | `false`     | Enable/disable hero sounds (off by default). |
-| `overrides["role.name"]`   | `string`                                 | —           | Custom audio source for a role.              |
-| `reducedMotion`            | `"inherit" \| "force-off" \| "force-on"` | `"inherit"` | Reduced-motion behaviour.                    |
+| Key                        | Type                                                                            | Default     | Description                                            |
+| -------------------------- | ------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------ |
+| `enabled`                  | `boolean`                                                                       | `true`      | Global on/off. `false` silences everything.            |
+| `volume`                   | `number` (0–1)                                                                  | `0.35`      | Master volume multiplier.                              |
+| `theme`                    | `SoundPackName \| (string & {})` — `"default"`, `"arcade"`, `"wind"`, `"retro"` | `"default"` | Active sound pack. Selects a built-in synthesizer set. |
+| `categories.activation`    | `boolean`                                                                       | `true`      | Enable/disable all activation sounds.                  |
+| `categories.navigation`    | `boolean`                                                                       | `true`      | Enable/disable all navigation sounds.                  |
+| `categories.notifications` | `boolean`                                                                       | `true`      | Enable/disable all notification sounds.                |
+| `categories.system`        | `boolean`                                                                       | `true`      | Enable/disable all system sounds.                      |
+| `categories.hero`          | `boolean`                                                                       | `false`     | Enable/disable hero sounds (off by default).           |
+| `overrides["role.name"]`   | `string`                                                                        | —           | Custom audio source for a role.                        |
+| `reducedMotion`            | `"inherit" \| "force-off" \| "force-on"`                                        | `"inherit"` | Reduced-motion behaviour.                              |
 
 ---
 
@@ -233,9 +223,10 @@ All components with `sound="system.open"` or `sound="system.close"` will silentl
 When `playSound` is called with a role, the audio source is resolved in this order:
 
 ```
-1. config.overrides["role.name"]  → if defined, use this source (URL or data URI)
-2. roleRegistry["role.name"]      → built-in base64 data URI from sounds/*.ts
-3. null                           → category disabled, unknown role, or empty placeholder → no-op
+1. config.overrides["role.name"]        → string override (URL or base64), if defined
+2. packRegistry[config.theme]["role"]   → SoundSynthesizer from the active pack
+3. packRegistry.default["role"]         → fallback to default pack if theme is unknown
+4. null                                 → category disabled or role not found → no-op
 ```
 
 ---

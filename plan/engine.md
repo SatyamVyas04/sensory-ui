@@ -29,23 +29,48 @@ The engine uses a **lazy singleton AudioContext** and an **in-memory decoded buf
 playSound(role, options)
        │
        ▼
-resolveRole(role)          ← reads registry + config overrides
+resolveRole(role)          ← reads packRegistry[theme] + config overrides
        │
-       ▼
-getAudioContext()          ← lazy singleton, one per page lifetime
+       ├── SoundSynthesizer? ──▶ call synthesizer(ctx, options) directly
+       │                         returns SoundPlayback immediately
        │
-       ▼
-decodeAudioData(source)    ← base64 decode or fetch, then cache
-       │
-       ▼
-createBufferSource()
-createGain()
-  source → gain → destination
-  source.start(0)
+       └── string (URL)?  ──▶ getAudioContext()
+                                    │
+                                    ▼
+                               decodeAudioData(source)    ← base64 decode or fetch + cache
+                                    │
+                                    ▼
+                               createBufferSource()
+                               createGain()
+                                 source → gain → destination
+                                 source.start(0)
        │
        ▼
 return SoundPlayback { stop() }
 ```
+
+### SoundSynthesizer — Programmatic Audio Generation
+
+The preferred audio source in sensory-ui is a **`SoundSynthesizer`** function:
+
+```ts
+export type SoundSynthesizer = (
+	ctx: AudioContext,
+	options: PlaySoundOptions,
+) => SoundPlayback;
+export type SoundSource = SoundSynthesizer | string;
+```
+
+Synthesizers generate sound at call time using the Web Audio API — no decode step,
+no cache hit needed, near-zero latency. This approach:
+
+- Eliminates base64 blobs from the codebase
+- Enables rich pack-to-pack variation (noise, oscillator, FM, etc.)
+- Is fully SSR-safe (synthesizers only run in the browser, gated by the provider)
+- Follows the rules in the `generating-sounds-with-ai` skill
+
+String sources (URLs, base64 data URIs) are still supported via `decodeAudioData`
+for custom user overrides.
 
 ---
 
@@ -131,16 +156,15 @@ export interface SoundPlayback {
 
 /**
  * Core playback function.
- * Resolves the audio source (base64 data URI or URL), decodes it
- * (or reads from cache), creates a buffer source + gain node, and
- * starts playback.
+ * Accepts either a SoundSynthesizer function (called directly with the
+ * AudioContext) or a string audio source (base64 data URI or URL, decoded
+ * and cached via decodeAudioData).
  *
- * @param source  - Resolved audio source (data URI or URL, already
- *                  looked up from registry + config)
+ * @param source  - Resolved audio source — SoundSynthesizer or string
  * @param options - Volume, playback rate, onEnd callback
  */
 export async function playSound(
-	source: string,
+	source: SoundSource,
 	options: PlaySoundOptions = {},
 ): Promise<SoundPlayback> {
 	const { volume = 1, playbackRate = 1, onEnd } = options;
@@ -152,27 +176,32 @@ export async function playSound(
 		await ctx.resume();
 	}
 
+	// If the source is a synthesizer function, call it directly — no decode step.
+	if (typeof source === "function") {
+		return source(ctx, { volume, playbackRate, onEnd });
+	}
+
 	const buffer = await decodeAudioData(source);
-	const source = ctx.createBufferSource();
+	const bufferSource = ctx.createBufferSource();
 	const gain = ctx.createGain();
 
-	source.buffer = buffer;
-	source.playbackRate.value = playbackRate;
+	bufferSource.buffer = buffer;
+	bufferSource.playbackRate.value = playbackRate;
 	gain.gain.value = Math.max(0, Math.min(1, volume));
 
-	source.connect(gain);
+	bufferSource.connect(gain);
 	gain.connect(ctx.destination);
 
-	source.onended = () => {
+	bufferSource.onended = () => {
 		onEnd?.();
 	};
 
-	source.start(0);
+	bufferSource.start(0);
 
 	return {
 		stop: () => {
 			try {
-				source.stop();
+				bufferSource.stop();
 			} catch {
 				// No-op if already stopped or never started.
 			}

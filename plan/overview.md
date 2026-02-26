@@ -92,12 +92,15 @@ components/
         sound-roles.ts        ← TypeScript types for all SoundRole values
         registry.ts           ← role → base64 module mapping
         use-play-sound.ts     ← usePlaySound(role) hook
-      sounds/                 ← audio data as base64-encoded TS modules
-        activation.ts         ← activation.* role base64 data URIs
-        navigation.ts         ← navigation.* role base64 data URIs
-        notifications.ts      ← notifications.* role base64 data URIs
-        system.ts             ← system.* role base64 data URIs
-        hero.ts               ← hero.* role base64 data URIs
+      sounds/                 ← audio synthesizers as TypeScript modules
+        activation.ts         ← default pack activation synthesizers
+        navigation.ts         ← default pack navigation synthesizers
+        notifications.ts      ← default pack notification synthesizers
+        system.ts             ← default pack system synthesizers
+        hero.ts               ← default pack hero synthesizers
+        arcade.ts             ← arcade pack (all 19 roles)
+        wind.ts               ← wind pack (all 19 roles)
+        retro.ts              ← retro pack (all 19 roles)
         README.md             ← module format reference
       button.tsx              ← patched shadcn Button with sound prop
       dialog.tsx
@@ -109,9 +112,9 @@ components/
       accordion.tsx
       sheet.tsx
 
-> Audio data is embedded as base64-encoded TypeScript modules inside
-> `sensory-ui/sounds/`. No files are served from `public/sounds/`.
-> Sounds are fully co-located with the library code.
+> Sounds are **synthesized programmatically** via the Web Audio API.
+> `SoundSynthesizer` functions in `sensory-ui/sounds/` generate audio at runtime via the Web Audio API —
+> no files in `public/sounds/`, no base64 blobs, no network requests.
 
 sensory.config.js             ← optional project-root config file
 ```
@@ -120,42 +123,42 @@ sensory.config.js             ← optional project-root config file
 
 ## Plan Document Index
 
-| Document                             | Description                                            |
-| ------------------------------------ | ------------------------------------------------------ |
-| [overview.md](./overview.md)         | This file — project-wide context and structure         |
-| [engine.md](./engine.md)             | Web Audio engine design and implementation spec        |
-| [provider.md](./provider.md)         | React provider architecture and context API            |
-| [sound-roles.md](./sound-roles.md)   | All sound categories, roles, durations, and file specs |
-| [installation.md](./installation.md) | Installation flow, CLI steps, post-install setup       |
-| [config.md](./config.md)             | Configuration file format and all options              |
-| [components.md](./components.md)     | Component API, `sound` prop usage, event triggers      |
-| [registry.md](./registry.md)         | shadcn registry publishing (deferred — future work)    |
-| [agents.md](./agents.md)             | Original architecture and agent responsibilities doc   |
+| Document                             | Description                                              |
+| ------------------------------------ | -------------------------------------------------------- |
+| [overview.md](./overview.md)         | This file — project-wide context and structure           |
+| [engine.md](./engine.md)             | Web Audio engine design and implementation spec          |
+| [provider.md](./provider.md)         | React provider architecture and context API              |
+| [sound-roles.md](./sound-roles.md)   | All sound categories, roles, durations, and file specs   |
+| [installation.md](./installation.md) | Installation flow, CLI steps, post-install setup         |
+| [config.md](./config.md)             | Configuration file format and all options                |
+| [components.md](./components.md)     | Component API, `sound` prop usage, event triggers        |
+| [registry.md](./registry.md)         | shadcn registry publishing (deferred — future work)      |
+| [sound-packs.md](./sound-packs.md)   | Per-pack sound design tables (default/arcade/wind/retro) |
 
 ---
 
 ## Roadmap Summary
 
-### v1.0 — Core
+### v1.0 — Core _(in progress)_
 
-- shadcn registry distribution
-- 19 base sounds across 5 categories
+- 19 base sounds across 5 categories (4 packs: default, arcade, wind, retro)
 - `SensoryUIProvider` wrapping the whole app
-- `sound` prop on Button and ~8–12 common Radix components
+- `sound` prop on Button and 8 common Radix components
+- `usePlaySound(role)` hook for arbitrary trigger points
 - `sensory.config.js` with volume, enable/disable, overrides
 - Full SSR safety and reduced-motion compliance
 
-### v1.5 — Developer Ergonomics
+### v1.5 — Registry + Developer Ergonomics _(deferred)_
 
-- `usePlaySound(role)` hook for arbitrary trigger points
+- shadcn registry distribution (public CLI install)
 - Per-role volume multipliers in config
 - CLI helper to toggle categories interactively
 
 ### v2.0 — Extended (Nice to Have)
 
 - Visual sound-role editor in the browser
-- Optional Web Audio mode with basic filter effects
-- Multiple named themes / sound packs switchable at runtime
+- Additional sound packs (minimal, expressive, nature)
+- Per-role volume multipliers in config
 
 ---
 
@@ -179,14 +182,6 @@ export default function RootLayout({ children }) {
 ```tsx
 // Any component
 import { Button } from "@/components/ui/sensory-ui/button";
-
-export function SaveButton() {
-	return (
-		<Button sound="activation.primary" onClick={handleSave}>
-			Save
-		</Button>
-	);
-}
 
 export function SaveButton() {
 	return (

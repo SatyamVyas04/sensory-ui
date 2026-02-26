@@ -1,19 +1,22 @@
-import { IconBrandGithub, IconBrandX, IconHeart } from "@tabler/icons-react";
+import { IconBrandGithub, IconBrandX } from "@tabler/icons-react";
+import Image from "next/image";
 
 export function Footer() {
   return (
     <footer className="border-border border-t px-4 py-10 sm:px-6">
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
         <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
-          <span className="font-mono text-primary">◉</span>
-          <span>sensory-ui</span>
+          <Image
+            alt=""
+            aria-hidden="true"
+            className="size-4 dark:invert"
+            height={16}
+            src="/icon-64.png"
+            width={16}
+          />
+          <span className="font-medium text-foreground">sensory-ui</span>
           <span>·</span>
           <span>
-            built with{" "}
-            <IconHeart
-              aria-label="love"
-              className="inline size-3 fill-current text-primary"
-            />{" "}
             by{" "}
             <a
               className="underline underline-offset-2 hover:text-foreground"

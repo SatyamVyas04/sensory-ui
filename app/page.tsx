@@ -8,7 +8,9 @@ import { Navbar } from "./_components/navbar";
 import { Showcase } from "./_components/showcase";
 
 export const metadata: Metadata = {
-  title: "Home",
+  title: {
+    absolute: "sensory-ui — Semantic Sound for React & Next.js",
+  },
 };
 
 async function getStars(): Promise<number> {
