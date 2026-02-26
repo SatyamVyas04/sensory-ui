@@ -42,11 +42,10 @@ export function DemoCard({
 
   return (
     <motion.div
-      className="flex flex-col border border-border bg-card p-5 transition-shadow"
+      className="flex flex-col border border-border bg-card p-5 transition-all hover:border-primary"
       initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
       transition={{ duration: 0.3, ease }}
       viewport={{ once: true, margin: "-80px" }}
-      whileHover={{ y: prefersReduced ? 0 : -2 }}
       whileInView={{ opacity: 1, y: 0 }}
     >
       <div className="mb-1 flex items-center gap-2">

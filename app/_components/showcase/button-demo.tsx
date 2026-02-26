@@ -11,24 +11,39 @@ export function ButtonDemo() {
       icon={<IconCursorText className="size-4" />}
       title="Button"
     >
-      <div className="flex flex-wrap gap-x-3 gap-y-4">
+      <div className="flex flex-col gap-3">
         <SoundTrigger soundRole="activation.primary">
-          <Button size="sm" sound="activation.primary">
+          <Button className="w-full" size="sm" sound="activation.primary">
             Primary
           </Button>
         </SoundTrigger>
         <SoundTrigger soundRole="activation.subtle">
-          <Button size="sm" sound="activation.subtle" variant="outline">
+          <Button
+            className="w-full"
+            size="sm"
+            sound="activation.subtle"
+            variant="outline"
+          >
             Subtle
           </Button>
         </SoundTrigger>
         <SoundTrigger soundRole="activation.confirm">
-          <Button size="sm" sound="activation.confirm" variant="secondary">
+          <Button
+            className="w-full"
+            size="sm"
+            sound="activation.confirm"
+            variant="secondary"
+          >
             Confirm
           </Button>
         </SoundTrigger>
         <SoundTrigger soundRole="activation.error">
-          <Button size="sm" sound="activation.error" variant="destructive">
+          <Button
+            className="w-full"
+            size="sm"
+            sound="activation.error"
+            variant="destructive"
+          >
             Error
           </Button>
         </SoundTrigger>

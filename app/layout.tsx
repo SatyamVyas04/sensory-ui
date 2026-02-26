@@ -102,9 +102,13 @@ export default function RootLayout({
   return (
     <html className={inter.variable} lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-muted`}
       >
-        <SensoryUIProvider>{children}</SensoryUIProvider>
+        <SensoryUIProvider>
+          <div className="mx-auto min-w-0 max-w-480 border-x border-border bg-background shadow-xl">
+            {children}
+          </div>
+        </SensoryUIProvider>
       </body>
     </html>
   );

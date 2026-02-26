@@ -20,29 +20,31 @@ export function DialogDemo() {
       icon={<IconWindowMaximize className="size-4" />}
       title="Dialog"
     >
-      <SoundTrigger soundRole="system.open / system.close">
-        <Dialog closeSound="system.close" sound="system.open">
-          <DialogTrigger asChild>
-            <Button size="sm" variant="outline">
-              Open Dialog
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Sensory Dialog</DialogTitle>
-              <DialogDescription>
-                This dialog played <code>system.open</code> when it appeared.
-                Close it to hear <code>system.close</code>.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter showCloseButton>
-              <Button size="sm" sound="activation.confirm">
-                Confirm
+      <div className="flex items-center justify-center">
+        <SoundTrigger soundRole="system.open / system.close">
+          <Dialog closeSound="system.close" sound="system.open">
+            <DialogTrigger asChild>
+              <Button size="sm" variant="outline">
+                Open Dialog
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </SoundTrigger>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Sensory Dialog</DialogTitle>
+                <DialogDescription>
+                  This dialog played <code>system.open</code> when it appeared.
+                  Close it to hear <code>system.close</code>.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter showCloseButton>
+                <Button size="sm" sound="activation.confirm">
+                  Confirm
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </SoundTrigger>
+      </div>
     </DemoCard>
   );
 }

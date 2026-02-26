@@ -4,7 +4,7 @@ import { Footer } from "./_components/footer";
 import { Hero } from "./_components/hero";
 import { Ideology } from "./_components/ideology";
 import { Inspiration } from "./_components/inspiration";
-import { Navbar } from "./_components/navbar";
+import { Installation } from "./_components/installation";
 import { Showcase } from "./_components/showcase";
 
 export const metadata: Metadata = {
@@ -34,10 +34,10 @@ export default async function Page() {
 
   return (
     <>
-      <Navbar stars={stars} />
       <main id="main-content">
-        <Hero />
+        <Hero stars={stars} />
         <Showcase />
+        <Installation />
         <Ideology />
         <Inspiration />
         <CTA />

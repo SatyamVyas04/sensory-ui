@@ -21,7 +21,8 @@ function Checkbox({
 
   const handleCheckedChange = React.useCallback(
     (checked: boolean | "indeterminate") => {
-      if (sound) void playSound(sound);
+      // Only play sound when checking (not when unchecking)
+      if (sound && checked === true) void playSound(sound);
       onCheckedChange?.(checked);
     },
     [sound, playSound, onCheckedChange]

@@ -20,6 +20,11 @@
       "source": "raphaelsalaja/userinterface-wiki",
       "sourceType": "github",
       "computedHash": "627df5301459f549c93c9e29a8ed0e3eff7cd52b24194e44460ee703a21c24b4"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "d8e7d3afe37dcc8a97b99ffb5afdb4d0919ae0092ea8b68f44eb201f035e33ac"
     }
   }
 }

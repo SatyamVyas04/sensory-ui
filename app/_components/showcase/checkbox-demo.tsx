@@ -12,12 +12,14 @@ export function CheckboxDemo() {
       icon={<IconSquareRoundedCheck className="size-4" />}
       title="Checkbox"
     >
-      <SoundTrigger soundRole="activation.confirm">
-        <div className="flex items-center gap-3">
-          <Checkbox id="demo-checkbox" sound="activation.confirm" />
-          <Label htmlFor="demo-checkbox">Accept terms</Label>
-        </div>
-      </SoundTrigger>
+      <div className="flex items-center justify-center">
+        <SoundTrigger soundRole="activation.confirm">
+          <div className="flex items-center gap-3">
+            <Checkbox id="demo-checkbox" sound="activation.confirm" />
+            <Label htmlFor="demo-checkbox">Accept terms</Label>
+          </div>
+        </SoundTrigger>
+      </div>
     </DemoCard>
   );
 }
