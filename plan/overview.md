@@ -12,7 +12,7 @@ The core idea is simple: UI interactions have meaning, and sound can reinforce t
 
 **Target platform:** Next.js (App Router and Pages Router) + React  
 **Distribution:** shadcn/ui registry (CLI installable)  
-**Runtime footprint:** Minimal — audio is base64-encoded in TS modules (no public/ assets), no global side effects, no forced re-renders
+**Runtime footprint:** Minimal — audio is synthesized programmatically via the Web Audio API (no public/ assets, no base64 blobs), no global side effects, no forced re-renders
 
 ---
 
@@ -66,7 +66,7 @@ sensory-ui is composed of four runtime layers and one distribution layer:
           ▼
 ┌─────────────────────────────────────────────────────────────┐
 │         Role Registry + Config (registry.ts / config.ts)    │  ← Layer 4: Config
-│  "activation.primary" → "data:audio/mp3;base64,..."         │
+│  "activation.primary" → SoundSynthesizer fn       │
 └─────────────────────────────────────────────────────────────┘
 ```
 

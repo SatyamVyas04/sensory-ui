@@ -161,9 +161,9 @@ export function resolveRole(
 	const override = config.overrides[role];
 	if (override) return override;
 
-	// Look up the active pack, fall back to "default" if pack name is unknown
+	// Look up the active pack, fall back to "aero" if pack name is unknown
 	const packName = config.theme as SoundPackName;
-	const pack = packRegistry[packName] ?? packRegistry.default;
+	const pack = packRegistry[packName] ?? packRegistry.aero;
 	const source = pack[role];
 
 	return source ?? null;
@@ -178,7 +178,7 @@ export function resolveRole(
 | -------------------------- | ------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------ |
 | `enabled`                  | `boolean`                                                                       | `true`      | Global on/off. `false` silences everything.            |
 | `volume`                   | `number` (0–1)                                                                  | `0.35`      | Master volume multiplier.                              |
-| `theme`                    | `SoundPackName \| (string & {})` — `"default"`, `"arcade"`, `"wind"`, `"retro"` | `"default"` | Active sound pack. Selects a built-in synthesizer set. |
+| `theme`                    | `SoundPackName \| (string & {})` — `"soft"`, `"aero"`, `"arcade"`, `"organic"`, `"glass"`, `"industrial"`, `"minimal"`, `"retro"`, `"crisp"` | `"aero"` | Active sound pack. Selects a built-in synthesizer set. |
 | `categories.activation`    | `boolean`                                                                       | `true`      | Enable/disable all activation sounds.                  |
 | `categories.navigation`    | `boolean`                                                                       | `true`      | Enable/disable all navigation sounds.                  |
 | `categories.notifications` | `boolean`                                                                       | `true`      | Enable/disable all notification sounds.                |
@@ -225,7 +225,7 @@ When `playSound` is called with a role, the audio source is resolved in this ord
 ```
 1. config.overrides["role.name"]        → string override (URL or base64), if defined
 2. packRegistry[config.theme]["role"]   → SoundSynthesizer from the active pack
-3. packRegistry.default["role"]         → fallback to default pack if theme is unknown
+3. packRegistry.aero["role"]            → fallback to "aero" pack if theme is unknown
 4. null                                 → category disabled or role not found → no-op
 ```
 
