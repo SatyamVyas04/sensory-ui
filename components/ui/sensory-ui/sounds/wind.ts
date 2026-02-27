@@ -273,12 +273,17 @@ export const windPack: Record<SoundRole, SoundSynthesizer> = {
     };
   },
 
-  /** Important — higher chime struck harder. 1000 Hz, louder tap. */
-  "notifications.important": (ctx, opts) => {
+  /** Error — two descending chimes: B4 → F4 (tritone down = tension). */
+  "notifications.error": (ctx, opts) => {
     const vol = (opts.volume ?? 1) * 0.65;
-    const { osc, tap } = chimeNote(ctx, 1000, vol, 0.4, vol * 0.5, 0, opts.onEnd);
+    const nodes: Array<OscillatorNode | AudioBufferSourceNode> = [];
+
+    const n1 = chimeNote(ctx, 493.88, vol, 0.35, vol * 0.4, 0);  // B4
+    const n2 = chimeNote(ctx, 349.23, vol * 0.9, 0.4, vol * 0.35, 0.12, opts.onEnd);  // F4
+    nodes.push(n1.osc, n1.tap, n2.osc, n2.tap);
+
     return {
-      stop: () => { try { osc.stop(); } catch { /* ok */ } try { tap.stop(); } catch { /* ok */ } },
+      stop: () => nodes.forEach(n => { try { (n as OscillatorNode).stop(); } catch { /* ok */ } }),
     };
   },
 

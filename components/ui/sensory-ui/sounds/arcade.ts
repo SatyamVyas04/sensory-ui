@@ -16,7 +16,9 @@ import type { SoundSynthesizer } from "../config/engine";
 // ---------------------------------------------------------------------------
 const C4 = 261.63;
 const E4 = 329.63;
+const F4 = 349.23;
 const G4 = 392.0;
+const B4 = 493.88;
 const C5 = 523.25;
 const E5 = 659.25;
 const G5 = 783.99;
@@ -194,28 +196,29 @@ export const arcadePack: Record<SoundRole, SoundSynthesizer> = {
     return { stop: () => { try { osc.stop(); } catch { /* already stopped */ } } };
   },
 
-  /** Important — double beep: two 880 Hz pulses, 40 ms each. */
-  "notifications.important": (ctx, opts) => {
+  /** Error — two descending beeps: B4 → F4 (tritone down). */
+  "notifications.error": (ctx, opts) => {
     const t = ctx.currentTime;
     const vol = (opts.volume ?? 1) * 0.55;
     const oscs: OscillatorNode[] = [];
+    const notes = [B4, F4];  // Descending tritone
 
-    [0, 0.1].forEach((offset, i) => {
-      const ns = t + offset;
+    notes.forEach((freq, i) => {
+      const ns = t + i * 0.12;
       const osc = ctx.createOscillator();
       osc.type = "square";
-      osc.frequency.setValueAtTime(A5, ns);
+      osc.frequency.setValueAtTime(freq, ns);
 
       const gain = ctx.createGain();
       gain.gain.setValueAtTime(vol, ns);
-      gain.gain.exponentialRampToValueAtTime(0.001, ns + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, ns + 0.08);
 
       osc.connect(gain); gain.connect(ctx.destination);
       osc.onended = () => {
         osc.disconnect(); gain.disconnect();
         if (i === 1) opts.onEnd?.();
       };
-      osc.start(ns); osc.stop(ns + 0.045);
+      osc.start(ns); osc.stop(ns + 0.1);
       oscs.push(osc);
     });
 

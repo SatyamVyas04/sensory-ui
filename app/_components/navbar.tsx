@@ -9,7 +9,7 @@ interface NavbarProps {
   stars: number;
 }
 
-const ease = [0.22, 1, 0.36, 1] as const;
+const ease = [0.32, 0.72, 0, 1] as const;
 
 export function Navbar({ stars }: NavbarProps) {
   return (
@@ -25,8 +25,8 @@ export function Navbar({ stars }: NavbarProps) {
       <motion.header
         animate={{ opacity: 1, y: 0 }}
         className="fixed top-0 right-0 left-0 z-50 border-border/40 border-b bg-background/80 backdrop-blur-md"
-        initial={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.4, ease }}
+        initial={{ opacity: 0, y: -6 }}
+        transition={{ duration: 0.2, ease }}
       >
         <div className="mx-auto flex h-12 max-w-5xl items-center justify-between px-4 sm:px-6">
           <Link
@@ -61,7 +61,7 @@ export function Navbar({ stars }: NavbarProps) {
             </a>
 
             <a
-              aria-label="Twitter/X — @SatyamVyas04"
+              aria-label="Twitter/X - @SatyamVyas04"
               className="flex size-8 items-center justify-center text-foreground/60 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               href="https://x.com/SatyamVyas04"
               rel="noopener noreferrer"

@@ -9,9 +9,35 @@ audio files to download, no `public/sounds/` directory, and no base64 blobs. Eve
 
 ---
 
+## Architecture: Tunes + Instruments = SoundPacks
+
+sensory-ui uses an **instrument-based sound architecture** that separates:
+
+1. **Tunes** — Define the musical content (frequencies, durations, patterns, contours)
+2. **Instruments** — Define the synthesis technique (waveforms, filters, envelopes, timbres)
+3. **Factory** — Combines a tune with an instrument to produce a playable sound
+
+This separation allows the **same tunes to be played by different instruments**, creating
+distinct soundpack characters with minimal code duplication.
+
+```
+sounds/
+  core/
+    tunes.ts          ← Musical definitions for all roles
+    instruments.ts    ← Synthesis configurations (soft, glass, industrial, etc.)
+    factory.ts        ← Combines tunes + instruments → synthesizers
+    pack-generator.ts ← Generates complete packs from instruments
+  packs.ts            ← All instrument-based packs
+  activation.ts       ← Original hand-crafted activation sounds
+  navigation.ts       ← Original hand-crafted navigation sounds
+  ...
+```
+
+---
+
 ## Built-in Sound Packs
 
-Four packs ship out of the box. Switch between them by setting `theme` in `sensory.config.js`.
+### Original Hand-Crafted Packs
 
 | Pack      | File                     | Character                                    |
 | --------- | ------------------------ | -------------------------------------------- |
@@ -20,39 +46,63 @@ Four packs ship out of the box. Switch between them by setting `theme` in `senso
 | `wind`    | `wind.ts`                | Airy, organic filtered-noise + wind chimes   |
 | `retro`   | `retro.ts`               | Synthwave / analog sawtooth, slightly gritty |
 
----
+### Instrument-Based Packs (New)
 
-## Default Pack Structure
+These packs use the tune/instrument system for consistent, expandable sounds:
 
-The default pack is split across per-category files:
-
-```
-sounds/
-  activation.ts      ← activation.* roles  (4 sounds)
-  navigation.ts      ← navigation.* roles  (4 sounds)
-  notifications.ts   ← notifications.* roles (4 sounds)
-  system.ts          ← system.* roles      (5 sounds)
-  hero.ts            ← hero.* roles        (2 sounds)
-```
-
-Each file exports a `Record<Role, SoundSynthesizer>`. A `SoundSynthesizer` is:
-
-```ts
-type SoundSynthesizer = (
-	ctx: AudioContext,
-	options: PlaySoundOptions,
-) => SoundPlayback;
-```
-
-The synthesizer receives the shared `AudioContext` singleton and playback options, starts the
-sound immediately, and returns a `{ stop() }` handle.
+| Pack         | Instrument | Character                                          |
+| ------------ | ---------- | -------------------------------------------------- |
+| `soft`       | Soft       | Warm, rounded, gentle — like felt mallets on pads  |
+| `aero`       | Aero       | Airy, breathy, ethereal — wind through chimes      |
+| `arcadeGen`  | Arcade     | 8-bit chiptune (generated) — square waves          |
+| `organic`    | Organic    | Natural, warm, wooden — marimba, wood blocks       |
+| `glass`      | Glass      | Crystalline, bright, resonant — struck glass/bells |
+| `industrial` | Industrial | Metallic, harsh, mechanical — machines and metal   |
+| `minimal`    | Minimal    | Clean, sparse, understated — pure tones only       |
+| `retroGen`   | Retro      | Analog synth (generated) — vintage synthesizers    |
+| `crisp`      | Crisp      | Sharp, defined, precise — high-quality headphones  |
 
 ---
 
-## Additional Packs
+## Tune Types
 
-`arcade.ts`, `wind.ts`, and `retro.ts` each export a complete `Record<SoundRole, SoundSynthesizer>`
-covering all 19 roles. They are imported by `config/registry.ts` and stored in `packRegistry`.
+Each sound role is defined by a tune with one of these types:
+
+| Type       | Description                   | Example Roles                         |
+| ---------- | ----------------------------- | ------------------------------------- |
+| `click`    | Short percussive transient    | activation.primary, activation.subtle |
+| `pop`      | Brief tonal burst with attack | Extended sounds                       |
+| `toggle`   | State change indicator        | navigation.switch                     |
+| `tick`     | Subtle micro-interaction      | navigation.scroll, system.focus       |
+| `sweep`    | Frequency glide (up/down)     | navigation.forward/backward           |
+| `chime`    | Resonant tonal with decay     | notifications.passive/important       |
+| `arpeggio` | Sequence of notes             | hero.complete, hero.milestone         |
+| `chord`    | Multiple simultaneous notes   | Custom                                |
+| `burst`    | Noise-based texture           | Extended sounds                       |
+| `pulse`    | Repeating pattern             | notifications.warning                 |
+| `rise`     | Pitch ascends                 | activation.confirm, system.open       |
+| `drop`     | Pitch descends                | activation.error, system.close        |
+| `wobble`   | Modulated sound               | Extended sounds                       |
+
+---
+
+## Instrument Properties
+
+Each instrument defines synthesis characteristics:
+
+| Property           | Description                                       |
+| ------------------ | ------------------------------------------------- |
+| `waveform`         | Oscillator type: sine, square, sawtooth, triangle |
+| `useNoise`         | Whether to use noise for percussive sounds        |
+| `noiseType`        | white, pink, or brown noise                       |
+| `filterType`       | lowpass, highpass, bandpass, etc.                 |
+| `filterResonance`  | Q multiplier for filters                          |
+| `detune`           | Cents of detuning for chorus effect               |
+| `attackMultiplier` | Attack time scaling                               |
+| `decayMultiplier`  | Decay time scaling                                |
+| `harmonicStrength` | How prominent harmonics are                       |
+| `volumeScale`      | Overall volume adjustment                         |
+| `subOscLevel`      | Sub-oscillator mix level                          |
 
 ---
 
@@ -93,61 +143,93 @@ overrides: {
 
 ## Adding a New Pack
 
-1. Create `sounds/my-pack.ts` exporting `const myPack: Record<SoundRole, SoundSynthesizer> = { ... }`
-2. Import `myPack` in `config/registry.ts` and add it to `packRegistry`
-3. Add `"my-pack"` to the `SoundPackName` union in `config/registry.ts`
-4. Set `theme: "my-pack"` in `sensory.config.js`
+### Method 1: Create a New Instrument (Recommended)
 
-## Module structure
-
-```
-sounds/
-  activation.ts     ← activation.* role audio data
-  navigation.ts     ← navigation.* role audio data
-  notifications.ts  ← notifications.* role audio data
-  system.ts         ← system.* role audio data
-  hero.ts           ← hero.* role audio data
-```
-
-Each module looks like:
+The easiest way to create a new pack is to define a new instrument:
 
 ```ts
-export const activation = {
-	"activation.primary": "data:audio/mp3;base64,//uQx...",
-	"activation.subtle": "data:audio/mp3;base64,//uQx...",
-	// ...
+// sounds/core/instruments.ts
+export const MY_INSTRUMENT: InstrumentConfig = {
+	waveform: "triangle",
+	attackCurve: "exponential",
+	decayCurve: "exponential",
+	useNoise: true,
+	noiseType: "pink",
+	filterType: "bandpass",
+	filterResonance: 2.0,
+	detune: 3,
+	stereoWidth: 0.4,
+	attackMultiplier: 1.0,
+	decayMultiplier: 1.2,
+	harmonicStrength: 0.3,
+	volumeScale: 0.85,
+	subOscLevel: 0.1,
+	subOscOctave: -1,
 };
 ```
 
-The `registry.ts` config file imports and spreads all modules into a single
-`roleRegistry` record at build time that the engine resolves at runtime.
+Then generate the pack:
 
-## How to add real audio data
+```ts
+// sounds/packs.ts
+import { MY_INSTRUMENT } from "./core/instruments";
+import { generateSoundPack } from "./core/pack-generator";
 
-1. Export your MP3 file (short, quiet, 128 kbps, mono, ≤ 15 KB per file)
-2. Convert to base64: `base64 -i sound.mp3` (macOS) or `certutil -encode sound.mp3 out.b64` (Windows)
-3. Wrap as a data URI: `data:audio/mp3;base64,<base64-string>`
-4. Paste into the corresponding field in the module file
+export const myPack = generateSoundPack(MY_INSTRUMENT);
+```
 
-## Custom overrides
+### Method 2: Hand-Craft Individual Sounds
 
-Users can still point individual roles to traditional file URLs by setting
-overrides in `sensory.config.js`. Those bypass these base64 modules entirely
-and fetch from the given path (e.g. `/sounds/custom/my-click.mp3` in `public/`).
+For complete control, create a full pack manually:
 
-## Where to get free UI sounds
+```ts
+// sounds/my-pack.ts
+import type { SoundRole } from "../config/sound-roles";
+import type { SoundSynthesizer } from "../config/engine";
 
-| Source                                                   | Notes                                                                  |
-| -------------------------------------------------------- | ---------------------------------------------------------------------- |
-| [Freesound.org](https://freesound.org)                   | Search "UI click", "interface", "notification" — filter by CC0 licence |
-| [Mixkit](https://mixkit.co/free-sound-effects/ui/)       | Ready-made UI pack, free for commercial use                            |
-| [Zapsplat](https://www.zapsplat.com)                     | Free with account; huge UI/UX category                                 |
-| [UI Sounds by Kenney](https://kenney.nl/assets/ui-audio) | CC0, compact pack, good for defaults                                   |
+export const myPack: Record<SoundRole, SoundSynthesizer> = {
+	"activation.primary": (ctx, opts) => {
+		/* ... */
+	},
+	// ... all 19 roles
+};
+```
+
+### Method 3: Mix and Match
+
+Use `generateCustomSoundPack` to start with an instrument but override specific sounds:
+
+```ts
+import { generateCustomSoundPack } from "./core/pack-generator";
+import { GLASS_INSTRUMENT } from "./core/instruments";
+
+export const myPack = generateCustomSoundPack(GLASS_INSTRUMENT, {
+	"hero.complete": { harmonicStrength: 0.8 }, // Override just hero sounds
+});
+```
+
+---
+
+## Custom Overrides
+
+You can still point individual roles to a traditional file URL or base64 string via
+`sensory.config.js`. These bypass the synthesizers entirely.
+
+```js
+// sensory.config.js
+overrides: {
+  "activation.primary": "/sounds/custom/my-click.mp3",
+}
+```
+
+---
 
 ## Tips
 
-- Keep files **short**: 50–300 ms for activation/system, up to 1 s for hero sounds.
-- Keep files **quiet at source**: the engine applies its own volume multiplier (0.35 by default).
+- Keep sounds **short**: 50–300 ms for activation/system, up to 1.5 s for hero sounds.
+- Use **exponential envelopes**: They sound more natural than linear.
+- **Test with reduced motion**: Sounds should respect `prefers-reduced-motion`.
+- **Balance volume**: Use the `volumeScale` property to ensure consistency across packs.
 - **MP3 at 128 kbps** is plenty — the files are tiny and decoded into memory.
 - Total budget: ≤ 50 KB per category, ≤ 15 KB per individual sound.
 - Name them exactly as shown — the registry in `components/ui/sensory-ui/config/registry.ts` maps

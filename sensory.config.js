@@ -19,15 +19,20 @@ module.exports = {
   // programmatically via the Web Audio API — no audio files needed.
   //
   // Available packs:
-  //   "default"  → clean, modern, minimal (general-purpose SaaS)
-  //   "arcade"   → 8-bit chiptune square-wave sounds
-  //   "wind"     → airy, organic filtered-noise + wind chimes
-  //   "retro"    → synthwave / analog sawtooth, slightly gritty
+  //   "soft"       → warm, rounded, gentle - felt mallets
+  //   "aero"       → airy, breathy, ethereal - wind chimes (default)
+  //   "arcade"     → 8-bit chiptune square-wave sounds
+  //   "organic"    → natural, warm, wooden - marimba
+  //   "glass"      → crystalline, bright - struck glass
+  //   "industrial" → metallic, harsh, mechanical
+  //   "minimal"    → clean, sparse, understated
+  //   "retro"      → analog synth, warm square waves
+  //   "crisp"      → sharp, defined, precise - hi-fi
   //
   // You can override any individual role via the `overrides` field below,
   // regardless of which pack is active.
   // -------------------------------------------------------------------
-  theme: "default",
+  theme: "aero",
 
   // Per-category toggles. Set any category to false to silence it entirely.
   categories: {

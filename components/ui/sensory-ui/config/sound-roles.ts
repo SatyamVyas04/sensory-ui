@@ -19,7 +19,7 @@ export type NavigationRole =
 
 export type NotificationsRole =
   | "notifications.passive"
-  | "notifications.important"
+  | "notifications.error"
   | "notifications.success"
   | "notifications.warning";
 
@@ -49,7 +49,7 @@ export const ALL_SOUND_ROLES: SoundRole[] = [
   "navigation.switch",
   "navigation.scroll",
   "notifications.passive",
-  "notifications.important",
+  "notifications.error",
   "notifications.success",
   "notifications.warning",
   "system.open",

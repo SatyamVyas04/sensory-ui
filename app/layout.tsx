@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -100,12 +98,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className={inter.variable} lang="en">
+    <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-muted`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-secondary font-sans antialiased`}
       >
-        <SensoryUIProvider>
-          <div className="mx-auto min-w-0 max-w-480 border-x border-border bg-background shadow-xl">
+        <SensoryUIProvider
+          config={{
+            theme: "arcade",
+            volume: 0.4,
+            categories: {
+              activation: true,
+              navigation: true,
+              notifications: true,
+              system: true,
+              hero: true,
+            },
+          }}
+        >
+          <div className="mx-auto min-w-0 max-w-400 border-border border-x bg-background shadow-xl">
             {children}
           </div>
         </SensoryUIProvider>

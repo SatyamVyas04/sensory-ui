@@ -33,11 +33,11 @@ module.exports = {
 
 	// -------------------------------------------------------------------
 	// Sound pack / theme name.
-	// Currently informational only (determines which files were copied
-	// at install time). Future versions may use this to switch between
-	// multiple installed packs at runtime.
+	// Switch between installed packs at runtime. Available packs:
+	// "soft", "aero", "arcade", "organic", "glass", "industrial",
+	// "minimal", "retro", "crisp"
 	// -------------------------------------------------------------------
-	theme: "default",
+	theme: "aero",
 
 	// -------------------------------------------------------------------
 	// Per-category enable/disable toggles.

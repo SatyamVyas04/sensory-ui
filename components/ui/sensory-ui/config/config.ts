@@ -47,7 +47,7 @@ export interface SensoryUIConfig {
 export const defaultConfig: SensoryUIConfig = {
   enabled: true,
   volume: 0.35,
-  theme: "default",
+  theme: "aero",
   categories: {
     activation: true,
     navigation: true,
@@ -97,9 +97,9 @@ export function resolveRole(
   const override = config.overrides[role];
   if (override) return override;
 
-  // Look up the active pack, fall back to "default" if pack name is unknown
+  // Look up the active pack, fall back to "aero" if pack name is unknown
   const packName = config.theme as SoundPackName;
-  const pack = packRegistry[packName] ?? packRegistry.default;
+  const pack = packRegistry[packName] ?? packRegistry.aero;
   const source = pack[role];
 
   return source ?? null;

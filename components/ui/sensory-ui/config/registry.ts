@@ -1,15 +1,18 @@
 import type { SoundRole } from "./sound-roles";
 import type { SoundSource } from "./engine";
 
-import { activation } from "../sounds/activation";
-import { navigation } from "../sounds/navigation";
-import { notifications } from "../sounds/notifications";
-import { system } from "../sounds/system";
-import { hero } from "../sounds/hero";
-
-import { arcadePack } from "../sounds/arcade";
-import { windPack } from "../sounds/wind";
-import { retroPack } from "../sounds/retro";
+// Import all 9 sound packs
+import {
+  softPack,
+  aeroPack,
+  arcadePack,
+  organicPack,
+  glassPack,
+  industrialPack,
+  minimalPack,
+  retroPack,
+  crispPack,
+} from "../sounds/packs";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -21,14 +24,28 @@ import { retroPack } from "../sounds/retro";
  * Set `theme` in `sensory.config.js` (or the `config` prop on
  * `<SensoryUIProvider>`) to switch between packs at runtime.
  *
- * | Pack      | Character                                     |
- * |-----------|-----------------------------------------------|
- * | default   | Clean, modern, minimal — general-purpose SaaS |
- * | arcade    | 8-bit chiptune square waves                   |
- * | wind      | Airy, organic filtered-noise and wind chimes  |
- * | retro     | Synthwave / analog sawtooth, slightly gritty  |
+ * | Pack       | Character                                         |
+ * |------------|---------------------------------------------------|
+ * | soft       | Warm, rounded, gentle - felt mallets on soft pads |
+ * | aero       | Airy, breathy, ethereal - wind through chimes     |
+ * | arcade     | 8-bit chiptune - square waves, punchy             |
+ * | organic    | Natural, warm, wooden - marimba, wood blocks      |
+ * | glass      | Crystalline, bright - struck glass or bells       |
+ * | industrial | Metallic, harsh, mechanical - machines and metal  |
+ * | minimal    | Clean, sparse, understated - pure tones only      |
+ * | retro      | Analog synth - warm square waves, vintage         |
+ * | crisp      | Sharp, defined, precise - hi-fi headphones        |
  */
-export type SoundPackName = "default" | "arcade" | "wind" | "retro";
+export type SoundPackName =
+  | "soft"
+  | "aero"
+  | "arcade"
+  | "organic"
+  | "glass"
+  | "industrial"
+  | "minimal"
+  | "retro"
+  | "crisp";
 
 /**
  * A complete mapping of every SoundRole to a SoundSource for one pack.
@@ -36,18 +53,6 @@ export type SoundPackName = "default" | "arcade" | "wind" | "retro";
  * base64 data URI / public-path string (for custom user overrides).
  */
 export type SoundPack = Record<SoundRole, SoundSource>;
-
-// ---------------------------------------------------------------------------
-// Default pack (assembled from the per-category modules in sounds/)
-// ---------------------------------------------------------------------------
-
-const defaultPack: SoundPack = {
-  ...activation,
-  ...navigation,
-  ...notifications,
-  ...system,
-  ...hero,
-};
 
 // ---------------------------------------------------------------------------
 // Pack registry — maps pack name → full SoundPack
@@ -58,20 +63,27 @@ const defaultPack: SoundPack = {
  *
  * The engine uses this via `config.theme` to resolve a role to
  * its audio source before playback.
- *
- * This file is NOT modified by config overrides at runtime.
- * Overrides in `sensory.config.js` are resolved by `config.ts` before lookup.
  */
 export const packRegistry: Record<SoundPackName, SoundPack> = {
-  default: defaultPack,
+  soft: softPack,
+  aero: aeroPack,
   arcade: arcadePack,
-  wind: windPack,
+  organic: organicPack,
+  glass: glassPack,
+  industrial: industrialPack,
+  minimal: minimalPack,
   retro: retroPack,
+  crisp: crispPack,
 };
 
 /**
- * Backwards-compat alias: the default pack's role → source mapping.
- * Kept so any code that imported `roleRegistry` directly still compiles.
+ * Default sound pack name.
+ * "aero" is the default - balanced, pleasant, professional.
  */
-export const roleRegistry: SoundPack = defaultPack;
+export const DEFAULT_PACK: SoundPackName = "aero";
+
+/**
+ * Backwards-compat alias: the default pack's role → source mapping.
+ */
+export const roleRegistry: SoundPack = aeroPack;
 

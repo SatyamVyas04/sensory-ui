@@ -82,19 +82,24 @@ sensory-ui will be published as a single registry entry that installs the entire
 			"target": "components/ui/sensory-ui/sounds/hero.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/sounds/arcade.ts",
+			"path": "components/ui/sensory-ui/sounds/packs.ts",
 			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/arcade.ts"
+			"target": "components/ui/sensory-ui/sounds/packs.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/sounds/wind.ts",
+			"path": "components/ui/sensory-ui/sounds/core/tunes.ts",
 			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/wind.ts"
+			"target": "components/ui/sensory-ui/sounds/core/tunes.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/sounds/retro.ts",
+			"path": "components/ui/sensory-ui/sounds/core/instruments.ts",
 			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/retro.ts"
+			"target": "components/ui/sensory-ui/sounds/core/instruments.ts"
+		},
+		{
+			"path": "components/ui/sensory-ui/sounds/core/factory.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/core/factory.ts"
 		},
 		{
 			"path": "components/ui/sensory-ui/button.tsx",
@@ -170,7 +175,7 @@ This approach:
 - Produces zero binary assets — no `public/` directory entry, no base64 blobs
 - Works fully offline — no network fetch for built-in sounds
 - Enables the standard shadcn registry install flow (no post-install scripts, no CDN downloads)
-- Allows multiple packs (`default`, `arcade`, `wind`, `retro`) to coexist in the same install
+- Allows 9 sound packs to coexist: `soft`, `aero`, `arcade`, `organic`, `glass`, `industrial`, `minimal`, `retro`, `crisp`
 
 Each `sounds/*.ts` module exports a `SoundPack` record:
 
@@ -243,8 +248,8 @@ This build process is TBD and will be designed once the runtime implementation i
 
 | Milestone                                | Status                  |
 | ---------------------------------------- | ----------------------- |
-| Runtime (engine + provider + primitives) | In progress             |
-| Sound file production (19 files)         | Not started             |
+| Runtime (engine + provider + primitives) | Complete                |
+| Sound file production (19 roles)         | Complete (13 packs)     |
 | Registry manifest structure              | Drafted (this document) |
 | Hosting setup                            | Not started             |
 | CLI install testing                      | Not started             |

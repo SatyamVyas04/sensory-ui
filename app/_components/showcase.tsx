@@ -13,7 +13,7 @@ import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundPackName } from "@/components/ui/sensory-ui/config/registry";
 import { ShowcaseGrid } from "./showcase/index";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+const ease = [0.32, 0.72, 0, 1] as const;
 
 const PACKS: {
   value: SoundPackName;
@@ -21,9 +21,14 @@ const PACKS: {
   description: string;
 }[] = [
   {
-    value: "default",
-    label: "Default",
-    description: "Clean SaaS aesthetic",
+    value: "soft",
+    label: "Soft",
+    description: "Warm felt mallets",
+  },
+  {
+    value: "aero",
+    label: "Aero",
+    description: "Breathy wind chimes",
   },
   {
     value: "arcade",
@@ -31,26 +36,46 @@ const PACKS: {
     description: "8-bit chiptune vibes",
   },
   {
-    value: "wind",
-    label: "Wind",
-    description: "Organic and airy tones",
+    value: "organic",
+    label: "Organic",
+    description: "Natural wood tones",
+  },
+  {
+    value: "glass",
+    label: "Glass",
+    description: "Crystalline bells",
+  },
+  {
+    value: "industrial",
+    label: "Industrial",
+    description: "Metallic machinery",
+  },
+  {
+    value: "minimal",
+    label: "Minimal",
+    description: "Pure sparse tones",
   },
   {
     value: "retro",
     label: "Retro",
-    description: "Synthwave nostalgia",
+    description: "Vintage analog synth",
+  },
+  {
+    value: "crisp",
+    label: "Crisp",
+    description: "Sharp hi-fi precision",
   },
 ];
 
 export function Showcase() {
   const prefersReduced = useReducedMotion();
-  const [selectedPack, setSelectedPack] = useState<SoundPackName>("default");
+  const [selectedPack, setSelectedPack] = useState<SoundPackName>("aero");
 
   const fadeUp = {
-    initial: { opacity: 0, y: prefersReduced ? 0 : 12 },
+    initial: { opacity: 0, y: prefersReduced ? 0 : 10 },
     whileInView: { opacity: 1, y: 0 },
-    viewport: { margin: "-100px", amount: 0.3 },
-    transition: { duration: 0.4, ease },
+    viewport: { once: true, margin: "-100px", amount: 0.3 },
+    transition: { duration: 0.25, ease },
   };
 
   return (
@@ -71,22 +96,18 @@ export function Showcase() {
                 className="mt-2 text-balance font-semibold text-3xl sm:text-4xl"
                 id="showcase-heading"
               >
-                Interactive components with audio feedback.
+                Feel the difference.
               </h2>
               <p className="mt-3 max-w-2xl text-muted-foreground text-sm/relaxed">
-                Every component accepts a semantic{" "}
+                Every component listens for the{" "}
                 <code className="rounded-none bg-muted px-1.5 py-0.5 font-mono text-xs">
                   sound
                 </code>{" "}
-                prop. Nothing plays unless you ask it to. Choose from{" "}
+                prop. Nineteen semantic roles.{" "}
                 <strong className="font-semibold text-foreground">
-                  19&nbsp;sound&nbsp;roles
-                </strong>{" "}
-                across{" "}
-                <strong className="font-semibold text-foreground">
-                  24&nbsp;components
+                  24 components
                 </strong>
-                .
+                . Instant feedback that feels right.
               </p>
             </div>
 
@@ -168,12 +189,11 @@ export function Showcase() {
         <motion.p
           className="mt-6 text-center text-muted-foreground text-xs"
           initial={{ opacity: 0 }}
-          transition={{ duration: 0.4, ease, delay: 0.2 }}
-          viewport={{ margin: "-100px", amount: 0.3 }}
+          transition={{ duration: 0.25, ease, delay: 0.1 }}
+          viewport={{ once: true, margin: "-100px", amount: 0.3 }}
           whileInView={{ opacity: 1 }}
         >
-          All sounds are generated in real time via the Web Audio API. No audio
-          files, no network requests.
+          Sounds generated in real time via Web Audio API. No files. No latency.
         </motion.p>
       </div>
     </section>

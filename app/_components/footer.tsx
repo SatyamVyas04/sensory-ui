@@ -3,23 +3,23 @@ import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer className="border-border border-t px-4 py-10 sm:px-6">
-      <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
-        <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+    <footer className="border-border border-t px-4 py-12 sm:px-6">
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 sm:flex-row sm:justify-between">
+        <div className="flex items-center gap-2 text-muted-foreground text-sm">
           <Image
             alt=""
             aria-hidden="true"
-            className="size-4 dark:invert"
-            height={16}
+            className="size-5 dark:invert"
+            height={20}
             src="/icon-64.png"
-            width={16}
+            width={20}
           />
           <span className="font-medium text-foreground">sensory-ui</span>
-          <span>·</span>
+          <span className="text-muted-foreground/60">·</span>
           <span>
             by{" "}
             <a
-              className="underline underline-offset-2 hover:text-foreground"
+              className="underline underline-offset-2 transition-colors hover:text-foreground"
               href="https://github.com/SatyamVyas04"
               rel="noopener noreferrer"
               target="_blank"
@@ -29,7 +29,7 @@ export function Footer() {
           </span>
         </div>
 
-        <nav aria-label="Footer navigation" className="flex items-center gap-4">
+        <nav aria-label="Footer navigation" className="flex items-center gap-5">
           <a
             aria-label="GitHub"
             className="text-muted-foreground transition-colors hover:text-foreground"
@@ -37,7 +37,7 @@ export function Footer() {
             rel="noopener noreferrer"
             target="_blank"
           >
-            <IconBrandGithub aria-hidden="true" className="size-4" />
+            <IconBrandGithub aria-hidden="true" className="size-4.5" />
           </a>
           <a
             aria-label="X (Twitter)"
@@ -46,9 +46,9 @@ export function Footer() {
             rel="noopener noreferrer"
             target="_blank"
           >
-            <IconBrandX aria-hidden="true" className="size-4" />
+            <IconBrandX aria-hidden="true" className="size-4.5" />
           </a>
-          <span className="text-muted-foreground/60 text-xs">MIT License</span>
+          <span className="text-muted-foreground/70 text-xs">MIT License</span>
         </nav>
       </div>
     </footer>

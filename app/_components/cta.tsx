@@ -6,8 +6,11 @@ import {
   IconFileText,
 } from "@tabler/icons-react";
 import { motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+import { Button } from "@/components/ui/sensory-ui/button";
+
+const ease = [0.32, 0.72, 0, 1] as const;
 
 export function CTA() {
   const prefersReduced = useReducedMotion();
@@ -18,11 +21,11 @@ export function CTA() {
       className="border-border border-t py-24"
       id="cta"
     >
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <motion.div
-          className="border border-border p-10 text-center sm:p-16"
-          initial={{ opacity: 0, y: prefersReduced ? 0 : 20 }}
-          transition={{ duration: 0.55, ease }}
+          className="border border-border p-12 text-center sm:p-16"
+          initial={{ opacity: 0, y: prefersReduced ? 0 : 16 }}
+          transition={{ duration: 0.25, ease }}
           viewport={{ once: true, margin: "-80px" }}
           whileInView={{ opacity: 1, y: 0 }}
         >
@@ -30,42 +33,49 @@ export function CTA() {
             Get started
           </span>
           <h2
-            className="mt-3 text-balance font-semibold text-3xl sm:text-4xl"
+            className="mt-4 text-balance font-semibold text-3xl sm:text-4xl"
             id="cta-heading"
           >
-            Ready to design <span className="text-primary">with sound?</span>
+            Give your UI a <span className="text-primary">voice.</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-muted-foreground text-sm/relaxed">
-            Add sensory-ui to your Next.js project in under five minutes.
-            Configure roles, wire sounds, ship.
+          <p className="mx-auto mt-5 max-w-md text-base/relaxed text-muted-foreground">
+            Add sensory-ui to your Next.js project in under 5 minutes.
+            Configure. Wire. Ship.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <motion.a
-              className="inline-flex items-center gap-2 bg-primary px-5 py-2.5 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90"
-              href="https://github.com/SatyamVyas04/sensory-ui"
-              rel="noopener noreferrer"
-              target="_blank"
-              transition={{ duration: 0.12, ease: [0.22, 1, 0.36, 1] }}
-              whileTap={{ scale: 0.97 }}
+            <Button
+              asChild
+              className="gap-2"
+              size="default"
+              sound="activation.primary"
             >
-              <IconBrandGithub aria-hidden="true" className="size-4" />
-              View on GitHub
-            </motion.a>
+              <Link
+                href="https://github.com/SatyamVyas04/sensory-ui"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <IconBrandGithub aria-hidden="true" className="size-4" />
+                View on GitHub
+              </Link>
+            </Button>
 
-            <motion.a
-              className="inline-flex items-center gap-2 border border-border px-5 py-2.5 font-medium text-sm transition-colors hover:bg-muted/50"
-              href="/docs"
-              transition={{ duration: 0.12, ease: [0.22, 1, 0.36, 1] }}
-              whileTap={{ scale: 0.97 }}
+            <Button
+              asChild
+              className="gap-2"
+              size="default"
+              sound="navigation.forward"
+              variant="outline"
             >
-              <IconFileText aria-hidden="true" className="size-4" />
-              Read the docs
-              <IconArrowRight aria-hidden="true" className="size-3.5" />
-            </motion.a>
+              <Link href="/docs">
+                <IconFileText aria-hidden="true" className="size-4" />
+                Read the docs
+                <IconArrowRight aria-hidden="true" className="size-3.5" />
+              </Link>
+            </Button>
           </div>
 
-          <p className="mt-6 text-muted-foreground text-xs">
+          <p className="mt-8 text-muted-foreground text-sm">
             MIT License · Open source forever
           </p>
         </motion.div>

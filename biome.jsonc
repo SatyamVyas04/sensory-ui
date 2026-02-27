@@ -2,14 +2,6 @@
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "extends": ["ultracite/biome/core", "ultracite/biome/next"],
   "files": {
-    "includes": ["!components/ui/**/*"]
-  },
-
-  "linter": {
-    "rules": {
-      "nursery": {
-        "useSortedClasses": "error"
-      }
-    }
+    "includes": ["!components/ui/*", "components/ui/sensory-ui/**/*"]
   }
 }

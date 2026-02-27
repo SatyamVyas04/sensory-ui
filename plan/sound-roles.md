@@ -64,18 +64,19 @@ Fired when the user moves through space — between pages, tabs, steps, or scrol
 
 Fired when the system delivers feedback to the user — toasts, alerts, banners, inline validation messages.
 
-| Role      | Full Key                  | Duration   | Description                                 | Typical Trigger                         |
-| --------- | ------------------------- | ---------- | ------------------------------------------- | --------------------------------------- |
-| Passive   | `notifications.passive`   | 200–350 ms | Neutral information. Lowest intensity.      | Info toast, passive alert               |
-| Important | `notifications.important` | 300–500 ms | Elevated attention. Not alarming.           | Warning alert, important banner         |
-| Success   | `notifications.success`   | 250–400 ms | Positive, warm, brief resolve.              | Success toast, form saved               |
-| Warning   | `notifications.warning`   | 350–600 ms | Cautionary. More presence than `important`. | Destructive action warning, quota alert |
+| Role    | Full Key                | Duration   | Description                                  | Typical Trigger                  |
+| ------- | ----------------------- | ---------- | -------------------------------------------- | -------------------------------- |
+| Passive | `notifications.passive` | 200–350 ms | Neutral information. Soft single chime.      | Info toast, passive alert        |
+| Success | `notifications.success` | 250–400 ms | Two ascending notes (positive feeling).      | Success toast, form saved        |
+| Warning | `notifications.warning` | 300–450 ms | Same note twice (attention-getting).         | Quota alert, confirmation needed |
+| Error   | `notifications.error`   | 300–450 ms | Two descending notes (negative connotation). | Error toast, connection failed   |
 
 **Design notes:**
 
 - `notifications.passive` should feel like a whisper — something you hear but don't need to act on.
-- `notifications.success` is intentionally warm and brief. Not a "win" fanfare (that's `hero.complete`). Think of it as a small, satisfying resolution.
-- `notifications.warning` and `notifications.important` are both cautionary but at different intensities. Warning is the more intrusive of the two.
+- `notifications.success` uses ascending notes (C5 → E5) for a positive, resolved feeling.
+- `notifications.warning` repeats the same note twice (A4 → A4) to grab attention without negativity.
+- `notifications.error` uses descending tritone (B4 → F4) for tension/negative feeling without being harsh.
 
 ---
 
@@ -143,7 +144,7 @@ export type NavigationRole =
 
 export type NotificationsRole =
 	| "notifications.passive"
-	| "notifications.important"
+	| "notifications.error"
 	| "notifications.success"
 	| "notifications.warning";
 
@@ -174,7 +175,7 @@ export const ALL_SOUND_ROLES: SoundRole[] = [
 	"navigation.switch",
 	"navigation.scroll",
 	"notifications.passive",
-	"notifications.important",
+	"notifications.error",
 	"notifications.success",
 	"notifications.warning",
 	"system.open",

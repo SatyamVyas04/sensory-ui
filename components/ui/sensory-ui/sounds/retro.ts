@@ -309,29 +309,31 @@ export const retroPack: Record<SoundRole, SoundSynthesizer> = {
   },
 
   /**
-   * Important — minor chord stab (A minor: A4 + C5 + E5). Sawtooth, louder, 400 ms.
+   * Error — two descending sawtooth notes: B4 → F4 (tritone = tension).
    */
-  "notifications.important": (ctx, opts) => {
+  "notifications.error": (ctx, opts) => {
     const t = ctx.currentTime;
     const vol = (opts.volume ?? 1) * 0.6;
-    const dur = 0.4;
-    const freqs = [440, 523.25, 659.25]; // Am chord
+    const notes = [493.88, 349.23];  // B4 → F4 (descending tritone)
     const oscs: OscillatorNode[] = [];
 
-    freqs.forEach((freq, i) => {
+    notes.forEach((freq, i) => {
+      const ns = t + i * 0.12;
+      const isLast = i === notes.length - 1;
+      const dur = isLast ? 0.25 : 0.1;
+
       const osc = ctx.createOscillator();
       osc.type = "sawtooth";
-      osc.frequency.setValueAtTime(freq, t);
-      osc.detune.setValueAtTime((i - 1) * 5, t); // slight detune spread
+      osc.frequency.setValueAtTime(freq, ns);
+      osc.detune.setValueAtTime(5, ns);
 
       const gain = ctx.createGain();
-      gain.gain.setValueAtTime(vol * 0.38, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      gain.gain.setValueAtTime(vol * 0.6, ns);
+      gain.gain.exponentialRampToValueAtTime(0.001, ns + dur);
 
       osc.connect(gain); gain.connect(ctx.destination);
-      const isLast = i === freqs.length - 1;
       osc.onended = () => { osc.disconnect(); gain.disconnect(); if (isLast) opts.onEnd?.(); };
-      osc.start(t); osc.stop(t + dur + 0.01);
+      osc.start(ns); osc.stop(ns + dur + 0.01);
       oscs.push(osc);
     });
 

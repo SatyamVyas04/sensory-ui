@@ -70,7 +70,7 @@ export function NotificationsDemo() {
             Warning
           </Button>
         </SoundTrigger>
-        <SoundTrigger soundRole="notifications.important">
+        <SoundTrigger soundRole="notifications.error">
           <Button
             className="w-full justify-start gap-2 border-red-500/30 bg-red-500/5 text-red-600 hover:bg-red-500/10 dark:text-red-400"
             onClick={() =>
@@ -81,7 +81,7 @@ export function NotificationsDemo() {
               })
             }
             size="sm"
-            sound="notifications.important"
+            sound="notifications.error"
             variant="outline"
           >
             <IconX className="size-4" />

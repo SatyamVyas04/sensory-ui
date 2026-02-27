@@ -13,152 +13,94 @@ no base64 blobs, no network requests.
 
 ---
 
-## Architecture
+## Architecture: Tunes + Instruments
+
+sensory-ui v2 uses an **instrument-based architecture** that separates:
+
+1. **Tunes** (`sounds/core/tunes.ts`) — Define the musical content:
+    - Frequencies, durations, pitch contours
+    - Note sequences for arpeggios
+    - Filter settings for noise-based sounds
+    - Volume levels and decay times
+
+2. **Instruments** (`sounds/core/instruments.ts`) — Define the synthesis technique:
+    - Waveform type (sine, square, sawtooth, triangle)
+    - Noise characteristics (white, pink, brown)
+    - Filter settings and resonance
+    - Envelope shapes (attack/decay curves)
+    - Harmonic content and detuning
+
+3. **Factory** (`sounds/core/factory.ts`) — Combines tunes with instruments:
+    - Takes a tune definition and an instrument config
+    - Produces a `SoundSynthesizer` function
+
+This separation allows the **same tunes to be played by different instruments**,
+creating distinct soundpack characters with minimal code duplication.
+
+---
+
+## Built-in Sound Packs (9 total)
+
+| Pack       | Character                                                 |
+| ---------- | --------------------------------------------------------- |
+| soft       | Warm, rounded, gentle — felt mallets on soft pads         |
+| aero       | Airy, breathy, ethereal — wind through chimes _(default)_ |
+| arcade     | 8-bit chiptune — square waves, punchy                     |
+| organic    | Natural, warm, wooden — marimba, wood blocks              |
+| glass      | Crystalline, bright — struck glass or bells               |
+| industrial | Metallic, harsh, mechanical — machines and metal          |
+| minimal    | Clean, sparse, understated — pure tones only              |
+| retro      | Analog synth — vintage synthesizers                       |
+| crisp      | Sharp, defined, precise — high-quality headphones         |
+
+---
+
+## Tune Types
+
+| Type     | Description                   | Example Roles                         |
+| -------- | ----------------------------- | ------------------------------------- |
+| click    | Short percussive transient    | activation.primary, activation.subtle |
+| pop      | Brief tonal burst with attack | Extended sounds                       |
+| toggle   | State change indicator        | navigation.switch                     |
+| tick     | Subtle micro-interaction      | navigation.scroll, system.focus       |
+| sweep    | Frequency glide (up/down)     | navigation.forward/backward           |
+| chime    | Resonant tonal with decay     | notifications.passive/important       |
+| arpeggio | Sequence of notes             | hero.complete, hero.milestone         |
+| chord    | Multiple simultaneous notes   | Custom                                |
+| burst    | Noise-based texture           | Extended sounds                       |
+| pulse    | Repeating pattern             | notifications.warning                 |
+| rise     | Pitch ascends                 | activation.confirm, system.open       |
+| drop     | Pitch descends                | activation.error, system.close        |
+| wobble   | Modulated sound               | Extended sounds                       |
+
+---
+
+## Instrument Properties (FeelParams)
 
 ```ts
-// config/engine.ts
-export type SoundSynthesizer = (ctx: AudioContext, options: PlaySoundOptions) => SoundPlayback;
-export type SoundSource = SoundSynthesizer | string;
-
-// config/registry.ts
-export type SoundPackName = "default" | "arcade" | "wind" | "retro";
-export type SoundPack = Record<SoundRole, SoundSource>;
-export const packRegistry: Record<SoundPackName, SoundPack> = { ... };
+interface InstrumentConfig {
+	filterFreq: number; // Filter cutoff frequency (1500-6000 Hz)
+	q: number; // Filter resonance (1-12)
+	oscType: OscillatorType; // "sine" | "square" | "sawtooth" | "triangle"
+	decayMult: number; // Decay time multiplier (0.5-1.5)
+	gainMult: number; // Volume multiplier (0.4-1.2)
+	pitchMult: number; // Pitch multiplier (0.7-1.8)
+}
 ```
 
-When `playSound(role)` is called, the engine:
+### Example Instrument Settings
 
-1. Calls `resolveRole(role, config)` which looks up `packRegistry[config.theme][role]`
-2. If the result is a `SoundSynthesizer` → calls it directly with the AudioContext
-3. If the result is a `string` (URL or base64) → decodes it via `decodeAudioData`
-
----
-
-## Pack: `default`
-
-**Character:** Clean, modern, minimal. The sounds a polished SaaS product would use.
-Soft filtered-noise clicks for activation; gentle sine sweeps for navigation and system;
-warm tonal chimes for notifications; ascending arpeggios for hero moments.
-
-**Primary techniques:** filtered white noise (clicks), sine oscillator sweeps (tonal)
-
-| Role                      | Design                                     | Duration |
-| ------------------------- | ------------------------------------------ | -------- |
-| `activation.primary`      | Bandpass filtered noise burst (4 kHz, Q=3) | 8 ms     |
-| `activation.subtle`       | Same but softer (3.2 kHz, Q=2.5, 60% gain) | 6 ms     |
-| `activation.confirm`      | Rising sine 400→600 Hz                     | 80 ms    |
-| `activation.error`        | Descending sine 320→220 Hz + sub-harmonic  | 60 ms    |
-| `navigation.forward`      | Sine sweep 280→420 Hz                      | 180 ms   |
-| `navigation.backward`     | Sine sweep 420→280 Hz (mirror)             | 180 ms   |
-| `navigation.switch`       | Triangle sweep 340→390 Hz                  | 130 ms   |
-| `navigation.scroll`       | Tiny bandpass noise (2.8 kHz)              | 35 ms    |
-| `notifications.passive`   | Soft sine 520 Hz                           | 260 ms   |
-| `notifications.important` | Step-pitch sine 400→550 Hz                 | 360 ms   |
-| `notifications.success`   | Rising sine + harmonic 480→720 Hz          | 300 ms   |
-| `notifications.warning`   | Triangle 330 Hz with sustain swell         | 450 ms   |
-| `system.open`             | Sine 300→450 Hz + octave partial           | 200 ms   |
-| `system.close`            | Sine 450→300 Hz (tonal inverse)            | 200 ms   |
-| `system.expand`           | Triangle 370→470 Hz                        | 150 ms   |
-| `system.collapse`         | Triangle 470→370 Hz (mirror)               | 150 ms   |
-| `system.focus`            | Pure sine 750 Hz, very quiet               | 90 ms    |
-| `hero.complete`           | Ascending arpeggio C4→E4→G4→C5→E5          | ~1000 ms |
-| `hero.milestone`          | Ascending arpeggio C4→E4→G4                | ~600 ms  |
-
----
-
-## Pack: `arcade`
-
-**Character:** Classic 8-bit chiptune. Square-wave oscillators, stepped pitch (no interpolation),
-short punchy envelopes. Think NES, Game Boy, early arcade cabinets.
-
-**Primary techniques:** square wave oscillators, `setValueAtTime` step modulation (no ramps)
-
-| Role                      | Design                                  | Duration |
-| ------------------------- | --------------------------------------- | -------- |
-| `activation.primary`      | Square burst A5 (880 Hz)                | 40 ms    |
-| `activation.subtle`       | Square burst 495 Hz, quieter            | 30 ms    |
-| `activation.confirm`      | 3-step arpeggio C5→E5→G5                | 80 ms    |
-| `activation.error`        | Step descent 440→330→220 Hz             | 70 ms    |
-| `navigation.forward`      | Step chirp up 440→660→880 Hz            | 150 ms   |
-| `navigation.backward`     | Step chirp down 880→660→440 Hz (mirror) | 150 ms   |
-| `navigation.switch`       | Single square blip E5+offset            | 90 ms    |
-| `navigation.scroll`       | Micro A5 blip, very quiet               | 45 ms    |
-| `notifications.passive`   | Square tone 495 Hz                      | 200 ms   |
-| `notifications.important` | Double beep A5 × 2                      | 300 ms   |
-| `notifications.success`   | 5-step arpeggio C5→E5→G5→A5→C6          | 450 ms   |
-| `notifications.warning`   | Descending alarm A5→G5→E5, ×2           | 500 ms   |
-| `system.open`             | 4-step sweep up 330→495→660→990 Hz      | 200 ms   |
-| `system.close`            | 4-step sweep down (mirror)              | 200 ms   |
-| `system.expand`           | 2-step up 440→660 Hz                    | 100 ms   |
-| `system.collapse`         | 2-step down 660→440 Hz                  | 100 ms   |
-| `system.focus`            | Brief high blip A5                      | 60 ms    |
-| `hero.complete`           | 8-note ascending fanfare C4→...→C6      | ~700 ms  |
-| `hero.milestone`          | 4-note mini fanfare C5→E5→G5→C6         | ~400 ms  |
-
----
-
-## Pack: `wind`
-
-**Character:** Airy, organic, meditative. Every sound feels like air, breath, or a light tap on a
-wind chime. Bandpass-filtered white noise with dynamic filter sweeps for activation/navigation;
-wind-chime hybrids (sine tone + noise tap transient) for notifications and hero.
-
-**Primary techniques:** bandpass filtered noise (sweeping & static), sine + noise chime hybrid
-
-| Role                      | Design                                 | Duration |
-| ------------------------- | -------------------------------------- | -------- |
-| `activation.primary`      | Air puff: bandpass noise 900 Hz, Q=1.2 | 80 ms    |
-| `activation.subtle`       | Smaller puff 700 Hz, Q=1.0             | 55 ms    |
-| `activation.confirm`      | Rising filter sweep 400→1200 Hz        | 180 ms   |
-| `activation.error`        | Double flutter burst 1600 Hz           | 120 ms   |
-| `navigation.forward`      | Whoosh: filter 200→900 Hz              | 200 ms   |
-| `navigation.backward`     | Whoosh: 900→200 Hz (mirror)            | 200 ms   |
-| `navigation.switch`       | Soft swoosh static 500 Hz              | 140 ms   |
-| `navigation.scroll`       | Tick: highpass burst 3 kHz             | 45 ms    |
-| `notifications.passive`   | Single wind chime 800 Hz               | 300 ms   |
-| `notifications.important` | Struck chime 1000 Hz, louder tap       | 400 ms   |
-| `notifications.success`   | Two chimes in 5th: G4 + C5             | 380 ms   |
-| `notifications.warning`   | Dissonant chime pair A4 + A#4          | 450 ms   |
-| `system.open`             | Expanding noise + rising filter        | 200 ms   |
-| `system.close`            | Contracting noise + falling filter     | 200 ms   |
-| `system.expand`           | Puff 600 Hz static                     | 130 ms   |
-| `system.collapse`         | Puff 600→400 Hz                        | 130 ms   |
-| `system.focus`            | Breath: soft bandpass noise 2.2 kHz    | 80 ms    |
-| `hero.complete`           | Wind chime sequence C4→E4→G4→C5→E5     | ~1100 ms |
-| `hero.milestone`          | Two-chime resolve G4 + C5              | ~700 ms  |
-
----
-
-## Pack: `retro`
-
-**Character:** Synthwave / analog synthesizer. Warm sawtooth waves with slight detuning,
-stacked oscillators for thickness, frequency glides, dissonant chords for warnings.
-Think Moog, Oberheim, Kavinsky, CRT monitors.
-
-**Primary techniques:** dual detuned sawtooth (±5–7 cents chorus), portamento glides,
-minor/tritone chords for tension
-
-| Role                      | Design                                     | Duration |
-| ------------------------- | ------------------------------------------ | -------- |
-| `activation.primary`      | Dual detuned saw 250 Hz                    | 45 ms    |
-| `activation.subtle`       | Triangle 200 Hz, softer                    | 35 ms    |
-| `activation.confirm`      | Dual saw glide 300→500 Hz                  | 90 ms    |
-| `activation.error`        | Two-saw drop 400→200 Hz + 380→190 Hz       | 65 ms    |
-| `navigation.forward`      | Dual saw 150→300 Hz                        | 180 ms   |
-| `navigation.backward`     | Dual saw 300→150 Hz (mirror)               | 180 ms   |
-| `navigation.switch`       | Triangle with vibrato 440→460→440 Hz       | 120 ms   |
-| `navigation.scroll`       | Soft saw high 880 Hz                       | 50 ms    |
-| `notifications.passive`   | C4+G4 triangle chord pad                   | 300 ms   |
-| `notifications.important` | A minor chord A4+C5+E5 sawtooth            | 400 ms   |
-| `notifications.success`   | Arpeggio C4→E4→G4→C5 sawtooth              | 400 ms   |
-| `notifications.warning`   | Tritone chord F4+B4 sawtooth               | 500 ms   |
-| `system.open`             | Portal open: dual saw 200→350 Hz           | 200 ms   |
-| `system.close`            | Portal close: dual saw 350→200 Hz          | 200 ms   |
-| `system.expand`           | Extend: dual saw 280→380 Hz                | 150 ms   |
-| `system.collapse`         | Retract: dual saw 380→280 Hz               | 150 ms   |
-| `system.focus`            | Neon ping: triangle 1000 Hz with FM wobble | 100 ms   |
-| `hero.complete`           | 80s fanfare C4→...→G5, dual saw, 6 notes   | ~1100 ms |
-| `hero.milestone`          | C major chord stab + C5→E5 tail            | ~700 ms  |
+| Pack       | filterFreq | q   | oscType  | decayMult | gainMult | pitchMult |
+| ---------- | ---------- | --- | -------- | --------- | -------- | --------- |
+| soft       | 2000       | 1   | sine     | 1.5       | 0.7      | 0.8       |
+| aero       | 3500       | 2   | sine     | 1.0       | 0.9      | 1.0       |
+| arcade     | 4000       | 8   | square   | 0.5       | 1.0      | 1.5       |
+| organic    | 2500       | 3   | triangle | 1.3       | 0.85     | 0.9       |
+| glass      | 6000       | 10  | sine     | 1.2       | 0.75     | 1.8       |
+| industrial | 3000       | 12  | sawtooth | 0.6       | 1.2      | 0.7       |
+| minimal    | 2000       | 1   | sine     | 0.8       | 0.4      | 1.0       |
+| retro      | 1500       | 2   | square   | 1.1       | 0.8      | 0.85      |
+| crisp      | 5500       | 4   | triangle | 0.6       | 1.0      | 1.1       |
 
 ---
 
@@ -187,19 +129,62 @@ All packs comply with the rules in the `generating-sounds-with-ai` skill:
 ```js
 // sensory.config.js
 module.exports = {
-	theme: "arcade", // "default" | "arcade" | "wind" | "retro"
+	theme: "aero", // See available packs below
 	// ...
 };
 ```
 
+Available pack names: `"soft"`, `"aero"`, `"arcade"`, `"organic"`, `"glass"`, `"industrial"`, `"minimal"`, `"retro"`, `"crisp"`
+
 Or at runtime via the provider:
 
 ```tsx
-<SensoryUIProvider config={{ theme: "wind" }}>{children}</SensoryUIProvider>
+<SensoryUIProvider config={{ theme: "organic" }}>{children}</SensoryUIProvider>
 ```
 
 ---
 
-## Adding a Custom Pack
+## Creating a Custom Pack
 
-See `sounds/README.md` for the step-by-step process.
+### Option 1: Define a New Instrument
+
+```ts
+// sounds/core/instruments.ts
+const MY_CUSTOM_INSTRUMENT: InstrumentConfig = {
+	filterFreq: 4000,
+	q: 5,
+	oscType: "triangle",
+	decayMult: 1.0,
+	gainMult: 0.85,
+	pitchMult: 1.1,
+};
+```
+
+Then generate the pack:
+
+```ts
+import { generateSoundPack } from "./core/factory";
+import { INSTRUMENTS } from "./core/instruments";
+
+// Add to INSTRUMENTS map, then:
+export const myPack = generateSoundPack(MY_CUSTOM_INSTRUMENT);
+```
+
+### Option 2: Modify Existing Pack
+
+Create a variant by adjusting key parameters:
+
+```ts
+import { INSTRUMENTS } from "./core/instruments";
+import { generateSoundPack } from "./core/factory";
+
+const myInstrument = {
+	...INSTRUMENTS.glass,
+	gainMult: 0.6, // Quieter
+	pitchMult: 2.0, // Higher pitched
+};
+
+export const myPack = generateSoundPack(myInstrument);
+```
+
+See `sounds/README.md` for more details.

@@ -8,14 +8,14 @@ import {
   IconCopy,
   IconWaveSine,
 } from "@tabler/icons-react";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/sensory-ui/button";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+const ease = [0.32, 0.72, 0, 1] as const;
 
 interface HeroProps {
   stars: number;
@@ -26,9 +26,9 @@ export function Hero({ stars }: HeroProps) {
   const [copied, setCopied] = useState(false);
 
   const fadeUp = (delay = 0) => ({
-    initial: { opacity: 0, y: prefersReduced ? 0 : 20 },
+    initial: { opacity: 0, y: prefersReduced ? 0 : 16 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.55, ease, delay },
+    transition: { duration: 0.25, ease, delay },
   });
 
   const copyInstallCommand = async () => {
@@ -80,8 +80,8 @@ export function Hero({ stars }: HeroProps) {
       <motion.header
         animate={{ opacity: 1, y: 0 }}
         className="absolute top-0 right-0 left-0 z-50"
-        initial={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.4, ease }}
+        initial={{ opacity: 0, y: -6 }}
+        transition={{ duration: 0.2, ease }}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link
@@ -91,39 +91,44 @@ export function Hero({ stars }: HeroProps) {
             <Image
               alt=""
               aria-hidden="true"
-              className="size-6 dark:invert"
-              height={24}
-              src="/icon-64.png"
-              width={24}
+              className="size-6 rounded-sm border border-border dark:invert"
+              height={256}
+              src="/icon-256.png"
+              width={256}
             />
             <span>sensory-ui</span>
           </Link>
 
           <nav aria-label="Site links" className="flex items-center gap-2">
-            <a
-              className="flex items-center gap-1.5 rounded-none border border-border px-2.5 py-1 text-foreground/70 text-xs transition-colors hover:border-foreground/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              href="https://github.com/SatyamVyas04/sensory-ui"
-              rel="noopener noreferrer"
-              target="_blank"
+            <Button
+              asChild
+              className="relative bg-transparent"
+              variant="outline"
             >
-              <IconBrandGithub aria-hidden="true" className="size-3.5" />
-              <span>GitHub</span>
-              {stars > 0 && (
-                <span className="text-muted-foreground tabular-nums">
-                  {stars}
-                </span>
-              )}
-            </a>
+              <Link
+                href="https://github.com/SatyamVyas04/sensory-ui"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <IconBrandGithub aria-hidden="true" className="size-3.5" />
+                {stars > 0 && (
+                  <span className="text-muted-foreground tabular-nums">
+                    {stars} &#9733;
+                  </span>
+                )}
+              </Link>
+            </Button>
 
-            <a
-              aria-label="Twitter/X - @SatyamVyas04"
-              className="flex size-8 items-center justify-center text-foreground/60 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              href="https://x.com/SatyamVyas04"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <IconBrandX aria-hidden="true" className="size-4" />
-            </a>
+            <Button asChild className="size-8 bg-transparent" variant="outline">
+              <Link
+                aria-label="Twitter/X - @SatyamVyas04"
+                href="https://x.com/SatyamVyas04"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <IconBrandX aria-hidden="true" className="size-4" />
+              </Link>
+            </Button>
           </nav>
         </div>
       </motion.header>
@@ -142,33 +147,28 @@ export function Hero({ stars }: HeroProps) {
           {/* Headline */}
           <motion.h1
             id="hero-heading"
-            {...fadeUp(0.07)}
+            {...fadeUp(0.05)}
             className="text-balance font-semibold text-4xl tracking-tight sm:text-5xl lg:text-6xl"
           >
-            Components that{" "}
-            <span className="text-primary">sound as good as they look.</span>
+            Your UI deserves a <span className="text-primary">voice.</span>
           </motion.h1>
 
           {/* Sub-heading */}
           <motion.p
-            {...fadeUp(0.15)}
+            {...fadeUp(0.1)}
             className="mt-5 max-w-xl text-base/relaxed text-muted-foreground sm:text-lg/relaxed"
           >
             Semantic audio feedback for{" "}
             <strong className="font-medium text-foreground">shadcn/ui</strong>.
-            Add the{" "}
-            <code className="rounded-none bg-muted px-1 py-0.5 font-mono text-xs">
-              sound
-            </code>{" "}
-            prop and your components speak.
+            Using a single prop.
           </motion.p>
 
           {/* Installation command */}
           <motion.div
-            {...fadeUp(0.2)}
+            {...fadeUp(0.15)}
             className="mt-5 flex items-stretch overflow-hidden border border-primary/30 bg-card/40 backdrop-blur-sm"
           >
-            <code className="flex-1 px-4 py-2.5 font-mono text-primary text-xs">
+            <code className="flex-1 px-4 py-2 font-mono text-primary text-xs">
               <span className="text-foreground">$</span> npx shadcn@latest add
               https://sensory-ui.dev/r/sensory-ui
             </code>
@@ -176,79 +176,91 @@ export function Hero({ stars }: HeroProps) {
               aria-label={
                 copied ? "Copied to clipboard" : "Copy install command"
               }
-              className="touch-manipulation rounded-none border-primary/30 border-l bg-primary/10 text-primary hover:bg-primary/20"
+              className="touch-manipulation rounded-none border-primary/30 border-none bg-primary/10 text-primary hover:bg-primary/20"
               onClick={copyInstallCommand}
-              size="icon"
-              sound="activation.confirm"
+              sound="hero.milestone"
               variant="ghost"
             >
-              <motion.div
-                animate={{ scale: copied ? 0 : 1, opacity: copied ? 0 : 1 }}
-                transition={{ duration: 0.15 }}
-              >
-                <IconCopy className="size-4" />
-              </motion.div>
-              <motion.div
-                animate={{ scale: copied ? 1 : 0, opacity: copied ? 1 : 0 }}
-                className="absolute"
-                transition={{ duration: 0.15 }}
-              >
-                <IconCheck className="size-4" />
-              </motion.div>
+              <AnimatePresence initial={false} mode="popLayout">
+                <motion.div
+                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, scale: 0.95, filter: "blur(4px)" }}
+                  initial={{ opacity: 0, scale: 0.95, filter: "blur(4px)" }}
+                  key={copied ? "check" : "copy"}
+                  transition={{
+                    type: "spring",
+                    duration: 0.3,
+                    bounce: 0,
+                  }}
+                >
+                  {copied ? (
+                    <IconCheck className="size-4" />
+                  ) : (
+                    <IconCopy className="size-4" />
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </Button>
           </motion.div>
 
           {/* CTAs */}
           <motion.div
-            {...fadeUp(0.27)}
+            {...fadeUp(0.2)}
             className="mt-6 flex flex-wrap items-center gap-3"
           >
-            <motion.a
-              className="inline-flex touch-manipulation items-center gap-1.5 bg-primary px-4 py-2.5 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              href="https://github.com/SatyamVyas04/sensory-ui"
-              rel="noopener noreferrer"
-              style={{ touchAction: "manipulation" }}
-              target="_blank"
-              transition={{ duration: 0.12, ease }}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.97 }}
+            <Button
+              asChild
+              className="gap-1.5"
+              size="default"
+              sound="activation.subtle"
             >
-              Get Started
-              <IconArrowRight aria-hidden="true" className="size-4" />
-            </motion.a>
+              <Link
+                href="https://github.com/SatyamVyas04/sensory-ui"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Get Started
+                <IconArrowRight aria-hidden="true" className="size-4" />
+              </Link>
+            </Button>
 
-            <a
-              className="inline-flex touch-manipulation items-center gap-1.5 border border-border px-4 py-2.5 font-medium text-foreground/70 text-sm transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              href="#showcase"
-              style={{ touchAction: "manipulation" }}
+            <Button
+              asChild
+              className="gap-1.5"
+              size="default"
+              sound="activation.subtle"
+              variant="outline"
             >
-              See It in Action
-            </a>
+              <Link href="#showcase">See It in Action</Link>
+            </Button>
           </motion.div>
 
           {/* Stats */}
           <motion.div
-            {...fadeUp(0.34)}
-            className="mt-6 inline-flex flex-wrap items-center gap-x-1 gap-y-2 rounded-none border border-border/40 bg-card/30 px-4 py-2.5 backdrop-blur-sm"
+            {...fadeUp(0.25)}
+            className="mt-4 inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 border border-border bg-card/20 px-3 py-2 backdrop-blur-sm"
           >
-            {[
-              { value: "24", label: "components" },
-              { value: "19", label: "roles" },
-              { value: "4", label: "sound packs" },
-              { value: "< 3 KB", label: "gzipped" },
-            ].map(({ value, label }, index, array) => (
-              <div className="flex items-baseline gap-1.5" key={label}>
-                <span className="font-mono font-semibold text-foreground text-sm tabular-nums">
-                  {value}
-                </span>
-                <span className="text-muted-foreground text-xs">{label}</span>
-                {index < array.length - 1 && (
-                  <span aria-hidden="true" className="mx-2 text-border">
-                    •
-                  </span>
-                )}
-              </div>
-            ))}
+            <dl className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              {[
+                { value: "24", label: "components" },
+                { value: "19", label: "roles" },
+                { value: "9", label: "sound packs" },
+                { value: "< 3kb", label: "gzipped" },
+              ].map(({ value, label }, index, array) => (
+                <div className="flex items-baseline gap-1.5" key={label}>
+                  <dt className="sr-only">{label}</dt>
+                  <dd className="font-mono font-semibold text-foreground text-sm tabular-nums">
+                    {value}
+                  </dd>
+                  <span className="text-muted-foreground text-xs">{label}</span>
+                  {index < array.length - 1 && (
+                    <span aria-hidden="true" className="mx-2 text-border/70">
+                      •
+                    </span>
+                  )}
+                </div>
+              ))}
+            </dl>
           </motion.div>
         </div>
       </div>

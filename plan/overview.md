@@ -93,14 +93,17 @@ components/
         registry.ts           ← role → base64 module mapping
         use-play-sound.ts     ← usePlaySound(role) hook
       sounds/                 ← audio synthesizers as TypeScript modules
+        core/                 ← instrument-based sound generation
+          tunes.ts            ← base tune definitions (frequencies, durations)
+          instruments.ts      ← 9 instrument configurations
+          factory.ts          ← tune + instrument → synthesizer function
+          pack-generator.ts   ← generates full packs from instruments
         activation.ts         ← default pack activation synthesizers
         navigation.ts         ← default pack navigation synthesizers
         notifications.ts      ← default pack notification synthesizers
         system.ts             ← default pack system synthesizers
         hero.ts               ← default pack hero synthesizers
-        arcade.ts             ← arcade pack (all 19 roles)
-        wind.ts               ← wind pack (all 19 roles)
-        retro.ts              ← retro pack (all 19 roles)
+        packs.ts              ← all 9 sound packs
         README.md             ← module format reference
       button.tsx              ← patched shadcn Button with sound prop
       dialog.tsx
@@ -123,25 +126,26 @@ sensory.config.js             ← optional project-root config file
 
 ## Plan Document Index
 
-| Document                             | Description                                              |
-| ------------------------------------ | -------------------------------------------------------- |
-| [overview.md](./overview.md)         | This file — project-wide context and structure           |
-| [engine.md](./engine.md)             | Web Audio engine design and implementation spec          |
-| [provider.md](./provider.md)         | React provider architecture and context API              |
-| [sound-roles.md](./sound-roles.md)   | All sound categories, roles, durations, and file specs   |
-| [installation.md](./installation.md) | Installation flow, CLI steps, post-install setup         |
-| [config.md](./config.md)             | Configuration file format and all options                |
-| [components.md](./components.md)     | Component API, `sound` prop usage, event triggers        |
-| [registry.md](./registry.md)         | shadcn registry publishing (deferred — future work)      |
-| [sound-packs.md](./sound-packs.md)   | Per-pack sound design tables (default/arcade/wind/retro) |
+| Document                             | Description                                            |
+| ------------------------------------ | ------------------------------------------------------ |
+| [overview.md](./overview.md)         | This file — project-wide context and structure         |
+| [engine.md](./engine.md)             | Web Audio engine design and implementation spec        |
+| [provider.md](./provider.md)         | React provider architecture and context API            |
+| [sound-roles.md](./sound-roles.md)   | All sound categories, roles, durations, and file specs |
+| [installation.md](./installation.md) | Installation flow, CLI steps, post-install setup       |
+| [config.md](./config.md)             | Configuration file format and all options              |
+| [components.md](./components.md)     | Component API, `sound` prop usage, event triggers      |
+| [registry.md](./registry.md)         | shadcn registry publishing (deferred — future work)    |
+| [sound-packs.md](./sound-packs.md)   | Per-pack sound design tables (9 packs total)           |
 
 ---
 
 ## Roadmap Summary
 
-### v1.0 — Core _(in progress)_
+### v1.0 — Core _(complete)_
 
-- 19 base sounds across 5 categories (4 packs: default, arcade, wind, retro)
+- 19 base sounds across 5 categories
+- 9 distinct sound packs: soft, aero, arcade, organic, glass, industrial, minimal, retro, crisp
 - `SensoryUIProvider` wrapping the whole app
 - `sound` prop on Button and 8 common Radix components
 - `usePlaySound(role)` hook for arbitrary trigger points
@@ -157,7 +161,6 @@ sensory.config.js             ← optional project-root config file
 ### v2.0 — Extended (Nice to Have)
 
 - Visual sound-role editor in the browser
-- Additional sound packs (minimal, expressive, nature)
 - Per-role volume multipliers in config
 
 ---

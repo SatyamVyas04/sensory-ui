@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -38,15 +38,13 @@ export function DemoCard({
   icon,
   children,
 }: DemoCardProps) {
-  const prefersReduced = useReducedMotion();
-
   return (
     <motion.div
       className="flex flex-col border border-border bg-card p-5 transition-all hover:border-primary"
-      initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
+      initial={{ opacity: 0 }}
       transition={{ duration: 0.3, ease }}
       viewport={{ once: true, margin: "-80px" }}
-      whileInView={{ opacity: 1, y: 0 }}
+      whileInView={{ opacity: 1 }}
     >
       <div className="mb-1 flex items-center gap-2">
         <span aria-hidden="true" className="text-primary">
