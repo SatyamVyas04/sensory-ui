@@ -15,7 +15,7 @@ no base64 blobs, no network requests.
 
 ## Architecture: Tunes + Instruments
 
-sensory-ui v2 uses an **instrument-based architecture** that separates:
+sensory-ui uses an **instrument-based architecture** that separates:
 
 1. **Tunes** (`sounds/core/tunes.ts`) — Define the musical content:
     - Frequencies, durations, pitch contours

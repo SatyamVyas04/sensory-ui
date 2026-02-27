@@ -57,34 +57,19 @@ sensory-ui will be published as a single registry entry that installs the entire
 			"target": "components/ui/sensory-ui/config/use-play-sound.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/sounds/activation.ts",
+			"path": "components/ui/sensory-ui/sounds/index.ts",
 			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/activation.ts"
-		},
-		{
-			"path": "components/ui/sensory-ui/sounds/navigation.ts",
-			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/navigation.ts"
-		},
-		{
-			"path": "components/ui/sensory-ui/sounds/notifications.ts",
-			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/notifications.ts"
-		},
-		{
-			"path": "components/ui/sensory-ui/sounds/system.ts",
-			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/system.ts"
-		},
-		{
-			"path": "components/ui/sensory-ui/sounds/hero.ts",
-			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/hero.ts"
+			"target": "components/ui/sensory-ui/sounds/index.ts"
 		},
 		{
 			"path": "components/ui/sensory-ui/sounds/packs.ts",
 			"type": "registry:lib",
 			"target": "components/ui/sensory-ui/sounds/packs.ts"
+		},
+		{
+			"path": "components/ui/sensory-ui/sounds/core/index.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/core/index.ts"
 		},
 		{
 			"path": "components/ui/sensory-ui/sounds/core/tunes.ts",
@@ -100,6 +85,11 @@ sensory-ui will be published as a single registry entry that installs the entire
 			"path": "components/ui/sensory-ui/sounds/core/factory.ts",
 			"type": "registry:lib",
 			"target": "components/ui/sensory-ui/sounds/core/factory.ts"
+		},
+		{
+			"path": "components/ui/sensory-ui/sounds/core/pack-generator.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/core/pack-generator.ts"
 		},
 		{
 			"path": "components/ui/sensory-ui/button.tsx",
