@@ -249,19 +249,34 @@ Rules for patched components:
 
 ---
 
-## Available Components (v1.0)
+## Available Components (v0.5)
 
-| Component      | File                | Primary Event   | Notes                         |
-| -------------- | ------------------- | --------------- | ----------------------------- |
-| `Button`       | `button.tsx`        | click + keydown | Most used                     |
-| `Dialog`       | `dialog.tsx`        | open/close      | Pairs open + close sounds     |
-| `DropdownMenu` | `dropdown-menu.tsx` | open/close      | Same pattern as Dialog        |
-| `Sheet`        | `sheet.tsx`         | open/close      | Same pattern as Dialog        |
-| `Tabs`         | `tabs.tsx`          | value change    | `navigation.switch` typical   |
-| `Select`       | `select.tsx`        | open/close      | Same pattern as Dialog        |
-| `Checkbox`     | `checkbox.tsx`      | checked change  | Check / uncheck distinction   |
-| `Switch`       | `switch.tsx`        | checked change  | Same as Checkbox              |
-| `Accordion`    | `accordion.tsx`     | value change    | Expand / collapse distinction |
+| Component        | File                  | Primary Event   | Notes                         |
+| ---------------- | --------------------- | --------------- | ----------------------------- |
+| `Accordion`      | `accordion.tsx`       | value change    | Expand / collapse distinction |
+| `AlertDialog`    | `alert-dialog.tsx`    | open/close      | Same pattern as Dialog        |
+| `Button`         | `button.tsx`          | click + keydown | Most used                     |
+| `Carousel`       | `carousel.tsx`        | slide change    | Navigation sounds             |
+| `Checkbox`       | `checkbox.tsx`        | checked change  | Check / uncheck distinction   |
+| `Collapsible`    | `collapsible.tsx`     | open/close      | Expand / collapse distinction |
+| `Command`        | `command.tsx`         | selection       | Command palette sounds        |
+| `ContextMenu`    | `context-menu.tsx`    | open/close      | Same pattern as Dialog        |
+| `Dialog`         | `dialog.tsx`          | open/close      | Pairs open + close sounds     |
+| `Drawer`         | `drawer.tsx`          | open/close      | Same pattern as Dialog        |
+| `DropdownMenu`   | `dropdown-menu.tsx`   | open/close      | Same pattern as Dialog        |
+| `Menubar`        | `menubar.tsx`         | open/close      | Same pattern as Dialog        |
+| `NavigationMenu` | `navigation-menu.tsx` | value change    | Navigation sounds             |
+| `Pagination`     | `pagination.tsx`      | page change     | Navigation sounds             |
+| `Popover`        | `popover.tsx`         | open/close      | Same pattern as Dialog        |
+| `RadioGroup`     | `radio-group.tsx`     | value change    | Selection sounds              |
+| `Select`         | `select.tsx`          | open/close      | Same pattern as Dialog        |
+| `Sheet`          | `sheet.tsx`           | open/close      | Same pattern as Dialog        |
+| `Sidebar`        | `sidebar.tsx`         | open/close      | Navigation sounds             |
+| `Slider`         | `slider.tsx`          | value change    | Activation sounds             |
+| `Switch`         | `switch.tsx`          | checked change  | Same as Checkbox              |
+| `Tabs`           | `tabs.tsx`            | value change    | `navigation.switch` typical   |
+| `ToggleGroup`    | `toggle-group.tsx`    | value change    | Selection sounds              |
+| `Toggle`         | `toggle.tsx`          | pressed change  | Activation sounds             |
 
 ---
 

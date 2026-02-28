@@ -1,8 +1,8 @@
 # sensory-ui - Registry & Publishing
 
-> Status: **Deferred - Future Work (post v1.0)**
+> Status: **Implemented (v0.5)**
 
-This document outlines the plan for publishing sensory-ui as a proper shadcn/ui registry entry. The registry layer is a distribution concern, separate from the runtime. The runtime (engine, provider, primitives) can be developed and tested locally before the registry is wired up.
+sensory-ui is published as a shadcn/ui registry entry served from the project itself via a Next.js route handler at `app/r/sensory-ui/route.ts`. The registry serves all components, config files, and sound modules in a single install step.
 
 ---
 
@@ -20,11 +20,15 @@ sensory-ui will be published as a single registry entry that installs the entire
 
 ## Registry Manifest Structure
 
+The registry is served as a Next.js route handler at `app/r/sensory-ui/route.ts`. When `npx shadcn@latest add https://sensory-ui.com/r/sensory-ui` is run, the CLI fetches the JSON manifest from this endpoint. The route reads all source files at build time (using `export const dynamic = "force-static"`) and embeds their content in the response.
+
+The manifest includes all `.ts`/`.tsx` source files from `components/ui/sensory-ui/`:
+
 ```json
 {
 	"name": "sensory-ui",
-	"type": "registry:lib",
-	"description": "Semantic, opt-in sound layer for shadcn/ui components.",
+	"type": "registry:ui",
+	"description": "Semantic, opt-in sound layer for shadcn/ui components. 19 sound roles, 9 sound packs, zero dependencies.",
 	"files": [
 		{
 			"path": "components/ui/sensory-ui/config/engine.ts",
@@ -92,54 +96,124 @@ sensory-ui will be published as a single registry entry that installs the entire
 			"target": "components/ui/sensory-ui/sounds/core/pack-generator.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/button.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/button.tsx"
-		},
-		{
-			"path": "components/ui/sensory-ui/dialog.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/dialog.tsx"
-		},
-		{
-			"path": "components/ui/sensory-ui/dropdown-menu.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/dropdown-menu.tsx"
-		},
-		{
-			"path": "components/ui/sensory-ui/tabs.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/tabs.tsx"
-		},
-		{
-			"path": "components/ui/sensory-ui/select.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/select.tsx"
-		},
-		{
-			"path": "components/ui/sensory-ui/checkbox.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/checkbox.tsx"
-		},
-		{
-			"path": "components/ui/sensory-ui/switch.tsx",
-			"type": "registry:component",
-			"target": "components/ui/sensory-ui/switch.tsx"
-		},
-		{
 			"path": "components/ui/sensory-ui/accordion.tsx",
-			"type": "registry:component",
+			"type": "registry:ui",
 			"target": "components/ui/sensory-ui/accordion.tsx"
 		},
 		{
+			"path": "components/ui/sensory-ui/alert-dialog.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/alert-dialog.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/button.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/button.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/carousel.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/carousel.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/checkbox.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/checkbox.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/collapsible.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/collapsible.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/command.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/command.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/context-menu.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/context-menu.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/dialog.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/dialog.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/drawer.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/drawer.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/dropdown-menu.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/dropdown-menu.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/menubar.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/menubar.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/navigation-menu.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/navigation-menu.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/pagination.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/pagination.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/popover.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/popover.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/radio-group.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/radio-group.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/select.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/select.tsx"
+		},
+		{
 			"path": "components/ui/sensory-ui/sheet.tsx",
-			"type": "registry:component",
+			"type": "registry:ui",
 			"target": "components/ui/sensory-ui/sheet.tsx"
 		},
 		{
-			"path": "sensory.config.js",
-			"type": "registry:file",
-			"target": "sensory.config.js"
+			"path": "components/ui/sensory-ui/sidebar.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/sidebar.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/slider.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/slider.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/switch.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/switch.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/tabs.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/tabs.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/toggle-group.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/toggle-group.tsx"
+		},
+		{
+			"path": "components/ui/sensory-ui/toggle.tsx",
+			"type": "registry:ui",
+			"target": "components/ui/sensory-ui/toggle.tsx"
 		}
 	],
 	"dependencies": [],
@@ -190,20 +264,17 @@ The `config/registry.ts` file imports from `sounds/packs.ts` and builds the `pac
 
 ## Registry Hosting
 
-The registry manifest JSON needs to be served from a stable URL. Options:
-
-| Hosting       | URL Pattern                                                               | Notes                       |
-| ------------- | ------------------------------------------------------------------------- | --------------------------- |
-| GitHub Pages  | `https://<org>.github.io/sensory-ui/registry.json`                        | Free, stable, tied to repo  |
-| Vercel        | `https://sensory-ui.vercel.app/registry.json`                             | Free tier, fast CDN         |
-| npm-based     | Published as an npm package, registry URL points to `unpkg` or `jsdelivr` | Standard for libraries      |
-| Custom domain | `https://sensory-ui.dev/registry.json`                                    | Best UX for install command |
-
-**Recommendation:** Custom domain (`sensory-ui.dev`) pointing to a Vercel deployment for the best install command ergonomics:
+The registry is served directly from the sensory-ui website via a Next.js route handler. The install command URL points to:
 
 ```bash
-npx shadcn@latest add https://sensory-ui.dev/r/sensory-ui
+npx shadcn@latest add https://sensory-ui.com/r/sensory-ui
 ```
+
+| Hosting | URL                                    | Notes                                   |
+| ------- | -------------------------------------- | --------------------------------------- |
+| Vercel  | `https://sensory-ui.com/r/sensory-ui`  | Custom domain pointing to Vercel deploy |
+
+The route handler at `app/r/sensory-ui/route.ts` reads all source files from `components/ui/sensory-ui/` at build time using `export const dynamic = "force-static"` and returns the complete registry manifest with embedded file contents.
 
 ---
 
@@ -239,10 +310,10 @@ This build process is TBD and will be designed once the runtime implementation i
 | ---------------------------------------- | ----------------------- |
 | Runtime (engine + provider + primitives) | Complete                |
 | Sound file production (19 roles)         | Complete (9 packs)      |
-| Registry manifest structure              | Drafted (this document) |
-| Hosting setup                            | Not started             |
-| CLI install testing                      | Not started             |
-| Public launch                            | Not started             |
+| Registry manifest structure              | Complete                |
+| Hosting setup                            | Complete (Vercel)       |
+| CLI install testing                      | Pending                 |
+| Public launch                            | Pending                 |
 
 ---
 

@@ -111,6 +111,21 @@ components/
       switch.tsx
       accordion.tsx
       sheet.tsx
+      alert-dialog.tsx
+      carousel.tsx
+      collapsible.tsx
+      command.tsx
+      context-menu.tsx
+      drawer.tsx
+      menubar.tsx
+      navigation-menu.tsx
+      pagination.tsx
+      popover.tsx
+      radio-group.tsx
+      sidebar.tsx
+      slider.tsx
+      toggle-group.tsx
+      toggle.tsx
 
 > Sounds are **synthesized programmatically** via the Web Audio API.
 > `SoundSynthesizer` functions in `sensory-ui/sounds/` generate audio at runtime via the Web Audio API -
@@ -132,12 +147,19 @@ sensory.config.js             ← optional project-root config file
 | [installation.md](./installation.md) | Installation flow, CLI steps, post-install setup       |
 | [config.md](./config.md)             | Configuration file format and all options              |
 | [components.md](./components.md)     | Component API, `sound` prop usage, event triggers      |
-| [registry.md](./registry.md)         | shadcn registry publishing (deferred - future work)    |
+| [registry.md](./registry.md)         | shadcn registry publishing (implemented in v0.5)   |
 | [sound-packs.md](./sound-packs.md)   | Per-pack sound design tables (9 packs total)           |
 
 ---
 
 ## Roadmap Summary
+
+### v0.5 - Registry _(current)_
+
+- shadcn registry distribution (public CLI install via `sensory-ui.com`)
+- 24 sound-enabled components
+- 19 sound roles across 5 categories
+- 9 distinct sound packs: soft, aero, arcade, organic, glass, industrial, minimal, retro, crisp
 
 ### v1.0 - Core _(complete)_
 
@@ -149,9 +171,8 @@ sensory.config.js             ← optional project-root config file
 - `sensory.config.js` with volume, enable/disable, overrides
 - Full SSR safety and reduced-motion compliance
 
-### v1.5 - Registry + Developer Ergonomics _(deferred)_
+### v1.5 - Developer Ergonomics _(deferred)_
 
-- shadcn registry distribution (public CLI install)
 - Per-role volume multipliers in config
 - CLI helper to toggle categories interactively
 
