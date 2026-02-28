@@ -15,7 +15,7 @@ This document describes the full installation flow, what files are created, how 
 ## Step 1: Install via shadcn CLI
 
 ```bash
-npx shadcn@latest add https://sensory-ui.dev/r/sensory-ui
+npx shadcn@latest add https://sensory-ui.com/r/sensory-ui
 ```
 
 The CLI will:
@@ -35,10 +35,15 @@ During installation the CLI will prompt:
 
 ```
 ? Choose a sound pack:
-  > default        (clean, modern SaaS - filtered noise clicks + sine sweeps)
+  > soft           (warm, minimal - gentle sine tones, smooth fades)
+    aero           (clean, modern SaaS - filtered tones, balanced)
     arcade         (8-bit chiptune - square waves, stepped pitch, NES vibe)
-    wind           (organic/airy - bandpass noise bursts + wind chime hybrids)
-    retro          (synthwave - dual detuned sawtooth, chord stabs, Moog vibe)
+    organic        (natural, earthy - soft noise bursts, warm harmonics)
+    glass          (crystalline, delicate - bright resonant tones)
+    industrial     (mechanical, bold - raw waveforms, metallic edge)
+    minimal        (ultra-clean - pure tones, maximum restraint)
+    retro          (synthwave - dual detuned sawtooth, Moog vibe)
+    crisp          (precise, modern - clean attacks, tight envelopes)
 ```
 
 **What this choice does:**
@@ -62,26 +67,39 @@ components/ui/sensory-ui/
     registry.ts
     use-play-sound.ts
   sounds/
-    activation.ts
-    navigation.ts
-    notifications.ts
-    system.ts
-    hero.ts
-    arcade.ts
-    wind.ts
-    retro.ts
+    core/
+      index.ts
+      tunes.ts
+      instruments.ts
+      factory.ts
+      pack-generator.ts
+    index.ts
+    packs.ts
     README.md
-  button.tsx
-  dialog.tsx
-  dropdown-menu.tsx
-  tabs.tsx
-  select.tsx
-  checkbox.tsx
-  switch.tsx
   accordion.tsx
+  alert-dialog.tsx
+  button.tsx
+  carousel.tsx
+  checkbox.tsx
+  collapsible.tsx
+  command.tsx
+  context-menu.tsx
+  dialog.tsx
+  drawer.tsx
+  dropdown-menu.tsx
+  menubar.tsx
+  navigation-menu.tsx
+  pagination.tsx
+  popover.tsx
+  radio-group.tsx
+  select.tsx
   sheet.tsx
-
-sensory.config.js       ← generated at project root
+  sidebar.tsx
+  slider.tsx
+  switch.tsx
+  tabs.tsx
+  toggle-group.tsx
+  toggle.tsx
 ```
 
 **Design goal:** Everything inside `components/ui/sensory-ui/`. Audio is generated **programmatically** via the Web Audio API inside `sensory-ui/sounds/` - no files in `public/`, no asset serving, no base64 blobs. The only file outside that folder is:
@@ -168,7 +186,7 @@ If you hear nothing:
 
 1. Check that `SensoryUIProvider` wraps the component you are testing
 2. Check that `sensory.config.js` has `enabled: true`
-3. Check that the `sounds/*.ts` modules were installed correctly (open `components/ui/sensory-ui/sounds/activation.ts` and verify it exports `SoundSynthesizer` functions, not empty strings)
+3. Check that the sound modules were installed correctly (open `components/ui/sensory-ui/sounds/packs.ts` and verify it exports sound pack objects)
 4. Check that the click is a direct user gesture (not triggered on mount)
 5. Check that your browser has not blocked the `AudioContext` - Chrome suspends it until a user gesture. The engine resumes it automatically on the first `playSound()` call.
 
@@ -179,7 +197,7 @@ If you hear nothing:
 To update the engine and primitives to a newer version:
 
 ```bash
-npx shadcn@latest add https://sensory-ui.dev/r/sensory-ui --overwrite
+npx shadcn@latest add https://sensory-ui.com/r/sensory-ui --overwrite
 ```
 
 The `--overwrite` flag replaces the engine, config loader, primitive files, and the embedded sound modules in `sounds/*.ts`.
