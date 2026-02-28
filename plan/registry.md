@@ -1,6 +1,6 @@
-# sensory-ui — Registry & Publishing
+# sensory-ui - Registry & Publishing
 
-> Status: **Deferred — Future Work (post v1.0)**
+> Status: **Deferred - Future Work (post v1.0)**
 
 This document outlines the plan for publishing sensory-ui as a proper shadcn/ui registry entry. The registry layer is a distribution concern, separate from the runtime. The runtime (engine, provider, primitives) can be developed and tested locally before the registry is wired up.
 
@@ -14,7 +14,7 @@ The shadcn CLI (`npx shadcn@latest add <url>`) can install components from any U
 - Any npm package dependencies to install
 - Any tailwind config patches to apply
 
-sensory-ui will be published as a single registry entry that installs the entire `components/ui/sensory-ui/` folder and the `sensory.config.js` template in one step. Audio is **synthesized programmatically** via the Web Audio API — no audio files, no base64 blobs, no `public/` directory entry needed.
+sensory-ui will be published as a single registry entry that installs the entire `components/ui/sensory-ui/` folder and the `sensory.config.js` template in one step. Audio is **synthesized programmatically** via the Web Audio API - no audio files, no base64 blobs, no `public/` directory entry needed.
 
 ---
 
@@ -150,26 +150,27 @@ sensory-ui will be published as a single registry entry that installs the entire
 
 **Notes:**
 
-- `dependencies` is empty — sensory-ui has zero npm dependencies. All code uses native browser APIs and existing React/Radix primitives already present in the user's shadcn project.
+- `dependencies` is empty - sensory-ui has zero npm dependencies. All code uses native browser APIs and existing React/Radix primitives already present in the user's shadcn project.
 - All audio is **synthesized at runtime** via the Web Audio API. No binary assets, no base64 blobs, no `public/` directory entry needed.
 
 ---
 
 ## Sound Pack Distribution
 
-Audio is generated **programmatically** via the Web Audio API. Each `sounds/*.ts` module exports a `SoundPack` object that maps role names to `SoundSynthesizer` functions — plain TypeScript functions that receive an `AudioContext` and return a `SoundPlayback` handle.
+Audio is generated **programmatically** via the Web Audio API. Each `sounds/*.ts` module exports a `SoundPack` object that maps role names to `SoundSynthesizer` functions - plain TypeScript functions that receive an `AudioContext` and return a `SoundPlayback` handle.
 
 The sound system uses a **tunes + instruments architecture**:
-- `sounds/core/tunes.ts` — musical content (frequencies, durations, patterns) for all 19 roles
-- `sounds/core/instruments.ts` — 9 synthesis configurations (waveforms, filters, envelopes)
-- `sounds/core/factory.ts` — combines a tune with an instrument to produce a synthesizer
-- `sounds/packs.ts` — generates all 9 packs and exports `soundPacks` + `SoundPackName`
+
+- `sounds/core/tunes.ts` - musical content (frequencies, durations, patterns) for all 19 roles
+- `sounds/core/instruments.ts` - 9 synthesis configurations (waveforms, filters, envelopes)
+- `sounds/core/factory.ts` - combines a tune with an instrument to produce a synthesizer
+- `sounds/packs.ts` - generates all 9 packs and exports `soundPacks` + `SoundPackName`
 
 This approach:
 
 - Keeps all library files together in one folder
-- Produces zero binary assets — no `public/` directory entry, no base64 blobs
-- Works fully offline — no network fetch for built-in sounds
+- Produces zero binary assets - no `public/` directory entry, no base64 blobs
+- Works fully offline - no network fetch for built-in sounds
 - Enables the standard shadcn registry install flow (no post-install scripts, no CDN downloads)
 - Allows 9 sound packs to coexist: `soft`, `aero`, `arcade`, `organic`, `glass`, `industrial`, `minimal`, `retro`, `crisp`
 
@@ -223,7 +224,7 @@ The build pipeline for publishing a registry entry needs to:
 
 1. Run TypeScript compilation checks on all files in `components/ui/sensory-ui/`
 2. Bundle each file's content into the registry manifest JSON
-3. Run a size check — each code file minified must be within budget
+3. Run a size check - each code file minified must be within budget
 4. Verify all synthesizer functions are tree-shakeable and within bundle size budget
 5. Upload manifest JSON to the hosting CDN
 6. Tag the GitHub release with the version
@@ -249,8 +250,8 @@ This build process is TBD and will be designed once the runtime implementation i
 
 The original agents.md mentioned patching existing `components/ui/button.tsx` to import from `sensory-ui/primitives`. This is deferred because:
 
-1. It is destructive — overwrites user-edited components
-2. It is unnecessary — users can import from `sensory-ui/primitives` directly
+1. It is destructive - overwrites user-edited components
+2. It is unnecessary - users can import from `sensory-ui/primitives` directly
 3. Patching arbitrary component files reliably via the shadcn CLI is complex
 
 The v1.0 design keeps existing `components/ui/` files untouched. Users choose to use the sensory-ui component instead of the shadcn original at the point of use.

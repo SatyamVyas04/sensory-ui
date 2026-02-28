@@ -1,8 +1,8 @@
-# sensory-ui — Provider Architecture
+# sensory-ui - Provider Architecture
 
 > `components/ui/sensory-ui/config/provider.tsx`
 
-The `SensoryUIProvider` is a React context provider that wraps the entire application. It acts as the global configuration hub for the sound engine — managing whether sounds are enabled, what volume to use, and providing the `playSound` function to any sensory-ui component deep in the tree.
+The `SensoryUIProvider` is a React context provider that wraps the entire application. It acts as the global configuration hub for the sound engine - managing whether sounds are enabled, what volume to use, and providing the `playSound` function to any sensory-ui component deep in the tree.
 
 ---
 
@@ -96,7 +96,7 @@ export function useSensoryUI(): SensoryUIContextValue {
 ```tsx
 // components/ui/sensory-ui/config/provider.tsx
 
-"use client"; // Required for Next.js App Router — provider uses hooks
+"use client"; // Required for Next.js App Router - provider uses hooks
 
 import * as React from "react";
 import {
@@ -157,7 +157,7 @@ export function SensoryUIProvider({
 					volume: finalVolume,
 				});
 			} catch (err) {
-				// Silently swallow audio errors — they should never crash the UI
+				// Silently swallow audio errors - they should never crash the UI
 				if (process.env.NODE_ENV === "development") {
 					console.warn(
 						"[sensory-ui] Failed to play sound:",
@@ -221,7 +221,7 @@ function useReducedMotion(pref: SensoryUIConfig["reducedMotion"]): boolean {
 
 	if (pref === "force-off") return true; // Always suppress (treat as reduced)
 	if (pref === "force-on") return false; // Always play, ignore user preference
-	return matches; // "inherit" — respect OS/browser setting
+	return matches; // "inherit" - respect OS/browser setting
 }
 ```
 
@@ -273,7 +273,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
 | Prop       | Type                       | Default     | Description                                                                                                                    |
 | ---------- | -------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `children` | `ReactNode`                | —           | Required. The entire application tree.                                                                                         |
+| `children` | `ReactNode`                | -           | Required. The entire application tree.                                                                                         |
 | `config`   | `Partial<SensoryUIConfig>` | `undefined` | Optional runtime config overrides, merged on top of `sensory.config.js`. Useful for Storybook stories or testing environments. |
 
 ---
@@ -282,9 +282,9 @@ export default function App({ Component, pageProps }: AppProps) {
 
 The provider uses:
 
-- `useState` — to manage the muted state
-- `useEffect` — to watch `prefers-reduced-motion` changes and clean up on unmount
-- `useCallback / useMemo` — to stabilise context values
+- `useState` - to manage the muted state
+- `useEffect` - to watch `prefers-reduced-motion` changes and clean up on unmount
+- `useCallback / useMemo` - to stabilise context values
 
 All of these require a client boundary. The provider adds exactly one `"use client"` directive in the whole sensory-ui system. Every primitive component that imports `useSensoryUI` will also be a client component.
 

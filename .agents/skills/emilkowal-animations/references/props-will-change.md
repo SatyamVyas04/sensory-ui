@@ -13,7 +13,7 @@ If you notice a 1px shift at the end of your animation, use `will-change: transf
 
 ```css
 .card {
-  transition: transform 200ms ease-out;
+	transition: transform 200ms ease-out;
 }
 /* May show 1px shift when animation completes */
 ```
@@ -22,12 +22,12 @@ If you notice a 1px shift at the end of your animation, use `will-change: transf
 
 ```css
 .card {
-  transition: transform 200ms ease-out;
-  will-change: transform;
+	transition: transform 200ms ease-out;
+	will-change: transform;
 }
 /* GPU handles animation consistently, no shift */
 ```
 
-**Caution:** Don't overuse `will-change`—it consumes memory. Only apply to elements that will animate frequently.
+**Caution:** Don't overuse `will-change`-it consumes memory. Only apply to elements that will animate frequently.
 
-Reference: [@emilkowalski_](https://x.com/emilkowalski_/status/1981352193262256182)
+Reference: [@emilkowalski\_](https://x.com/emilkowalski_/status/1981352193262256182)

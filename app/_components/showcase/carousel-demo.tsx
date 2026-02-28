@@ -9,7 +9,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/sensory-ui/carousel";
-import { DemoCard } from "./demo-card";
+import { DemoCard, SoundTrigger } from "./demo-card";
 
 const SLIDES = [
   { label: "Step 1", copy: "Install the component" },
@@ -20,12 +20,13 @@ const SLIDES = [
 export function CarouselDemo() {
   return (
     <DemoCard
-      description="Prev/next trigger directional navigation cues"
+      description="Prev/next trigger navigation cues"
       icon={<IconCarouselHorizontal className="size-4" />}
       title="Carousel"
     >
-      <div className="flex flex-col gap-3">
+      <SoundTrigger soundRole="navigation.backward / forward">
         <Carousel
+          aria-label="Demo carousel showing steps"
           className="w-full"
           nextSound="navigation.forward"
           prevSound="navigation.backward"
@@ -49,7 +50,7 @@ export function CarouselDemo() {
             <CarouselNext className="relative top-0 right-0 translate-y-0" />
           </ButtonGroup>
         </Carousel>
-      </div>
+      </SoundTrigger>
     </DemoCard>
   );
 }

@@ -1,4 +1,4 @@
-# sensory-ui — Project Overview
+# sensory-ui - Project Overview
 
 > A semantic, modular, opt-in sound layer for React/Next.js apps, distributed as a **shadcn/ui registry package**.
 
@@ -8,11 +8,11 @@
 
 sensory-ui adds meaningful, non-intrusive sound feedback to UI interactions. It is not a sound effects library, not a music player, and not a game audio engine. It is a thin, composable sound layer that sits alongside your existing shadcn/ui components and responds only when you explicitly ask it to.
 
-The core idea is simple: UI interactions have meaning, and sound can reinforce that meaning — a soft click when a primary action fires, a short sweep when you navigate forward, a calming chime when a success notification appears. sensory-ui provides the infrastructure to wire those semantic sounds to the right moments, with full developer control and full accessibility compliance.
+The core idea is simple: UI interactions have meaning, and sound can reinforce that meaning - a soft click when a primary action fires, a short sweep when you navigate forward, a calming chime when a success notification appears. sensory-ui provides the infrastructure to wire those semantic sounds to the right moments, with full developer control and full accessibility compliance.
 
 **Target platform:** Next.js (App Router and Pages Router) + React  
 **Distribution:** shadcn/ui registry (CLI installable)  
-**Runtime footprint:** Minimal — audio is synthesized programmatically via the Web Audio API (no public/ assets, no base64 blobs), no global side effects, no forced re-renders
+**Runtime footprint:** Minimal - audio is synthesized programmatically via the Web Audio API (no public/ assets, no base64 blobs), no global side effects, no forced re-renders
 
 ---
 
@@ -113,7 +113,7 @@ components/
       sheet.tsx
 
 > Sounds are **synthesized programmatically** via the Web Audio API.
-> `SoundSynthesizer` functions in `sensory-ui/sounds/` generate audio at runtime via the Web Audio API —
+> `SoundSynthesizer` functions in `sensory-ui/sounds/` generate audio at runtime via the Web Audio API -
 > no files in `public/sounds/`, no base64 blobs, no network requests.
 
 sensory.config.js             ← optional project-root config file
@@ -125,21 +125,21 @@ sensory.config.js             ← optional project-root config file
 
 | Document                             | Description                                            |
 | ------------------------------------ | ------------------------------------------------------ |
-| [overview.md](./overview.md)         | This file — project-wide context and structure         |
+| [overview.md](./overview.md)         | This file - project-wide context and structure         |
 | [engine.md](./engine.md)             | Web Audio engine design and implementation spec        |
 | [provider.md](./provider.md)         | React provider architecture and context API            |
 | [sound-roles.md](./sound-roles.md)   | All sound categories, roles, durations, and file specs |
 | [installation.md](./installation.md) | Installation flow, CLI steps, post-install setup       |
 | [config.md](./config.md)             | Configuration file format and all options              |
 | [components.md](./components.md)     | Component API, `sound` prop usage, event triggers      |
-| [registry.md](./registry.md)         | shadcn registry publishing (deferred — future work)    |
+| [registry.md](./registry.md)         | shadcn registry publishing (deferred - future work)    |
 | [sound-packs.md](./sound-packs.md)   | Per-pack sound design tables (9 packs total)           |
 
 ---
 
 ## Roadmap Summary
 
-### v1.0 — Core _(complete)_
+### v1.0 - Core _(complete)_
 
 - 19 base sounds across 5 categories
 - 9 distinct sound packs: soft, aero, arcade, organic, glass, industrial, minimal, retro, crisp
@@ -149,13 +149,13 @@ sensory.config.js             ← optional project-root config file
 - `sensory.config.js` with volume, enable/disable, overrides
 - Full SSR safety and reduced-motion compliance
 
-### v1.5 — Registry + Developer Ergonomics _(deferred)_
+### v1.5 - Registry + Developer Ergonomics _(deferred)_
 
 - shadcn registry distribution (public CLI install)
 - Per-role volume multipliers in config
 - CLI helper to toggle categories interactively
 
-### v2.0 — Extended (Nice to Have)
+### v2.0 - Extended (Nice to Have)
 
 - Visual sound-role editor in the browser
 - Per-role volume multipliers in config

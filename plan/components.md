@@ -1,8 +1,8 @@
-# sensory-ui — Component API & Usage
+# sensory-ui - Component API & Usage
 
 > `components/ui/sensory-ui/*.tsx`
 
-This document describes the component API — how the `sound` prop works, what event triggers are supported, how patched source components are structured, and how to use sensory-ui with components that are not yet wrapped.
+This document describes the component API - how the `sound` prop works, what event triggers are supported, how patched source components are structured, and how to use sensory-ui with components that are not yet wrapped.
 
 ---
 
@@ -42,7 +42,7 @@ Different components fire sounds at different interaction points. The key rule i
 
 ---
 
-## Button Primitive — Detailed Spec
+## Button Primitive - Detailed Spec
 
 The Button primitive is the most commonly used sensory-ui component. It wraps the shadcn Button and adds sound playback on the primary interaction event.
 
@@ -52,7 +52,7 @@ The Button primitive is the most commonly used sensory-ui component. It wraps th
 "use client";
 
 import * as React from "react";
-// Full shadcn Button source is copied here — not imported from @/components/ui/button.
+// Full shadcn Button source is copied here - not imported from @/components/ui/button.
 // Only the root Button function is patched; buttonVariants and sub-exports are verbatim.
 import { useSensoryUI } from "./config/provider";
 import type { SoundRole } from "./config/sound-roles";
@@ -69,7 +69,7 @@ function Button({
 	const handleClick = React.useCallback(
 		(e: React.MouseEvent<HTMLButtonElement>) => {
 			if (sound) {
-				// Fire and forget — do not await; must not delay the click handler
+				// Fire and forget - do not await; must not delay the click handler
 				void playSound(sound);
 			}
 			onClick?.(e);
@@ -97,14 +97,14 @@ export { Button, buttonVariants };
 
 **Key implementation details:**
 
-- `void playSound(sound)` — never `await`. The click handler must return synchronously.
+- `void playSound(sound)` - never `await`. The click handler must return synchronously.
 - Both `onClick` and `onKeyDown` are intercepted so keyboard users get the same audio feedback as pointer users.
 - The original `onClick` and `onKeyDown` handlers (if provided) are always called, even if `playSound` throws.
-- React 19 style: no `forwardRef` needed — `ComponentProps<"button">` handles the ref natively.
+- React 19 style: no `forwardRef` needed - `ComponentProps<"button">` handles the ref natively.
 
 ---
 
-## Dialog Component — Detailed Spec
+## Dialog Component - Detailed Spec
 
 Dialog is more complex than Button because it has two distinct sound moments: open and close. The `sound` prop on Dialog should be interpreted as the **open sound**. The close sound is automatically the tonal complement.
 
@@ -159,7 +159,7 @@ export {
 
 ---
 
-## Tabs Component — Detailed Spec
+## Tabs Component - Detailed Spec
 
 ```tsx
 // components/ui/sensory-ui/tabs.tsx
@@ -204,7 +204,7 @@ Every patched component follows this exact structure:
 "use client";
 
 // Full shadcn source is copied verbatim into this file.
-// ONLY the root component function is patched — all sub-components are untouched.
+// ONLY the root component function is patched - all sub-components are untouched.
 
 import * as React from "react";
 import { SomeComponent as SomePrimitive } from "radix-ui"; // unified radix-ui package
@@ -212,7 +212,7 @@ import { useSensoryUI } from "./config/provider";
 import type { SoundRole } from "./config/sound-roles";
 // ...rest of verbatim shadcn imports...
 
-// Patched root function — added sound prop + handler interception
+// Patched root function - added sound prop + handler interception
 function Component({
 	sound,
 	onInteractionEvent,
@@ -240,11 +240,11 @@ export { Component, ComponentContent, ComponentTrigger /* etc. */ };
 Rules for patched components:
 
 1. Always `"use client"` at the top
-2. Do **not** use `React.forwardRef` — React 19 `ComponentProps` handles refs natively
+2. Do **not** use `React.forwardRef` - React 19 `ComponentProps` handles refs natively
 3. Copy the **full** shadcn source, patch only the root function
 4. Always call the original event handler after triggering sound
-5. Never `await playSound` — fire and forget
-6. Never add default sounds — `sound` must be explicitly provided
+5. Never `await playSound` - fire and forget
+6. Never add default sounds - `sound` must be explicitly provided
 7. Imports use `radix-ui` (unified package), never `@radix-ui/react-*`
 
 ---
@@ -369,7 +369,7 @@ toast({
 
 ## What Is NOT Supported
 
-- `sound` prop on components from `@/components/ui/` directly — must use `@/components/ui/sensory-ui/<component>`
+- `sound` prop on components from `@/components/ui/` directly - must use `@/components/ui/sensory-ui/<component>`
 - Hover sounds in v1.0 (`hoverSound` is planned for v1.5)
 - Multiple sounds on the same interaction (one role per event)
 - Looping sounds (all sounds play once)

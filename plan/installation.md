@@ -1,4 +1,4 @@
-# sensory-ui — Installation & Setup
+# sensory-ui - Installation & Setup
 
 This document describes the full installation flow, what files are created, how the provider is configured, and how to verify everything is working.
 
@@ -35,16 +35,16 @@ During installation the CLI will prompt:
 
 ```
 ? Choose a sound pack:
-  > default        (clean, modern SaaS — filtered noise clicks + sine sweeps)
-    arcade         (8-bit chiptune — square waves, stepped pitch, NES vibe)
-    wind           (organic/airy — bandpass noise bursts + wind chime hybrids)
-    retro          (synthwave — dual detuned sawtooth, chord stabs, Moog vibe)
+  > default        (clean, modern SaaS - filtered noise clicks + sine sweeps)
+    arcade         (8-bit chiptune - square waves, stepped pitch, NES vibe)
+    wind           (organic/airy - bandpass noise bursts + wind chime hybrids)
+    retro          (synthwave - dual detuned sawtooth, chord stabs, Moog vibe)
 ```
 
 **What this choice does:**
 
 - Sets the `theme` field in `sensory.config.js` to the chosen pack name
-- At runtime, `resolveRole()` looks up `packRegistry[theme][role]` and returns a `SoundSynthesizer` function that generates audio via the Web Audio API — no audio files, no network requests
+- At runtime, `resolveRole()` looks up `packRegistry[theme][role]` and returns a `SoundSynthesizer` function that generates audio via the Web Audio API - no audio files, no network requests
 
 All packs use the same role names and registry structure. Swapping packs later is a one-line change in `sensory.config.js` or passing `config={{ theme: "arcade" }}` to `SensoryUIProvider`. See [sound-packs.md](./sound-packs.md) for per-pack sound design details.
 
@@ -84,9 +84,9 @@ components/ui/sensory-ui/
 sensory.config.js       ← generated at project root
 ```
 
-**Design goal:** Everything inside `components/ui/sensory-ui/`. Audio is generated **programmatically** via the Web Audio API inside `sensory-ui/sounds/` — no files in `public/`, no asset serving, no base64 blobs. The only file outside that folder is:
+**Design goal:** Everything inside `components/ui/sensory-ui/`. Audio is generated **programmatically** via the Web Audio API inside `sensory-ui/sounds/` - no files in `public/`, no asset serving, no base64 blobs. The only file outside that folder is:
 
-- `sensory.config.js` — project-root config (optional, can be deleted to use defaults)
+- `sensory.config.js` - project-root config (optional, can be deleted to use defaults)
 
 ---
 
@@ -128,7 +128,7 @@ export default function App({ Component, pageProps }: AppProps) {
 }
 ```
 
-The provider is a client component. The root layout can remain a server component — Next.js allows client components to receive and render server component children transparently.
+The provider is a client component. The root layout can remain a server component - Next.js allows client components to receive and render server component children transparently.
 
 ---
 
@@ -170,7 +170,7 @@ If you hear nothing:
 2. Check that `sensory.config.js` has `enabled: true`
 3. Check that the `sounds/*.ts` modules were installed correctly (open `components/ui/sensory-ui/sounds/activation.ts` and verify it exports `SoundSynthesizer` functions, not empty strings)
 4. Check that the click is a direct user gesture (not triggered on mount)
-5. Check that your browser has not blocked the `AudioContext` — Chrome suspends it until a user gesture. The engine resumes it automatically on the first `playSound()` call.
+5. Check that your browser has not blocked the `AudioContext` - Chrome suspends it until a user gesture. The engine resumes it automatically on the first `playSound()` call.
 
 ---
 

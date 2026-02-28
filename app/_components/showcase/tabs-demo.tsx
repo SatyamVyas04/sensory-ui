@@ -7,7 +7,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/sensory-ui/tabs";
-import { DemoCard } from "./demo-card";
+import { DemoCard, SoundTrigger } from "./demo-card";
 
 export function TabsDemo() {
   return (
@@ -16,36 +16,33 @@ export function TabsDemo() {
       icon={<IconLayoutGrid className="size-4" />}
       title="Tabs"
     >
-      <div className="flex flex-col gap-1">
+      <SoundTrigger soundRole="navigation.switch">
         <Tabs defaultValue="preview" sound="navigation.switch">
-          <TabsList>
+          <TabsList className="w-full">
             <TabsTrigger value="preview">Preview</TabsTrigger>
             <TabsTrigger value="code">Code</TabsTrigger>
             <TabsTrigger value="docs">Docs</TabsTrigger>
           </TabsList>
           <TabsContent
-            className="mt-3 text-muted-foreground text-xs"
+            className="mt-1 text-muted-foreground text-xs"
             value="preview"
           >
-            Preview panel — switch tabs to trigger sound.
+            Preview - switch tabs to trigger sound.
           </TabsContent>
           <TabsContent
-            className="mt-3 text-muted-foreground text-xs"
+            className="mt-1 text-muted-foreground text-xs"
             value="code"
           >
-            Code panel — navigation.switch fired.
+            Code panel - navigation.switch fired.
           </TabsContent>
           <TabsContent
-            className="mt-3 text-muted-foreground text-xs"
+            className="mt-1 text-muted-foreground text-xs"
             value="docs"
           >
-            Docs panel — another switch transition.
+            Docs panel - another switch transition.
           </TabsContent>
         </Tabs>
-        <span className="font-mono text-[10px] text-muted-foreground/50 leading-none">
-          navigation.switch
-        </span>
-      </div>
+      </SoundTrigger>
     </DemoCard>
   );
 }

@@ -15,11 +15,11 @@ export function Footer() {
             width={20}
           />
           <span className="font-medium text-foreground">sensory-ui</span>
-          <span className="text-muted-foreground/60">·</span>
+          <span className="text-muted-foreground">·</span>
           <span>
             by{" "}
             <a
-              className="underline underline-offset-2 transition-colors hover:text-foreground"
+              className="underline underline-offset-2 transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               href="https://github.com/SatyamVyas04"
               rel="noopener noreferrer"
               target="_blank"
@@ -32,7 +32,7 @@ export function Footer() {
         <nav aria-label="Footer navigation" className="flex items-center gap-5">
           <a
             aria-label="GitHub"
-            className="text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             href="https://github.com/SatyamVyas04/sensory-ui"
             rel="noopener noreferrer"
             target="_blank"
@@ -41,14 +41,14 @@ export function Footer() {
           </a>
           <a
             aria-label="X (Twitter)"
-            className="text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             href="https://x.com/SatyamVyas04"
             rel="noopener noreferrer"
             target="_blank"
           >
             <IconBrandX aria-hidden="true" className="size-4.5" />
           </a>
-          <span className="text-muted-foreground/70 text-xs">MIT License</span>
+          <span className="text-muted-foreground text-xs">MIT License</span>
         </nav>
       </div>
     </footer>

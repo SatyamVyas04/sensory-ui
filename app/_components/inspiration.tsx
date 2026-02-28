@@ -49,7 +49,7 @@ export function Inspiration() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-          {/* Left column — reasoning */}
+          {/* Left column - reasoning */}
           <motion.div
             initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
             transition={{ duration: 0.25, ease }}
@@ -60,7 +60,7 @@ export function Inspiration() {
               Inspiration
             </span>
             <h2
-              className="mt-2 text-balance font-semibold text-3xl sm:text-4xl"
+              className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
               id="inspiration-heading"
             >
               The forgotten dimension.
@@ -77,7 +77,7 @@ export function Inspiration() {
                 <cite>
                   Material Design,{" "}
                   <a
-                    className="underline underline-offset-2 hover:text-foreground"
+                    className="underline underline-offset-2 hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     href="https://m2.material.io/design/sound/applying-sound-to-ui.html#sound-use-cases"
                     rel="noopener noreferrer"
                     target="_blank"
@@ -111,7 +111,7 @@ export function Inspiration() {
             </div>
           </motion.div>
 
-          {/* Right column — sound categories */}
+          {/* Right column - sound categories */}
           <div>
             <motion.p
               className="mb-4 font-mono text-muted-foreground text-xs uppercase tracking-widest"

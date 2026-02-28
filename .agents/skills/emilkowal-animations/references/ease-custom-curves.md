@@ -13,7 +13,7 @@ Built-in CSS easing curves (ease, ease-in, ease-out) are usually not strong enou
 
 ```css
 .dropdown {
-  transition: transform 200ms ease-out;
+	transition: transform 200ms ease-out;
 }
 /* Feels generic and muted */
 ```
@@ -22,14 +22,15 @@ Built-in CSS easing curves (ease, ease-in, ease-out) are usually not strong enou
 
 ```css
 .dropdown {
-  transition: transform 200ms cubic-bezier(0.32, 0.72, 0, 1);
+	transition: transform 200ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 /* Feels energetic and intentional */
 ```
 
-**Exception:** The `ease` keyword works well for basic hover effects like background color changes—anything more complex needs a custom curve.
+**Exception:** The `ease` keyword works well for basic hover effects like background color changes-anything more complex needs a custom curve.
 
 **Resources for custom curves:**
+
 - [easings.co](https://easings.co)
 - [easing.dev](https://easing.dev)
 

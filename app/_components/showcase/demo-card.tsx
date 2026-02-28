@@ -1,8 +1,9 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+// iOS-style easing for smooth, natural motion
+const ease = [0.32, 0.72, 0, 1] as const;
 
 interface DemoCardProps {
   children: React.ReactNode;
@@ -23,7 +24,7 @@ export function SoundTrigger({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-start gap-1">
+    <div className="flex flex-col gap-1.5">
       {children}
       <span className="font-mono text-[10px] text-muted-foreground/50 leading-none">
         {soundRole}
@@ -38,13 +39,15 @@ export function DemoCard({
   icon,
   children,
 }: DemoCardProps) {
+  const prefersReduced = useReducedMotion();
+
   return (
     <motion.div
-      className="flex flex-col border border-border bg-card p-5 transition-all hover:border-primary"
-      initial={{ opacity: 0 }}
-      transition={{ duration: 0.3, ease }}
-      viewport={{ once: true, margin: "-80px" }}
-      whileInView={{ opacity: 1 }}
+      className="flex flex-col border border-border bg-card p-5 transition-[border-color] duration-200 hover:border-primary/50"
+      initial={{ opacity: 0, y: prefersReduced ? 0 : 8 }}
+      transition={{ duration: 0.2, ease }}
+      viewport={{ once: true, margin: "-60px", amount: 0.2 }}
+      whileInView={{ opacity: 1, y: 0 }}
     >
       <div className="mb-1 flex items-center gap-2">
         <span aria-hidden="true" className="text-primary">

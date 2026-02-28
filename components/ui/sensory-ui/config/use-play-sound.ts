@@ -19,7 +19,7 @@ export interface UsePlaySoundOptions {
 }
 
 export interface UsePlaySoundReturn {
-  /** Imperatively trigger the sound. Safe to call during render — it is
+  /** Imperatively trigger the sound. Safe to call during render - it is
    *  memoised and will no-op if the provider is disabled or muted. */
   play: () => void;
   /** Whether audio is currently enabled (provider not disabled, not muted,
@@ -28,7 +28,7 @@ export interface UsePlaySoundReturn {
 }
 
 /**
- * `usePlaySound` — low-level hook for imperative sound playback.
+ * `usePlaySound` - low-level hook for imperative sound playback.
  *
  * Use this when you need to trigger a sound outside a sensory-ui component,
  * for example in a custom component or an event handler.

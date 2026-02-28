@@ -206,7 +206,7 @@ function createTickSound(
     const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
     const duration = tune.duration * instrument.decayMult;
 
-    // Filtered-noise tick — used for scroll/focus where filterFreq is defined
+    // Filtered-noise tick - used for scroll/focus where filterFreq is defined
     if (tune.filterFreq) {
       const bufLen = Math.floor(ctx.sampleRate * Math.max(0.004, duration * 0.5));
       const buffer = createNoiseBuffer(ctx, bufLen / ctx.sampleRate, "white");
@@ -239,7 +239,7 @@ function createTickSound(
       return { stop: () => { try { src.stop(); } catch { /* ok */ } } };
     }
 
-    // Pure tone tick — used when only frequency is defined (e.g., system.focus)
+    // Pure tone tick - used when only frequency is defined (e.g., system.focus)
     const osc = ctx.createOscillator();
     osc.type = instrument.oscType;
     osc.frequency.value = (tune.frequency ?? 750) * instrument.pitchMult;

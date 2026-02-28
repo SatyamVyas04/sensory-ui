@@ -1,6 +1,6 @@
 "use client";
 
-import { IconCursorText } from "@tabler/icons-react";
+import { IconClick } from "@tabler/icons-react";
 import { Button } from "@/components/ui/sensory-ui/button";
 import { DemoCard, SoundTrigger } from "./demo-card";
 
@@ -8,7 +8,7 @@ export function ButtonDemo() {
   return (
     <DemoCard
       description="Click to trigger each activation"
-      icon={<IconCursorText className="size-4" />}
+      icon={<IconClick className="size-4" />}
       title="Button"
     >
       <div className="flex flex-col gap-3">
@@ -22,7 +22,7 @@ export function ButtonDemo() {
             className="w-full"
             size="sm"
             sound="activation.subtle"
-            variant="outline"
+            variant="secondary"
           >
             Subtle
           </Button>
@@ -32,7 +32,7 @@ export function ButtonDemo() {
             className="w-full"
             size="sm"
             sound="activation.confirm"
-            variant="secondary"
+            variant="outline"
           >
             Confirm
           </Button>

@@ -1,4 +1,4 @@
-# sensory-ui — Sound Roles & Categories
+# sensory-ui - Sound Roles & Categories
 
 > `components/ui/sensory-ui/config/sound-roles.ts`
 
@@ -24,7 +24,7 @@ Total: **19 sounds**
 
 ## Category: `activation`
 
-Fired when the user performs a primary direct action — pressing a button, confirming a form, triggering an error.
+Fired when the user performs a primary direct action - pressing a button, confirming a form, triggering an error.
 
 | Role    | Full Key             | Duration | Description                                 | Typical Trigger                 |
 | ------- | -------------------- | -------- | ------------------------------------------- | ------------------------------- |
@@ -43,7 +43,7 @@ Fired when the user performs a primary direct action — pressing a button, conf
 
 ## Category: `navigation`
 
-Fired when the user moves through space — between pages, tabs, steps, or scrollable areas.
+Fired when the user moves through space - between pages, tabs, steps, or scrollable areas.
 
 | Role     | Full Key              | Duration   | Description                                           | Typical Trigger                    |
 | -------- | --------------------- | ---------- | ----------------------------------------------------- | ---------------------------------- |
@@ -55,14 +55,14 @@ Fired when the user moves through space — between pages, tabs, steps, or scrol
 **Design notes:**
 
 - `navigation.forward` and `navigation.backward` should be **tonal inversions** of each other (same harmonic content, opposite pitch arc).
-- `navigation.scroll` is meant to be barely audible — a subtle tick, not a whoosh. Volume should be 50% of other navigation sounds.
+- `navigation.scroll` is meant to be barely audible - a subtle tick, not a whoosh. Volume should be 50% of other navigation sounds.
 - All navigation sounds should have a whoosh-like or sweep quality, not a stab or click quality.
 
 ---
 
 ## Category: `notifications`
 
-Fired when the system delivers feedback to the user — toasts, alerts, banners, inline validation messages.
+Fired when the system delivers feedback to the user - toasts, alerts, banners, inline validation messages.
 
 | Role    | Full Key                | Duration   | Description                                  | Typical Trigger                  |
 | ------- | ----------------------- | ---------- | -------------------------------------------- | -------------------------------- |
@@ -73,7 +73,7 @@ Fired when the system delivers feedback to the user — toasts, alerts, banners,
 
 **Design notes:**
 
-- `notifications.passive` should feel like a whisper — something you hear but don't need to act on.
+- `notifications.passive` should feel like a whisper - something you hear but don't need to act on.
 - `notifications.success` uses ascending notes (C5 → E5) for a positive, resolved feeling.
 - `notifications.warning` repeats the same note twice (A4 → A4) to grab attention without negativity.
 - `notifications.error` uses descending tritone (B4 → F4) for tension/negative feeling without being harsh.
@@ -96,13 +96,13 @@ Fired when UI surfaces open, close, expand, collapse, or receive focus. These ar
 
 - `system.open` / `system.close` are a **tonal inversion pair**: if open rises in pitch, close falls.
 - `system.expand` / `system.collapse` are the same idea but slightly shorter and lighter. Accordion feels smaller than a Dialog.
-- `system.focus` is optional to implement in v1.0 — it is the most subtle sound in the whole set and must degrade gracefully if callers decide not to use it.
+- `system.focus` is optional to implement in v1.0 - it is the most subtle sound in the whole set and must degrade gracefully if callers decide not to use it.
 
 ---
 
 ## Category: `hero`
 
-Fired for significant completion moments — task completion, onboarding milestones, achievement unlocks. These are special-occasion sounds and are **disabled by default** in `sensory.config.js`.
+Fired for significant completion moments - task completion, onboarding milestones, achievement unlocks. These are special-occasion sounds and are **disabled by default** in `sensory.config.js`.
 
 | Role      | Full Key         | Duration     | Description                        | Typical Trigger                        |
 | --------- | ---------------- | ------------ | ---------------------------------- | -------------------------------------- |
@@ -113,7 +113,7 @@ Fired for significant completion moments — task completion, onboarding milesto
 
 - These are the only sounds in sensory-ui that are allowed to be longer than 1 second.
 - Both should feel rewarding, not over-the-top.
-- `hero.milestone` is intentionally richer — it can have a small harmonic tail.
+- `hero.milestone` is intentionally richer - it can have a small harmonic tail.
 - Because Hero is disabled by default, developers must explicitly enable it in `sensory.config.js` and then assign the sound prop. This double opt-in prevents accidental hero sounds in production.
 
 ---
@@ -164,7 +164,7 @@ export type SoundRole =
 	| SystemRole
 	| HeroRole;
 
-/** All valid role strings — useful for validation and config autocompletion. */
+/** All valid role strings - useful for validation and config autocompletion. */
 export const ALL_SOUND_ROLES: SoundRole[] = [
 	"activation.primary",
 	"activation.subtle",
@@ -261,13 +261,13 @@ When providing custom audio file overrides, files should meet these requirements
 
 | Requirement              | Spec                                                                          |
 | ------------------------ | ----------------------------------------------------------------------------- |
-| Format                   | `.mp3` (primary) — maximum browser compatibility                              |
+| Format                   | `.mp3` (primary) - maximum browser compatibility                              |
 | Fallback format          | `.ogg` (optional, for open-source licensing preference)                       |
 | Sample rate              | 44.1 kHz or 48 kHz                                                            |
 | Bit depth                | 16-bit                                                                        |
-| Channels                 | Mono (L+R identical) — stereo is allowed but mono preferred for smaller files |
+| Channels                 | Mono (L+R identical) - stereo is allowed but mono preferred for smaller files |
 | Peak normalization       | −1.0 dBTP (true peak)                                                         |
-| Leading silence          | None — trimmed to first transient                                             |
+| Leading silence          | None - trimmed to first transient                                             |
 | Trailing silence         | ≤ 20 ms tail, then trimmed                                                    |
 | Per-category size budget | ≤ 50 KB total per category                                                    |
 | Per-file size guideline  | ≤ 15 KB per file                                                              |
@@ -280,7 +280,7 @@ When providing custom audio file overrides, files should meet these requirements
 
 Users can replace any role's audio in two ways:
 
-1. **Use config overrides** — point individual roles to a custom URL path in `sensory.config.js`:
+1. **Use config overrides** - point individual roles to a custom URL path in `sensory.config.js`:
 
 ```js
 overrides: {
@@ -289,6 +289,6 @@ overrides: {
 }
 ```
 
-2. **Create a custom instrument/pack** — see `sounds/README.md` for the tunes + instruments API.
+2. **Create a custom instrument/pack** - see `sounds/README.md` for the tunes + instruments API.
 
-Custom override URLs bypass the synthesizer — the engine fetches them by URL as normal. Custom files must still meet the normalization and format spec above.
+Custom override URLs bypass the synthesizer - the engine fetches them by URL as normal. Custom files must still meet the normalization and format spec above.

@@ -37,7 +37,7 @@ export interface SensoryUIConfig {
 }
 
 /**
- * Default config — used when no overrides are provided.
+ * Default config - used when no overrides are provided.
  * Edit sensory.config.js at the project root or pass a `config` prop to
  * <SensoryUIProvider> to customise at runtime.
  */
@@ -50,7 +50,7 @@ export const defaultConfig: SensoryUIConfig = {
     navigation: true,
     notifications: true,
     system: true,
-    hero: false, // Disabled by default — must be explicitly enabled
+    hero: false, // Disabled by default - must be explicitly enabled
   },
   overrides: {},
   reducedMotion: "inherit",
@@ -77,10 +77,10 @@ export function mergeConfig(
  * Resolve a SoundRole to its audio source.
  *
  * Resolution priority:
- *   1. config.overrides[role]    — user-defined string override (URL or base64)
- *   2. packRegistry[theme][role] — synthesizer from the active sound pack
- *   3. packRegistry.aero[role]   — fallback to "aero" if theme name is unknown
- *   4. null                      — category disabled or role not found
+ *   1. config.overrides[role]    - user-defined string override (URL or base64)
+ *   2. packRegistry[theme][role] - synthesizer from the active sound pack
+ *   3. packRegistry.aero[role]   - fallback to "aero" if theme name is unknown
+ *   4. null                      - category disabled or role not found
  */
 export function resolveRole(
   role: SoundRole,

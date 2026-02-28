@@ -7,7 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/sensory-ui/accordion";
-import { DemoCard } from "./demo-card";
+import { DemoCard, SoundTrigger } from "./demo-card";
 
 export function AccordionDemo() {
   return (
@@ -16,7 +16,7 @@ export function AccordionDemo() {
       icon={<IconChevronDown className="size-4" />}
       title="Accordion"
     >
-      <div className="flex flex-col gap-3">
+      <SoundTrigger soundRole="system.expand / collapse">
         <Accordion
           collapseSound="system.collapse"
           collapsible
@@ -32,20 +32,12 @@ export function AccordionDemo() {
           <AccordionItem value="how">
             <AccordionTrigger>How does it work?</AccordionTrigger>
             <AccordionContent>
-              Add a <code>sound</code> prop — the Web Audio engine handles the
+              Add a <code>sound</code> prop - the Web Audio engine handles the
               rest.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        <div className="flex gap-4">
-          <span className="font-mono text-[10px] text-muted-foreground/50 leading-none">
-            system.expand
-          </span>
-          <span className="font-mono text-[10px] text-muted-foreground/50 leading-none">
-            system.collapse
-          </span>
-        </div>
-      </div>
+      </SoundTrigger>
     </DemoCard>
   );
 }

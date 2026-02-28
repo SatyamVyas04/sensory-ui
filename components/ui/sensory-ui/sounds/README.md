@@ -5,7 +5,8 @@ audio files to download, no `public/sounds/` directory, and no base64 blobs. Eve
 `SoundSynthesizer` function that runs directly in the browser.
 
 > Credit & reference: [Generating Sounds with AI](https://www.userinterface.wiki/generating-sounds-with-ai)
-> — the synthesis patterns used here are drawn directly from that guide.
+>
+> - the synthesis patterns used here are drawn directly from that guide.
 
 ---
 
@@ -13,9 +14,9 @@ audio files to download, no `public/sounds/` directory, and no base64 blobs. Eve
 
 sensory-ui uses an **instrument-based sound architecture** that separates:
 
-1. **Tunes** — Define the musical content (frequencies, durations, patterns, contours)
-2. **Instruments** — Define the synthesis technique (waveforms, filters, envelopes, timbres)
-3. **Factory** — Combines a tune with an instrument to produce a playable sound
+1. **Tunes** - Define the musical content (frequencies, durations, patterns, contours)
+2. **Instruments** - Define the synthesis technique (waveforms, filters, envelopes, timbres)
+3. **Factory** - Combines a tune with an instrument to produce a playable sound
 
 This separation allows the **same tunes to be played by different instruments**, creating
 distinct soundpack characters with minimal code duplication.
@@ -41,15 +42,15 @@ All 9 packs use the instrument-based system for consistent, expandable sounds:
 
 | Pack         | Character                                          | Default |
 | ------------ | -------------------------------------------------- | ------- |
-| `soft`       | Warm, rounded, gentle — like felt mallets on pads  |         |
-| `aero`       | Airy, breathy, ethereal — wind through chimes      | ✓       |
-| `arcade`     | 8-bit chiptune — square waves, punchy              |         |
-| `organic`    | Natural, warm, wooden — marimba, wood blocks       |         |
-| `glass`      | Crystalline, bright, resonant — struck glass/bells |         |
-| `industrial` | Metallic, harsh, mechanical — machines and metal   |         |
-| `minimal`    | Clean, sparse, understated — pure tones only       |         |
-| `retro`      | Analog synth — warm square waves, vintage          |         |
-| `crisp`      | Sharp, defined, precise — high-quality headphones  |         |
+| `soft`       | Warm, rounded, gentle - like felt mallets on pads  |         |
+| `aero`       | Airy, breathy, ethereal - wind through chimes      | ✓       |
+| `arcade`     | 8-bit chiptune - square waves, punchy              |         |
+| `organic`    | Natural, warm, wooden - marimba, wood blocks       |         |
+| `glass`      | Crystalline, bright, resonant - struck glass/bells |         |
+| `industrial` | Metallic, harsh, mechanical - machines and metal   |         |
+| `minimal`    | Clean, sparse, understated - pure tones only       |         |
+| `retro`      | Analog synth - warm square waves, vintage          |         |
+| `crisp`      | Sharp, defined, precise - high-quality headphones  |         |
 
 ---
 
@@ -79,14 +80,14 @@ Each sound role is defined by a tune with one of these types:
 
 Each instrument defines synthesis characteristics:
 
-| Property      | Description                                                        |
-| ------------- | ------------------------------------------------------------------ |
-| `oscType`     | Oscillator type: `'sine'`, `'square'`, `'sawtooth'`, `'triangle'` |
-| `filterFreq`  | Base filter cutoff frequency in Hz                                 |
-| `q`           | Filter Q / resonance factor                                        |
-| `decayMult`   | Multiplier applied to the base decay time from the tune            |
-| `gainMult`    | Overall gain (loudness) multiplier for this instrument             |
-| `pitchMult`   | Multiplies the base pitch (for transposition / octave shifting)    |
+| Property     | Description                                                       |
+| ------------ | ----------------------------------------------------------------- |
+| `oscType`    | Oscillator type: `'sine'`, `'square'`, `'sawtooth'`, `'triangle'` |
+| `filterFreq` | Base filter cutoff frequency in Hz                                |
+| `q`          | Filter Q / resonance factor                                       |
+| `decayMult`  | Multiplier applied to the base decay time from the tune           |
+| `gainMult`   | Overall gain (loudness) multiplier for this instrument            |
+| `pitchMult`  | Multiplies the base pitch (for transposition / octave shifting)   |
 
 ---
 
@@ -191,4 +192,4 @@ overrides: {
 - Use **exponential envelopes**: They sound more natural than linear.
 - **Test with reduced motion**: Sounds should respect `prefers-reduced-motion`.
 - **Balance volume**: Use the `volumeScale` property to ensure consistency across packs.
-- All sounds are synthesized at runtime — zero network requests, zero audio files needed.
+- All sounds are synthesized at runtime - zero network requests, zero audio files needed.

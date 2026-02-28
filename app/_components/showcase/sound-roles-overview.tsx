@@ -12,7 +12,7 @@ export function SoundRolesOverview() {
     >
       <p className="text-muted-foreground text-xs/relaxed">
         Beyond the interactive demos, sensory-ui defines additional semantic
-        roles for navigation, notifications, system focus, and hero moments —
+        roles for navigation, notifications, system focus, and hero moments -
         each wired through the same{" "}
         <code className="bg-muted px-1 py-0.5 font-mono text-[10px]">
           sound

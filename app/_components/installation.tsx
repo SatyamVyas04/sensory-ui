@@ -5,7 +5,6 @@ import {
   IconCheck,
   IconClock,
   IconCopy,
-  IconTerminal2,
 } from "@tabler/icons-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
@@ -30,7 +29,7 @@ const TOKEN_CONFIG = [
     pattern: /^[a-zA-Z_][a-zA-Z0-9_]*(?==)/,
     className: "text-amber-500 dark:text-amber-400",
   },
-  { pattern: /^\/\/.*/, className: "text-muted-foreground/60" },
+  { pattern: /^\/\/.*/, className: "text-muted-foreground" },
 ] as const;
 
 function tokenizeLine(
@@ -167,34 +166,36 @@ function InstallCard({
 
   return (
     <motion.article
-      className="relative grid gap-0 md:grid-cols-[auto_1fr]"
+      className="relative grid min-w-0 grid-cols-[auto_1fr] gap-0"
       initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
       transition={{ duration: 0.25, ease, delay }}
       viewport={{ once: true, margin: "-100px", amount: 0.3 }}
       whileInView={{ opacity: 1, y: 0 }}
     >
       {/* Timeline column */}
-      <div className="relative flex flex-col items-center pr-6 md:pr-8">
+      <div className="relative flex flex-col items-center pr-4 sm:pr-6 md:pr-8">
         {/* Number badge */}
-        <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center border-2 border-primary bg-background">
-          <span className="font-bold font-mono text-primary text-xl tabular-nums">
+        <div className="relative z-10 flex size-10 shrink-0 items-center justify-center border-2 border-primary bg-background sm:size-12">
+          <span className="font-bold font-mono text-base text-primary tabular-nums sm:text-xl">
             {number}
           </span>
         </div>
 
         {/* Connecting line */}
         {!isLast && (
-          <div className="my-1 min-h-30 w-0.5 flex-1 bg-linear-to-b from-primary/60 via-primary/30 to-primary/10" />
+          <div className="my-1 min-h-20 w-0.5 flex-1 bg-linear-to-b from-primary/60 via-primary/30 to-primary/10 sm:min-h-30" />
         )}
       </div>
 
       {/* Content column */}
-      <div className="group relative mb-10 flex flex-col border border-border bg-card/40 backdrop-blur-sm transition-all hover:border-primary/40 hover:bg-card/60 md:mb-12">
+      <div className="group relative mb-8 flex min-w-0 flex-col border border-border bg-card/40 backdrop-blur-sm transition-all hover:border-primary/40 hover:bg-card/60 sm:mb-10 md:mb-12">
         {/* Header */}
-        <div className="flex flex-col gap-2 border-border border-b px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex-1">
+        <div className="flex flex-col gap-2 border-border border-b px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-4">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-foreground text-lg">{title}</h3>
+              <h3 className="font-semibold text-base text-foreground sm:text-lg">
+                {title}
+              </h3>
               <span className="inline-flex items-center gap-1 border border-primary/20 bg-primary/5 px-2 py-0.5 font-mono text-[10px] text-primary uppercase tracking-wider">
                 <IconClock aria-hidden="true" className="size-3" />
                 {effort}
@@ -214,21 +215,21 @@ function InstallCard({
               animate={{ scale: copied ? 0.95 : 1, opacity: copied ? 0 : 1 }}
               transition={{ duration: 0.12, ease }}
             >
-              <IconCopy className="size-4" />
+              <IconCopy aria-hidden="true" className="size-4" />
             </motion.div>
             <motion.div
               animate={{ scale: copied ? 1 : 0.95, opacity: copied ? 1 : 0 }}
               className="absolute"
               transition={{ duration: 0.12, ease }}
             >
-              <IconCheck className="size-4" />
+              <IconCheck aria-hidden="true" className="size-4" />
             </motion.div>
           </Button>
         </div>
 
         {/* Code block */}
-        <div className="relative flex-1 overflow-x-auto bg-muted/30 p-5">
-          <pre className="font-mono text-foreground text-xs/relaxed">
+        <div className="relative min-w-0 flex-1 overflow-x-auto bg-muted/30 p-3 sm:p-5">
+          <pre className="font-mono text-[11px]/relaxed text-foreground sm:text-xs/relaxed">
             <code>
               <HighlightedCode code={code} />
             </code>
@@ -236,7 +237,7 @@ function InstallCard({
         </div>
 
         {/* Status indicator */}
-        <div className="border-border border-t bg-muted/10 px-5 py-2.5">
+        <div className="border-border border-t bg-muted/10 px-3 py-2 sm:px-5 sm:py-2.5">
           <div className="flex items-center gap-2 text-muted-foreground text-xs">
             <IconArrowRight
               aria-hidden="true"
@@ -270,19 +271,16 @@ export function Installation() {
           viewport={{ once: true, margin: "-100px", amount: 0.3 }}
           whileInView={{ opacity: 1, y: 0 }}
         >
-          <div className="mb-8 flex items-center gap-2.5">
-            <IconTerminal2 aria-hidden="true" className="size-6 text-primary" />
-            <span className="font-mono text-muted-foreground text-xs uppercase tracking-widest">
-              Quick Start
-            </span>
-          </div>
+          <span className="font-mono text-muted-foreground text-xs uppercase tracking-widest">
+            Quick Start
+          </span>
           <h2
-            className="text-balance font-semibold text-3xl sm:text-4xl"
+            className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
             id="installation-heading"
           >
             Ship sound in 3 minutes.
           </h2>
-          <p className="mt-4 max-w-2xl text-base/relaxed text-muted-foreground">
+          <p className="mt-4 max-w-2xl text-muted-foreground text-sm/relaxed">
             Drop-in replacement for shadcn/ui. No breaking changes. Add the{" "}
             <code className="rounded-none bg-muted px-1.5 py-0.5 font-mono text-xs">
               sound

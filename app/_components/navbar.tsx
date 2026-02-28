@@ -14,7 +14,7 @@ const ease = [0.32, 0.72, 0, 1] as const;
 export function Navbar({ stars }: NavbarProps) {
   return (
     <>
-      {/* Skip to main content — accessibility */}
+      {/* Skip to main content - accessibility */}
       <a
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:bg-primary focus:px-3 focus:py-1.5 focus:font-medium focus:text-primary-foreground focus:text-xs focus-visible:ring-2 focus-visible:ring-ring"
         href="#main-content"

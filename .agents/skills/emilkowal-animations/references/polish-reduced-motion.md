@@ -13,7 +13,7 @@ Animations can cause motion sickness or distract users with attention disorders.
 
 ```css
 .element {
-  animation: bounce 0.2s ease-out;
+	animation: bounce 0.2s ease-out;
 }
 /* No consideration for motion sensitivity */
 ```
@@ -22,16 +22,16 @@ Animations can cause motion sickness or distract users with attention disorders.
 
 ```css
 .element {
-  animation: bounce 0.2s ease-out;
+	animation: bounce 0.2s ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .element {
-    animation: fade 0.2s ease-out; /* Gentler alternative */
-  }
+	.element {
+		animation: fade 0.2s ease-out; /* Gentler alternative */
+	}
 }
 ```
 
-Don't remove all animation—provide safer alternatives that still communicate state changes.
+Don't remove all animation-provide safer alternatives that still communicate state changes.
 
 Reference: [Great Animations](https://emilkowal.ski/ui/great-animations)

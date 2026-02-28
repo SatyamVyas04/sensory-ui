@@ -57,12 +57,12 @@ export function Ideology() {
             Philosophy
           </span>
           <h2
-            className="mt-2 text-balance font-semibold text-3xl sm:text-4xl"
+            className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
             id="ideology-heading"
           >
             Sound with intention.
           </h2>
-          <p className="mt-3 max-w-lg text-muted-foreground text-sm/relaxed">
+          <p className="mt-4 max-w-lg text-muted-foreground text-sm/relaxed">
             UI sound is a craft, not a gimmick. Four principles keep sensory-ui
             from becoming noise.
           </p>

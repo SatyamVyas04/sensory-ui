@@ -1,15 +1,15 @@
-# sensory-ui — Sound Packs
+# sensory-ui - Sound Packs
 
 > `components/ui/sensory-ui/sounds/`
 
 Sound packs are sets of `SoundSynthesizer` functions that cover all 19 sound roles. Each pack has a
-distinct character — swap between them by changing `theme` in `sensory.config.js`.
+distinct character - swap between them by changing `theme` in `sensory.config.js`.
 
-All packs generate audio **programmatically via the Web Audio API** — no audio files,
+All packs generate audio **programmatically via the Web Audio API** - no audio files,
 no base64 blobs, no network requests.
 
 > Credit: synthesis patterns adapted from
-> [Generating Sounds with AI — userinterface.wiki](https://www.userinterface.wiki/generating-sounds-with-ai)
+> [Generating Sounds with AI - userinterface.wiki](https://www.userinterface.wiki/generating-sounds-with-ai)
 
 ---
 
@@ -17,20 +17,20 @@ no base64 blobs, no network requests.
 
 sensory-ui uses an **instrument-based architecture** that separates:
 
-1. **Tunes** (`sounds/core/tunes.ts`) — Define the musical content:
+1. **Tunes** (`sounds/core/tunes.ts`) - Define the musical content:
     - Frequencies, durations, pitch contours
     - Note sequences for arpeggios
     - Filter settings for noise-based sounds
     - Volume levels and decay times
 
-2. **Instruments** (`sounds/core/instruments.ts`) — Define the synthesis technique:
+2. **Instruments** (`sounds/core/instruments.ts`) - Define the synthesis technique:
     - Waveform type (sine, square, sawtooth, triangle)
     - Noise characteristics (white, pink, brown)
     - Filter settings and resonance
     - Envelope shapes (attack/decay curves)
     - Harmonic content and detuning
 
-3. **Factory** (`sounds/core/factory.ts`) — Combines tunes with instruments:
+3. **Factory** (`sounds/core/factory.ts`) - Combines tunes with instruments:
     - Takes a tune definition and an instrument config
     - Produces a `SoundSynthesizer` function
 
@@ -43,15 +43,15 @@ creating distinct soundpack characters with minimal code duplication.
 
 | Pack       | Character                                                 |
 | ---------- | --------------------------------------------------------- |
-| soft       | Warm, rounded, gentle — felt mallets on soft pads         |
-| aero       | Airy, breathy, ethereal — wind through chimes _(default)_ |
-| arcade     | 8-bit chiptune — square waves, punchy                     |
-| organic    | Natural, warm, wooden — marimba, wood blocks              |
-| glass      | Crystalline, bright — struck glass or bells               |
-| industrial | Metallic, harsh, mechanical — machines and metal          |
-| minimal    | Clean, sparse, understated — pure tones only              |
-| retro      | Analog synth — vintage synthesizers                       |
-| crisp      | Sharp, defined, precise — high-quality headphones         |
+| soft       | Warm, rounded, gentle - felt mallets on soft pads         |
+| aero       | Airy, breathy, ethereal - wind through chimes _(default)_ |
+| arcade     | 8-bit chiptune - square waves, punchy                     |
+| organic    | Natural, warm, wooden - marimba, wood blocks              |
+| glass      | Crystalline, bright - struck glass or bells               |
+| industrial | Metallic, harsh, mechanical - machines and metal          |
+| minimal    | Clean, sparse, understated - pure tones only              |
+| retro      | Analog synth - vintage synthesizers                       |
+| crisp      | Sharp, defined, precise - high-quality headphones         |
 
 ---
 
@@ -108,19 +108,19 @@ interface InstrumentConfig {
 
 All packs comply with the rules in the `generating-sounds-with-ai` skill:
 
-- **`context-reuse-single`** — all packs use the shared `getAudioContext()` singleton
-- **`context-resume-suspended`** — engine checks `ctx.state` before each play
-- **`context-cleanup-nodes`** — `onended` disconnects every node
-- **`envelope-exponential-decay`** — `exponentialRampToValueAtTime` throughout
-- **`envelope-no-zero-target`** — all ramps target `0.001`, never `0`
-- **`envelope-set-initial-value`** — `setValueAtTime` before every ramp
-- **`design-noise-for-percussion`** — all click/tap sounds use white noise + filter
-- **`design-oscillator-for-tonal`** — all tonal sounds use oscillators with moving pitch
-- **`design-filter-for-character`** — bandpass applied to all noise sources
-- **`param-click-duration`** — click sounds are 5–15 ms
-- **`param-filter-frequency-range`** — bandpass clicks use 2.8–4 kHz
-- **`param-reasonable-gain`** — no gain exceeds 1.0
-- **`param-q-value-range`** — click filter Q is 1.2–3
+- **`context-reuse-single`** - all packs use the shared `getAudioContext()` singleton
+- **`context-resume-suspended`** - engine checks `ctx.state` before each play
+- **`context-cleanup-nodes`** - `onended` disconnects every node
+- **`envelope-exponential-decay`** - `exponentialRampToValueAtTime` throughout
+- **`envelope-no-zero-target`** - all ramps target `0.001`, never `0`
+- **`envelope-set-initial-value`** - `setValueAtTime` before every ramp
+- **`design-noise-for-percussion`** - all click/tap sounds use white noise + filter
+- **`design-oscillator-for-tonal`** - all tonal sounds use oscillators with moving pitch
+- **`design-filter-for-character`** - bandpass applied to all noise sources
+- **`param-click-duration`** - click sounds are 5–15 ms
+- **`param-filter-frequency-range`** - bandpass clicks use 2.8–4 kHz
+- **`param-reasonable-gain`** - no gain exceeds 1.0
+- **`param-q-value-range`** - click filter Q is 1.2–3
 
 ---
 

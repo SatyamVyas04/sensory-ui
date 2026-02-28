@@ -17,7 +17,7 @@ export function getAudioContext(): AudioContext {
  * Receives the shared AudioContext and playback options, starts the sound
  * immediately, and returns a SoundPlayback handle.
  *
- * Synthesizers are the preferred approach for built-in sound packs — no
+ * Synthesizers are the preferred approach for built-in sound packs - no
  * decoding step, no base64 bloat, zero network requests.
  */
 export type SoundSynthesizer = (
@@ -61,7 +61,7 @@ async function decodeBase64DataUri(dataUri: string): Promise<AudioBuffer> {
  * Results are cached by source string so each is decoded only once.
  */
 export async function decodeAudioData(source: string): Promise<AudioBuffer> {
-  // Handle base64 data URIs directly — no network fetch needed
+  // Handle base64 data URIs directly - no network fetch needed
   if (source.startsWith("data:")) {
     return decodeBase64DataUri(source);
   }
@@ -104,7 +104,7 @@ export async function playSound(
     await ctx.resume();
   }
 
-  // If the source is a synthesizer function, call it directly — no decoding step.
+  // If the source is a synthesizer function, call it directly - no decoding step.
   if (typeof source === "function") {
     return source(ctx, { volume, playbackRate, onEnd });
   }

@@ -9,7 +9,7 @@ import { Showcase } from "./_components/showcase";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "sensory-ui — Semantic Sound for React & Next.js",
+    absolute: "sensory-ui - Semantic Sound for React & Next.js",
   },
 };
 

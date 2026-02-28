@@ -6,24 +6,24 @@ import {
   RadioGroup,
   RadioGroupItem,
 } from "@/components/ui/sensory-ui/radio-group";
-import { DemoCard } from "./demo-card";
+import { DemoCard, SoundTrigger } from "./demo-card";
 
-const OPTS = [
-  { value: "light", label: "Light", desc: "minimal feedback" },
-  { value: "standard", label: "Standard", desc: "balanced" },
-  { value: "rich", label: "Rich", desc: "full fidelity" },
+const OPTIONS = [
+  { value: "light", label: "Light", desc: "low feedback" },
+  { value: "medium", label: "Medium", desc: "balanced" },
+  { value: "heavy", label: "Heavy", desc: "high feedback" },
 ];
 
 export function RadioGroupDemo() {
   return (
     <DemoCard
-      description="Select an option to hear the confirm cue"
+      description="Select an option to hear the feedback"
       icon={<IconRadio className="size-4" />}
       title="Radio Group"
     >
-      <div className="flex flex-col gap-3">
-        <RadioGroup defaultValue="standard" sound="activation.confirm">
-          {OPTS.map((opt) => (
+      <SoundTrigger soundRole="activation.confirm">
+        <RadioGroup defaultValue="medium" sound="activation.confirm">
+          {OPTIONS.map((opt) => (
             <div className="flex items-center gap-2.5" key={opt.value}>
               <RadioGroupItem id={`rg-${opt.value}`} value={opt.value} />
               <Label
@@ -38,10 +38,7 @@ export function RadioGroupDemo() {
             </div>
           ))}
         </RadioGroup>
-        <span className="font-mono text-[10px] text-muted-foreground/50 leading-none">
-          activation.confirm
-        </span>
-      </div>
+      </SoundTrigger>
     </DemoCard>
   );
 }

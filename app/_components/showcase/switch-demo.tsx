@@ -5,6 +5,12 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/sensory-ui/switch";
 import { DemoCard, SoundTrigger } from "./demo-card";
 
+const OPTIONS = [
+  { id: "sounds", label: "Enable sounds" },
+  { id: "haptics", label: "Enable haptics" },
+  { id: "notifications", label: "Push notifications" },
+];
+
 export function SwitchDemo() {
   return (
     <DemoCard
@@ -12,14 +18,18 @@ export function SwitchDemo() {
       icon={<IconToggleLeft className="size-4" />}
       title="Switch"
     >
-      <div className="flex items-center justify-center">
-        <SoundTrigger soundRole="activation.subtle">
-          <div className="flex items-center gap-3">
-            <Switch id="demo-switch" sound="activation.subtle" />
-            <Label htmlFor="demo-switch">Enable sounds</Label>
-          </div>
-        </SoundTrigger>
-      </div>
+      <SoundTrigger soundRole="activation.subtle">
+        <div className="flex flex-col gap-3">
+          {OPTIONS.map((opt) => (
+            <div className="flex items-center justify-between" key={opt.id}>
+              <Label className="text-xs" htmlFor={`sw-${opt.id}`}>
+                {opt.label}
+              </Label>
+              <Switch id={`sw-${opt.id}`} sound="activation.subtle" />
+            </div>
+          ))}
+        </div>
+      </SoundTrigger>
     </DemoCard>
   );
 }

@@ -1,15 +1,15 @@
-# sensory-ui — Configuration
+# sensory-ui - Configuration
 
 > `sensory.config.js` (project root) + `components/ui/sensory-ui/config/config.ts` (runtime config)
 
 The configuration system is split into two parts:
 
-1. **`sensory.config.js`** — the user-facing config file at the project root, written in plain JavaScript (passed to `<SensoryUIProvider config={...}>` at runtime)
-2. **`config.ts`** — exports `defaultConfig`, `mergeConfig()`, and `resolveRole()` for use by the provider and engine
+1. **`sensory.config.js`** - the user-facing config file at the project root, written in plain JavaScript (passed to `<SensoryUIProvider config={...}>` at runtime)
+2. **`config.ts`** - exports `defaultConfig`, `mergeConfig()`, and `resolveRole()` for use by the provider and engine
 
 ---
 
-## sensory.config.js — Full Reference
+## sensory.config.js - Full Reference
 
 This file is generated at project root during installation. It is user-owned and never overwritten by updates.
 
@@ -50,7 +50,7 @@ module.exports = {
 		navigation: true,
 		notifications: true,
 		system: true,
-		hero: false, // Hero is disabled by default — must be explicitly enabled
+		hero: false, // Hero is disabled by default - must be explicitly enabled
 	},
 
 	// -------------------------------------------------------------------
@@ -84,13 +84,13 @@ module.exports = {
 
 ---
 
-## config.ts — Runtime Config
+## config.ts - Runtime Config
 
 The config module exports:
 
-1. `defaultConfig` — sensible defaults used when no config prop is provided
-2. `mergeConfig(user)` — deep-merges user overrides on top of `defaultConfig`
-3. `resolveRole(role, config)` — looks up a `SoundSource` for a given role, respecting category toggles, user overrides, and the active pack
+1. `defaultConfig` - sensible defaults used when no config prop is provided
+2. `mergeConfig(user)` - deep-merges user overrides on top of `defaultConfig`
+3. `resolveRole(role, config)` - looks up a `SoundSource` for a given role, respecting category toggles, user overrides, and the active pack
 
 ```ts
 // components/ui/sensory-ui/config/config.ts
@@ -109,7 +109,7 @@ export interface SensoryUIConfig {
 	reducedMotion: "inherit" | "force-off" | "force-on";
 }
 
-/** Defaults — used when no config prop is passed to `<SensoryUIProvider>`. */
+/** Defaults - used when no config prop is passed to `<SensoryUIProvider>`. */
 export const defaultConfig: SensoryUIConfig = {
 	enabled: true,
 	volume: 0.35,
@@ -144,10 +144,10 @@ export function mergeConfig(user: Partial<SensoryUIConfig>): SensoryUIConfig {
  * Resolve a SoundRole to its audio source.
  *
  * Resolution priority:
- *   1. config.overrides[role]    — user-defined string override (URL or base64)
- *   2. packRegistry[theme][role] — SoundSynthesizer from the active pack
- *   3. packRegistry.default[role]— fallback if theme is unknown
- *   4. null                       — category disabled or role not found
+ *   1. config.overrides[role]    - user-defined string override (URL or base64)
+ *   2. packRegistry[theme][role] - SoundSynthesizer from the active pack
+ *   3. packRegistry.default[role]- fallback if theme is unknown
+ *   4. null                       - category disabled or role not found
  */
 export function resolveRole(
 	role: SoundRole,
@@ -172,26 +172,26 @@ export function resolveRole(
 
 ---
 
-## Configuration Options — Quick Reference
+## Configuration Options - Quick Reference
 
-| Key                        | Type                                                                            | Default     | Description                                            |
-| -------------------------- | ------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------ |
-| `enabled`                  | `boolean`                                                                       | `true`      | Global on/off. `false` silences everything.            |
-| `volume`                   | `number` (0–1)                                                                  | `0.35`      | Master volume multiplier.                              |
-| `theme`                    | `SoundPackName \| (string & {})` — `"soft"`, `"aero"`, `"arcade"`, `"organic"`, `"glass"`, `"industrial"`, `"minimal"`, `"retro"`, `"crisp"` | `"aero"` | Active sound pack. Selects a built-in synthesizer set. |
-| `categories.activation`    | `boolean`                                                                       | `true`      | Enable/disable all activation sounds.                  |
-| `categories.navigation`    | `boolean`                                                                       | `true`      | Enable/disable all navigation sounds.                  |
-| `categories.notifications` | `boolean`                                                                       | `true`      | Enable/disable all notification sounds.                |
-| `categories.system`        | `boolean`                                                                       | `true`      | Enable/disable all system sounds.                      |
-| `categories.hero`          | `boolean`                                                                       | `false`     | Enable/disable hero sounds (off by default).           |
-| `overrides["role.name"]`   | `string`                                                                        | —           | Custom audio source for a role.                        |
-| `reducedMotion`            | `"inherit" \| "force-off" \| "force-on"`                                        | `"inherit"` | Reduced-motion behaviour.                              |
+| Key                        | Type                                                                                                                                         | Default     | Description                                            |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------ |
+| `enabled`                  | `boolean`                                                                                                                                    | `true`      | Global on/off. `false` silences everything.            |
+| `volume`                   | `number` (0–1)                                                                                                                               | `0.35`      | Master volume multiplier.                              |
+| `theme`                    | `SoundPackName \| (string & {})` - `"soft"`, `"aero"`, `"arcade"`, `"organic"`, `"glass"`, `"industrial"`, `"minimal"`, `"retro"`, `"crisp"` | `"aero"`    | Active sound pack. Selects a built-in synthesizer set. |
+| `categories.activation`    | `boolean`                                                                                                                                    | `true`      | Enable/disable all activation sounds.                  |
+| `categories.navigation`    | `boolean`                                                                                                                                    | `true`      | Enable/disable all navigation sounds.                  |
+| `categories.notifications` | `boolean`                                                                                                                                    | `true`      | Enable/disable all notification sounds.                |
+| `categories.system`        | `boolean`                                                                                                                                    | `true`      | Enable/disable all system sounds.                      |
+| `categories.hero`          | `boolean`                                                                                                                                    | `false`     | Enable/disable hero sounds (off by default).           |
+| `overrides["role.name"]`   | `string`                                                                                                                                     | -           | Custom audio source for a role.                        |
+| `reducedMotion`            | `"inherit" \| "force-off" \| "force-on"`                                                                                                     | `"inherit"` | Reduced-motion behaviour.                              |
 
 ---
 
 ## Volume Guidelines
 
-The default master volume is `0.35` (35%). This is intentionally low. UI sounds should be background-level — noticeable but not distracting.
+The default master volume is `0.35` (35%). This is intentionally low. UI sounds should be background-level - noticeable but not distracting.
 
 Suggested ranges:
 
@@ -214,7 +214,7 @@ categories: {
 }
 ```
 
-All components with `sound="system.open"` or `sound="system.close"` will silently no-op. The `sound` prop is still valid — it just resolves to null in the engine when the category is off.
+All components with `sound="system.open"` or `sound="system.close"` will silently no-op. The `sound` prop is still valid - it just resolves to null in the engine when the category is off.
 
 ---
 

@@ -1,6 +1,8 @@
+import { GeistPixelGrid } from "geist/font/pixel";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,13 +18,13 @@ const geistMono = Geist_Mono({
 const siteUrl = "https://sensory-ui.vercel.app";
 const siteTitle = "sensory-ui";
 const siteDescription =
-  "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions with 19 sound roles across 9 components — built for shadcn/ui.";
+  "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions with 19 sound roles across 9 components - built for shadcn/ui.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: siteTitle,
-    template: `%s — ${siteTitle}`,
+    template: `%s - ${siteTitle}`,
   },
   description: siteDescription,
   keywords: [
@@ -73,7 +75,7 @@ export const metadata: Metadata = {
         url: "/hero-background.jpg",
         width: 1200,
         height: 630,
-        alt: "sensory-ui — semantic sound for React & Next.js",
+        alt: "sensory-ui - semantic sound for React & Next.js",
       },
     ],
   },
@@ -86,7 +88,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/hero-background.jpg",
-        alt: "sensory-ui — semantic sound for React & Next.js",
+        alt: "sensory-ui - semantic sound for React & Next.js",
       },
     ],
   },
@@ -100,7 +102,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-secondary font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${GeistPixelGrid.variable} bg-secondary font-sans antialiased`}
       >
         <SensoryUIProvider
           config={{
@@ -118,6 +120,7 @@ export default function RootLayout({
           <div className="mx-auto min-w-0 max-w-400 border-border border-x bg-background shadow-xl">
             {children}
           </div>
+          <Toaster position="bottom-right" />
         </SensoryUIProvider>
       </body>
     </html>

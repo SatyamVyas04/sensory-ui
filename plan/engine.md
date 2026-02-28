@@ -1,4 +1,4 @@
-# sensory-ui — Sound Engine
+# sensory-ui - Sound Engine
 
 > `components/ui/sensory-ui/config/engine.ts`
 
@@ -13,10 +13,10 @@ The original design considered `new Audio()` (HTMLAudioElement) for simplicity a
 | Concern          | `new Audio()`                         | Web Audio API                          |
 | ---------------- | ------------------------------------- | -------------------------------------- |
 | Latency          | High (50–200 ms depending on browser) | Very low (< 10 ms with decoded buffer) |
-| Buffer reuse     | Impossible — new decode each play     | Buffer decoded once, reused ∞          |
-| Volume control   | `.volume` property only               | Gain node — precise and composable     |
+| Buffer reuse     | Impossible - new decode each play     | Buffer decoded once, reused ∞          |
+| Volume control   | `.volume` property only               | Gain node - precise and composable     |
 | Playback rate    | Limited                               | `BufferSourceNode.playbackRate`        |
-| Concurrent plays | Unreliable                            | Clean — new source node per play       |
+| Concurrent plays | Unreliable                            | Clean - new source node per play       |
 | SSR safety       | Needs guard                           | Needs guard (same)                     |
 
 The engine uses a **lazy singleton AudioContext** and an **in-memory decoded buffer cache**. This means the first play of a sound pays the decode cost; every subsequent play is near-instant.
@@ -49,7 +49,7 @@ resolveRole(role)          ← reads packRegistry[theme] + config overrides
 return SoundPlayback { stop() }
 ```
 
-### SoundSynthesizer — Programmatic Audio Generation
+### SoundSynthesizer - Programmatic Audio Generation
 
 The preferred audio source in sensory-ui is a **`SoundSynthesizer`** function:
 
@@ -61,7 +61,7 @@ export type SoundSynthesizer = (
 export type SoundSource = SoundSynthesizer | string;
 ```
 
-Synthesizers generate sound at call time using the Web Audio API — no decode step,
+Synthesizers generate sound at call time using the Web Audio API - no decode step,
 no cache hit needed, near-zero latency. This approach:
 
 - Eliminates base64 blobs from the codebase
@@ -84,7 +84,7 @@ const bufferCache = new Map<string, AudioBuffer>();
 
 /**
  * Lazy singleton AudioContext.
- * Never instantiated during SSR — caller must guard with typeof window check.
+ * Never instantiated during SSR - caller must guard with typeof window check.
  */
 export function getAudioContext(): AudioContext {
 	if (!audioContext) {
@@ -122,7 +122,7 @@ async function decodeBase64DataUri(dataUri: string): Promise<AudioBuffer> {
  * Results are cached by source string so each is decoded only once.
  */
 export async function decodeAudioData(source: string): Promise<AudioBuffer> {
-	// Handle base64 data URIs directly — no network fetch needed
+	// Handle base64 data URIs directly - no network fetch needed
 	if (source.startsWith("data:")) {
 		return decodeBase64DataUri(source);
 	}
@@ -160,7 +160,7 @@ export interface SoundPlayback {
  * AudioContext) or a string audio source (base64 data URI or URL, decoded
  * and cached via decodeAudioData).
  *
- * @param source  - Resolved audio source — SoundSynthesizer or string
+ * @param source  - Resolved audio source - SoundSynthesizer or string
  * @param options - Volume, playback rate, onEnd callback
  */
 export async function playSound(
@@ -176,7 +176,7 @@ export async function playSound(
 		await ctx.resume();
 	}
 
-	// If the source is a synthesizer function, call it directly — no decode step.
+	// If the source is a synthesizer function, call it directly - no decode step.
 	if (typeof source === "function") {
 		return source(ctx, { volume, playbackRate, onEnd });
 	}
@@ -249,7 +249,7 @@ This check is cheap and must be the **first line** in any function that could to
 Modern browsers require a user gesture before an `AudioContext` can produce audio. The engine handles this by calling `ctx.resume()` before every playback attempt if `ctx.state === "suspended"`. This means:
 
 - The very first sound will play correctly as long as it is triggered from a user interaction (click, keydown, pointer event).
-- Sounds triggered programmatically without a user gesture (e.g., on mount with `useEffect`) will be silently blocked by the browser. This is by design — sensory-ui sounds are only meant to fire from real interactions.
+- Sounds triggered programmatically without a user gesture (e.g., on mount with `useEffect`) will be silently blocked by the browser. This is by design - sensory-ui sounds are only meant to fire from real interactions.
 
 ---
 
@@ -267,7 +267,7 @@ In v1.0, only the master volume from `sensory.config.js` and the optional per-ca
 
 ## Buffer Cache Behaviour
 
-- The cache key is the audio source string — either a base64 data URI or a URL.
+- The cache key is the audio source string - either a base64 data URI or a URL.
 - Built-in sounds use the full data URI as the cache key.
 - If a user overrides a role to a custom URL in `sensory.config.js`, the URL becomes the cache key, so the original and overridden sounds can both be cached simultaneously without collision.
 - The cache is never automatically invalidated in production. `clearBufferCache()` is available for development tooling or runtime pack switches.
@@ -280,7 +280,7 @@ In v1.0, only the master volume from `sensory.config.js` and the optional per-ca
 - Does not manage a global `AudioContext` exposed outside the module
 - Does not create any long-lived nodes (no master gain bus, no reverb node)
 - Does not trigger any React state updates
-- Does not read from `sensory.config.js` directly — config resolution is handled by the caller (the provider or hook), which passes the final volume and resolved URL into the engine
+- Does not read from `sensory.config.js` directly - config resolution is handled by the caller (the provider or hook), which passes the final volume and resolved URL into the engine
 
 ---
 

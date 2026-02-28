@@ -13,7 +13,7 @@ When easing and timing adjustments don't resolve animation issues, add a subtle 
 
 ```css
 .button {
-  transition: background-color 200ms ease-out;
+	transition: background-color 200ms ease-out;
 }
 /* Hard transition between states */
 ```
@@ -22,15 +22,17 @@ When easing and timing adjustments don't resolve animation issues, add a subtle 
 
 ```css
 .button {
-  transition: background-color 200ms ease-out, filter 200ms ease-out;
+	transition:
+		background-color 200ms ease-out,
+		filter 200ms ease-out;
 }
 .button:active {
-  filter: blur(2px);
+	filter: blur(2px);
 }
 ```
 
 **Why it works:** Blur tricks the eye into seeing a smooth transition by blending the two states together, rather than seeing two distinct objects.
 
-Use blur sparingly—approximately 2px is usually enough.
+Use blur sparingly-approximately 2px is usually enough.
 
 Reference: [7 Practical Animation Tips](https://emilkowal.ski/ui/7-practical-animation-tips)

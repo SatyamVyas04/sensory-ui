@@ -33,13 +33,13 @@ export function CTA() {
             Get started
           </span>
           <h2
-            className="mt-4 text-balance font-semibold text-3xl sm:text-4xl"
+            className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
             id="cta-heading"
           >
             Give your UI a <span className="text-primary">voice.</span>
           </h2>
-          <p className="mx-auto mt-5 max-w-md text-base/relaxed text-muted-foreground">
-            Add sensory-ui to your Next.js project in under 5 minutes.
+          <p className="mx-auto mt-4 max-w-md text-muted-foreground text-sm/relaxed">
+            Add sensory-ui to your Next.js project in under 5 minutes. <br />
             Configure. Wire. Ship.
           </p>
 

@@ -24,7 +24,7 @@ export type { SoundPackName };
 export type SoundPack = Record<SoundRole, SoundSource>;
 
 // ---------------------------------------------------------------------------
-// Pack registry — maps pack name → full SoundPack
+// Pack registry - maps pack name → full SoundPack
 // ---------------------------------------------------------------------------
 
 /**

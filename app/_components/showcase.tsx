@@ -69,13 +69,13 @@ const PACKS: {
 
 export function Showcase() {
   const prefersReduced = useReducedMotion();
-  const [selectedPack, setSelectedPack] = useState<SoundPackName>("aero");
+  const [selectedPack, setSelectedPack] = useState<SoundPackName>("crisp");
 
   const fadeUp = {
-    initial: { opacity: 0, y: prefersReduced ? 0 : 10 },
+    initial: { opacity: 0, y: prefersReduced ? 0 : 12 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true, margin: "-100px", amount: 0.3 },
-    transition: { duration: 0.25, ease },
+    transition: { duration: 0.2, ease },
   };
 
   return (
@@ -89,21 +89,24 @@ export function Showcase() {
         <motion.div {...fadeUp}>
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <div className="flex-1">
-              <span className="font-mono text-muted-foreground text-xs uppercase tracking-widest">
+              <span
+                aria-hidden="true"
+                className="font-mono text-muted-foreground text-xs uppercase tracking-widest"
+              >
                 Showcase
               </span>
               <h2
-                className="mt-2 text-balance font-semibold text-3xl sm:text-4xl"
+                className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
                 id="showcase-heading"
               >
                 Feel the difference.
               </h2>
-              <p className="mt-3 max-w-2xl text-muted-foreground text-sm/relaxed">
+              <p className="mt-4 max-w-2xl text-pretty text-muted-foreground text-sm/relaxed">
                 Every component listens for the{" "}
-                <code className="rounded-none bg-muted px-1.5 py-0.5 font-mono text-xs">
+                <code className="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-xs">
                   sound
                 </code>{" "}
-                prop. Nineteen semantic roles.{" "}
+                prop. 19 semantic roles.{" "}
                 <strong className="font-semibold text-foreground">
                   24 components
                 </strong>
@@ -111,8 +114,18 @@ export function Showcase() {
               </p>
             </div>
 
-            {/* Pack selector - redesigned as Select */}
-            <div className="flex flex-col gap-2">
+            {/* Pack selector */}
+            <motion.div
+              className="flex flex-col gap-2"
+              initial={{ opacity: 0, y: prefersReduced ? 0 : 8 }}
+              transition={{
+                duration: 0.2,
+                ease,
+                delay: prefersReduced ? 0 : 0.1,
+              }}
+              viewport={{ once: true, margin: "-100px" }}
+              whileInView={{ opacity: 1, y: 0 }}
+            >
               <label
                 className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest"
                 htmlFor="sound-pack-selector"
@@ -163,7 +176,7 @@ export function Showcase() {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
 
@@ -187,11 +200,11 @@ export function Showcase() {
 
         {/* Note about sounds */}
         <motion.p
-          className="mt-6 text-center text-muted-foreground text-xs"
-          initial={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease, delay: 0.1 }}
-          viewport={{ once: true, margin: "-100px", amount: 0.3 }}
-          whileInView={{ opacity: 1 }}
+          className="mt-8 text-center text-muted-foreground/80 text-xs"
+          initial={{ opacity: 0, y: prefersReduced ? 0 : 6 }}
+          transition={{ duration: 0.2, ease, delay: prefersReduced ? 0 : 0.5 }}
+          viewport={{ once: true, margin: "-40px" }}
+          whileInView={{ opacity: 1, y: 0 }}
         >
           Sounds generated in real time via Web Audio API. No files. No latency.
         </motion.p>
