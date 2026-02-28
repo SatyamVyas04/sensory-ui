@@ -8,13 +8,10 @@ export interface SensoryUIConfig {
   /** Master volume multiplier. Range: 0–1. */
   volume: number;
   /**
-   * Sound pack name. Selects a built-in pack or falls back to "default".
+   * Sound pack name. Selects a built-in pack or falls back to "aero".
    *
-   * Built-in packs:
-   *   "default" — clean, modern, minimal (general-purpose SaaS)
-   *   "arcade"  — 8-bit chiptune square waves
-   *   "wind"    — airy, organic filtered-noise and wind chimes
-   *   "retro"   — synthwave / analog sawtooth, slightly gritty
+   * Built-in packs: soft | aero (default) | arcade | organic | glass |
+   *                 industrial | minimal | retro | crisp
    *
    * Individual roles can still be overridden via `overrides` regardless
    * of which pack is active.
@@ -80,9 +77,9 @@ export function mergeConfig(
  * Resolve a SoundRole to its audio source.
  *
  * Resolution priority:
- *   1. config.overrides[role]   — user-defined string override (URL or base64)
+ *   1. config.overrides[role]    — user-defined string override (URL or base64)
  *   2. packRegistry[theme][role] — synthesizer from the active sound pack
- *   3. packRegistry.default[role]— fallback to default pack if theme unknown
+ *   3. packRegistry.aero[role]   — fallback to "aero" if theme name is unknown
  *   4. null                      — category disabled or role not found
  */
 export function resolveRole(

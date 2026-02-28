@@ -14,7 +14,7 @@ The shadcn CLI (`npx shadcn@latest add <url>`) can install components from any U
 - Any npm package dependencies to install
 - Any tailwind config patches to apply
 
-sensory-ui will be published as a single registry entry that installs the entire `components/ui/sensory-ui/` folder and the `sensory.config.js` template in one step. Audio data is embedded as base64-encoded TypeScript modules in `sensory-ui/sounds/` and is therefore included in the normal code file install — no separate asset download, no `public/` directory entry needed.
+sensory-ui will be published as a single registry entry that installs the entire `components/ui/sensory-ui/` folder and the `sensory.config.js` template in one step. Audio is **synthesized programmatically** via the Web Audio API — no audio files, no base64 blobs, no `public/` directory entry needed.
 
 ---
 
@@ -57,34 +57,19 @@ sensory-ui will be published as a single registry entry that installs the entire
 			"target": "components/ui/sensory-ui/config/use-play-sound.ts"
 		},
 		{
-			"path": "components/ui/sensory-ui/sounds/activation.ts",
+			"path": "components/ui/sensory-ui/sounds/index.ts",
 			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/activation.ts"
-		},
-		{
-			"path": "components/ui/sensory-ui/sounds/navigation.ts",
-			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/navigation.ts"
-		},
-		{
-			"path": "components/ui/sensory-ui/sounds/notifications.ts",
-			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/notifications.ts"
-		},
-		{
-			"path": "components/ui/sensory-ui/sounds/system.ts",
-			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/system.ts"
-		},
-		{
-			"path": "components/ui/sensory-ui/sounds/hero.ts",
-			"type": "registry:lib",
-			"target": "components/ui/sensory-ui/sounds/hero.ts"
+			"target": "components/ui/sensory-ui/sounds/index.ts"
 		},
 		{
 			"path": "components/ui/sensory-ui/sounds/packs.ts",
 			"type": "registry:lib",
 			"target": "components/ui/sensory-ui/sounds/packs.ts"
+		},
+		{
+			"path": "components/ui/sensory-ui/sounds/core/index.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/core/index.ts"
 		},
 		{
 			"path": "components/ui/sensory-ui/sounds/core/tunes.ts",
@@ -100,6 +85,11 @@ sensory-ui will be published as a single registry entry that installs the entire
 			"path": "components/ui/sensory-ui/sounds/core/factory.ts",
 			"type": "registry:lib",
 			"target": "components/ui/sensory-ui/sounds/core/factory.ts"
+		},
+		{
+			"path": "components/ui/sensory-ui/sounds/core/pack-generator.ts",
+			"type": "registry:lib",
+			"target": "components/ui/sensory-ui/sounds/core/pack-generator.ts"
 		},
 		{
 			"path": "components/ui/sensory-ui/button.tsx",
@@ -161,13 +151,19 @@ sensory-ui will be published as a single registry entry that installs the entire
 **Notes:**
 
 - `dependencies` is empty — sensory-ui has zero npm dependencies. All code uses native browser APIs and existing React/Radix primitives already present in the user's shadcn project.
-- Sound data is embedded as **base64-encoded TypeScript modules** in `sensory-ui/sounds/*.ts` and is included as normal `registry:lib` file entries above. No binary assets, no `public/` directory entry, no separate download step.
+- All audio is **synthesized at runtime** via the Web Audio API. No binary assets, no base64 blobs, no `public/` directory entry needed.
 
 ---
 
 ## Sound Pack Distribution
 
 Audio is generated **programmatically** via the Web Audio API. Each `sounds/*.ts` module exports a `SoundPack` object that maps role names to `SoundSynthesizer` functions — plain TypeScript functions that receive an `AudioContext` and return a `SoundPlayback` handle.
+
+The sound system uses a **tunes + instruments architecture**:
+- `sounds/core/tunes.ts` — musical content (frequencies, durations, patterns) for all 19 roles
+- `sounds/core/instruments.ts` — 9 synthesis configurations (waveforms, filters, envelopes)
+- `sounds/core/factory.ts` — combines a tune with an instrument to produce a synthesizer
+- `sounds/packs.ts` — generates all 9 packs and exports `soundPacks` + `SoundPackName`
 
 This approach:
 
@@ -177,25 +173,17 @@ This approach:
 - Enables the standard shadcn registry install flow (no post-install scripts, no CDN downloads)
 - Allows 9 sound packs to coexist: `soft`, `aero`, `arcade`, `organic`, `glass`, `industrial`, `minimal`, `retro`, `crisp`
 
-Each `sounds/*.ts` module exports a `SoundPack` record:
+Example synthesizer (from `sounds/packs.ts`):
 
 ```ts
-// components/ui/sensory-ui/sounds/activation.ts
-import type { SoundPack } from "../config/registry";
+import { generateSoundPack } from "./core/pack-generator";
+import { AERO_INSTRUMENT } from "./core/instruments";
 
-export const activation: Partial<SoundPack> = {
-	"activation.primary": (ctx, options) => {
-		// Web Audio API synthesis — filtered noise click
-		const gain = ctx.createGain();
-		// ... oscillator/filter setup ...
-		gain.connect(ctx.destination);
-		return { stop: () => gain.disconnect() };
-	},
-	// ... other activation roles
-};
+export const aeroPack = generateSoundPack(AERO_INSTRUMENT);
+// aeroPack["activation.primary"] → SoundSynthesizer function
 ```
 
-The `registry.ts` file imports from these modules and builds the `roleRegistry` at module load time. `engine.ts` detects data URIs and decodes the base64 directly — no network fetch is needed for built-in sounds. User overrides pointing to regular URLs (e.g. `/sounds/custom/...`) are still fetched normally.
+The `config/registry.ts` file imports from `sounds/packs.ts` and builds the `packRegistry` at module load time. User overrides pointing to regular URLs (e.g. `/sounds/custom/...`) are fetched normally via `engine.ts`.
 
 ---
 
@@ -236,7 +224,7 @@ The build pipeline for publishing a registry entry needs to:
 1. Run TypeScript compilation checks on all files in `components/ui/sensory-ui/`
 2. Bundle each file's content into the registry manifest JSON
 3. Run a size check — each code file minified must be within budget
-4. Encode audio assets as base64 strings and write `sounds/*.ts` modules (each module exports a typed Record mapping roles to data URIs)
+4. Verify all synthesizer functions are tree-shakeable and within bundle size budget
 5. Upload manifest JSON to the hosting CDN
 6. Tag the GitHub release with the version
 
@@ -249,7 +237,7 @@ This build process is TBD and will be designed once the runtime implementation i
 | Milestone                                | Status                  |
 | ---------------------------------------- | ----------------------- |
 | Runtime (engine + provider + primitives) | Complete                |
-| Sound file production (19 roles)         | Complete (13 packs)     |
+| Sound file production (19 roles)         | Complete (9 packs)      |
 | Registry manifest structure              | Drafted (this document) |
 | Hosting setup                            | Not started             |
 | CLI install testing                      | Not started             |

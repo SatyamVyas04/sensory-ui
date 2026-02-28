@@ -27,40 +27,29 @@ sounds/
     instruments.ts    ← Synthesis configurations (soft, glass, industrial, etc.)
     factory.ts        ← Combines tunes + instruments → synthesizers
     pack-generator.ts ← Generates complete packs from instruments
-  packs.ts            ← All instrument-based packs
-  activation.ts       ← Original hand-crafted activation sounds
-  navigation.ts       ← Original hand-crafted navigation sounds
-  ...
+    index.ts          ← Re-exports core modules
+  packs.ts            ← All 9 instrument-based packs
+  index.ts            ← Main entry point
+  README.md           ← This file
 ```
 
 ---
 
 ## Built-in Sound Packs
 
-### Original Hand-Crafted Packs
+All 9 packs use the instrument-based system for consistent, expandable sounds:
 
-| Pack      | File                     | Character                                    |
-| --------- | ------------------------ | -------------------------------------------- |
-| `default` | Per-category files below | Clean, modern, minimal — general SaaS        |
-| `arcade`  | `arcade.ts`              | 8-bit chiptune square-wave sounds            |
-| `wind`    | `wind.ts`                | Airy, organic filtered-noise + wind chimes   |
-| `retro`   | `retro.ts`               | Synthwave / analog sawtooth, slightly gritty |
-
-### Instrument-Based Packs (New)
-
-These packs use the tune/instrument system for consistent, expandable sounds:
-
-| Pack         | Instrument | Character                                          |
-| ------------ | ---------- | -------------------------------------------------- |
-| `soft`       | Soft       | Warm, rounded, gentle — like felt mallets on pads  |
-| `aero`       | Aero       | Airy, breathy, ethereal — wind through chimes      |
-| `arcadeGen`  | Arcade     | 8-bit chiptune (generated) — square waves          |
-| `organic`    | Organic    | Natural, warm, wooden — marimba, wood blocks       |
-| `glass`      | Glass      | Crystalline, bright, resonant — struck glass/bells |
-| `industrial` | Industrial | Metallic, harsh, mechanical — machines and metal   |
-| `minimal`    | Minimal    | Clean, sparse, understated — pure tones only       |
-| `retroGen`   | Retro      | Analog synth (generated) — vintage synthesizers    |
-| `crisp`      | Crisp      | Sharp, defined, precise — high-quality headphones  |
+| Pack         | Character                                          | Default |
+| ------------ | -------------------------------------------------- | ------- |
+| `soft`       | Warm, rounded, gentle — like felt mallets on pads  |         |
+| `aero`       | Airy, breathy, ethereal — wind through chimes      | ✓       |
+| `arcade`     | 8-bit chiptune — square waves, punchy              |         |
+| `organic`    | Natural, warm, wooden — marimba, wood blocks       |         |
+| `glass`      | Crystalline, bright, resonant — struck glass/bells |         |
+| `industrial` | Metallic, harsh, mechanical — machines and metal   |         |
+| `minimal`    | Clean, sparse, understated — pure tones only       |         |
+| `retro`      | Analog synth — warm square waves, vintage          |         |
+| `crisp`      | Sharp, defined, precise — high-quality headphones  |         |
 
 ---
 
@@ -75,7 +64,7 @@ Each sound role is defined by a tune with one of these types:
 | `toggle`   | State change indicator        | navigation.switch                     |
 | `tick`     | Subtle micro-interaction      | navigation.scroll, system.focus       |
 | `sweep`    | Frequency glide (up/down)     | navigation.forward/backward           |
-| `chime`    | Resonant tonal with decay     | notifications.passive/important       |
+| `chime`    | Resonant tonal with decay     | notifications.passive/info            |
 | `arpeggio` | Sequence of notes             | hero.complete, hero.milestone         |
 | `chord`    | Multiple simultaneous notes   | Custom                                |
 | `burst`    | Noise-based texture           | Extended sounds                       |
@@ -90,19 +79,14 @@ Each sound role is defined by a tune with one of these types:
 
 Each instrument defines synthesis characteristics:
 
-| Property           | Description                                       |
-| ------------------ | ------------------------------------------------- |
-| `waveform`         | Oscillator type: sine, square, sawtooth, triangle |
-| `useNoise`         | Whether to use noise for percussive sounds        |
-| `noiseType`        | white, pink, or brown noise                       |
-| `filterType`       | lowpass, highpass, bandpass, etc.                 |
-| `filterResonance`  | Q multiplier for filters                          |
-| `detune`           | Cents of detuning for chorus effect               |
-| `attackMultiplier` | Attack time scaling                               |
-| `decayMultiplier`  | Decay time scaling                                |
-| `harmonicStrength` | How prominent harmonics are                       |
-| `volumeScale`      | Overall volume adjustment                         |
-| `subOscLevel`      | Sub-oscillator mix level                          |
+| Property      | Description                                                        |
+| ------------- | ------------------------------------------------------------------ |
+| `oscType`     | Oscillator type: `'sine'`, `'square'`, `'sawtooth'`, `'triangle'` |
+| `filterFreq`  | Base filter cutoff frequency in Hz                                 |
+| `q`           | Filter Q / resonance factor                                        |
+| `decayMult`   | Multiplier applied to the base decay time from the tune            |
+| `gainMult`    | Overall gain (loudness) multiplier for this instrument             |
+| `pitchMult`   | Multiplies the base pitch (for transposition / octave shifting)    |
 
 ---
 
@@ -127,20 +111,6 @@ All synthesizers follow these rules (see skill: `generating-sounds-with-ai`):
 
 ---
 
-## Custom Overrides
-
-You can still point individual roles to a traditional file URL or base64 string via
-`sensory.config.js`. These bypass the synthesizers entirely.
-
-```js
-// sensory.config.js
-overrides: {
-  "activation.primary": "/sounds/custom/my-click.mp3",
-}
-```
-
----
-
 ## Adding a New Pack
 
 ### Method 1: Create a New Instrument (Recommended)
@@ -150,21 +120,12 @@ The easiest way to create a new pack is to define a new instrument:
 ```ts
 // sounds/core/instruments.ts
 export const MY_INSTRUMENT: InstrumentConfig = {
-	waveform: "triangle",
-	attackCurve: "exponential",
-	decayCurve: "exponential",
-	useNoise: true,
-	noiseType: "pink",
-	filterType: "bandpass",
-	filterResonance: 2.0,
-	detune: 3,
-	stereoWidth: 0.4,
-	attackMultiplier: 1.0,
-	decayMultiplier: 1.2,
-	harmonicStrength: 0.3,
-	volumeScale: 0.85,
-	subOscLevel: 0.1,
-	subOscOctave: -1,
+	oscType: "triangle",
+	filterFreq: 3000,
+	q: 2,
+	decayMult: 1.2,
+	gainMult: 0.85,
+	pitchMult: 1.0,
 };
 ```
 
@@ -204,7 +165,7 @@ import { generateCustomSoundPack } from "./core/pack-generator";
 import { GLASS_INSTRUMENT } from "./core/instruments";
 
 export const myPack = generateCustomSoundPack(GLASS_INSTRUMENT, {
-	"hero.complete": { harmonicStrength: 0.8 }, // Override just hero sounds
+	"hero.complete": { gainMult: 1.2 }, // Override just hero sounds
 });
 ```
 
@@ -212,7 +173,7 @@ export const myPack = generateCustomSoundPack(GLASS_INSTRUMENT, {
 
 ## Custom Overrides
 
-You can still point individual roles to a traditional file URL or base64 string via
+You can point individual roles to a traditional file URL or base64 string via
 `sensory.config.js`. These bypass the synthesizers entirely.
 
 ```js
@@ -230,7 +191,4 @@ overrides: {
 - Use **exponential envelopes**: They sound more natural than linear.
 - **Test with reduced motion**: Sounds should respect `prefers-reduced-motion`.
 - **Balance volume**: Use the `volumeScale` property to ensure consistency across packs.
-- **MP3 at 128 kbps** is plenty — the files are tiny and decoded into memory.
-- Total budget: ≤ 50 KB per category, ≤ 15 KB per individual sound.
-- Name them exactly as shown — the registry in `components/ui/sensory-ui/config/registry.ts` maps
-  every SoundRole to the corresponding base64 data URI exported from these modules.
+- All sounds are synthesized at runtime — zero network requests, zero audio files needed.

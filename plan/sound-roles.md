@@ -199,38 +199,65 @@ export function parseRole(role: SoundRole): {
 
 ---
 
-## Role → Base64 Data URI Registry
+## Role Registry
 
 ```ts
 // components/ui/sensory-ui/config/registry.ts
 
 import type { SoundRole } from "./sound-roles";
-import { activation } from "../sounds/activation";
-import { navigation } from "../sounds/navigation";
-import { notifications } from "../sounds/notifications";
-import { system } from "../sounds/system";
-import { hero } from "../sounds/hero";
+import type { SoundSource } from "./engine";
+import {
+	softPack,
+	aeroPack,
+	arcadePack,
+	organicPack,
+	glassPack,
+	industrialPack,
+	minimalPack,
+	retroPack,
+	crispPack,
+} from "../sounds/packs";
 
 /**
- * Default role → base64 data URI mapping.
- * Audio data is embedded as TypeScript modules in sounds/*.ts.
- * This file is NOT modified by config overrides at runtime.
- * Overrides in sensory.config.js are applied at runtime by the config loader.
+ * Built-in sound pack names.
  */
-export const roleRegistry: Record<SoundRole, string> = {
-	...activation,
-	...navigation,
-	...notifications,
-	...system,
-	...hero,
+export type SoundPackName =
+	| "soft"
+	| "aero"
+	| "arcade"
+	| "organic"
+	| "glass"
+	| "industrial"
+	| "minimal"
+	| "retro"
+	| "crisp";
+
+/**
+ * All built-in sound packs, keyed by their SoundPackName.
+ */
+export const packRegistry: Record<SoundPackName, SoundPack> = {
+	soft: softPack,
+	aero: aeroPack,
+	arcade: arcadePack,
+	organic: organicPack,
+	glass: glassPack,
+	industrial: industrialPack,
+	minimal: minimalPack,
+	retro: retroPack,
+	crisp: crispPack,
 };
+
+/**
+ * Default sound pack name ("aero" - balanced, pleasant, professional).
+ */
+export const DEFAULT_PACK: SoundPackName = "aero";
 ```
 
 ---
 
-## Audio File Specifications
+## Audio Specifications (for custom overrides)
 
-All sound files distributed with sensory-ui must meet these requirements:
+When providing custom audio file overrides, files should meet these requirements:
 
 | Requirement              | Spec                                                                          |
 | ------------------------ | ----------------------------------------------------------------------------- |
@@ -253,8 +280,7 @@ All sound files distributed with sensory-ui must meet these requirements:
 
 Users can replace any role's audio in two ways:
 
-1. **Edit the base64 data** directly in `sounds/*.ts` — replace the data URI string with your own base64-encoded audio.
-2. **Use config overrides** — point individual roles to a custom URL path in `sensory.config.js`:
+1. **Use config overrides** — point individual roles to a custom URL path in `sensory.config.js`:
 
 ```js
 overrides: {
@@ -263,4 +289,6 @@ overrides: {
 }
 ```
 
-Custom override URLs bypass the embedded base64 modules — the engine fetches them by URL as normal. Custom files must still meet the normalization and format spec above.
+2. **Create a custom instrument/pack** — see `sounds/README.md` for the tunes + instruments API.
+
+Custom override URLs bypass the synthesizer — the engine fetches them by URL as normal. Custom files must still meet the normalization and format spec above.

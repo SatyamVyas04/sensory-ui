@@ -12,7 +12,7 @@ The core idea is simple: UI interactions have meaning, and sound can reinforce t
 
 **Target platform:** Next.js (App Router and Pages Router) + React  
 **Distribution:** shadcn/ui registry (CLI installable)  
-**Runtime footprint:** Minimal — audio is base64-encoded in TS modules (no public/ assets), no global side effects, no forced re-renders
+**Runtime footprint:** Minimal — audio is synthesized programmatically via the Web Audio API (no public/ assets, no base64 blobs), no global side effects, no forced re-renders
 
 ---
 
@@ -66,7 +66,7 @@ sensory-ui is composed of four runtime layers and one distribution layer:
           ▼
 ┌─────────────────────────────────────────────────────────────┐
 │         Role Registry + Config (registry.ts / config.ts)    │  ← Layer 4: Config
-│  "activation.primary" → "data:audio/mp3;base64,..."         │
+│  "activation.primary" → SoundSynthesizer fn       │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -90,7 +90,7 @@ components/
         provider.tsx          ← SensoryUIProvider (React context)
         config.ts             ← runtime config + mergeConfig + resolveRole
         sound-roles.ts        ← TypeScript types for all SoundRole values
-        registry.ts           ← role → base64 module mapping
+        registry.ts           ← role → SoundPack mapping
         use-play-sound.ts     ← usePlaySound(role) hook
       sounds/                 ← audio synthesizers as TypeScript modules
         core/                 ← instrument-based sound generation
@@ -98,12 +98,9 @@ components/
           instruments.ts      ← 9 instrument configurations
           factory.ts          ← tune + instrument → synthesizer function
           pack-generator.ts   ← generates full packs from instruments
-        activation.ts         ← default pack activation synthesizers
-        navigation.ts         ← default pack navigation synthesizers
-        notifications.ts      ← default pack notification synthesizers
-        system.ts             ← default pack system synthesizers
-        hero.ts               ← default pack hero synthesizers
-        packs.ts              ← all 9 sound packs
+          index.ts            ← re-exports core modules
+        packs.ts              ← all 9 sound packs (soft, aero, arcade, etc.)
+        index.ts              ← main entry point for sounds
         README.md             ← module format reference
       button.tsx              ← patched shadcn Button with sound prop
       dialog.tsx
