@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 const siteUrl = "https://sensory-ui.com";
 const siteTitle = "sensory-ui";
 const siteDescription =
-  "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions with 19 sound roles across 9 components - built for shadcn/ui.";
+  "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions with 19 sound roles across 24 components - built for shadcn/ui.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

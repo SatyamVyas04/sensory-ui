@@ -75,7 +75,6 @@ components/ui/sensory-ui/
       pack-generator.ts
     index.ts
     packs.ts
-    README.md
   accordion.tsx
   alert-dialog.tsx
   button.tsx

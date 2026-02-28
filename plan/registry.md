@@ -22,7 +22,7 @@ sensory-ui will be published as a single registry entry that installs the entire
 
 The registry is served as a Next.js route handler at `app/r/sensory-ui/route.ts`. When `npx shadcn@latest add https://sensory-ui.com/r/sensory-ui` is run, the CLI fetches the JSON manifest from this endpoint. The route reads all source files at build time (using `export const dynamic = "force-static"`) and embeds their content in the response.
 
-The manifest includes all files from `components/ui/sensory-ui/`:
+The manifest includes all `.ts`/`.tsx` source files from `components/ui/sensory-ui/`:
 
 ```json
 {
