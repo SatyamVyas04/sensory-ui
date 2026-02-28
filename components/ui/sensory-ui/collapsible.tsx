@@ -23,8 +23,8 @@ function Collapsible({
     (open: boolean) => {
       if (open && openSound) {
         void playSound(openSound);
-      } else if (!open && closeSound) {
-        void playSound(closeSound);
+      } else if (!open && (closeSound ?? openSound)) {
+        void playSound(closeSound ?? "system.collapse");
       }
       onOpenChange?.(open);
     },

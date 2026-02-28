@@ -132,6 +132,7 @@ components/
 > no files in `public/sounds/`, no base64 blobs, no network requests.
 
 sensory.config.js             ← optional project-root config file
+registry.json                 ← shadcn registry manifest (for `shadcn build`)
 ```
 
 ---
@@ -147,7 +148,7 @@ sensory.config.js             ← optional project-root config file
 | [installation.md](./installation.md) | Installation flow, CLI steps, post-install setup       |
 | [config.md](./config.md)             | Configuration file format and all options              |
 | [components.md](./components.md)     | Component API, `sound` prop usage, event triggers      |
-| [registry.md](./registry.md)         | shadcn registry publishing (implemented in v0.5)   |
+| [registry.md](./registry.md)         | shadcn registry publishing (implemented in v0.5)       |
 | [sound-packs.md](./sound-packs.md)   | Per-pack sound design tables (9 packs total)           |
 
 ---

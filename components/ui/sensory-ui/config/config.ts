@@ -1,3 +1,10 @@
+/**
+ * sensory-ui Configuration
+ *
+ * Defines `SensoryUIConfig`, the default config, merge logic, and
+ * `resolveRole()` which maps a SoundRole → SoundSource at runtime.
+ */
+
 import type { SoundCategory, SoundRole } from "./sound-roles";
 import type { SoundSource } from "./engine";
 import { packRegistry, type SoundPackName } from "./registry";

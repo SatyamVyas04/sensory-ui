@@ -1,0 +1,166 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "sensory-ui",
+  "homepage": "https://sensory-ui.com",
+  "items": [
+    {
+      "name": "sensory-ui",
+      "type": "registry:block",
+      "title": "sensory-ui",
+      "description": "Semantic, opt-in sound layer for shadcn/ui components. 19 sound roles, 9 sound packs, zero dependencies.",
+      "dependencies": [],
+      "devDependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/sensory-ui/config/engine.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/config/provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/config/config.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/config/sound-roles.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/config/registry.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/config/use-play-sound.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "registry/sensory-ui/sounds/index.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/sounds/packs.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/sounds/core/index.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/sounds/core/tunes.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/sounds/core/instruments.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/sounds/core/factory.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/sounds/core/pack-generator.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/sensory-ui/accordion.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/alert-dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/button.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/carousel.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/checkbox.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/collapsible.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/command.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/context-menu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/drawer.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/dropdown-menu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/menubar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/navigation-menu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/pagination.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/popover.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/radio-group.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/select.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/sheet.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/sidebar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/slider.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/switch.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/tabs.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/toggle-group.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sensory-ui/toggle.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    }
+  ]
+}

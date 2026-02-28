@@ -1,3 +1,13 @@
+/**
+ * sensory-ui Sound Engine
+ *
+ * The lowest runtime layer — handles AudioContext lifecycle, buffer decoding/
+ * caching, and playback scheduling via the Web Audio API.
+ *
+ * This module is framework-agnostic (no React dependency). All React-specific
+ * wiring lives in provider.tsx and use-play-sound.ts.
+ */
+
 let audioContext: AudioContext | null = null;
 const bufferCache = new Map<string, AudioBuffer>();
 

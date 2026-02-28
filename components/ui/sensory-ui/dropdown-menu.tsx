@@ -95,11 +95,25 @@ function DropdownMenuItem({
   className,
   inset,
   variant = "default",
+  sound,
+  onSelect,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
   inset?: boolean;
   variant?: "default" | "destructive";
+  /** Sound to play when this item is selected. */
+  sound?: SoundRole;
 }) {
+  const { playSound } = useSensoryUI();
+
+  const handleSelect = React.useCallback(
+    (e: Event) => {
+      if (sound) void playSound(sound);
+      onSelect?.(e);
+    },
+    [sound, playSound, onSelect]
+  );
+
   return (
     <DropdownMenuPrimitive.Item
       className={cn(
@@ -109,6 +123,7 @@ function DropdownMenuItem({
       data-inset={inset}
       data-slot="dropdown-menu-item"
       data-variant={variant}
+      onSelect={handleSelect}
       {...props}
     />
   );

@@ -175,6 +175,16 @@ The `sound` prop is the **only required change** from the standard shadcn/ui usa
 
 Open the browser devtools console and look for any sensory-ui warnings. In development mode, the engine logs a warning if a sound file cannot be fetched.
 
+### Local registry test
+
+To test the registry manifest locally before deploying:
+
+```bash
+pnpm registry:build          # generates public/r/sensory-ui.json
+pnpm dev                     # start dev server
+npx shadcn@latest add http://localhost:3000/r/sensory-ui  # test install
+```
+
 ### Quick test
 
 Temporarily set `volume: 1.0` in `sensory.config.js` and click a Button with `sound="activation.primary"`. You should hear the activation sound.

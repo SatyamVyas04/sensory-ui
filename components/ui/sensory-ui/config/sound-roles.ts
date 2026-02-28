@@ -1,3 +1,11 @@
+/**
+ * sensory-ui Sound Roles
+ *
+ * Defines the 19 semantic sound roles organised into 5 categories.
+ * These types are the public contract — every component's `sound` prop
+ * accepts a value of type `SoundRole`.
+ */
+
 export type SoundCategory =
   | "activation"
   | "navigation"
