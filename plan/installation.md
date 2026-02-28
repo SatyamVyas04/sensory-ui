@@ -35,8 +35,8 @@ During installation the CLI will prompt:
 
 ```
 ? Choose a sound pack:
-  > soft           (warm, minimal - gentle sine tones, smooth fades)
-    aero           (clean, modern SaaS - filtered tones, balanced)
+    soft           (warm, minimal - gentle sine tones, smooth fades)
+  > aero           (clean, modern SaaS - filtered tones, balanced) [default]
     arcade         (8-bit chiptune - square waves, stepped pitch, NES vibe)
     organic        (natural, earthy - soft noise bursts, warm harmonics)
     glass          (crystalline, delicate - bright resonant tones)
