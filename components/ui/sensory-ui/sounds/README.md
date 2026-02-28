@@ -64,7 +64,7 @@ Each sound role is defined by a tune with one of these types:
 | `toggle`   | State change indicator        | navigation.switch                     |
 | `tick`     | Subtle micro-interaction      | navigation.scroll, system.focus       |
 | `sweep`    | Frequency glide (up/down)     | navigation.forward/backward           |
-| `chime`    | Resonant tonal with decay     | notifications.passive/important       |
+| `chime`    | Resonant tonal with decay     | notifications.passive/info            |
 | `arpeggio` | Sequence of notes             | hero.complete, hero.milestone         |
 | `chord`    | Multiple simultaneous notes   | Custom                                |
 | `burst`    | Noise-based texture           | Extended sounds                       |
@@ -79,19 +79,14 @@ Each sound role is defined by a tune with one of these types:
 
 Each instrument defines synthesis characteristics:
 
-| Property           | Description                                       |
-| ------------------ | ------------------------------------------------- |
-| `waveform`         | Oscillator type: sine, square, sawtooth, triangle |
-| `useNoise`         | Whether to use noise for percussive sounds        |
-| `noiseType`        | white, pink, or brown noise                       |
-| `filterType`       | lowpass, highpass, bandpass, etc.                 |
-| `filterResonance`  | Q multiplier for filters                          |
-| `detune`           | Cents of detuning for chorus effect               |
-| `attackMultiplier` | Attack time scaling                               |
-| `decayMultiplier`  | Decay time scaling                                |
-| `harmonicStrength` | How prominent harmonics are                       |
-| `volumeScale`      | Overall volume adjustment                         |
-| `subOscLevel`      | Sub-oscillator mix level                          |
+| Property      | Description                                                        |
+| ------------- | ------------------------------------------------------------------ |
+| `oscType`     | Oscillator type: `'sine'`, `'square'`, `'sawtooth'`, `'triangle'` |
+| `filterFreq`  | Base filter cutoff frequency in Hz                                 |
+| `q`           | Filter Q / resonance factor                                        |
+| `decayMult`   | Multiplier applied to the base decay time from the tune            |
+| `gainMult`    | Overall gain (loudness) multiplier for this instrument             |
+| `pitchMult`   | Multiplies the base pitch (for transposition / octave shifting)    |
 
 ---
 
@@ -125,21 +120,12 @@ The easiest way to create a new pack is to define a new instrument:
 ```ts
 // sounds/core/instruments.ts
 export const MY_INSTRUMENT: InstrumentConfig = {
-	waveform: "triangle",
-	attackCurve: "exponential",
-	decayCurve: "exponential",
-	useNoise: true,
-	noiseType: "pink",
-	filterType: "bandpass",
-	filterResonance: 2.0,
-	detune: 3,
-	stereoWidth: 0.4,
-	attackMultiplier: 1.0,
-	decayMultiplier: 1.2,
-	harmonicStrength: 0.3,
-	volumeScale: 0.85,
-	subOscLevel: 0.1,
-	subOscOctave: -1,
+	oscType: "triangle",
+	filterFreq: 3000,
+	q: 2,
+	decayMult: 1.2,
+	gainMult: 0.85,
+	pitchMult: 1.0,
 };
 ```
 
@@ -179,7 +165,7 @@ import { generateCustomSoundPack } from "./core/pack-generator";
 import { GLASS_INSTRUMENT } from "./core/instruments";
 
 export const myPack = generateCustomSoundPack(GLASS_INSTRUMENT, {
-	"hero.complete": { harmonicStrength: 0.8 }, // Override just hero sounds
+	"hero.complete": { gainMult: 1.2 }, // Override just hero sounds
 });
 ```
 

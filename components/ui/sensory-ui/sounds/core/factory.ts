@@ -131,8 +131,8 @@ function createToggleSound(
 
     const filter = ctx.createBiquadFilter();
     filter.type = "bandpass";
-    filter.frequency.value = instrument.filterFreq;
-    filter.Q.value = instrument.q * 2;
+    filter.frequency.value = (tune.filterFreq ?? instrument.filterFreq);
+    filter.Q.value = (tune.filterQ ?? instrument.q) * 2;
 
     const noiseGain = ctx.createGain();
     noiseGain.gain.setValueAtTime(vol, t);
@@ -193,7 +193,9 @@ function createToggleSound(
 }
 
 /**
- * Create a tick sound (subtle micro-interaction)
+ * Create a tick sound (subtle micro-interaction).
+ * Uses filtered noise when `tune.filterFreq` is set (e.g., scroll/focus),
+ * otherwise falls back to a pure tone oscillator.
  */
 function createTickSound(
   tune: BaseTune,
@@ -204,7 +206,40 @@ function createTickSound(
     const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
     const duration = tune.duration * instrument.decayMult;
 
-    // Pure tone tick
+    // Filtered-noise tick — used for scroll/focus where filterFreq is defined
+    if (tune.filterFreq) {
+      const bufLen = Math.floor(ctx.sampleRate * Math.max(0.004, duration * 0.5));
+      const buffer = createNoiseBuffer(ctx, bufLen / ctx.sampleRate, "white");
+      applyDecayToBuffer(buffer, 0.25);
+
+      const src = ctx.createBufferSource();
+      src.buffer = buffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.value = tune.filterFreq * instrument.pitchMult;
+      filter.Q.value = (tune.filterQ ?? 2) * instrument.q;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(vol, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      src.onended = () => {
+        src.disconnect();
+        filter.disconnect();
+        gain.disconnect();
+        opts.onEnd?.();
+      };
+
+      src.start(t);
+      return { stop: () => { try { src.stop(); } catch { /* ok */ } } };
+    }
+
+    // Pure tone tick — used when only frequency is defined (e.g., system.focus)
     const osc = ctx.createOscillator();
     osc.type = instrument.oscType;
     osc.frequency.value = (tune.frequency ?? 750) * instrument.pitchMult;

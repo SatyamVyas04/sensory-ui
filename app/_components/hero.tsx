@@ -106,6 +106,7 @@ export function Hero({ stars }: HeroProps) {
               variant="outline"
             >
               <Link
+                aria-label="GitHub - SatyamVyas04/sensory-ui"
                 href="https://github.com/SatyamVyas04/sensory-ui"
                 rel="noopener noreferrer"
                 target="_blank"

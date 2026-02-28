@@ -18,12 +18,6 @@ import {
 } from "./tunes";
 import { createSoundFromTune } from "./factory";
 
-// ---------------------------------------------------------------------------
-// Role to Tune Mapping
-// ---------------------------------------------------------------------------
-
-type TuneMap = Record<string, ReturnType<typeof createSoundFromTune>>;
-
 /**
  * Generate a complete SoundPack from an instrument configuration.
  *

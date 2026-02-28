@@ -280,8 +280,7 @@ When providing custom audio file overrides, files should meet these requirements
 
 Users can replace any role's audio in two ways:
 
-1. **Edit the base64 data** directly in `sounds/*.ts` — replace the data URI string with your own base64-encoded audio.
-2. **Use config overrides** — point individual roles to a custom URL path in `sensory.config.js`:
+1. **Use config overrides** — point individual roles to a custom URL path in `sensory.config.js`:
 
 ```js
 overrides: {
@@ -290,4 +289,6 @@ overrides: {
 }
 ```
 
-Custom override URLs bypass the embedded base64 modules — the engine fetches them by URL as normal. Custom files must still meet the normalization and format spec above.
+2. **Create a custom instrument/pack** — see `sounds/README.md` for the tunes + instruments API.
+
+Custom override URLs bypass the synthesizer — the engine fetches them by URL as normal. Custom files must still meet the normalization and format spec above.
