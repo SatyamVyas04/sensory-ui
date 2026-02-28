@@ -1,6 +1,6 @@
 {
   "name": "sensory-ui",
-  "version": "0.2.0",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -44,7 +44,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4.2.1",
-    "typescript": "^5",
+    "typescript": "5.9.3",
     "ultracite": "7.2.3"
   },
   "ignoreScripts": [

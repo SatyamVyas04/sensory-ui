@@ -33,7 +33,7 @@ export function Hero({ stars }: HeroProps) {
 
   const copyInstallCommand = async () => {
     await navigator.clipboard.writeText(
-      "npx shadcn@latest add https://sensory-ui.dev/r/sensory-ui"
+      "npx shadcn@latest add https://sensory-ui.com/r/sensory-ui"
     );
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -144,7 +144,7 @@ export function Hero({ stars }: HeroProps) {
           >
             <span className="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/5 px-2.5 py-1 font-mono text-primary text-xs">
               <IconWaveSine aria-hidden="true" className="size-3" />
-              v0.1&nbsp;·&nbsp;Early Preview
+              v0.5&nbsp;·&nbsp;Early Preview
             </span>
           </motion.div>
 
@@ -175,7 +175,7 @@ export function Hero({ stars }: HeroProps) {
           >
             <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap px-3 py-2 font-mono text-[11px] text-primary sm:px-4 sm:py-2 sm:text-xs">
               <span className="text-foreground">$</span> npx shadcn@latest add
-              https://sensory-ui.dev/r/sensory-ui
+              https://sensory-ui.com/r/sensory-ui
             </code>
             <Button
               aria-label={

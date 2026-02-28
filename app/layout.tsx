@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = "https://sensory-ui.vercel.app";
+const siteUrl = "https://sensory-ui.com";
 const siteTitle = "sensory-ui";
 const siteDescription =
   "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions with 19 sound roles across 9 components - built for shadcn/ui.";

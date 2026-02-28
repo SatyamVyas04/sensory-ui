@@ -93,7 +93,7 @@ const STEPS = [
   {
     number: "01",
     title: "Install the CLI",
-    code: "npx shadcn@latest add https://sensory-ui.dev/r/sensory-ui",
+    code: "npx shadcn@latest add https://sensory-ui.com/r/sensory-ui",
     description: "Add sensory-ui components to your existing shadcn/ui project",
     effort: "30 sec",
     status: "From shadcn/ui to sensory-ui",
