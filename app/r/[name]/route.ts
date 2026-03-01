@@ -32,7 +32,7 @@ const ALLOWED_EXTENSIONS = new Set([".ts", ".tsx"]);
 /** Recursively collect all .ts/.tsx files from a directory. */
 function collectFiles(dir: string): string[] {
   const results: string[] = [];
-  for (const entry of readdirSync(dir)) {
+  for (const entry of readdirSync(dir).sort()) {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) {
       results.push(...collectFiles(full));
