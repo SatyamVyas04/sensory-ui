@@ -25,12 +25,7 @@ export function CarouselDemo() {
       title="Carousel"
     >
       <SoundTrigger soundRole="navigation.backward / forward">
-        <Carousel
-          aria-label="Demo carousel showing steps"
-          className="w-full"
-          nextSound="navigation.forward"
-          prevSound="navigation.backward"
-        >
+        <Carousel aria-label="Demo carousel showing steps" className="w-full">
           <CarouselContent>
             {SLIDES.map((slide) => (
               <CarouselItem key={slide.label}>
@@ -46,8 +41,14 @@ export function CarouselDemo() {
             ))}
           </CarouselContent>
           <ButtonGroup className="mt-2">
-            <CarouselPrevious className="relative top-0 left-0 translate-y-0" />
-            <CarouselNext className="relative top-0 right-0 translate-y-0" />
+            <CarouselPrevious
+              className="relative top-0 left-0 translate-y-0"
+              sound="navigation.backward"
+            />
+            <CarouselNext
+              className="relative top-0 right-0 translate-y-0"
+              sound="navigation.forward"
+            />
           </ButtonGroup>
         </Carousel>
       </SoundTrigger>
