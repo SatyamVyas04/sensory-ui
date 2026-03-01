@@ -32,7 +32,7 @@ const ALLOWED_EXTENSIONS = new Set([".ts", ".tsx"]);
 /** Recursively collect all .ts/.tsx files from a directory. */
 function collectFiles(dir: string): string[] {
   const results: string[] = [];
-  for (const entry of readdirSync(dir)) {
+  for (const entry of readdirSync(dir).sort()) {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) {
       results.push(...collectFiles(full));
@@ -137,19 +137,13 @@ function buildMetaItem() {
     title: "sensory-ui",
     description:
       "Install all sensory-ui components at once. Semantic, opt-in sound layer for shadcn/ui.",
-    files: [
-      ...coreFiles,
-      ...componentNames
-        .map((n) => componentFileMap.get(n))
-        .filter((f): f is NonNullable<typeof f> => f !== undefined)
-        .map((f) => {
-          const { relPath: _, ...rest } = f;
-          return rest;
-        }),
-    ],
+    files: [],
     dependencies: [],
     devDependencies: [],
-    registryDependencies: [],
+    registryDependencies: [
+      "sensory-ui-core",
+      ...componentNames.map((n) => `sensory-ui-${n}`),
+    ],
   };
 }
 
@@ -181,18 +175,17 @@ export function generateStaticParams() {
   return Array.from(registryItems.keys()).map((name) => ({ name }));
 }
 
-export function GET(
+export async function GET(
   _request: Request,
   { params }: { params: Promise<{ name: string }> }
 ) {
-  return params.then(({ name }) => {
-    const item = registryItems.get(name);
-    if (!item) {
-      return NextResponse.json(
-        { error: `Registry item "${name}" not found` },
-        { status: 404 }
-      );
-    }
-    return NextResponse.json(item);
-  });
+  const { name } = await params;
+  const item = registryItems.get(name);
+  if (!item) {
+    return NextResponse.json(
+      { error: `Registry item "${name}" not found` },
+      { status: 404 }
+    );
+  }
+  return NextResponse.json(item);
 }
