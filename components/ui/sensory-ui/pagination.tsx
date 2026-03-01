@@ -1,64 +1,26 @@
 "use client";
 
 import * as React from "react";
-
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconDots,
-} from "@tabler/icons-react";
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink as BasePaginationLink,
+  PaginationNext as BasePaginationNext,
+  PaginationPrevious as BasePaginationPrevious,
+} from "@/components/ui/pagination";
 import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
-function Pagination({
-  className,
-  ...props
-}: React.ComponentProps<"nav">) {
-  return (
-    <nav
-      role="navigation"
-      aria-label="pagination"
-      data-slot="pagination"
-      className={cn("mx-auto flex w-full justify-center", className)}
-      {...props}
-    />
-  );
-}
-
-function PaginationContent({
-  className,
-  ...props
-}: React.ComponentProps<"ul">) {
-  return (
-    <ul
-      data-slot="pagination-content"
-      className={cn("gap-0.5 flex items-center", className)}
-      {...props}
-    />
-  );
-}
-
-function PaginationItem({ ...props }: React.ComponentProps<"li">) {
-  return <li data-slot="pagination-item" {...props} />;
-}
-
-type PaginationLinkProps = {
-  isActive?: boolean;
-  /** Sound to play when this page link is clicked. */
-  sound?: SoundRole;
-} & Pick<React.ComponentProps<typeof Button>, "size"> &
-  React.ComponentProps<"a">;
-
 function PaginationLink({
-  className,
-  isActive,
-  size = "icon",
   sound,
   onClick,
   ...props
-}: PaginationLinkProps) {
+}: React.ComponentProps<typeof BasePaginationLink> & {
+  /** Sound to play when this page link is clicked. */
+  sound?: SoundRole;
+}) {
   const { playSound } = useSensoryUI();
 
   const handleClick = React.useCallback(
@@ -69,78 +31,49 @@ function PaginationLink({
     [sound, playSound, onClick]
   );
 
-  return (
-    <Button
-      asChild
-      variant={isActive ? "outline" : "ghost"}
-      size={size}
-      className={cn(className)}
-    >
-      <a
-        aria-current={isActive ? "page" : undefined}
-        data-slot="pagination-link"
-        data-active={isActive}
-        onClick={handleClick}
-        {...props}
-      />
-    </Button>
-  );
+  return <BasePaginationLink onClick={handleClick} {...props} />;
 }
 
 function PaginationPrevious({
-  className,
-  text = "Previous",
+  sound,
+  onClick,
   ...props
-}: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
-  return (
-    <PaginationLink
-      aria-label="Go to previous page"
-      size="default"
-      className={cn("pl-1.5!", className)}
-      {...props}
-    >
-      <IconChevronLeft data-icon="inline-start" />
-      <span className="hidden sm:block">{text}</span>
-    </PaginationLink>
+}: React.ComponentProps<typeof BasePaginationPrevious> & {
+  /** Sound to play when navigating to the previous page. */
+  sound?: SoundRole;
+}) {
+  const { playSound } = useSensoryUI();
+
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (sound) void playSound(sound);
+      onClick?.(e);
+    },
+    [sound, playSound, onClick]
   );
+
+  return <BasePaginationPrevious onClick={handleClick} {...props} />;
 }
 
 function PaginationNext({
-  className,
-  text = "Next",
+  sound,
+  onClick,
   ...props
-}: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
-  return (
-    <PaginationLink
-      aria-label="Go to next page"
-      size="default"
-      className={cn("pr-1.5!", className)}
-      {...props}
-    >
-      <span className="hidden sm:block">{text}</span>
-      <IconChevronRight data-icon="inline-end" />
-    </PaginationLink>
-  );
-}
+}: React.ComponentProps<typeof BasePaginationNext> & {
+  /** Sound to play when navigating to the next page. */
+  sound?: SoundRole;
+}) {
+  const { playSound } = useSensoryUI();
 
-function PaginationEllipsis({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
-  return (
-    <span
-      aria-hidden
-      data-slot="pagination-ellipsis"
-      className={cn(
-        "size-8 [&_svg:not([class*='size-'])]:size-4 flex items-center justify-center",
-        className
-      )}
-      {...props}
-    >
-      <IconDots />
-      <span className="sr-only">More pages</span>
-    </span>
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (sound) void playSound(sound);
+      onClick?.(e);
+    },
+    [sound, playSound, onClick]
   );
+
+  return <BasePaginationNext onClick={handleClick} {...props} />;
 }
 
 export {

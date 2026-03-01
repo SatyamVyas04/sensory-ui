@@ -1,8 +1,11 @@
 "use client";
 
-import { Collapsible as CollapsiblePrimitive } from "radix-ui";
 import * as React from "react";
-
+import {
+  Collapsible as BaseCollapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
@@ -11,7 +14,7 @@ function Collapsible({
   closeSound,
   onOpenChange,
   ...props
-}: React.ComponentProps<typeof CollapsiblePrimitive.Root> & {
+}: React.ComponentProps<typeof BaseCollapsible> & {
   /** Sound to play when the collapsible expands. */
   openSound?: SoundRole;
   /** Sound to play when the collapsible collapses. */
@@ -31,35 +34,7 @@ function Collapsible({
     [openSound, closeSound, playSound, onOpenChange]
   );
 
-  return (
-    <CollapsiblePrimitive.Root
-      data-slot="collapsible"
-      onOpenChange={handleOpenChange}
-      {...props}
-    />
-  );
+  return <BaseCollapsible onOpenChange={handleOpenChange} {...props} />;
 }
 
-function CollapsibleTrigger({
-  ...props
-}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleTrigger>) {
-  return (
-    <CollapsiblePrimitive.CollapsibleTrigger
-      data-slot="collapsible-trigger"
-      {...props}
-    />
-  );
-}
-
-function CollapsibleContent({
-  ...props
-}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent>) {
-  return (
-    <CollapsiblePrimitive.CollapsibleContent
-      data-slot="collapsible-content"
-      {...props}
-    />
-  );
-}
-
-export { Collapsible, CollapsibleTrigger, CollapsibleContent };
+export { Collapsible, CollapsibleContent, CollapsibleTrigger };
