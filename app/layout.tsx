@@ -1,4 +1,4 @@
-import { GeistPixelGrid } from "geist/font/pixel";
+import { GeistPixelCircle } from "geist/font/pixel";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
@@ -102,17 +102,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${GeistPixelGrid.variable} bg-secondary font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${GeistPixelCircle.variable} bg-secondary font-sans antialiased`}
       >
         <SensoryUIProvider
           config={{
             theme: "arcade",
             volume: 0.4,
             categories: {
-              activation: true,
+              interaction: true,
               navigation: true,
-              notifications: true,
-              system: true,
+              notification: true,
+              overlay: true,
               hero: true,
             },
           }}

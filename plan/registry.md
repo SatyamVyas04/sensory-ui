@@ -6,11 +6,11 @@ sensory-ui is published as a shadcn/ui registry served from the project itself v
 
 The registry is structured into three tiers:
 
-| Entry | URL | Purpose |
-|---|---|---|
-| `sensory-ui` | `/r/sensory-ui` | Meta-block; lists all component items via `registryDependencies` |
-| `sensory-ui-core` | `/r/sensory-ui-core` | Core sound engine, provider, config, and sound packs |
-| `sensory-ui-<name>` | `/r/sensory-ui-button` etc. | Individual component wrappers (24 total) |
+| Entry               | URL                         | Purpose                                                          |
+| ------------------- | --------------------------- | ---------------------------------------------------------------- |
+| `sensory-ui`        | `/r/sensory-ui`             | Meta-block; lists all component items via `registryDependencies` |
+| `sensory-ui-core`   | `/r/sensory-ui-core`        | Core sound engine, provider, config, and sound packs             |
+| `sensory-ui-<name>` | `/r/sensory-ui-button` etc. | Individual component wrappers (24 total)                         |
 
 ---
 
@@ -57,13 +57,13 @@ The registry manifests conform to the `registry-item.json` schema from shadcn/ui
 
 ### `sensory-ui` (meta-block)
 
-| Field                  | Value                                             | Notes                                                 |
-| ---------------------- | ------------------------------------------------- | ----------------------------------------------------- |
-| `$schema`              | `https://ui.shadcn.com/schema/registry-item.json` | Standard shadcn schema                                |
-| `name`                 | `"sensory-ui"`                                    | Unique identifier                                     |
-| `type`                 | `"registry:block"`                                | Multi-file block                                      |
-| `files`                | `[]`                                              | Empty - uses `registryDependencies` to pull in files  |
-| `registryDependencies` | `["sensory-ui-core", "sensory-ui-button", ...]`   | References core + all 24 component items              |
+| Field                  | Value                                             | Notes                                                |
+| ---------------------- | ------------------------------------------------- | ---------------------------------------------------- |
+| `$schema`              | `https://ui.shadcn.com/schema/registry-item.json` | Standard shadcn schema                               |
+| `name`                 | `"sensory-ui"`                                    | Unique identifier                                    |
+| `type`                 | `"registry:block"`                                | Multi-file block                                     |
+| `files`                | `[]`                                              | Empty - uses `registryDependencies` to pull in files |
+| `registryDependencies` | `["sensory-ui-core", "sensory-ui-button", ...]`   | References core + all 24 component items             |
 
 ### `sensory-ui-core`
 
@@ -78,12 +78,12 @@ The registry manifests conform to the `registry-item.json` schema from shadcn/ui
 
 ### `sensory-ui-<name>` (individual components)
 
-| Field                  | Value                                             | Notes                                     |
-| ---------------------- | ------------------------------------------------- | ----------------------------------------- |
-| `$schema`              | `https://ui.shadcn.com/schema/registry-item.json` | Standard shadcn schema                    |
-| `name`                 | `"sensory-ui-button"` etc.                        | Component-specific identifier             |
-| `type`                 | `"registry:ui"`                                   | Single UI component                       |
-| `files`                | Single component `.tsx` file                      | Embedded file content                     |
+| Field                  | Value                                             | Notes                                       |
+| ---------------------- | ------------------------------------------------- | ------------------------------------------- |
+| `$schema`              | `https://ui.shadcn.com/schema/registry-item.json` | Standard shadcn schema                      |
+| `name`                 | `"sensory-ui-button"` etc.                        | Component-specific identifier               |
+| `type`                 | `"registry:ui"`                                   | Single UI component                         |
+| `files`                | Single component `.tsx` file                      | Embedded file content                       |
 | `registryDependencies` | `["sensory-ui-core", "<shadcn-name>"]`            | Depends on core + matching shadcn component |
 
 ### File Types
@@ -103,33 +103,42 @@ The `registry.json` file follows the official schema for the `shadcn build` work
 
 ```json
 {
-  "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "sensory-ui",
-  "items": [
-    {
-      "name": "sensory-ui-core",
-      "type": "registry:block",
-      "files": [
-        { "path": "components/ui/sensory-ui/config/engine.ts", "type": "registry:lib" },
-        /* ... remaining config and sounds files ... */
-      ]
-    },
-    {
-      "name": "sensory-ui-button",
-      "type": "registry:ui",
-      "registryDependencies": ["sensory-ui-core", "button"],
-      "files": [
-        { "path": "components/ui/sensory-ui/button.tsx", "type": "registry:ui" }
-      ]
-    },
-    /* ... remaining 23 component entries ... */
-    {
-      "name": "sensory-ui",
-      "type": "registry:block",
-      "registryDependencies": ["sensory-ui-core", "sensory-ui-button", /* ... */],
-      "files": []
-    }
-  ]
+	"$schema": "https://ui.shadcn.com/schema/registry.json",
+	"name": "sensory-ui",
+	"items": [
+		{
+			"name": "sensory-ui-core",
+			"type": "registry:block",
+			"files": [
+				{
+					"path": "components/ui/sensory-ui/config/engine.ts",
+					"type": "registry:lib"
+				}
+				/* ... remaining config and sounds files ... */
+			]
+		},
+		{
+			"name": "sensory-ui-button",
+			"type": "registry:ui",
+			"registryDependencies": ["sensory-ui-core", "button"],
+			"files": [
+				{
+					"path": "components/ui/sensory-ui/button.tsx",
+					"type": "registry:ui"
+				}
+			]
+		},
+		/* ... remaining 23 component entries ... */
+		{
+			"name": "sensory-ui",
+			"type": "registry:block",
+			"registryDependencies": [
+				"sensory-ui-core",
+				"sensory-ui-button" /* ... */
+			],
+			"files": []
+		}
+	]
 }
 ```
 
@@ -147,7 +156,7 @@ The `registry.json` file follows the official schema for the `shadcn build` work
 // - GET handler is async and awaits params (Next.js 15+ async params API)
 ```
 
-The route handler serves manifests when the CLI fetches the URL. Core item contains 13 files (7 config + 6 sounds); each component item contains 1 `.tsx` file; the meta `sensory-ui` item has empty `files` and lists all 25 entries in `registryDependencies`.
+The route handler serves manifests when the CLI fetches the URL. Core item contains 13 files (6 config + 7 sounds); each component item contains 1 `.tsx` file; the meta `sensory-ui` item has empty `files` and lists all 25 entries in `registryDependencies`.
 
 **Notes:**
 
@@ -162,7 +171,7 @@ Audio is generated **programmatically** via the Web Audio API. Each `sounds/*.ts
 
 The sound system uses a **tunes + instruments architecture**:
 
-- `sounds/core/tunes.ts` - musical content (frequencies, durations, patterns) for all 19 roles
+- `sounds/core/tunes.ts` - musical content (frequencies, durations, patterns) for all 17 roles
 - `sounds/core/instruments.ts` - 9 synthesis configurations (waveforms, filters, envelopes)
 - `sounds/core/factory.ts` - combines a tune with an instrument to produce a synthesizer
 - `sounds/packs.ts` - generates all 9 packs and exports `soundPacks` + `SoundPackName`
@@ -182,7 +191,7 @@ import { generateSoundPack } from "./core/pack-generator";
 import { AERO_INSTRUMENT } from "./core/instruments";
 
 export const aeroPack = generateSoundPack(AERO_INSTRUMENT);
-// aeroPack["activation.primary"] → SoundSynthesizer function
+// aeroPack["interaction.tap"] → SoundSynthesizer function
 ```
 
 The `config/registry.ts` file imports from `sounds/packs.ts` and builds the `packRegistry` at module load time. User overrides pointing to regular URLs (e.g. `/sounds/custom/...`) are fetched normally via `engine.ts`.
@@ -199,8 +208,8 @@ npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-core     # core only
 npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-button   # single component
 ```
 
-| Hosting | URL pattern                                    | Notes                                   |
-| ------- | ---------------------------------------------- | --------------------------------------- |
+| Hosting | URL pattern                       | Notes                                   |
+| ------- | --------------------------------- | --------------------------------------- |
 | Vercel  | `https://sensory-ui.com/r/<name>` | Custom domain pointing to Vercel deploy |
 
 The route handler at `app/r/[name]/route.ts` reads all source files from `components/ui/sensory-ui/` at build time using `export const dynamic = "force-static"` and returns the per-name registry manifest with embedded file contents.
@@ -233,9 +242,11 @@ Run `pnpm registry:build` to invoke `shadcn build`, which reads `registry.json` 
 ### Pre-publish checklist
 
 1. Run TypeScript compilation checks on all files in `components/ui/sensory-ui/`
-2. Verify the manifest JSON includes all 37 files (7 config + 6 sounds + 24 components)
+2. Verify the manifest JSON includes all 37 files (6 config + 7 sounds + 24 components)
 3. Run `npx shadcn@latest add http://localhost:3000/r/sensory-ui` in a test project to confirm install
 4. Tag the GitHub release with the version
+
+> **Role taxonomy:** 17 roles across 5 categories: `interaction` (4), `overlay` (4), `navigation` (3), `notification` (4), `hero` (2).
 
 ---
 
@@ -244,7 +255,7 @@ Run `pnpm registry:build` to invoke `shadcn build`, which reads `registry.json` 
 | Milestone                                | Status             |
 | ---------------------------------------- | ------------------ |
 | Runtime (engine + provider + primitives) | Complete           |
-| Sound file production (19 roles)         | Complete (9 packs) |
+| Sound file production (17 roles)         | Complete (9 packs) |
 | Registry manifest structure              | Complete           |
 | Route handler with $schema + types       | Complete           |
 | `registry.json` + build script           | Complete           |

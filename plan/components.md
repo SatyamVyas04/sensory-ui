@@ -11,14 +11,16 @@ This document describes the component API - how the `sound` prop works, what eve
 Every sensory-ui primitive component accepts one optional prop on top of its usual API:
 
 ```ts
-sound?: SoundRole
+sound?: SoundRole | false
 ```
 
-Where `SoundRole` is one of the 19 semantic role strings defined in [sound-roles.md](./sound-roles.md).
+Where `SoundRole` is one of the 17 semantic role strings defined in [sound-roles.md](./sound-roles.md).
 
-**When the `sound` prop is absent: the component behaves identically to its original shadcn/ui counterpart. No audio is produced.**
+- **When `sound` is absent:** the component uses its **baked-in default role** (e.g. `Button` defaults to `interaction.tap`).
+- **When `sound` is `false`:** the component is silenced — no audio is produced.
+- **When `sound` is a string:** the component plays that role, overriding the default.
 
-This is the fundamental opt-in rule. sensory-ui never plays audio unless `sound` is explicitly provided.
+This gives three modes: default (baked-in), silent (`false`), override (explicit string).
 
 ---
 
@@ -26,19 +28,19 @@ This is the fundamental opt-in rule. sensory-ui never plays audio unless `sound`
 
 Different components fire sounds at different interaction points. The key rule is: **sounds must only fire from direct user interaction events** (pointer events, keyboard events). They must never fire from lifecycle methods, effects, or programmatic state changes.
 
-| Component        | Default Sound Trigger                                                        | Notes                                                         |
-| ---------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `Button`         | `onClick` / `onKeyDown` (Enter, Space)                                       | Most common usage                                             |
-| `Button` (hover) | `onMouseEnter`                                                               | Only if `hoverSound` prop provided (v1.5+)                    |
-| `Dialog`         | `onOpenChange(true)` → `system.open`, `onOpenChange(false)` → `system.close` | Fires on open and close separately                            |
-| `DropdownMenu`   | `onOpenChange`                                                               | Per-item `sound` on `DropdownMenuItem` too                    |
-| `Sheet`          | `onOpenChange`                                                               | Same as Dialog                                                |
-| `Tabs`           | `onValueChange` → `navigation.switch`                                        | Fires when active tab changes                                 |
-| `Select`         | `onOpenChange`                                                               | Open/close sounds                                             |
-| `Checkbox`       | `onCheckedChange`                                                            | `activation.confirm` on check, `activation.subtle` on uncheck |
-| `Switch`         | `onCheckedChange`                                                            | Same pattern as Checkbox                                      |
-| `Alert/Toast`    | On render / `onOpenChange`                                                   | `notifications.*` roles                                       |
-| `Accordion`      | `onValueChange`                                                              | `system.expand` / `system.collapse`                           |
+| Component        | Default Sound Trigger                                                          | Notes                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `Button`         | `onClick` / `onKeyDown` (Enter, Space)                                         | Defaults to `interaction.tap`; routes to `interaction.disabled` when `disabled` prop is set |
+| `Button` (hover) | `onMouseEnter`                                                                 | Only if `hoverSound` prop provided (v1.5+)                                                  |
+| `Dialog`         | `onOpenChange(true)` → `overlay.open`, `onOpenChange(false)` → `overlay.close` | Fires on open and close separately                                                          |
+| `DropdownMenu`   | `onOpenChange`                                                                 | Per-item `sound` on `DropdownMenuItem` too                                                  |
+| `Sheet`          | `onOpenChange`                                                                 | Same as Dialog                                                                              |
+| `Tabs`           | `onValueChange` → `navigation.switch`                                          | Fires when active tab changes                                                               |
+| `Select`         | `onOpenChange`                                                                 | Open/close sounds                                                                           |
+| `Checkbox`       | `onCheckedChange`                                                              | Defaults to `interaction.toggle` on both check and uncheck                                  |
+| `Switch`         | `onCheckedChange`                                                              | Same pattern as Checkbox                                                                    |
+| `Alert/Toast`    | On render / `onOpenChange`                                                     | `notification.*` roles                                                                      |
+| `Accordion`      | `onValueChange`                                                                | `overlay.expand` / `overlay.collapse`                                                       |
 
 ---
 
@@ -58,29 +60,42 @@ import { useSensoryUI } from "./config/provider";
 import type { SoundRole } from "./config/sound-roles";
 // ...full shadcn source...
 
+const DEFAULT_BUTTON_SOUND = "interaction.tap" as const;
+const DEFAULT_DISABLED_SOUND = "interaction.disabled" as const;
+
 function Button({
 	sound,
+	disabledSound,
 	onClick,
 	onKeyDown,
 	...props
-}: ButtonProps & { sound?: SoundRole }) {
+}: ButtonProps & {
+	sound?: SoundRole | false;
+	disabledSound?: SoundRole | false;
+}) {
 	const { playSound } = useSensoryUI();
 
 	const handleClick = React.useCallback(
 		(e: React.MouseEvent<HTMLButtonElement>) => {
-			if (sound) {
-				// Fire and forget - do not await; must not delay the click handler
-				void playSound(sound);
+			const isDisabled = props.disabled;
+			if (isDisabled) {
+				// Route to disabled sound
+				const ds = disabledSound ?? DEFAULT_DISABLED_SOUND;
+				if (ds !== false) void playSound(ds);
+			} else {
+				const s = sound ?? DEFAULT_BUTTON_SOUND;
+				if (s !== false) void playSound(s);
 			}
 			onClick?.(e);
 		},
-		[sound, playSound, onClick],
+		[sound, disabledSound, playSound, onClick, props.disabled],
 	);
 
 	const handleKeyDown = React.useCallback(
 		(e: React.KeyboardEvent<HTMLButtonElement>) => {
-			if (sound && (e.key === "Enter" || e.key === " ")) {
-				void playSound(sound);
+			if (e.key === "Enter" || e.key === " ") {
+				const s = sound ?? DEFAULT_BUTTON_SOUND;
+				if (s !== false) void playSound(s);
 			}
 			onKeyDown?.(e);
 		},
@@ -125,17 +140,17 @@ function Dialog({
 	onOpenChange,
 	...props
 }: React.ComponentProps<typeof DialogPrimitive.Root> & {
-	sound?: SoundRole;
-	closeSound?: SoundRole;
+	sound?: SoundRole | false;
+	closeSound?: SoundRole | false;
 }) {
 	const { playSound } = useSensoryUI();
 
 	const handleOpenChange = React.useCallback(
 		(open: boolean) => {
-			if (open && sound) {
-				void playSound(sound);
-			} else if (!open && (closeSound ?? sound)) {
-				void playSound(closeSound ?? "system.close");
+			if (open && sound !== false) {
+				void playSound(sound ?? "overlay.open");
+			} else if (!open && closeSound !== false) {
+				void playSound(closeSound ?? "overlay.close");
 			}
 			onOpenChange?.(open);
 		},
@@ -176,7 +191,9 @@ function Tabs({
 	sound,
 	onValueChange,
 	...props
-}: React.ComponentProps<typeof TabsPrimitive.Root> & { sound?: SoundRole }) {
+}: React.ComponentProps<typeof TabsPrimitive.Root> & {
+	sound?: SoundRole | false;
+}) {
 	const { playSound } = useSensoryUI();
 
 	const handleValueChange = React.useCallback(
@@ -217,12 +234,15 @@ function Component({
 	sound,
 	onInteractionEvent,
 	...props
-}: React.ComponentProps<typeof SomePrimitive.Root> & { sound?: SoundRole }) {
+}: React.ComponentProps<typeof SomePrimitive.Root> & {
+	sound?: SoundRole | false;
+}) {
 	const { playSound } = useSensoryUI();
 
 	const handleEvent = React.useCallback(
 		(eventArgs) => {
-			if (sound) void playSound(sound);
+			if (sound !== false)
+				void playSound(sound ?? DEFAULT_COMPONENT_SOUND);
 			onInteractionEvent?.(eventArgs);
 		},
 		[sound, playSound, onInteractionEvent],
@@ -244,8 +264,9 @@ Rules for patched components:
 3. Copy the **full** shadcn source, patch only the root function
 4. Always call the original event handler after triggering sound
 5. Never `await playSound` - fire and forget
-6. Never add default sounds - `sound` must be explicitly provided
-7. Imports use `radix-ui` (unified package), never `@radix-ui/react-*`
+6. Each component has a **baked-in default role constant** (e.g. `DEFAULT_BUTTON_SOUND = "interaction.tap"`). Use `sound ?? DEFAULT_SOUND` in the handler.
+7. Pass `sound !== false` guard before calling `playSound` to allow silencing via `sound={false}`
+8. Imports use `radix-ui` (unified package), never `@radix-ui/react-*`
 
 ---
 
@@ -258,7 +279,7 @@ Rules for patched components:
 | `Button`         | `button.tsx`          | click + keydown | Most used                              |
 | `Carousel`       | `carousel.tsx`        | slide change    | Navigation sounds                      |
 | `Checkbox`       | `checkbox.tsx`        | checked change  | Check / uncheck distinction            |
-| `Collapsible`    | `collapsible.tsx`     | open/close      | Close falls back to `system.collapse`  |
+| `Collapsible`    | `collapsible.tsx`     | open/close      | Close falls back to `overlay.collapse` |
 | `Command`        | `command.tsx`         | selection       | Command palette sounds                 |
 | `ContextMenu`    | `context-menu.tsx`    | open/close      | Same pattern as Dialog                 |
 | `Dialog`         | `dialog.tsx`          | open/close      | Pairs open + close sounds              |
@@ -307,7 +328,7 @@ Usage:
 import { usePlaySound } from "@/components/ui/sensory-ui/config/use-play-sound";
 
 export function CustomSlider() {
-	const { play } = usePlaySound({ sound: "activation.confirm" });
+	const { play } = usePlaySound({ sound: "interaction.toggle" });
 
 	return <Slider onValueCommit={play} />;
 }
@@ -320,15 +341,25 @@ export function CustomSlider() {
 ### Primary action button
 
 ```tsx
-<Button sound="activation.primary">Save changes</Button>
+<Button sound="interaction.tap">Save changes</Button>
 ```
 
-### Destructive action (error feedback)
+### Destructive action
 
 ```tsx
-<Button variant="destructive" sound="activation.error" onClick={handleDelete}>
+<Button
+	variant="destructive"
+	sound="interaction.confirm"
+	onClick={handleDelete}
+>
 	Delete account
 </Button>
+```
+
+### Silencing a button's default sound
+
+```tsx
+<Button sound={false}>No sound</Button>
 ```
 
 ### Navigation forward / backward
@@ -341,7 +372,7 @@ export function CustomSlider() {
 ### Dialog with open/close sounds
 
 ```tsx
-<Dialog sound="system.open">
+<Dialog sound="overlay.open">
 	<DialogTrigger asChild>
 		<Button>Open settings</Button>
 	</DialogTrigger>
@@ -367,7 +398,7 @@ export function CustomSlider() {
 // In a toast handler
 toast({
 	title: "Profile saved",
-	// sound="notifications.success" is set on the Toast primitive internally
+	// sound="notification.success" is set on the Toast primitive internally
 });
 ```
 

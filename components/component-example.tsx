@@ -126,7 +126,7 @@ function CardExample() {
         <CardFooter>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button sound="activation.primary">
+              <Button sound="interaction.tap">
                 <IconPlus data-icon="inline-start" />
                 Show Dialog
               </Button>
@@ -180,7 +180,7 @@ function FormExample() {
           <CardTitle>User Information</CardTitle>
           <CardDescription>Please fill in your details below</CardDescription>
           <CardAction>
-            <DropdownMenu sound="system.open">
+            <DropdownMenu sound="overlay.open">
               <DropdownMenuTrigger asChild>
                 <Button size="icon" variant="ghost">
                   <IconDotsVertical />
@@ -433,7 +433,7 @@ function FormExample() {
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="small-form-role">Role</FieldLabel>
-                  <Select defaultValue="" sound="system.open">
+                  <Select defaultValue="" sound="overlay.open">
                     <SelectTrigger id="small-form-role">
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
@@ -478,11 +478,11 @@ function FormExample() {
                 />
               </Field>
               <Field orientation="horizontal">
-                <Button sound="activation.confirm" type="submit">
+                <Button sound="interaction.confirm" type="submit">
                   Submit
                 </Button>
                 <Button
-                  sound="activation.subtle"
+                  sound="interaction.toggle"
                   type="button"
                   variant="outline"
                 >

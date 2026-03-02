@@ -25,6 +25,7 @@ export interface SensoryUIConfig {
    */
   theme: SoundPackName | (string & {});
   /** Per-category enable/disable toggles. */
+  /** Per-category enable/disable toggles. */
   categories: Record<SoundCategory, boolean>;
   /**
    * Role-level source overrides.
@@ -53,10 +54,10 @@ export const defaultConfig: SensoryUIConfig = {
   volume: 0.35,
   theme: "aero",
   categories: {
-    activation: true,
+    interaction: true,
+    overlay: true,
     navigation: true,
-    notifications: true,
-    system: true,
+    notification: true,
     hero: false, // Disabled by default - must be explicitly enabled
   },
   overrides: {},

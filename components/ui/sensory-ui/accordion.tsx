@@ -10,6 +10,9 @@ import {
 import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
+const DEFAULT_ACCORDION_EXPAND_SOUND = "overlay.expand" as const;
+const DEFAULT_ACCORDION_COLLAPSE_SOUND = "overlay.collapse" as const;
+
 function Accordion({
   expandSound,
   collapseSound,
@@ -18,15 +21,14 @@ function Accordion({
 }: React.ComponentProps<typeof BaseAccordion> & {
   /**
    * Sound to play when an accordion item expands.
-   * For type="multiple", fires when an item is added to the open set.
+   * Defaults to "overlay.expand". Set to false to disable.
    */
-  expandSound?: SoundRole;
+  expandSound?: SoundRole | false;
   /**
    * Sound to play when an accordion item collapses.
-   * For type="multiple", fires when an item is removed from the open set.
-   * For type="single", fires when the open item is closed.
+   * Defaults to "overlay.collapse". Set to false to disable.
    */
-  collapseSound?: SoundRole;
+  collapseSound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();
   const prevValueRef = React.useRef<string | string[] | undefined>(undefined);
@@ -36,7 +38,7 @@ function Accordion({
     (value: string & string[]) => {
       const prev = prevValueRef.current;
 
-      if (expandSound || collapseSound) {
+      if (expandSound !== false || collapseSound !== false) {
         const isExpanding = (() => {
           if (Array.isArray(value)) {
             // type="multiple"
@@ -47,10 +49,10 @@ function Accordion({
           return value !== "";
         })();
 
-        if (isExpanding && expandSound) {
-          void playSound(expandSound);
-        } else if (!isExpanding && collapseSound) {
-          void playSound(collapseSound);
+        if (isExpanding && expandSound !== false) {
+          void playSound(expandSound ?? DEFAULT_ACCORDION_EXPAND_SOUND);
+        } else if (!isExpanding && collapseSound !== false) {
+          void playSound(collapseSound ?? DEFAULT_ACCORDION_COLLAPSE_SOUND);
         }
       }
 

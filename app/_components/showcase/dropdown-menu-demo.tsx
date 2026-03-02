@@ -17,8 +17,8 @@ export function DropdownMenuDemo() {
       icon={<IconMenu2 className="size-4" />}
       title="Dropdown Menu"
     >
-      <SoundTrigger soundRole="system.open / system.close">
-        <DropdownMenu closeSound="system.close" sound="system.open">
+      <SoundTrigger soundRole="overlay.open / overlay.close">
+        <DropdownMenu closeSound="overlay.close" sound="overlay.open">
           <DropdownMenuTrigger asChild>
             <Button size="sm" variant="outline">
               Open Menu

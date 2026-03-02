@@ -18,14 +18,14 @@ export function SwitchDemo() {
       icon={<IconToggleLeft className="size-4" />}
       title="Switch"
     >
-      <SoundTrigger soundRole="activation.subtle">
+      <SoundTrigger soundRole="interaction.toggle">
         <div className="flex flex-col gap-3">
           {OPTIONS.map((opt) => (
             <div className="flex items-center justify-between" key={opt.id}>
               <Label className="text-xs" htmlFor={`sw-${opt.id}`}>
                 {opt.label}
               </Label>
-              <Switch id={`sw-${opt.id}`} sound="activation.subtle" />
+              <Switch id={`sw-${opt.id}`} sound="interaction.toggle" />
             </div>
           ))}
         </div>

@@ -48,7 +48,7 @@ export function CTA() {
               asChild
               className="gap-2"
               size="default"
-              sound="activation.primary"
+              sound="interaction.tap"
             >
               <Link
                 href="https://github.com/SatyamVyas04/sensory-ui"

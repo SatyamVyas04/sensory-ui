@@ -18,6 +18,7 @@ import { createNoiseBuffer, applyDecayToBuffer } from "./instruments";
 
 /**
  * Create a click sound (short percussive transient)
+ * Reads tune.meta.subFreq for an optional sub-bass layer (physical weight).
  */
 function createClickSound(
   tune: BaseTune,
@@ -49,10 +50,32 @@ function createClickSound(
     filter.connect(gain);
     gain.connect(ctx.destination);
 
+    // Sub-bass layer: adds physical weight to tap/toggle sounds (from tune.meta)
+    const meta = tune.meta as { subFreq?: number; subDuration?: number; subVolume?: number } | undefined;
+    const subNodes: AudioNode[] = [];
+    if (meta?.subFreq) {
+      const subFreq = meta.subFreq;
+      const subDur = meta.subDuration ?? 0.016;
+      const subVol = (meta.subVolume ?? 0.1) * instrument.gainMult;
+      const subOsc = ctx.createOscillator();
+      subOsc.type = "sine";
+      subOsc.frequency.value = subFreq;
+      const subGain = ctx.createGain();
+      subGain.gain.setValueAtTime(0.001, t);
+      subGain.gain.linearRampToValueAtTime(subVol, t + 0.003);
+      subGain.gain.exponentialRampToValueAtTime(0.001, t + subDur);
+      subOsc.connect(subGain);
+      subGain.connect(ctx.destination);
+      subNodes.push(subOsc, subGain);
+      subOsc.start(t);
+      subOsc.stop(t + subDur + 0.01);
+    }
+
     src.onended = () => {
       src.disconnect();
       filter.disconnect();
       gain.disconnect();
+      subNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
 
@@ -268,7 +291,9 @@ function createTickSound(
 }
 
 /**
- * Create a sweep sound (frequency glide)
+ * Create a sweep sound (frequency glide).
+ * Supports an optional harmonic overtone when tune.harmonics is set,
+ * which enriches open/close/expand/collapse sounds.
  */
 function createSweepSound(
   tune: BaseTune,
@@ -281,6 +306,9 @@ function createSweepSound(
     const startFreq = (tune.frequency ?? 300) * instrument.pitchMult;
     const endFreq = (tune.endFrequency ?? 500) * instrument.pitchMult;
 
+    const oscs: OscillatorNode[] = [];
+    const gainNodes: GainNode[] = [];
+
     const osc = ctx.createOscillator();
     osc.type = instrument.oscType;
     osc.frequency.setValueAtTime(startFreq, t);
@@ -292,18 +320,37 @@ function createSweepSound(
 
     osc.connect(gain);
     gain.connect(ctx.destination);
+    oscs.push(osc);
+    gainNodes.push(gain);
 
-    osc.onended = () => {
-      osc.disconnect();
-      gain.disconnect();
+    // Harmonic layer for richer overlay open/close/expand/collapse sounds
+    if (tune.harmonics && tune.harmonicRatio) {
+      const harmRatio = tune.harmonicRatio;
+      const harmVol = vol * (tune.harmonicVolume ?? 0.15);
+      const harmOsc = ctx.createOscillator();
+      harmOsc.type = "sine";
+      harmOsc.frequency.setValueAtTime(startFreq * harmRatio, t);
+      harmOsc.frequency.exponentialRampToValueAtTime(endFreq * harmRatio, t + duration);
+      const harmGain = ctx.createGain();
+      harmGain.gain.setValueAtTime(harmVol, t);
+      harmGain.gain.exponentialRampToValueAtTime(0.001, t + duration + 0.03);
+      harmOsc.connect(harmGain);
+      harmGain.connect(ctx.destination);
+      oscs.push(harmOsc);
+      gainNodes.push(harmGain);
+    }
+
+    const cleanup = () => {
+      oscs.forEach(o => { try { o.disconnect(); } catch { /* ok */ } });
+      gainNodes.forEach(g => { try { g.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
+    osc.onended = cleanup;
 
-    osc.start(t);
-    osc.stop(t + duration + 0.05);
+    oscs.forEach(o => { o.start(t); o.stop(t + duration + 0.05); });
 
     return {
-      stop: () => { try { osc.stop(); } catch { /* ok */ } }
+      stop: () => { oscs.forEach(o => { try { o.stop(); } catch { /* ok */ } }); }
     };
   };
 }
@@ -405,7 +452,9 @@ function createChimeSound(
 }
 
 /**
- * Create an arpeggio sound (sequence of notes)
+ * Create an arpeggio sound (sequence of notes).
+ * Supports meta.shimmerCents: adds a slightly detuned oscillator on the
+ * final note for a subtle chorus shimmer (used by hero sounds).
  */
 function createArpeggioSound(
   tune: BaseTune,
@@ -417,8 +466,9 @@ function createArpeggioSound(
     const notes = tune.notes ?? [261.63, 329.63, 392.0];
     const noteDur = (tune.noteDuration ?? 0.15) * instrument.decayMult;
     const gap = tune.noteGap ?? 0.12;
-    const meta = tune.meta as { finalRing?: number } | undefined;
+    const meta = tune.meta as { finalRing?: number; shimmerCents?: number } | undefined;
     const finalRing = meta?.finalRing ?? 0.4;
+    const shimmerCents = meta?.shimmerCents;
 
     const oscillators: OscillatorNode[] = [];
     const gains: GainNode[] = [];
@@ -447,6 +497,24 @@ function createArpeggioSound(
 
       osc.start(noteStart);
       osc.stop(decay + 0.05);
+
+      // Shimmer: detuned copy on the final note (hero sounds only)
+      if (isLast && shimmerCents) {
+        const shimOsc = ctx.createOscillator();
+        shimOsc.type = instrument.oscType;
+        shimOsc.frequency.value = freq;
+        shimOsc.detune.value = shimmerCents;
+        const shimGain = ctx.createGain();
+        shimGain.gain.setValueAtTime(0.001, noteStart);
+        shimGain.gain.linearRampToValueAtTime(vol * 0.35, noteStart + 0.015);
+        shimGain.gain.exponentialRampToValueAtTime(0.001, decay);
+        shimOsc.connect(shimGain);
+        shimGain.connect(ctx.destination);
+        oscillators.push(shimOsc);
+        gains.push(shimGain);
+        shimOsc.start(noteStart);
+        shimOsc.stop(decay + 0.05);
+      }
 
       if (isLast) {
         osc.onended = () => {

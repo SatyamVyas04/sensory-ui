@@ -13,20 +13,23 @@ import {
 import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
+const DEFAULT_CAROUSEL_PREV_SOUND = "navigation.backward" as const;
+const DEFAULT_CAROUSEL_NEXT_SOUND = "navigation.forward" as const;
+
 function CarouselPrevious({
   sound,
   onClick,
   ...props
 }: React.ComponentProps<typeof BaseCarouselPrevious> & {
-  /** Sound to play when scrolling to the previous slide. */
-  sound?: SoundRole;
+  /** Sound to play when scrolling to the previous slide. Defaults to "navigation.backward". Set to false to disable. */
+  sound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();
   const { scrollPrev } = useCarousel();
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (sound) void playSound(sound);
+      if (sound !== false) void playSound(sound ?? DEFAULT_CAROUSEL_PREV_SOUND);
       scrollPrev();
       onClick?.(e);
     },
@@ -41,15 +44,15 @@ function CarouselNext({
   onClick,
   ...props
 }: React.ComponentProps<typeof BaseCarouselNext> & {
-  /** Sound to play when scrolling to the next slide. */
-  sound?: SoundRole;
+  /** Sound to play when scrolling to the next slide. Defaults to "navigation.forward". Set to false to disable. */
+  sound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();
   const { scrollNext } = useCarousel();
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (sound) void playSound(sound);
+      if (sound !== false) void playSound(sound ?? DEFAULT_CAROUSEL_NEXT_SOUND);
       scrollNext();
       onClick?.(e);
     },

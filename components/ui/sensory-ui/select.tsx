@@ -22,19 +22,19 @@ function Select({
   onOpenChange,
   ...props
 }: React.ComponentProps<typeof BaseSelect> & {
-  /** Sound to play when the select dropdown opens. */
-  sound?: SoundRole;
-  /** Sound to play when the select dropdown closes. Defaults to "system.close". */
-  closeSound?: SoundRole;
+  /** Sound to play when the select dropdown opens. Defaults to "overlay.open". Set to false to disable. */
+  sound?: SoundRole | false;
+  /** Sound to play when the select dropdown closes. Defaults to "overlay.close". Set to false to disable. */
+  closeSound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleOpenChange = React.useCallback(
     (open: boolean) => {
-      if (open && sound) {
-        void playSound(sound);
-      } else if (!open && (closeSound ?? sound)) {
-        void playSound(closeSound ?? "system.close");
+      if (open && sound !== false) {
+        void playSound(sound ?? "overlay.open");
+      } else if (!open && closeSound !== false) {
+        void playSound(closeSound ?? "overlay.close");
       }
       onOpenChange?.(open);
     },

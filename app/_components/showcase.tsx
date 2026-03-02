@@ -186,10 +186,10 @@ export function Showcase() {
             config={{
               theme: selectedPack,
               categories: {
-                activation: true,
+                interaction: true,
                 navigation: true,
-                notifications: true,
-                system: true,
+                notification: true,
+                overlay: true,
                 hero: true, // enabled for demo purposes
               },
             }}

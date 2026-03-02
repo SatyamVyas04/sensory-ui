@@ -12,36 +12,36 @@ export function ButtonDemo() {
       title="Button"
     >
       <div className="flex flex-col gap-3">
-        <SoundTrigger soundRole="activation.primary">
-          <Button className="w-full" size="sm" sound="activation.primary">
+        <SoundTrigger soundRole="interaction.tap">
+          <Button className="w-full" size="sm" sound="interaction.tap">
             Primary
           </Button>
         </SoundTrigger>
-        <SoundTrigger soundRole="activation.subtle">
+        <SoundTrigger soundRole="interaction.toggle">
           <Button
             className="w-full"
             size="sm"
-            sound="activation.subtle"
+            sound="interaction.toggle"
             variant="secondary"
           >
             Subtle
           </Button>
         </SoundTrigger>
-        <SoundTrigger soundRole="activation.confirm">
+        <SoundTrigger soundRole="interaction.confirm">
           <Button
             className="w-full"
             size="sm"
-            sound="activation.confirm"
+            sound="interaction.confirm"
             variant="outline"
           >
             Confirm
           </Button>
         </SoundTrigger>
-        <SoundTrigger soundRole="activation.error">
+        <SoundTrigger soundRole="notification.error">
           <Button
             className="w-full"
             size="sm"
-            sound="activation.error"
+            sound="notification.error"
             variant="destructive"
           >
             Error

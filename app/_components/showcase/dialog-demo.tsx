@@ -20,8 +20,8 @@ export function DialogDemo() {
       icon={<IconWindowMaximize className="size-4" />}
       title="Dialog"
     >
-      <SoundTrigger soundRole="system.open / close">
-        <Dialog closeSound="system.close" sound="system.open">
+      <SoundTrigger soundRole="overlay.open / close">
+        <Dialog closeSound="overlay.close" sound="overlay.open">
           <DialogTrigger asChild>
             <Button className="w-full" size="sm" variant="outline">
               Open Dialog
@@ -31,12 +31,12 @@ export function DialogDemo() {
             <DialogHeader>
               <DialogTitle>Sensory Dialog</DialogTitle>
               <DialogDescription>
-                This dialog played system.open when it appeared. Close it to
-                hear system.close.
+                This dialog played overlay.open when it appeared. Close it to
+                hear overlay.close.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter showCloseButton>
-              <Button size="sm" sound="activation.confirm">
+              <Button size="sm" sound="interaction.confirm">
                 Confirm
               </Button>
             </DialogFooter>

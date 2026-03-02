@@ -15,19 +15,22 @@ import {
 import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
+const DEFAULT_NAV_TRIGGER_SOUND = "overlay.open" as const;
+const DEFAULT_NAV_LINK_SOUND = "navigation.switch" as const;
+
 function NavigationMenuTrigger({
   sound,
   onClick,
   ...props
 }: React.ComponentProps<typeof BaseNavigationMenuTrigger> & {
-  /** Sound to play when this trigger is clicked. */
-  sound?: SoundRole;
+  /** Sound to play when this trigger is clicked. Defaults to "overlay.open". Set to false to disable. */
+  sound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (sound) void playSound(sound);
+      if (sound !== false) void playSound(sound ?? DEFAULT_NAV_TRIGGER_SOUND);
       onClick?.(e);
     },
     [sound, playSound, onClick]
@@ -41,14 +44,14 @@ function NavigationMenuLink({
   onClick,
   ...props
 }: React.ComponentProps<typeof BaseNavigationMenuLink> & {
-  /** Sound to play when this link is clicked. */
-  sound?: SoundRole;
+  /** Sound to play when this link is clicked. Defaults to "navigation.switch". Set to false to disable. */
+  sound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (sound) void playSound(sound);
+      if (sound !== false) void playSound(sound ?? DEFAULT_NAV_LINK_SOUND);
       onClick?.(e);
     },
     [sound, playSound, onClick]

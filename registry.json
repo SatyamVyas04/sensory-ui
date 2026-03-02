@@ -73,7 +73,10 @@
       "description": "Accordion with expand/collapse sounds.",
       "registryDependencies": ["sensory-ui-core", "accordion"],
       "files": [
-        { "path": "components/ui/sensory-ui/accordion.tsx", "type": "registry:ui" }
+        {
+          "path": "components/ui/sensory-ui/accordion.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -106,7 +109,10 @@
       "description": "Carousel with navigation sounds on prev/next buttons.",
       "registryDependencies": ["sensory-ui-core", "carousel"],
       "files": [
-        { "path": "components/ui/sensory-ui/carousel.tsx", "type": "registry:ui" }
+        {
+          "path": "components/ui/sensory-ui/carousel.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -116,7 +122,10 @@
       "description": "Checkbox with check sound.",
       "registryDependencies": ["sensory-ui-core", "checkbox"],
       "files": [
-        { "path": "components/ui/sensory-ui/checkbox.tsx", "type": "registry:ui" }
+        {
+          "path": "components/ui/sensory-ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -126,7 +135,10 @@
       "description": "Collapsible with open/close sounds.",
       "registryDependencies": ["sensory-ui-core", "collapsible"],
       "files": [
-        { "path": "components/ui/sensory-ui/collapsible.tsx", "type": "registry:ui" }
+        {
+          "path": "components/ui/sensory-ui/collapsible.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -136,7 +148,10 @@
       "description": "Command palette with item selection sound.",
       "registryDependencies": ["sensory-ui-core", "command"],
       "files": [
-        { "path": "components/ui/sensory-ui/command.tsx", "type": "registry:ui" }
+        {
+          "path": "components/ui/sensory-ui/command.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -192,7 +207,10 @@
       "description": "Menubar with trigger and item selection sounds.",
       "registryDependencies": ["sensory-ui-core", "menubar"],
       "files": [
-        { "path": "components/ui/sensory-ui/menubar.tsx", "type": "registry:ui" }
+        {
+          "path": "components/ui/sensory-ui/menubar.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -215,7 +233,10 @@
       "description": "Pagination with page link click sounds.",
       "registryDependencies": ["sensory-ui-core", "pagination"],
       "files": [
-        { "path": "components/ui/sensory-ui/pagination.tsx", "type": "registry:ui" }
+        {
+          "path": "components/ui/sensory-ui/pagination.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -225,7 +246,10 @@
       "description": "Popover with open/close sounds.",
       "registryDependencies": ["sensory-ui-core", "popover"],
       "files": [
-        { "path": "components/ui/sensory-ui/popover.tsx", "type": "registry:ui" }
+        {
+          "path": "components/ui/sensory-ui/popover.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -235,7 +259,10 @@
       "description": "Radio group with value change sound.",
       "registryDependencies": ["sensory-ui-core", "radio-group"],
       "files": [
-        { "path": "components/ui/sensory-ui/radio-group.tsx", "type": "registry:ui" }
+        {
+          "path": "components/ui/sensory-ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -265,7 +292,10 @@
       "description": "Sidebar with open/close sounds.",
       "registryDependencies": ["sensory-ui-core", "sidebar"],
       "files": [
-        { "path": "components/ui/sensory-ui/sidebar.tsx", "type": "registry:ui" }
+        {
+          "path": "components/ui/sensory-ui/sidebar.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {

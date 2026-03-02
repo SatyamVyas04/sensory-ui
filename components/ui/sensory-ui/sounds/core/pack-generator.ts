@@ -10,10 +10,10 @@ import type { SoundRole } from "../../config/sound-roles";
 import type { SoundSynthesizer } from "../../config/engine";
 import type { InstrumentConfig } from "./instruments";
 import {
-  ACTIVATION_TUNES,
+  INTERACTION_TUNES,
   NAVIGATION_TUNES,
   NOTIFICATION_TUNES,
-  SYSTEM_TUNES,
+  OVERLAY_TUNES,
   HERO_TUNES,
 } from "./tunes";
 import { createSoundFromTune } from "./factory";
@@ -28,30 +28,28 @@ export function generateSoundPack(
   instrument: InstrumentConfig
 ): Record<SoundRole, SoundSynthesizer> {
   return {
-    // Activation sounds
-    "activation.primary": createSoundFromTune(ACTIVATION_TUNES.primary, instrument),
-    "activation.subtle": createSoundFromTune(ACTIVATION_TUNES.subtle, instrument),
-    "activation.confirm": createSoundFromTune(ACTIVATION_TUNES.confirm, instrument),
-    "activation.error": createSoundFromTune(ACTIVATION_TUNES.error, instrument),
+    // Interaction sounds
+    "interaction.tap": createSoundFromTune(INTERACTION_TUNES.tap, instrument),
+    "interaction.toggle": createSoundFromTune(INTERACTION_TUNES.toggle, instrument),
+    "interaction.confirm": createSoundFromTune(INTERACTION_TUNES.confirm, instrument),
+    "interaction.disabled": createSoundFromTune(INTERACTION_TUNES.disabled, instrument),
 
     // Navigation sounds
     "navigation.forward": createSoundFromTune(NAVIGATION_TUNES.forward, instrument),
     "navigation.backward": createSoundFromTune(NAVIGATION_TUNES.backward, instrument),
     "navigation.switch": createSoundFromTune(NAVIGATION_TUNES.switch, instrument),
-    "navigation.scroll": createSoundFromTune(NAVIGATION_TUNES.scroll, instrument),
 
     // Notification sounds
-    "notifications.passive": createSoundFromTune(NOTIFICATION_TUNES.passive, instrument),
-    "notifications.error": createSoundFromTune(NOTIFICATION_TUNES.error, instrument),
-    "notifications.success": createSoundFromTune(NOTIFICATION_TUNES.success, instrument),
-    "notifications.warning": createSoundFromTune(NOTIFICATION_TUNES.warning, instrument),
+    "notification.info": createSoundFromTune(NOTIFICATION_TUNES.info, instrument),
+    "notification.success": createSoundFromTune(NOTIFICATION_TUNES.success, instrument),
+    "notification.warning": createSoundFromTune(NOTIFICATION_TUNES.warning, instrument),
+    "notification.error": createSoundFromTune(NOTIFICATION_TUNES.error, instrument),
 
-    // System sounds
-    "system.open": createSoundFromTune(SYSTEM_TUNES.open, instrument),
-    "system.close": createSoundFromTune(SYSTEM_TUNES.close, instrument),
-    "system.expand": createSoundFromTune(SYSTEM_TUNES.expand, instrument),
-    "system.collapse": createSoundFromTune(SYSTEM_TUNES.collapse, instrument),
-    "system.focus": createSoundFromTune(SYSTEM_TUNES.focus, instrument),
+    // Overlay sounds
+    "overlay.open": createSoundFromTune(OVERLAY_TUNES.open, instrument),
+    "overlay.close": createSoundFromTune(OVERLAY_TUNES.close, instrument),
+    "overlay.expand": createSoundFromTune(OVERLAY_TUNES.expand, instrument),
+    "overlay.collapse": createSoundFromTune(OVERLAY_TUNES.collapse, instrument),
 
     // Hero sounds
     "hero.complete": createSoundFromTune(HERO_TUNES.complete, instrument),
@@ -86,20 +84,20 @@ export function generateCustomSoundPack(
 
     let tune;
     switch (category) {
-      case "activation":
-        tune = ACTIVATION_TUNES[name];
+      case "interaction":
+        tune = INTERACTION_TUNES[name as keyof typeof INTERACTION_TUNES];
         break;
       case "navigation":
-        tune = NAVIGATION_TUNES[name];
+        tune = NAVIGATION_TUNES[name as keyof typeof NAVIGATION_TUNES];
         break;
-      case "notifications":
-        tune = NOTIFICATION_TUNES[name];
+      case "notification":
+        tune = NOTIFICATION_TUNES[name as keyof typeof NOTIFICATION_TUNES];
         break;
-      case "system":
-        tune = SYSTEM_TUNES[name];
+      case "overlay":
+        tune = OVERLAY_TUNES[name as keyof typeof OVERLAY_TUNES];
         break;
       case "hero":
-        tune = HERO_TUNES[name];
+        tune = HERO_TUNES[name as keyof typeof HERO_TUNES];
         break;
       default:
         continue;

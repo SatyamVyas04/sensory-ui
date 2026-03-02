@@ -217,7 +217,7 @@ export function Hero({ stars }: HeroProps) {
               asChild
               className="w-full gap-1.5 sm:w-auto"
               size="default"
-              sound="activation.subtle"
+              sound="interaction.toggle"
             >
               <Link
                 href="https://github.com/SatyamVyas04/sensory-ui"
@@ -233,7 +233,7 @@ export function Hero({ stars }: HeroProps) {
               asChild
               className="w-full gap-1.5 sm:w-auto"
               size="default"
-              sound="activation.subtle"
+              sound="interaction.toggle"
               variant="outline"
             >
               <Link href="#showcase">See It in Action</Link>

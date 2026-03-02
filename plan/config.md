@@ -46,10 +46,10 @@ module.exports = {
 	// even if a component has the sound prop set.
 	// -------------------------------------------------------------------
 	categories: {
-		activation: true,
+		interaction: true,
 		navigation: true,
-		notifications: true,
-		system: true,
+		notification: true,
+		overlay: true,
 		hero: false, // Hero is disabled by default - must be explicitly enabled
 	},
 
@@ -63,7 +63,7 @@ module.exports = {
 	// -------------------------------------------------------------------
 	overrides: {
 		// Example overrides (all commented out by default):
-		// "activation.primary":  "/sounds/custom/my-click.mp3",
+		// "interaction.tap":  "/sounds/custom/my-click.mp3",
 		// "navigation.forward":  "data:audio/mp3;base64,...",
 		// "hero.complete":        "/sounds/custom/fanfare.ogg",
 	},
@@ -115,10 +115,10 @@ export const defaultConfig: SensoryUIConfig = {
 	volume: 0.35,
 	theme: "default",
 	categories: {
-		activation: true,
+		interaction: true,
 		navigation: true,
-		notifications: true,
-		system: true,
+		notification: true,
+		overlay: true,
 		hero: false,
 	},
 	overrides: {},
@@ -174,18 +174,18 @@ export function resolveRole(
 
 ## Configuration Options - Quick Reference
 
-| Key                        | Type                                                                                                                                         | Default     | Description                                            |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------ |
-| `enabled`                  | `boolean`                                                                                                                                    | `true`      | Global on/off. `false` silences everything.            |
-| `volume`                   | `number` (0–1)                                                                                                                               | `0.35`      | Master volume multiplier.                              |
-| `theme`                    | `SoundPackName \| (string & {})` - `"soft"`, `"aero"`, `"arcade"`, `"organic"`, `"glass"`, `"industrial"`, `"minimal"`, `"retro"`, `"crisp"` | `"aero"`    | Active sound pack. Selects a built-in synthesizer set. |
-| `categories.activation`    | `boolean`                                                                                                                                    | `true`      | Enable/disable all activation sounds.                  |
-| `categories.navigation`    | `boolean`                                                                                                                                    | `true`      | Enable/disable all navigation sounds.                  |
-| `categories.notifications` | `boolean`                                                                                                                                    | `true`      | Enable/disable all notification sounds.                |
-| `categories.system`        | `boolean`                                                                                                                                    | `true`      | Enable/disable all system sounds.                      |
-| `categories.hero`          | `boolean`                                                                                                                                    | `false`     | Enable/disable hero sounds (off by default).           |
-| `overrides["role.name"]`   | `string`                                                                                                                                     | -           | Custom audio source for a role.                        |
-| `reducedMotion`            | `"inherit" \| "force-off" \| "force-on"`                                                                                                     | `"inherit"` | Reduced-motion behaviour.                              |
+| Key                       | Type                                                                                                                                         | Default     | Description                                            |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------ |
+| `enabled`                 | `boolean`                                                                                                                                    | `true`      | Global on/off. `false` silences everything.            |
+| `volume`                  | `number` (0–1)                                                                                                                               | `0.35`      | Master volume multiplier.                              |
+| `theme`                   | `SoundPackName \| (string & {})` - `"soft"`, `"aero"`, `"arcade"`, `"organic"`, `"glass"`, `"industrial"`, `"minimal"`, `"retro"`, `"crisp"` | `"aero"`    | Active sound pack. Selects a built-in synthesizer set. |
+| `categories.interaction`  | `boolean`                                                                                                                                    | `true`      | Enable/disable all interaction sounds.                 |
+| `categories.navigation`   | `boolean`                                                                                                                                    | `true`      | Enable/disable all navigation sounds.                  |
+| `categories.notification` | `boolean`                                                                                                                                    | `true`      | Enable/disable all notification sounds.                |
+| `categories.overlay`      | `boolean`                                                                                                                                    | `true`      | Enable/disable all overlay sounds.                     |
+| `categories.hero`         | `boolean`                                                                                                                                    | `false`     | Enable/disable hero sounds (off by default).           |
+| `overrides["role.name"]`  | `string`                                                                                                                                     | -           | Custom audio source for a role.                        |
+| `reducedMotion`           | `"inherit" \| "force-off" \| "force-on"`                                                                                                     | `"inherit"` | Reduced-motion behaviour.                              |
 
 ---
 
@@ -206,15 +206,15 @@ Suggested ranges:
 
 ## Category Toggles in Practice
 
-If a client wants no system sounds (open/close dialogs), without removing any code:
+If a client wants no overlay sounds (open/close dialogs), without removing any code:
 
 ```js
 categories: {
-  system: false,
+  overlay: false,
 }
 ```
 
-All components with `sound="system.open"` or `sound="system.close"` will silently no-op. The `sound` prop is still valid - it just resolves to null in the engine when the category is off.
+All components with `sound="overlay.open"` or `sound="overlay.close"` will silently no-op. The `sound` prop is still valid — it just resolves to null in the engine when the category is off.
 
 ---
 
@@ -238,8 +238,8 @@ In v1.5, the config will support per-role volume multipliers in addition to the 
 ```js
 // sensory.config.js (v1.5 preview)
 roleVolumes: {
-  "navigation.scroll": 0.2,   // Very quiet
-  "hero.complete":     0.8,   // Louder than default
+  "interaction.tap":  0.8,   // More prominent
+  "hero.complete":    0.8,   // Louder than default
 }
 ```
 

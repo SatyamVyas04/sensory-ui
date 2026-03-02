@@ -2,7 +2,7 @@
 
 > `components/ui/sensory-ui/sounds/`
 
-Sound packs are sets of `SoundSynthesizer` functions that cover all 19 sound roles. Each pack has a
+Sound packs are sets of `SoundSynthesizer` functions that cover all 17 sound roles. Each pack has a
 distinct character - swap between them by changing `theme` in `sensory.config.js`.
 
 All packs generate audio **programmatically via the Web Audio API** - no audio files,
@@ -57,21 +57,20 @@ creating distinct soundpack characters with minimal code duplication.
 
 ## Tune Types
 
-| Type     | Description                   | Example Roles                         |
-| -------- | ----------------------------- | ------------------------------------- |
-| click    | Short percussive transient    | activation.primary, activation.subtle |
-| pop      | Brief tonal burst with attack | Extended sounds                       |
-| toggle   | State change indicator        | navigation.switch                     |
-| tick     | Subtle micro-interaction      | navigation.scroll, system.focus       |
-| sweep    | Frequency glide (up/down)     | navigation.forward/backward           |
-| chime    | Resonant tonal with decay     | notifications.passive/important       |
-| arpeggio | Sequence of notes             | hero.complete, hero.milestone         |
-| chord    | Multiple simultaneous notes   | Custom                                |
-| burst    | Noise-based texture           | Extended sounds                       |
-| pulse    | Repeating pattern             | notifications.warning                 |
-| rise     | Pitch ascends                 | activation.confirm, system.open       |
-| drop     | Pitch descends                | activation.error, system.close        |
-| wobble   | Modulated sound               | Extended sounds                       |
+| Type     | Description                   | Example Roles                           |
+| -------- | ----------------------------- | --------------------------------------- |
+| click    | Short percussive transient    | interaction.tap, interaction.disabled   |
+| pop      | Brief tonal burst with attack | interaction.confirm                     |
+| toggle   | State change indicator        | interaction.toggle, navigation.switch   |
+| sweep    | Frequency glide (up/down)     | navigation.forward, navigation.backward |
+| chime    | Resonant tonal with decay     | notification.info, overlay.open         |
+| arpeggio | Sequence of notes             | hero.complete, hero.milestone           |
+| chord    | Multiple simultaneous notes   | Custom                                  |
+| burst    | Noise-based texture           | Extended sounds                         |
+| pulse    | Repeating pattern             | notification.warning                    |
+| rise     | Pitch ascends                 | interaction.confirm, overlay.open       |
+| drop     | Pitch descends                | notification.error, overlay.close       |
+| wobble   | Modulated sound               | Extended sounds                         |
 
 ---
 
@@ -168,6 +167,7 @@ import { INSTRUMENTS } from "./core/instruments";
 
 // Add to INSTRUMENTS map, then:
 export const myPack = generateSoundPack(MY_CUSTOM_INSTRUMENT);
+// myPack covers all 17 roles: interaction.*, overlay.*, navigation.*, notification.*, hero.*
 ```
 
 ### Option 2: Modify Existing Pack

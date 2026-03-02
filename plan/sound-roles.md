@@ -2,7 +2,7 @@
 
 > `components/ui/sensory-ui/config/sound-roles.ts`
 
-This document defines every semantic sound role in sensory-ui v1.0, the rationale behind the category structure, file specifications for audio assets, and the TypeScript type definitions.
+This document defines every semantic sound role in sensory-ui, the rationale behind the category structure, and the TypeScript type definitions.
 
 ---
 
@@ -10,93 +10,95 @@ This document defines every semantic sound role in sensory-ui v1.0, the rational
 
 Sound roles are organised into five top-level **categories**. Each category represents a distinct class of UI feedback at a different emotional register and duration.
 
-| Category        | Count | Default Enabled | Duration Range | Character                      |
-| --------------- | ----- | --------------- | -------------- | ------------------------------ |
-| `activation`    | 4     | Yes             | 40–90 ms       | Short transients, soft attack  |
-| `navigation`    | 4     | Yes             | 100–250 ms     | Low-volume sweeps, directional |
-| `notifications` | 4     | Yes             | 200–600 ms     | Two-tier intensity             |
-| `system`        | 5     | Yes             | 120–400 ms     | Tonal pairs (open ↔ close)     |
-| `hero`          | 2     | **No**          | 800–1800 ms    | Celebratory, longer form       |
+| Category       | Count | Default Enabled | Duration Range | Character                      |
+| -------------- | ----- | --------------- | -------------- | ------------------------------ |
+| `interaction`  | 4     | Yes             | 40–90 ms       | Short transients, soft attack  |
+| `overlay`      | 4     | Yes             | 120–300 ms     | Tonal pairs (open ↔ close)     |
+| `navigation`   | 3     | Yes             | 100–250 ms     | Low-volume sweeps, directional |
+| `notification` | 4     | Yes             | 200–600 ms     | Two-tier intensity             |
+| `hero`         | 2     | **No**          | 800–1800 ms    | Celebratory, longer form       |
 
-Total: **19 sounds**
+Total: **17 sounds**
 
 ---
 
-## Category: `activation`
+## Category: `interaction`
 
-Fired when the user performs a primary direct action - pressing a button, confirming a form, triggering an error.
+Fired when the user performs a direct action — pressing a button, toggling a state, confirming a form, or interacting with a disabled element.
 
-| Role    | Full Key             | Duration | Description                                 | Typical Trigger                 |
-| ------- | -------------------- | -------- | ------------------------------------------- | ------------------------------- |
-| Primary | `activation.primary` | 40–60 ms | The default click/tap sound. Soft, neutral. | Primary button click            |
-| Subtle  | `activation.subtle`  | 30–50 ms | Quieter variant. For secondary actions.     | Secondary button, icon button   |
-| Confirm | `activation.confirm` | 60–90 ms | Slightly elevated, positive.                | Form submit, save confirm       |
-| Error   | `activation.error`   | 50–80 ms | Short attention-getter, not harsh.          | Validation failure, error state |
+| Role     | Full Key               | Duration | Description                                 | Typical Trigger                 |
+| -------- | ---------------------- | -------- | ------------------------------------------- | ------------------------------- |
+| Tap      | `interaction.tap`      | 40–60 ms | The default click/tap sound. Soft, neutral. | Primary button click            |
+| Toggle   | `interaction.toggle`   | 30–50 ms | State-change indicator. Checkbox, switch.   | Checkbox, switch, radio, slider |
+| Confirm  | `interaction.confirm`  | 60–90 ms | Slightly elevated, positive.                | Form submit, save confirm       |
+| Disabled | `interaction.disabled` | 20–40 ms | Muted, flat — signals the action is locked. | Click on a disabled button      |
 
 **Design notes:**
 
 - No hard transient attacks. All sounds should feel like gentle taps.
-- `activation.subtle` should be at approximately 60% the perceived loudness of `activation.primary`.
-- `activation.error` should be distinct from the others (slightly lower pitch or a flat harmonic) but should never feel alarming or jarring.
+- `interaction.toggle` is distinct from `interaction.tap` — it conveys state change, not action.
+- `interaction.disabled` is the quietest sound in this category and uses a heavily low-passed filter to communicate unavailability without being harsh.
+- `interaction.confirm` should feel resolved and positive — slightly higher pitch or richer harmonic.
 
 ---
 
 ## Category: `navigation`
 
-Fired when the user moves through space - between pages, tabs, steps, or scrollable areas.
+Fired when the user moves through space — between pages, tabs, or steps.
 
-| Role     | Full Key              | Duration   | Description                                           | Typical Trigger                    |
-| -------- | --------------------- | ---------- | ----------------------------------------------------- | ---------------------------------- |
-| Forward  | `navigation.forward`  | 150–250 ms | A rightward / upward sweep.                           | Next step, next page, forward link |
-| Backward | `navigation.backward` | 150–250 ms | A leftward / downward sweep. Tonal mirror of forward. | Back button, previous step         |
-| Switch   | `navigation.switch`   | 100–180 ms | Neutral lateral movement.                             | Tab switch, segment switch         |
-| Scroll   | `navigation.scroll`   | 80–150 ms  | Very quiet, almost subliminal.                        | Scroll snap, virtual list jump     |
+| Role     | Full Key              | Duration   | Description                                           | Typical Trigger                           |
+| -------- | --------------------- | ---------- | ----------------------------------------------------- | ----------------------------------------- |
+| Forward  | `navigation.forward`  | 150–250 ms | A rightward / upward sweep.                           | Next step, next page, carousel next       |
+| Backward | `navigation.backward` | 150–250 ms | A leftward / downward sweep. Tonal mirror of forward. | Back button, previous step, carousel prev |
+| Switch   | `navigation.switch`   | 100–180 ms | Neutral lateral movement.                             | Tab switch, segment switch, pagination    |
 
 **Design notes:**
 
 - `navigation.forward` and `navigation.backward` should be **tonal inversions** of each other (same harmonic content, opposite pitch arc).
-- `navigation.scroll` is meant to be barely audible - a subtle tick, not a whoosh. Volume should be 50% of other navigation sounds.
-- All navigation sounds should have a whoosh-like or sweep quality, not a stab or click quality.
+- `navigation.switch` is for lateral movement where direction is not meaningful — tabs, pagination links.
+- All navigation sounds should have a sweep quality, not a stab or click quality.
+- The `navigation.scroll` role was removed in the taxonomy simplification — scroll-snap sounds are now either omitted or handled via `interaction.tap`.
 
 ---
 
-## Category: `notifications`
+## Category: `notification`
 
-Fired when the system delivers feedback to the user - toasts, alerts, banners, inline validation messages.
+Fired when the system delivers feedback to the user — toasts, alerts, banners, inline validation messages.
 
-| Role    | Full Key                | Duration   | Description                                  | Typical Trigger                  |
-| ------- | ----------------------- | ---------- | -------------------------------------------- | -------------------------------- |
-| Passive | `notifications.passive` | 200–350 ms | Neutral information. Soft single chime.      | Info toast, passive alert        |
-| Success | `notifications.success` | 250–400 ms | Two ascending notes (positive feeling).      | Success toast, form saved        |
-| Warning | `notifications.warning` | 300–450 ms | Same note twice (attention-getting).         | Quota alert, confirmation needed |
-| Error   | `notifications.error`   | 300–450 ms | Two descending notes (negative connotation). | Error toast, connection failed   |
+| Role    | Full Key               | Duration   | Description                                  | Typical Trigger                  |
+| ------- | ---------------------- | ---------- | -------------------------------------------- | -------------------------------- |
+| Info    | `notification.info`    | 200–350 ms | Neutral information. Soft single chime.      | Info toast, passive alert        |
+| Success | `notification.success` | 250–400 ms | Two ascending notes (positive feeling).      | Success toast, form saved        |
+| Warning | `notification.warning` | 300–450 ms | Same note twice (attention-getting).         | Quota alert, confirmation needed |
+| Error   | `notification.error`   | 300–450 ms | Two descending notes (negative connotation). | Error toast, connection failed   |
 
 **Design notes:**
 
-- `notifications.passive` should feel like a whisper - something you hear but don't need to act on.
-- `notifications.success` uses ascending notes (C5 → E5) for a positive, resolved feeling.
-- `notifications.warning` repeats the same note twice (A4 → A4) to grab attention without negativity.
-- `notifications.error` uses descending tritone (B4 → F4) for tension/negative feeling without being harsh.
+- `notification.info` should feel like a whisper — something you hear but don't need to act on. Renamed from `passive` for clarity.
+- `notification.success` uses ascending notes (C5 → E5) for a positive, resolved feeling.
+- `notification.warning` repeats the same note twice (A4 → A4) to grab attention without negativity.
+- `notification.error` uses descending tritone (B4 → F4) for tension/negative feeling without being harsh.
+- The category name changed from `notifications` (plural) to `notification` (singular) for consistency with other category names.
 
 ---
 
-## Category: `system`
+## Category: `overlay`
 
-Fired when UI surfaces open, close, expand, collapse, or receive focus. These are structural changes to the visual layout.
+Fired when UI surfaces open, close, expand, or collapse. These are structural changes to the visual layout.
 
-| Role     | Full Key          | Duration   | Description                           | Typical Trigger                           |
-| -------- | ----------------- | ---------- | ------------------------------------- | ----------------------------------------- |
-| Open     | `system.open`     | 150–250 ms | A gentle expansion sound.             | Dialog open, sheet open, dropdown open    |
-| Close    | `system.close`    | 150–250 ms | Tonal inverse of open. Collapse.      | Dialog close, sheet close, dropdown close |
-| Expand   | `system.expand`   | 120–220 ms | Lighter than open. Content reveals.   | Accordion expand, collapsible open        |
-| Collapse | `system.collapse` | 120–220 ms | Paired with expand. Content hides.    | Accordion collapse, collapsible close     |
-| Focus    | `system.focus`    | 80–150 ms  | Very subtle. Focus ring confirmation. | Focus trap entry, modal focus gain        |
+| Role     | Full Key           | Duration   | Description                         | Typical Trigger                           |
+| -------- | ------------------ | ---------- | ----------------------------------- | ----------------------------------------- |
+| Open     | `overlay.open`     | 150–250 ms | A gentle expansion sound.           | Dialog open, sheet open, dropdown open    |
+| Close    | `overlay.close`    | 150–250 ms | Tonal inverse of open. Collapse.    | Dialog close, sheet close, dropdown close |
+| Expand   | `overlay.expand`   | 120–220 ms | Lighter than open. Content reveals. | Accordion expand, collapsible open        |
+| Collapse | `overlay.collapse` | 120–220 ms | Paired with expand. Content hides.  | Accordion collapse, collapsible close     |
 
 **Design notes:**
 
-- `system.open` / `system.close` are a **tonal inversion pair**: if open rises in pitch, close falls.
-- `system.expand` / `system.collapse` are the same idea but slightly shorter and lighter. Accordion feels smaller than a Dialog.
-- `system.focus` is optional to implement in v1.0 - it is the most subtle sound in the whole set and must degrade gracefully if callers decide not to use it.
+- `overlay.open` / `overlay.close` are a **tonal inversion pair**: if open rises in pitch, close falls.
+- `overlay.expand` / `overlay.collapse` are the same idea but shorter and lighter. Accordion feels smaller than a Dialog.
+- The `system.focus` role was removed from the taxonomy — focus sounds are non-standard and should not be applied automatically.
+- The category name changed from `system` to `overlay` to better describe the nature of these surface-level changes.
 
 ---
 
@@ -124,65 +126,61 @@ Fired for significant completion moments - task completion, onboarding milestone
 // components/ui/sensory-ui/config/sound-roles.ts
 
 export type SoundCategory =
-	| "activation"
+	| "interaction"
+	| "overlay"
 	| "navigation"
-	| "notifications"
-	| "system"
+	| "notification"
 	| "hero";
 
-export type ActivationRole =
-	| "activation.primary"
-	| "activation.subtle"
-	| "activation.confirm"
-	| "activation.error";
+export type InteractionRole =
+	| "interaction.tap"
+	| "interaction.toggle"
+	| "interaction.confirm"
+	| "interaction.disabled";
+
+export type OverlayRole =
+	| "overlay.open"
+	| "overlay.close"
+	| "overlay.expand"
+	| "overlay.collapse";
 
 export type NavigationRole =
 	| "navigation.forward"
 	| "navigation.backward"
-	| "navigation.switch"
-	| "navigation.scroll";
+	| "navigation.switch";
 
-export type NotificationsRole =
-	| "notifications.passive"
-	| "notifications.error"
-	| "notifications.success"
-	| "notifications.warning";
-
-export type SystemRole =
-	| "system.open"
-	| "system.close"
-	| "system.expand"
-	| "system.collapse"
-	| "system.focus";
+export type NotificationRole =
+	| "notification.info"
+	| "notification.success"
+	| "notification.warning"
+	| "notification.error";
 
 export type HeroRole = "hero.complete" | "hero.milestone";
 
 export type SoundRole =
-	| ActivationRole
+	| InteractionRole
+	| OverlayRole
 	| NavigationRole
-	| NotificationsRole
-	| SystemRole
+	| NotificationRole
 	| HeroRole;
 
 /** All valid role strings - useful for validation and config autocompletion. */
 export const ALL_SOUND_ROLES: SoundRole[] = [
-	"activation.primary",
-	"activation.subtle",
-	"activation.confirm",
-	"activation.error",
+	"interaction.tap",
+	"interaction.toggle",
+	"interaction.confirm",
+	"interaction.disabled",
+	"overlay.open",
+	"overlay.close",
+	"overlay.expand",
+	"overlay.collapse",
 	"navigation.forward",
 	"navigation.backward",
 	"navigation.switch",
-	"navigation.scroll",
-	"notifications.passive",
-	"notifications.error",
-	"notifications.success",
-	"notifications.warning",
-	"system.open",
-	"system.close",
-	"system.expand",
-	"system.collapse",
-	"system.focus",
+	"notification.info",
+	"notification.success",
+	"notification.warning",
+	"notification.error",
 	"hero.complete",
 	"hero.milestone",
 ];
@@ -234,6 +232,7 @@ export type SoundPackName =
 
 /**
  * All built-in sound packs, keyed by their SoundPackName.
+ * Each pack maps all 17 SoundRole strings to SoundSynthesizer functions.
  */
 export const packRegistry: Record<SoundPackName, SoundPack> = {
 	soft: softPack,
@@ -257,7 +256,7 @@ export const DEFAULT_PACK: SoundPackName = "aero";
 
 ## Audio Specifications (for custom overrides)
 
-When providing custom audio file overrides, files should meet these requirements:
+When providing custom audio source overrides via `config.overrides`, the URL-based files should meet these requirements:
 
 | Requirement              | Spec                                                                          |
 | ------------------------ | ----------------------------------------------------------------------------- |
@@ -284,8 +283,8 @@ Users can replace any role's audio in two ways:
 
 ```js
 overrides: {
-  "activation.primary": "/sounds/custom/my-click.mp3",
-  "hero.complete":       "/sounds/custom/fanfare.mp3",
+  "interaction.tap":  "/sounds/custom/my-click.mp3",
+  "hero.complete":    "/sounds/custom/fanfare.mp3",
 }
 ```
 

@@ -6,27 +6,35 @@ import { DemoCard } from "./demo-card";
 export function SoundRolesOverview() {
   return (
     <DemoCard
-      description="All 19 semantic sound roles across 5 categories"
+      description="All 17 semantic sound roles across 5 categories"
       icon={<IconBell className="size-4" />}
       title="+ More Sound Roles"
     >
       <p className="text-muted-foreground text-xs/relaxed">
         Beyond the interactive demos, sensory-ui defines additional semantic
-        roles for navigation, notifications, system focus, and hero moments -
-        each wired through the same{" "}
+        roles for navigation, notifications, and hero moments — each wired
+        through the same{" "}
         <code className="bg-muted px-1 py-0.5 font-mono text-[10px]">
           sound
         </code>{" "}
-        prop pattern.
+        prop. Pass{" "}
+        <code className="bg-muted px-1 py-0.5 font-mono text-[10px]">
+          false
+        </code>{" "}
+        to silence any component.
       </p>
       <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1">
         {[
-          { cat: "navigation", roles: ["forward", "backward", "scroll"] },
           {
-            cat: "notifications",
-            roles: ["passive", "important", "success", "warning"],
+            cat: "interaction",
+            roles: ["tap", "toggle", "confirm", "disabled"],
           },
-          { cat: "system", roles: ["focus"] },
+          { cat: "overlay", roles: ["open", "close", "expand", "collapse"] },
+          { cat: "navigation", roles: ["forward", "backward", "switch"] },
+          {
+            cat: "notification",
+            roles: ["info", "success", "warning", "error"],
+          },
           { cat: "hero", roles: ["complete", "milestone"] },
         ].map(({ cat, roles }) => (
           <div className="py-1" key={cat}>

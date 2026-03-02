@@ -16,11 +16,11 @@ export function AccordionDemo() {
       icon={<IconChevronDown className="size-4" />}
       title="Accordion"
     >
-      <SoundTrigger soundRole="system.expand / collapse">
+      <SoundTrigger soundRole="overlay.expand / collapse">
         <Accordion
-          collapseSound="system.collapse"
+          collapseSound="overlay.collapse"
           collapsible
-          expandSound="system.expand"
+          expandSound="overlay.expand"
           type="single"
         >
           <AccordionItem value="what">

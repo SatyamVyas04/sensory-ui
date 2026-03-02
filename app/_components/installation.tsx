@@ -208,7 +208,7 @@ function InstallCard({
             className="touch-manipulation self-start opacity-60 transition-opacity hover:opacity-100 group-hover:opacity-100 sm:self-auto"
             onClick={copyCode}
             size="icon-sm"
-            sound="activation.confirm"
+            sound="interaction.confirm"
             variant="ghost"
           >
             <motion.div

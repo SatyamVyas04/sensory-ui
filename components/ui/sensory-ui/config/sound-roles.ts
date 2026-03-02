@@ -1,70 +1,73 @@
 /**
  * sensory-ui Sound Roles
  *
- * Defines the 19 semantic sound roles organised into 5 categories.
+ * Defines the 17 semantic sound roles organised into 5 categories.
  * These types are the public contract — every component's `sound` prop
  * accepts a value of type `SoundRole`.
+ *
+ * Material Design alignment:
+ *   interaction.*  → Primary UX sounds   (frequent, subtle, understated)
+ *   overlay.*      → Secondary UX sounds  (state changes, less frequent)
+ *   navigation.*   → Primary UX sounds   (navigation feedback)
+ *   notification.* → Notifications        (attention-directing)
+ *   hero.*         → Hero sounds          (celebration, disabled by default)
  */
 
 export type SoundCategory =
-  | "activation"
+  | "interaction"
+  | "overlay"
   | "navigation"
-  | "notifications"
-  | "system"
+  | "notification"
   | "hero";
 
-export type ActivationRole =
-  | "activation.primary"
-  | "activation.subtle"
-  | "activation.confirm"
-  | "activation.error";
+export type InteractionRole =
+  | "interaction.tap"
+  | "interaction.toggle"
+  | "interaction.confirm"
+  | "interaction.disabled";
+
+export type OverlayRole =
+  | "overlay.open"
+  | "overlay.close"
+  | "overlay.expand"
+  | "overlay.collapse";
 
 export type NavigationRole =
   | "navigation.forward"
   | "navigation.backward"
-  | "navigation.switch"
-  | "navigation.scroll";
+  | "navigation.switch";
 
-export type NotificationsRole =
-  | "notifications.passive"
-  | "notifications.error"
-  | "notifications.success"
-  | "notifications.warning";
-
-export type SystemRole =
-  | "system.open"
-  | "system.close"
-  | "system.expand"
-  | "system.collapse"
-  | "system.focus";
+export type NotificationRole =
+  | "notification.info"
+  | "notification.success"
+  | "notification.warning"
+  | "notification.error";
 
 export type HeroRole = "hero.complete" | "hero.milestone";
 
 export type SoundRole =
-  | ActivationRole
+  | InteractionRole
+  | OverlayRole
   | NavigationRole
-  | NotificationsRole
-  | SystemRole
+  | NotificationRole
   | HeroRole;
 
 export const ALL_SOUND_ROLES: SoundRole[] = [
-  "activation.primary",
-  "activation.subtle",
-  "activation.confirm",
-  "activation.error",
+  "interaction.tap",
+  "interaction.toggle",
+  "interaction.confirm",
+  "interaction.disabled",
+  "overlay.open",
+  "overlay.close",
+  "overlay.expand",
+  "overlay.collapse",
   "navigation.forward",
   "navigation.backward",
   "navigation.switch",
-  "navigation.scroll",
-  "notifications.passive",
-  "notifications.error",
-  "notifications.success",
-  "notifications.warning",
-  "system.open",
-  "system.close",
-  "system.expand",
-  "system.collapse",
-  "system.focus",
+  "notification.info",
+  "notification.success",
+  "notification.warning",
+  "notification.error",
   "hero.complete",
   "hero.milestone",
 ];

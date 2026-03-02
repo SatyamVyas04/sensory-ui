@@ -158,7 +158,7 @@ import { Button } from "@/components/ui/sensory-ui/button";
 
 export function SaveButton() {
 	return (
-		<Button sound="activation.primary" onClick={handleSave}>
+		<Button sound="interaction.tap" onClick={handleSave}>
 			Save
 		</Button>
 	);
@@ -187,7 +187,7 @@ npx shadcn@latest add http://localhost:3000/r/sensory-ui  # test install
 
 ### Quick test
 
-Temporarily set `volume: 1.0` in `sensory.config.js` and click a Button with `sound="activation.primary"`. You should hear the activation sound.
+Temporarily set `volume: 1.0` in `sensory.config.js` and click a Button with `sound="interaction.tap"`. You should hear the tap sound.
 
 ### Silence check
 

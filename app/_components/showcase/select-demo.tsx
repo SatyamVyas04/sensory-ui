@@ -17,8 +17,8 @@ export function SelectDemo() {
       icon={<IconSelector className="size-4" />}
       title="Select"
     >
-      <SoundTrigger soundRole="system.open / close">
-        <Select closeSound="system.close" sound="system.open">
+      <SoundTrigger soundRole="overlay.open / close">
+        <Select closeSound="overlay.close" sound="overlay.open">
           <SelectTrigger
             aria-label="Select sound pack"
             className="h-8 w-full text-xs"

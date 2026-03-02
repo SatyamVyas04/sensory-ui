@@ -51,7 +51,7 @@ sensory-ui is composed of four runtime layers and one distribution layer:
 │                    Your Application                         │
 │                                                             │
 │   <SensoryUIProvider>                ← Layer 1: Provider    │
-│     <Button sound="activation.primary">                     │
+│     <Button sound="interaction.tap">                        │
 │       Save                                                  │
 │     </Button>                        ← Layer 2: Component   │
 │   </SensoryUIProvider>                                      │
@@ -66,7 +66,7 @@ sensory-ui is composed of four runtime layers and one distribution layer:
           ▼
 ┌─────────────────────────────────────────────────────────────┐
 │         Role Registry + Config (registry.ts / config.ts)    │  ← Layer 4: Config
-│  "activation.primary" → SoundSynthesizer fn       │
+│  "interaction.tap" → SoundSynthesizer fn           │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -159,12 +159,12 @@ registry.json                 ← shadcn registry manifest (for `shadcn build`)
 
 - shadcn registry distribution (public CLI install via `sensory-ui.com`)
 - 24 sound-enabled components
-- 19 sound roles across 5 categories
+- 17 sound roles across 5 categories (interaction, overlay, navigation, notification, hero)
 - 9 distinct sound packs: soft, aero, arcade, organic, glass, industrial, minimal, retro, crisp
 
 ### v1.0 - Core _(complete)_
 
-- 19 base sounds across 5 categories
+- 17 base sounds across 5 categories
 - 9 distinct sound packs: soft, aero, arcade, organic, glass, industrial, minimal, retro, crisp
 - `SensoryUIProvider` wrapping the whole app
 - `sound` prop on Button and 8 common Radix components
@@ -207,7 +207,7 @@ import { Button } from "@/components/ui/sensory-ui/button";
 
 export function SaveButton() {
 	return (
-		<Button sound="activation.primary" onClick={handleSave}>
+		<Button sound="interaction.tap" onClick={handleSave}>
 			Save
 		</Button>
 	);

@@ -30,6 +30,9 @@ import {
 import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
+const DEFAULT_SIDEBAR_OPEN_SOUND = "overlay.open" as const;
+const DEFAULT_SIDEBAR_CLOSE_SOUND = "overlay.close" as const;
+
 function SidebarProvider({
   openSound,
   closeSound,
@@ -38,10 +41,10 @@ function SidebarProvider({
   defaultOpen = true,
   ...props
 }: React.ComponentProps<typeof BaseSidebarProvider> & {
-  /** Sound to play when the sidebar opens. */
-  openSound?: SoundRole;
-  /** Sound to play when the sidebar closes. Defaults to "system.close". */
-  closeSound?: SoundRole;
+  /** Sound to play when the sidebar opens. Defaults to "overlay.open". Set to false to disable. */
+  openSound?: SoundRole | false;
+  /** Sound to play when the sidebar closes. Defaults to "overlay.close". Set to false to disable. */
+  closeSound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();
   const prevOpenRef = React.useRef(controlledOpen ?? defaultOpen);
@@ -56,10 +59,10 @@ function SidebarProvider({
   const handleOpenChange = React.useCallback(
     (nextOpen: boolean) => {
       if (nextOpen !== prevOpenRef.current) {
-        if (nextOpen && openSound) {
-          void playSound(openSound);
-        } else if (!nextOpen && (closeSound ?? openSound)) {
-          void playSound(closeSound ?? "system.close");
+        if (nextOpen && openSound !== false) {
+          void playSound(openSound ?? DEFAULT_SIDEBAR_OPEN_SOUND);
+        } else if (!nextOpen && closeSound !== false) {
+          void playSound(closeSound ?? DEFAULT_SIDEBAR_CLOSE_SOUND);
         }
         prevOpenRef.current = nextOpen;
       }

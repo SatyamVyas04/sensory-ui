@@ -21,8 +21,8 @@ export function RadioGroupDemo() {
       icon={<IconRadio className="size-4" />}
       title="Radio Group"
     >
-      <SoundTrigger soundRole="activation.confirm">
-        <RadioGroup defaultValue="medium" sound="activation.confirm">
+      <SoundTrigger soundRole="interaction.confirm">
+        <RadioGroup defaultValue="medium" sound="interaction.confirm">
           {OPTIONS.map((opt) => (
             <div className="flex items-center gap-2.5" key={opt.value}>
               <RadioGroupItem id={`rg-${opt.value}`} value={opt.value} />

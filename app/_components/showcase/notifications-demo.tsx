@@ -19,7 +19,7 @@ export function NotificationsDemo() {
       title="Notifications"
     >
       <div className="flex flex-col gap-3">
-        <SoundTrigger soundRole="notifications.passive">
+        <SoundTrigger soundRole="notification.info">
           <Button
             className="w-full justify-start gap-2"
             onClick={() =>
@@ -28,14 +28,14 @@ export function NotificationsDemo() {
               })
             }
             size="sm"
-            sound="notifications.passive"
+            sound="notification.info"
             variant="outline"
           >
             <IconInfoCircle className="size-4 text-blue-500" />
             Info Toast
           </Button>
         </SoundTrigger>
-        <SoundTrigger soundRole="notifications.success">
+        <SoundTrigger soundRole="notification.success">
           <Button
             className="w-full justify-start gap-2"
             onClick={() =>
@@ -44,14 +44,14 @@ export function NotificationsDemo() {
               })
             }
             size="sm"
-            sound="notifications.success"
+            sound="notification.success"
             variant="outline"
           >
             <IconCircleCheck className="size-4 text-green-500" />
             Success Toast
           </Button>
         </SoundTrigger>
-        <SoundTrigger soundRole="notifications.warning">
+        <SoundTrigger soundRole="notification.warning">
           <Button
             className="w-full justify-start gap-2"
             onClick={() =>
@@ -60,14 +60,14 @@ export function NotificationsDemo() {
               })
             }
             size="sm"
-            sound="notifications.warning"
+            sound="notification.warning"
             variant="outline"
           >
             <IconAlertTriangle className="size-4 text-amber-500" />
             Warning Toast
           </Button>
         </SoundTrigger>
-        <SoundTrigger soundRole="notifications.error">
+        <SoundTrigger soundRole="notification.error">
           <Button
             className="w-full justify-start gap-2"
             onClick={() =>
@@ -76,7 +76,7 @@ export function NotificationsDemo() {
               })
             }
             size="sm"
-            sound="notifications.error"
+            sound="notification.error"
             variant="outline"
           >
             <IconX className="size-4 text-red-500" />

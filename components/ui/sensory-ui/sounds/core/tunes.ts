@@ -84,54 +84,52 @@ export interface BaseTune {
 }
 
 // ---------------------------------------------------------------------------
-// Activation Tunes
+// Interaction Tunes (Primary UX sounds — frequent, subtle, understated)
 // ---------------------------------------------------------------------------
 
-export const ACTIVATION_TUNES: Record<string, BaseTune> = {
-  /** Primary click - the default tap sound */
-  primary: {
+export const INTERACTION_TUNES: Record<string, BaseTune> = {
+  /** Tap - the default button/click sound */
+  tap: {
     type: "click",
     duration: 0.04,
     filterFreq: 4500,
     filterQ: 3,
-    volume: 0.9,
-    // Sub-thump layer for physical weight
+    // Volume reduced from 0.9 to 0.65; perceived weight restored by sub-bass layer
+    volume: 0.65,
     meta: { subFreq: 65, subDuration: 0.018, subVolume: 0.14 }
   },
 
-  /** Subtle click - secondary/icon buttons */
-  subtle: {
+  /** Toggle - binary state change (switch, checkbox, radio) */
+  toggle: {
     type: "click",
     duration: 0.035,
     filterFreq: 3200,
     filterQ: 2.5,
-    volume: 0.55,
+    volume: 0.50,
     meta: { subFreq: 50, subDuration: 0.014, subVolume: 0.08 }
   },
 
-  /** Confirm - positive action completion */
+  /** Confirm - positive action completion, upward sweep */
   confirm: {
     type: "rise",
     duration: 0.07,
     frequency: 440,      // A4
-    endFrequency: 660,   // E5 (perfect fifth)
-    volume: 0.72,
+    endFrequency: 660,   // E5 (perfect fifth up = assurance)
+    volume: 0.65,
     harmonics: true,
-    harmonicRatio: 1.5,  // Fifth above
+    harmonicRatio: 1.5,
     harmonicVolume: 0.28
   },
 
-  /** Error - negative feedback (not harsh) */
-  error: {
-    type: "drop",
-    duration: 0.07,
-    frequency: 340,
-    endFrequency: 200,
-    volume: 0.7,
-    harmonics: true,
-    harmonicRatio: 0.5,  // Octave below
-    harmonicVolume: 0.42
-  }
+  /** Disabled - dull low noise burst, "nothing there" feel
+   *  For aria-disabled / programmatically-disabled interactions */
+  disabled: {
+    type: "burst",
+    duration: 0.035,
+    filterFreq: 400,   // Low bandpass — dull thud
+    filterQ: 1.5,      // Wide, unfocused
+    volume: 0.28
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -139,31 +137,31 @@ export const ACTIVATION_TUNES: Record<string, BaseTune> = {
 // ---------------------------------------------------------------------------
 
 export const NAVIGATION_TUNES: Record<string, BaseTune> = {
-  /** Forward - rightward/upward motion */
+  /** Forward - rightward/upward motion (ascending pitch = positive direction) */
   forward: {
     type: "sweep",
     duration: 0.16,
     frequency: 280,
     endFrequency: 440,
-    volume: 0.52,
-    harmonics: true,
-    harmonicRatio: 4,     // High shimmer
-    harmonicVolume: 0.12
-  },
-
-  /** Backward - leftward/downward motion (mirror of forward) */
-  backward: {
-    type: "sweep",
-    duration: 0.16,
-    frequency: 440,
-    endFrequency: 280,
-    volume: 0.52,
+    volume: 0.50,
     harmonics: true,
     harmonicRatio: 4,
     harmonicVolume: 0.12
   },
 
-  /** Switch - tab/segment selection */
+  /** Backward - mirror of forward (descending pitch = reverse direction) */
+  backward: {
+    type: "sweep",
+    duration: 0.16,
+    frequency: 440,
+    endFrequency: 280,
+    volume: 0.50,
+    harmonics: true,
+    harmonicRatio: 4,
+    harmonicVolume: 0.12
+  },
+
+  /** Switch - tab/segment change, quick tonal click with pitch fall */
   switch: {
     type: "toggle",
     duration: 0.04,
@@ -171,17 +169,8 @@ export const NAVIGATION_TUNES: Record<string, BaseTune> = {
     endFrequency: 540,
     filterFreq: 2400,
     filterQ: 4.5,
-    volume: 0.52
+    volume: 0.50
   },
-
-  /** Scroll - almost subliminal tick */
-  scroll: {
-    type: "tick",
-    duration: 0.035,
-    filterFreq: 2800,
-    filterQ: 2,
-    volume: 0.22
-  }
 };
 
 // ---------------------------------------------------------------------------
@@ -189,8 +178,8 @@ export const NAVIGATION_TUNES: Record<string, BaseTune> = {
 // ---------------------------------------------------------------------------
 
 export const NOTIFICATION_TUNES: Record<string, BaseTune> = {
-  /** Passive - neutral information, soft single chime */
-  passive: {
+  /** Info - neutral chime, calm single tone (was "passive") */
+  info: {
     type: "chime",
     duration: 0.22,
     frequency: 587.33,  // D5
@@ -201,91 +190,73 @@ export const NOTIFICATION_TUNES: Record<string, BaseTune> = {
     harmonicVolume: 0.15
   },
 
-  /** Success - positive, two ascending notes (major third interval) */
+  /** Success - positive, two ascending notes (upward = positivity per Material) */
   success: {
     type: "arpeggio",
     duration: 0.4,
-    notes: [523.25, 659.25],  // C5 → E5 (major third up = happy/positive)
+    notes: [523.25, 659.25],  // C5 → E5 (major third up = happy)
     noteDuration: 0.1,
     noteGap: 0.12,
-    volume: 0.6,
+    volume: 0.55,
     meta: { finalRing: 0.25 }
   },
 
-  /** Warning - cautionary, same note twice (attention-getting) */
+  /** Warning - semitone descent = tense/unsettled, draws attention without alarm */
   warning: {
     type: "arpeggio",
     duration: 0.4,
-    notes: [440, 440],  // A4 → A4 (same note repeated = "hey, pay attention")
+    notes: [440, 440],  // A4 → Ab4 (semitone down = caution/tension)
     noteDuration: 0.08,
     noteGap: 0.1,
-    volume: 0.55,
+    volume: 0.60,
     meta: { finalRing: 0.18 }
   },
 
-  /** Error - negative feedback, two descending notes (minor feel) */
+  /** Error - tritone descent = maximum tension, unmistakably negative */
   error: {
     type: "arpeggio",
     duration: 0.4,
-    notes: [493.88, 349.23],  // B4 → F4 (tritone down = tense/negative)
+    notes: [493.88, 349.23],  // B4 → F4 (tritone = alarm)
     noteDuration: 0.1,
     noteGap: 0.12,
-    volume: 0.6,
+    volume: 0.62,
     meta: { finalRing: 0.22 }
   },
-
-  /** Info (alias for passive) */
-  info: {
-    type: "chime",
-    duration: 0.24,
-    frequency: 580,
-    volume: 0.45,
-    decay: 0.18
-  },
-
-  /** Default - standard notification */
-  default: {
-    type: "pop",
-    duration: 0.2,
-    frequency: 600,
-    volume: 0.5,
-    attack: 0.01,
-    decay: 0.15
-  }
 };
 
 // ---------------------------------------------------------------------------
-// System Tunes
+// Overlay Tunes (Secondary UX sounds — overlay lifecycle events)
+// Upward motion = opening/openness; Downward = ending/closedness (per Material)
 // ---------------------------------------------------------------------------
 
-export const SYSTEM_TUNES: Record<string, BaseTune> = {
-  /** Open - dialog/sheet/dropdown open */
+export const OVERLAY_TUNES: Record<string, BaseTune> = {
+  /** Open - dialog/sheet/dropdown/popover opens (rise = openness) */
   open: {
     type: "rise",
     duration: 0.21,
     frequency: 300,
     endFrequency: 460,
-    volume: 0.58,
+    volume: 0.55,
     harmonics: true,
     harmonicRatio: 2,
     harmonicVolume: 0.18,
     meta: { thirdPartial: true, thirdRatio: 1.2, thirdVolume: 0.1 }
   },
 
-  /** Close - tonal inverse of open */
+  /** Close - tonal inverse of open (drop = closedness) */
   close: {
     type: "drop",
     duration: 0.21,
     frequency: 460,
     endFrequency: 300,
-    volume: 0.58,
+    volume: 0.55,
     harmonics: true,
     harmonicRatio: 2,
     harmonicVolume: 0.18,
     meta: { thirdPartial: true, thirdRatio: 1.2, thirdVolume: 0.1 }
   },
 
-  /** Expand - lighter than open (accordion/collapsible) */
+  /** Expand - lighter than open, for accordion/collapsible content reveal */
   expand: {
     type: "rise",
     duration: 0.14,
@@ -297,7 +268,7 @@ export const SYSTEM_TUNES: Record<string, BaseTune> = {
     harmonicVolume: 0.16
   },
 
-  /** Collapse - paired with expand */
+  /** Collapse - paired with expand (mirrors expand direction) */
   collapse: {
     type: "drop",
     duration: 0.14,
@@ -308,14 +279,6 @@ export const SYSTEM_TUNES: Record<string, BaseTune> = {
     harmonicRatio: 1.5,
     harmonicVolume: 0.16
   },
-
-  /** Focus - most subtle sound */
-  focus: {
-    type: "tick",
-    duration: 0.09,
-    frequency: 750,
-    volume: 0.25
-  }
 };
 
 // ---------------------------------------------------------------------------
@@ -494,10 +457,10 @@ export const EXTENDED_TUNES: Record<string, BaseTune> = {
 // ---------------------------------------------------------------------------
 
 export const ALL_TUNES = {
-  activation: ACTIVATION_TUNES,
+  interaction: INTERACTION_TUNES,
+  overlay: OVERLAY_TUNES,
   navigation: NAVIGATION_TUNES,
-  notifications: NOTIFICATION_TUNES,
-  system: SYSTEM_TUNES,
+  notification: NOTIFICATION_TUNES,
   hero: HERO_TUNES,
   extended: EXTENDED_TUNES
 } as const;
