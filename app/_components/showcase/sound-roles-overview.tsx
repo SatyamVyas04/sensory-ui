@@ -6,7 +6,7 @@ import { DemoCard } from "./demo-card";
 export function SoundRolesOverview() {
   return (
     <DemoCard
-      description="All 17 semantic sound roles across 5 categories"
+      description="All 19 semantic sound roles across 5 categories"
       icon={<IconBell className="size-4" />}
       title="+ More Sound Roles"
     >
@@ -27,10 +27,10 @@ export function SoundRolesOverview() {
         {[
           {
             cat: "interaction",
-            roles: ["tap", "toggle", "confirm", "disabled"],
+            roles: ["tap", "toggle", "toggleUp", "toggleDown", "confirm", "disabled"],
           },
           { cat: "overlay", roles: ["open", "close", "expand", "collapse"] },
-          { cat: "navigation", roles: ["forward", "backward", "switch"] },
+          { cat: "navigation", roles: ["forward", "backward", "tab"] },
           {
             cat: "notification",
             roles: ["info", "success", "warning", "error"],

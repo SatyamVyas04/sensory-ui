@@ -13,7 +13,7 @@ import {
 import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
-const DEFAULT_PAGINATION_LINK_SOUND = "navigation.switch" as const;
+const DEFAULT_PAGINATION_LINK_SOUND = "navigation.tab" as const;
 const DEFAULT_PAGINATION_PREV_SOUND = "navigation.backward" as const;
 const DEFAULT_PAGINATION_NEXT_SOUND = "navigation.forward" as const;
 
@@ -22,7 +22,7 @@ function PaginationLink({
   onClick,
   ...props
 }: React.ComponentProps<typeof BasePaginationLink> & {
-  /** Sound to play when this page link is clicked. Defaults to "navigation.switch". Set to false to disable. */
+  /** Sound to play when this page link is clicked. Defaults to "navigation.tab". Set to false to disable. */
   sound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();

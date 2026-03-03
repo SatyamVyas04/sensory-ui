@@ -14,7 +14,7 @@ export function SliderDemo() {
       icon={<IconAdjustments className="size-4" />}
       title="Slider"
     >
-      <SoundTrigger soundRole="interaction.toggle">
+      <SoundTrigger soundRole="interaction.tap">
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
@@ -29,7 +29,6 @@ export function SliderDemo() {
             max={100}
             min={0}
             onValueChange={setValue}
-            sound="interaction.toggle"
             step={1}
             value={value}
           />

@@ -62,7 +62,7 @@ Each sound role is defined by a tune with one of these types:
 | ---------- | ----------------------------- | ------------------------------------- |
 | `click`    | Short percussive transient    | activation.primary, activation.subtle |
 | `pop`      | Brief tonal burst with attack | Extended sounds                       |
-| `toggle`   | State change indicator        | navigation.switch                     |
+| `toggle`   | State change indicator        | navigation.tab                        |
 | `tick`     | Subtle micro-interaction      | navigation.scroll, system.focus       |
 | `sweep`    | Frequency glide (up/down)     | navigation.forward/backward           |
 | `chime`    | Resonant tonal with decay     | notifications.passive/info            |

@@ -38,11 +38,11 @@ export function NavigationDemo() {
             Navigate Back
           </Button>
         </SoundTrigger>
-        <SoundTrigger soundRole="navigation.switch">
+        <SoundTrigger soundRole="navigation.tab">
           <Button
             className="w-full justify-start"
             size="sm"
-            sound="navigation.switch"
+            sound="navigation.tab"
             variant="ghost"
           >
             <IconArrowDown className="size-3.5" />

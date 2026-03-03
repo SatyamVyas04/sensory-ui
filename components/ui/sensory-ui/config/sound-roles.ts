@@ -1,7 +1,7 @@
 /**
  * sensory-ui Sound Roles
  *
- * Defines the 17 semantic sound roles organised into 5 categories.
+ * Defines the 19 semantic sound roles organised into 5 categories.
  * These types are the public contract — every component's `sound` prop
  * accepts a value of type `SoundRole`.
  *
@@ -23,6 +23,8 @@ export type SoundCategory =
 export type InteractionRole =
   | "interaction.tap"
   | "interaction.toggle"
+  | "interaction.toggleUp"
+  | "interaction.toggleDown"
   | "interaction.confirm"
   | "interaction.disabled";
 
@@ -35,7 +37,7 @@ export type OverlayRole =
 export type NavigationRole =
   | "navigation.forward"
   | "navigation.backward"
-  | "navigation.switch";
+  | "navigation.tab";
 
 export type NotificationRole =
   | "notification.info"
@@ -55,6 +57,8 @@ export type SoundRole =
 export const ALL_SOUND_ROLES: SoundRole[] = [
   "interaction.tap",
   "interaction.toggle",
+  "interaction.toggleUp",
+  "interaction.toggleDown",
   "interaction.confirm",
   "interaction.disabled",
   "overlay.open",
@@ -63,7 +67,7 @@ export const ALL_SOUND_ROLES: SoundRole[] = [
   "overlay.collapse",
   "navigation.forward",
   "navigation.backward",
-  "navigation.switch",
+  "navigation.tab",
   "notification.info",
   "notification.success",
   "notification.warning",

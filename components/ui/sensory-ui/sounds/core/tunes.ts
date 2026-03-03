@@ -99,7 +99,7 @@ export const INTERACTION_TUNES: Record<string, BaseTune> = {
     meta: { subFreq: 65, subDuration: 0.018, subVolume: 0.14 }
   },
 
-  /** Toggle - binary state change (switch, checkbox, radio) */
+  /** Toggle - generic binary state change */
   toggle: {
     type: "click",
     duration: 0.035,
@@ -109,26 +109,48 @@ export const INTERACTION_TUNES: Record<string, BaseTune> = {
     meta: { subFreq: 50, subDuration: 0.014, subVolume: 0.08 }
   },
 
-  /** Confirm - positive action completion, upward sweep */
-  confirm: {
-    type: "rise",
-    duration: 0.07,
-    frequency: 440,      // A4
-    endFrequency: 660,   // E5 (perfect fifth up = assurance)
-    volume: 0.65,
-    harmonics: true,
-    harmonicRatio: 1.5,
-    harmonicVolume: 0.28
+  /** ToggleUp - state activating (checkbox check, switch on, radio select)
+   *  Slightly brighter click with a subtle higher-pitched sub layer */
+  toggleUp: {
+    type: "click",
+    duration: 0.035,
+    filterFreq: 3800,
+    filterQ: 3,
+    volume: 0.55,
+    meta: { subFreq: 75, subDuration: 0.016, subVolume: 0.10 }
   },
 
-  /** Disabled - dull low noise burst, "nothing there" feel
-   *  For aria-disabled / programmatically-disabled interactions */
+  /** ToggleDown - state deactivating (checkbox uncheck, switch off)
+   *  Slightly duller click with a lower-pitched sub layer */
+  toggleDown: {
+    type: "click",
+    duration: 0.03,
+    filterFreq: 2600,
+    filterQ: 2,
+    volume: 0.45,
+    meta: { subFreq: 40, subDuration: 0.012, subVolume: 0.06 }
+  },
+
+  /** Confirm - clean, sleek click with a focused transient.
+   *  Same click family as tap/toggle but slightly crisper and brighter. */
+  confirm: {
+    type: "click",
+    duration: 0.038,
+    filterFreq: 5200,
+    filterQ: 3.5,
+    volume: 0.60,
+    meta: { subFreq: 80, subDuration: 0.016, subVolume: 0.12 }
+  },
+
+  /** Disabled - low-pitched, short click. Conveys "not actionable" without
+   *  sounding like an error notification. Same duration as other clicks. */
   disabled: {
-    type: "burst",
-    duration: 0.035,
-    filterFreq: 400,   // Low bandpass — dull thud
-    filterQ: 1.5,      // Wide, unfocused
-    volume: 0.28
+    type: "click",
+    duration: 0.03,
+    filterFreq: 800,
+    filterQ: 1.2,
+    volume: 0.30,
+    meta: { subFreq: 30, subDuration: 0.010, subVolume: 0.04 }
   },
 };
 
@@ -161,15 +183,17 @@ export const NAVIGATION_TUNES: Record<string, BaseTune> = {
     harmonicVolume: 0.12
   },
 
-  /** Switch - tab/segment change, quick tonal click with pitch fall */
-  switch: {
-    type: "toggle",
-    duration: 0.04,
-    frequency: 700,
-    endFrequency: 540,
-    filterFreq: 2400,
-    filterQ: 4.5,
-    volume: 0.50
+  /** Tab - quick whoosh for tab/segment switching.
+   *  Short filtered noise sweep that conveys lateral motion. */
+  tab: {
+    type: "sweep",
+    duration: 0.09,
+    frequency: 600,
+    endFrequency: 900,
+    volume: 0.40,
+    harmonics: true,
+    harmonicRatio: 3,
+    harmonicVolume: 0.08
   },
 };
 
