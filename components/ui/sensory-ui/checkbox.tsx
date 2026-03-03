@@ -20,8 +20,8 @@ function Checkbox({
 
   const handleCheckedChange = React.useCallback(
     (checked: boolean | "indeterminate") => {
-      if (sound !== false) {
-        const role = sound ?? (checked === true ? DEFAULT_CHECKBOX_SOUND_ON : DEFAULT_CHECKBOX_SOUND_OFF);
+      if (sound !== false && checked !== "indeterminate") {
+        const role = sound ?? (checked ? DEFAULT_CHECKBOX_SOUND_ON : DEFAULT_CHECKBOX_SOUND_OFF);
         void playSound(role);
       }
       onCheckedChange?.(checked);

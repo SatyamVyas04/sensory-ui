@@ -132,7 +132,8 @@ export const INTERACTION_TUNES: Record<string, BaseTune> = {
   },
 
   /** Confirm - clean, sleek click with a focused transient.
-   *  Same click family as tap/toggle but slightly crisper and brighter. */
+   *  Part of the click family (tap, toggle, toggleUp, toggleDown, confirm)
+   *  but slightly crisper and brighter for positive action completion. */
   confirm: {
     type: "click",
     duration: 0.038,
