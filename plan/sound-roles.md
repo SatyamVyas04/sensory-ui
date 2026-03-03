@@ -29,7 +29,7 @@ Fired when the user performs a direct action — pressing a button, toggling a s
 | Role    | Full Key              | Duration | Description                                                         | Typical Trigger                     |
 | ------- | --------------------- | -------- | ------------------------------------------------------------------- | ----------------------------------- |
 | Tap     | `interaction.tap`     | ~8 ms    | The default click/tap sound. Noise click, bandpass 4000 Hz.         | Primary button click                |
-| Subtle  | `interaction.subtle`  | ~4 ms    | Secondary soft click. Highpass 3000 Hz. Quieter than tap.           | Slider drag, command input keypress |
+| Subtle  | `interaction.subtle`  | ~4 ms    | Secondary soft click. Bandpass ~2200 Hz, low Q. Quietest click.  | Slider drag, command input keypress |
 | Toggle  | `interaction.toggle`  | ~52 ms   | Noise click (12 ms) + tonal tail (40 ms). Tick-tock state change.   | Checkbox, switch, radio, toggle     |
 | Confirm | `interaction.confirm` | ~10 ms   | Crisp noise click, bandpass 5000 Hz. Brighter than tap.             | Form submit, save confirm           |
 
@@ -51,12 +51,12 @@ Fired when the user moves through space — between pages, tabs, or steps.
 | -------- | --------------------- | ---------- | ----------------------------------------------------- | ----------------------------------------- |
 | Forward  | `navigation.forward`  | 150–250 ms | A rightward / upward sweep.                           | Next step, next page, carousel next       |
 | Backward | `navigation.backward` | 150–250 ms | A leftward / downward sweep. Tonal mirror of forward. | Back button, previous step, carousel prev |
-| Tab      | `navigation.tab`      | 100–180 ms | Whoosh-style noise burst with sine envelope and filter sweep. | Tab switch, segment switch, pagination    |
+| Tab      | `navigation.tab`      | ~40 ms     | Short tonal pop with upward pitch bend. Quick positional "step" feel.  | Tab switch, segment switch, pagination    |
 
 **Design notes:**
 
 - `navigation.forward` and `navigation.backward` should be **tonal inversions** of each other (same harmonic content, opposite pitch arc).
-- `navigation.tab` is for lateral movement where direction is not meaningful — tabs, pagination links. It uses a whoosh-style noise burst rather than a tonal sweep.
+- `navigation.tab` is for lateral movement where direction is not meaningful — tabs, pagination links. It uses a short tonal pop (pitch bend) rather than a directional sweep.
 - All navigation sounds should have a sweep quality, not a stab or click quality.
 - The `navigation.scroll` role was removed in the taxonomy simplification — scroll-snap sounds are now either omitted or handled via `interaction.tap`.
 

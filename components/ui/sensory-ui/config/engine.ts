@@ -127,7 +127,14 @@ export async function playSound(
 
   // If the source is a synthesizer function, call it directly - no decoding step.
   if (typeof source === "function") {
-    const playback = source(ctx, { volume, playbackRate, onEnd });
+    const playback = source(ctx, {
+      volume,
+      playbackRate,
+      onEnd: () => {
+        if (activePlayback === playback) activePlayback = null;
+        onEnd?.();
+      },
+    });
     activePlayback = playback;
     return playback;
   }
@@ -144,6 +151,7 @@ export async function playSound(
   gain.connect(ctx.destination);
 
   bufferSource.onended = () => {
+    if (activePlayback === playback) activePlayback = null;
     onEnd?.();
   };
 

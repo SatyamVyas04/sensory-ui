@@ -59,19 +59,18 @@ creating distinct soundpack characters with minimal code duplication.
 
 | Type     | Description                   | Example Roles                             |
 | -------- | ----------------------------- | ----------------------------------------- |
-| click    | Short percussive transient    | interaction.tap, interaction.confirm      |
-| tick     | Ultra-short soft transient    | interaction.subtle                        |
-| pop      | Brief tonal burst with attack | interaction.confirm                       |
+| click    | Short percussive transient    | interaction.tap, interaction.subtle, interaction.confirm |
+| pop      | Brief tonal burst with attack | navigation.tab                            |
 | toggle   | Noise click + tonal tail      | interaction.toggle                        |
+| tick     | Ultra-short soft transient    | Extended sounds (micro-interactions)      |
 | sweep    | Frequency glide (up/down)     | navigation.forward, navigation.backward   |
-| whoosh   | Noise burst with filter sweep | navigation.tab                            |
-| chime    | Resonant tonal with decay     | notification.info, overlay.open           |
-| arpeggio | Sequence of notes             | hero.complete, hero.milestone             |
+| chime    | Resonant tonal with decay     | notification.info                         |
+| arpeggio | Sequence of notes             | notification.success, notification.warning, notification.error, hero.complete, hero.milestone |
 | chord    | Multiple simultaneous notes   | Custom                                    |
 | burst    | Noise-based texture           | Extended sounds                           |
-| pulse    | Repeating pattern             | notification.warning                      |
-| rise     | Pitch ascends                 | interaction.confirm, overlay.open         |
-| drop     | Pitch descends                | notification.error, overlay.close         |
+| pulse    | Repeating pattern             | Extended sounds                           |
+| rise     | Pitch ascends                 | overlay.open, overlay.expand              |
+| drop     | Pitch descends                | overlay.close, overlay.collapse           |
 | wobble   | Modulated sound               | Extended sounds                           |
 
 ---

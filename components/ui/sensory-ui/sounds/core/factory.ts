@@ -27,16 +27,20 @@ function createClickSound(
   return (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
     const t = ctx.currentTime;
     const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
-    const duration = Math.max(0.008, tune.duration) * instrument.decayMult;
+    const duration = Math.max(0.004, tune.duration) * instrument.decayMult;
     const meta = tune.meta as { decayConstant?: number } | undefined;
     const decayConstant = meta?.decayConstant ?? 50;
 
-    // Generate noise buffer with exponential decay (reference pattern)
+    // Generate noise buffer with time-normalised exponential decay.
+    // Using (i / sampleRate) ensures the decay shape is independent of
+    // the AudioContext's sample rate across devices.
     const bufLen = Math.floor(ctx.sampleRate * duration);
     const buffer = ctx.createBuffer(1, bufLen, ctx.sampleRate);
     const data = buffer.getChannelData(0);
+    const tauSeconds = (decayConstant / ctx.sampleRate) * instrument.decayMult;
     for (let i = 0; i < bufLen; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (decayConstant * instrument.decayMult));
+      const time = i / ctx.sampleRate;
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-time / tauSeconds);
     }
 
     const src = ctx.createBufferSource();
@@ -137,8 +141,10 @@ function createToggleSound(
     const bufLen = Math.floor(ctx.sampleRate * noiseDur);
     const buffer = ctx.createBuffer(1, bufLen, ctx.sampleRate);
     const data = buffer.getChannelData(0);
+    const tauSeconds = (decayConstant / ctx.sampleRate) * instrument.decayMult;
     for (let i = 0; i < bufLen; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (decayConstant * instrument.decayMult));
+      const time = i / ctx.sampleRate;
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-time / tauSeconds);
     }
 
     const src = ctx.createBufferSource();
@@ -150,7 +156,7 @@ function createToggleSound(
     filter.Q.value = (tune.filterQ ?? 3) * instrument.q;
 
     const noiseGain = ctx.createGain();
-    noiseGain.gain.value = (meta?.noiseGain ?? 0.4) * instrument.gainMult * (opts.volume ?? 1);
+    noiseGain.gain.value = vol * (meta?.noiseGain ?? 0.4);
 
     src.connect(filter);
     filter.connect(noiseGain);
@@ -173,7 +179,7 @@ function createToggleSound(
       }
 
       const oscGain = ctx.createGain();
-      const toneVol = (meta?.toneGain ?? 0.15) * instrument.gainMult * (opts.volume ?? 1);
+      const toneVol = vol * (meta?.toneGain ?? 0.15);
       oscGain.gain.setValueAtTime(toneVol, t);
       oscGain.gain.exponentialRampToValueAtTime(0.001, t + duration);
 
@@ -223,12 +229,14 @@ function createTickSound(
     const meta = tune.meta as { decayConstant?: number } | undefined;
     const decayConstant = meta?.decayConstant ?? 20;
 
-    // Generate noise buffer with exponential decay (reference pattern)
+    // Generate noise buffer with time-normalised exponential decay.
     const bufLen = Math.floor(ctx.sampleRate * duration);
     const buffer = ctx.createBuffer(1, bufLen, ctx.sampleRate);
     const data = buffer.getChannelData(0);
+    const tauSeconds = (decayConstant / ctx.sampleRate) * instrument.decayMult;
     for (let i = 0; i < bufLen; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (decayConstant * instrument.decayMult));
+      const time = i / ctx.sampleRate;
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-time / tauSeconds);
     }
 
     const src = ctx.createBufferSource();
