@@ -60,18 +60,18 @@ Each sound role is defined by a tune with one of these types:
 
 | Type       | Description                   | Example Roles                         |
 | ---------- | ----------------------------- | ------------------------------------- |
-| `click`    | Short percussive transient    | activation.primary, activation.subtle |
-| `pop`      | Brief tonal burst with attack | Extended sounds                       |
-| `toggle`   | State change indicator        | navigation.switch                     |
-| `tick`     | Subtle micro-interaction      | navigation.scroll, system.focus       |
+| `click`    | Short percussive transient    | interaction.tap, interaction.subtle, interaction.confirm |
+| `pop`      | Brief tonal burst with attack | navigation.tab                        |
+| `toggle`   | State change indicator        | interaction.toggle                    |
+| `tick`     | Subtle micro-interaction      | Extended sounds (micro-interactions)  |
 | `sweep`    | Frequency glide (up/down)     | navigation.forward/backward           |
-| `chime`    | Resonant tonal with decay     | notifications.passive/info            |
+| `chime`    | Resonant tonal with decay     | notification.info                     |
 | `arpeggio` | Sequence of notes             | hero.complete, hero.milestone         |
 | `chord`    | Multiple simultaneous notes   | Custom                                |
 | `burst`    | Noise-based texture           | Extended sounds                       |
-| `pulse`    | Repeating pattern             | notifications.warning                 |
-| `rise`     | Pitch ascends                 | activation.confirm, system.open       |
-| `drop`     | Pitch descends                | activation.error, system.close        |
+| `pulse`    | Repeating pattern             | Extended sounds                       |
+| `rise`     | Pitch ascends                 | overlay.open, overlay.expand          |
+| `drop`     | Pitch descends                | overlay.close, overlay.collapse       |
 | `wobble`   | Modulated sound               | Extended sounds                       |
 
 ---
@@ -150,10 +150,10 @@ import type { SoundRole } from "../config/sound-roles";
 import type { SoundSynthesizer } from "../config/engine";
 
 export const myPack: Record<SoundRole, SoundSynthesizer> = {
-	"activation.primary": (ctx, opts) => {
+	"interaction.tap": (ctx, opts) => {
 		/* ... */
 	},
-	// ... all 19 roles
+	// ... all 17 roles
 };
 ```
 

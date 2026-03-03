@@ -22,9 +22,9 @@ export type SoundCategory =
 
 export type InteractionRole =
   | "interaction.tap"
+  | "interaction.subtle"
   | "interaction.toggle"
-  | "interaction.confirm"
-  | "interaction.disabled";
+  | "interaction.confirm";
 
 export type OverlayRole =
   | "overlay.open"
@@ -35,7 +35,7 @@ export type OverlayRole =
 export type NavigationRole =
   | "navigation.forward"
   | "navigation.backward"
-  | "navigation.switch";
+  | "navigation.tab";
 
 export type NotificationRole =
   | "notification.info"
@@ -54,16 +54,16 @@ export type SoundRole =
 
 export const ALL_SOUND_ROLES: SoundRole[] = [
   "interaction.tap",
+  "interaction.subtle",
   "interaction.toggle",
   "interaction.confirm",
-  "interaction.disabled",
   "overlay.open",
   "overlay.close",
   "overlay.expand",
   "overlay.collapse",
   "navigation.forward",
   "navigation.backward",
-  "navigation.switch",
+  "navigation.tab",
   "notification.info",
   "notification.success",
   "notification.warning",

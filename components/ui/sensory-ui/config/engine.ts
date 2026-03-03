@@ -11,6 +11,10 @@
 let audioContext: AudioContext | null = null;
 const bufferCache = new Map<string, AudioBuffer>();
 
+/** Tracks the most recently started playback so rapid re-triggers cancel the
+ *  previous sound, preventing overlapping audio when users spam-click. */
+let activePlayback: SoundPlayback | null = null;
+
 export function getAudioContext(): AudioContext {
   if (!audioContext) {
     audioContext = new AudioContext();
@@ -114,9 +118,25 @@ export async function playSound(
     await ctx.resume();
   }
 
+  // Cancel the previously playing sound to prevent overlapping audio
+  // when users spam-click or rapidly trigger interactions.
+  if (activePlayback) {
+    try { activePlayback.stop(); } catch { /* ok */ }
+    activePlayback = null;
+  }
+
   // If the source is a synthesizer function, call it directly - no decoding step.
   if (typeof source === "function") {
-    return source(ctx, { volume, playbackRate, onEnd });
+    const playback = source(ctx, {
+      volume,
+      playbackRate,
+      onEnd: () => {
+        if (activePlayback === playback) activePlayback = null;
+        onEnd?.();
+      },
+    });
+    activePlayback = playback;
+    return playback;
   }
 
   const buffer = await decodeAudioData(source);
@@ -131,12 +151,13 @@ export async function playSound(
   gain.connect(ctx.destination);
 
   bufferSource.onended = () => {
+    if (activePlayback === playback) activePlayback = null;
     onEnd?.();
   };
 
   bufferSource.start(0);
 
-  return {
+  const playback: SoundPlayback = {
     stop: () => {
       try {
         bufferSource.stop();
@@ -145,6 +166,9 @@ export async function playSound(
       }
     },
   };
+
+  activePlayback = playback;
+  return playback;
 }
 
 export function clearBufferCache(): void {

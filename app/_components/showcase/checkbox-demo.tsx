@@ -19,11 +19,11 @@ export function CheckboxDemo() {
       icon={<IconSquareRoundedCheck className="size-4" />}
       title="Checkbox"
     >
-      <SoundTrigger soundRole="interaction.confirm">
+      <SoundTrigger soundRole="interaction.toggle">
         <div className="flex flex-col gap-3">
           {OPTIONS.map((opt) => (
             <div className="flex items-center gap-2.5" key={opt.id}>
-              <Checkbox id={`cb-${opt.id}`} sound="interaction.confirm" />
+              <Checkbox id={`cb-${opt.id}`} />
               <Label className="text-xs" htmlFor={`cb-${opt.id}`}>
                 {opt.label}
               </Label>

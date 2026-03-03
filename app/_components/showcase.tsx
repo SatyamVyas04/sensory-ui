@@ -106,7 +106,7 @@ export function Showcase() {
                 <code className="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-xs">
                   sound
                 </code>{" "}
-                prop. 19 semantic roles.{" "}
+                prop. 17 semantic roles.{" "}
                 <strong className="font-semibold text-foreground">
                   24 components
                 </strong>
@@ -185,6 +185,7 @@ export function Showcase() {
           <SensoryUIProvider
             config={{
               theme: selectedPack,
+              volume: 0.9,
               categories: {
                 interaction: true,
                 navigation: true,

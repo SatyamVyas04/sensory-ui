@@ -27,10 +27,10 @@ export function SoundRolesOverview() {
         {[
           {
             cat: "interaction",
-            roles: ["tap", "toggle", "confirm", "disabled"],
+            roles: ["tap", "subtle", "toggle", "confirm"],
           },
           { cat: "overlay", roles: ["open", "close", "expand", "collapse"] },
-          { cat: "navigation", roles: ["forward", "backward", "switch"] },
+          { cat: "navigation", roles: ["forward", "backward", "tab"] },
           {
             cat: "notification",
             roles: ["info", "success", "warning", "error"],

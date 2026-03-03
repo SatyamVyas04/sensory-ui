@@ -16,7 +16,7 @@ import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
 const DEFAULT_NAV_TRIGGER_SOUND = "overlay.open" as const;
-const DEFAULT_NAV_LINK_SOUND = "navigation.switch" as const;
+const DEFAULT_NAV_LINK_SOUND = "navigation.tab" as const;
 
 function NavigationMenuTrigger({
   sound,
@@ -44,7 +44,7 @@ function NavigationMenuLink({
   onClick,
   ...props
 }: React.ComponentProps<typeof BaseNavigationMenuLink> & {
-  /** Sound to play when this link is clicked. Defaults to "navigation.switch". Set to false to disable. */
+  /** Sound to play when this link is clicked. Defaults to "navigation.tab". Set to false to disable. */
   sound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();

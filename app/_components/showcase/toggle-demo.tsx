@@ -14,12 +14,8 @@ export function ToggleDemo() {
       icon={<IconBold className="size-4" />}
       title="Toggle Group"
     >
-      <SoundTrigger soundRole="navigation.switch">
-        <ToggleGroup
-          className="w-full justify-between"
-          sound="navigation.switch"
-          type="multiple"
-        >
+      <SoundTrigger soundRole="interaction.toggle">
+        <ToggleGroup className="w-full justify-between" type="multiple">
           <ToggleGroupItem aria-label="Bold" value="bold">
             <IconBold className="size-3.5" />
             Bold

@@ -16,8 +16,8 @@ export function TabsDemo() {
       icon={<IconLayoutGrid className="size-4" />}
       title="Tabs"
     >
-      <SoundTrigger soundRole="navigation.switch">
-        <Tabs defaultValue="preview" sound="navigation.switch">
+      <SoundTrigger soundRole="navigation.tab">
+        <Tabs defaultValue="preview" sound="navigation.tab">
           <TabsList className="w-full">
             <TabsTrigger value="preview">Preview</TabsTrigger>
             <TabsTrigger value="code">Code</TabsTrigger>
@@ -33,7 +33,7 @@ export function TabsDemo() {
             className="mt-1 text-muted-foreground text-xs"
             value="code"
           >
-            Code panel - navigation.switch fired.
+            Code panel - navigation.tab fired.
           </TabsContent>
           <TabsContent
             className="mt-1 text-muted-foreground text-xs"

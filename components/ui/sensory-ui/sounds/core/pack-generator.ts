@@ -30,14 +30,14 @@ export function generateSoundPack(
   return {
     // Interaction sounds
     "interaction.tap": createSoundFromTune(INTERACTION_TUNES.tap, instrument),
+    "interaction.subtle": createSoundFromTune(INTERACTION_TUNES.subtle, instrument),
     "interaction.toggle": createSoundFromTune(INTERACTION_TUNES.toggle, instrument),
     "interaction.confirm": createSoundFromTune(INTERACTION_TUNES.confirm, instrument),
-    "interaction.disabled": createSoundFromTune(INTERACTION_TUNES.disabled, instrument),
 
     // Navigation sounds
     "navigation.forward": createSoundFromTune(NAVIGATION_TUNES.forward, instrument),
     "navigation.backward": createSoundFromTune(NAVIGATION_TUNES.backward, instrument),
-    "navigation.switch": createSoundFromTune(NAVIGATION_TUNES.switch, instrument),
+    "navigation.tab": createSoundFromTune(NAVIGATION_TUNES.tab, instrument),
 
     // Notification sounds
     "notification.info": createSoundFromTune(NOTIFICATION_TUNES.info, instrument),

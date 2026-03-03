@@ -11,14 +11,14 @@ import {
 import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
-const DEFAULT_TABS_SOUND = "navigation.switch" as const;
+const DEFAULT_TABS_SOUND = "navigation.tab" as const;
 
 function Tabs({
   sound,
   onValueChange,
   ...props
 }: React.ComponentProps<typeof BaseTabs> & {
-  /** Sound to play when the active tab changes. Defaults to "navigation.switch". Set to false to disable. */
+  /** Sound to play when the active tab changes. Defaults to "navigation.tab". Set to false to disable. */
   sound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();

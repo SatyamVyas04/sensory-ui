@@ -5,30 +5,30 @@ import { Slider as BaseSlider } from "@/components/ui/slider";
 import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
-const DEFAULT_SLIDER_SOUND = "interaction.toggle" as const;
+const DEFAULT_SLIDER_SOUND = "interaction.subtle" as const;
 
 function Slider({
   sound,
-  onValueCommit,
+  onValueChange,
   ...props
 }: React.ComponentProps<typeof BaseSlider> & {
   /**
-   * Sound to play when the user commits a value (releases the thumb).
-   * Fires once per drag, not on every tick. Defaults to "interaction.toggle". Set to false to disable.
+   * Sound to play on every value change as the user drags.
+   * Defaults to "interaction.subtle". Set to false to disable.
    */
   sound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();
 
-  const handleValueCommit = React.useCallback(
+  const handleValueChange = React.useCallback(
     (values: number[]) => {
       if (sound !== false) void playSound(sound ?? DEFAULT_SLIDER_SOUND);
-      onValueCommit?.(values);
+      onValueChange?.(values);
     },
-    [sound, playSound, onValueCommit]
+    [sound, playSound, onValueChange]
   );
 
-  return <BaseSlider onValueCommit={handleValueCommit} {...props} />;
+  return <BaseSlider onValueChange={handleValueChange} {...props} />;
 }
 
 export { Slider };

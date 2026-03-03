@@ -88,47 +88,50 @@ export interface BaseTune {
 // ---------------------------------------------------------------------------
 
 export const INTERACTION_TUNES: Record<string, BaseTune> = {
-  /** Tap - the default button/click sound */
+  /** Tap - standard UI click. Clean, neutral, moderate presence.
+   *  Bandpass-filtered noise transient — the baseline click sound. */
   tap: {
     type: "click",
-    duration: 0.04,
-    filterFreq: 4500,
-    filterQ: 3,
-    // Volume reduced from 0.9 to 0.65; perceived weight restored by sub-bass layer
-    volume: 0.65,
-    meta: { subFreq: 65, subDuration: 0.018, subVolume: 0.14 }
-  },
-
-  /** Toggle - binary state change (switch, checkbox, radio) */
-  toggle: {
-    type: "click",
-    duration: 0.035,
-    filterFreq: 3200,
+    duration: 0.008,
+    filterFreq: 3800,
     filterQ: 2.5,
-    volume: 0.50,
-    meta: { subFreq: 50, subDuration: 0.014, subVolume: 0.08 }
+    volume: 0.40,
+    meta: { decayConstant: 35 }
   },
 
-  /** Confirm - positive action completion, upward sweep */
-  confirm: {
-    type: "rise",
-    duration: 0.07,
-    frequency: 440,      // A4
-    endFrequency: 660,   // E5 (perfect fifth up = assurance)
-    volume: 0.65,
-    harmonics: true,
-    harmonicRatio: 1.5,
-    harmonicVolume: 0.28
+  /** Subtle - barely-there micro-click. Softest, shortest, most constrained.
+   *  Uses bandpass (not highpass) for a warm, narrow click without harsh highs. */
+  subtle: {
+    type: "click",
+    duration: 0.004,
+    filterFreq: 2200,
+    filterQ: 1.5,
+    volume: 0.15,
+    meta: { decayConstant: 12 }
   },
 
-  /** Disabled - dull low noise burst, "nothing there" feel
-   *  For aria-disabled / programmatically-disabled interactions */
-  disabled: {
-    type: "burst",
+  /** Toggle - smooth state-change click. Soft noise layer + tonal glide.
+   *  Emphasises the tonal tail over the noise transient for a silky feel. */
+  toggle: {
+    type: "toggle",
     duration: 0.035,
-    filterFreq: 400,   // Low bandpass — dull thud
-    filterQ: 1.5,      // Wide, unfocused
-    volume: 0.28
+    frequency: 700,
+    endFrequency: 480,
+    filterFreq: 2200,
+    filterQ: 2,
+    volume: 0.32,
+    meta: { noiseGain: 0.20, toneGain: 0.22, noiseDuration: 0.008, decayConstant: 60 }
+  },
+
+  /** Confirm - crispy affirmative click. Brighter, more resonant, snappier.
+   *  Higher filter freq + Q gives a defined, satisfying "crunch". */
+  confirm: {
+    type: "click",
+    duration: 0.012,
+    filterFreq: 5500,
+    filterQ: 4,
+    volume: 0.55,
+    meta: { decayConstant: 55 }
   },
 };
 
@@ -161,15 +164,16 @@ export const NAVIGATION_TUNES: Record<string, BaseTune> = {
     harmonicVolume: 0.12
   },
 
-  /** Switch - tab/segment change, quick tonal click with pitch fall */
-  switch: {
-    type: "toggle",
+  /** Tab - quick tonal pop for tab/segment switching.
+   *  A short pitched burst that gives a clean positional "step" feel. */
+  tab: {
+    type: "pop",
     duration: 0.04,
-    frequency: 700,
-    endFrequency: 540,
-    filterFreq: 2400,
-    filterQ: 4.5,
-    volume: 0.50
+    frequency: 680,
+    endFrequency: 880,
+    volume: 0.35,
+    attack: 0.002,
+    decay: 0.035
   },
 };
 
@@ -230,54 +234,60 @@ export const NOTIFICATION_TUNES: Record<string, BaseTune> = {
 // ---------------------------------------------------------------------------
 
 export const OVERLAY_TUNES: Record<string, BaseTune> = {
-  /** Open - dialog/sheet/dropdown/popover opens (rise = openness) */
+  /** Open - dialog/sheet/dropdown/popover opens (rise = openness)
+   *  Three partials (fundamental + octave + 3×) with a click transient at the start. */
   open: {
     type: "rise",
-    duration: 0.21,
-    frequency: 300,
-    endFrequency: 460,
-    volume: 0.55,
+    duration: 0.20,
+    frequency: 320,
+    endFrequency: 480,
+    volume: 0.50,
     harmonics: true,
     harmonicRatio: 2,
-    harmonicVolume: 0.18,
-    meta: { thirdPartial: true, thirdRatio: 1.2, thirdVolume: 0.1 }
+    harmonicVolume: 0.15,
+    meta: { thirdPartial: true, thirdRatio: 3, thirdVolume: 0.06, clickLayer: true, clickGain: 0.25 }
   },
 
-  /** Close - tonal inverse of open (drop = closedness) */
+  /** Close - tonal inverse of open (drop = closedness)
+   *  Three partials with a click transient at the start. */
   close: {
     type: "drop",
-    duration: 0.21,
-    frequency: 460,
-    endFrequency: 300,
-    volume: 0.55,
+    duration: 0.20,
+    frequency: 480,
+    endFrequency: 320,
+    volume: 0.50,
     harmonics: true,
     harmonicRatio: 2,
-    harmonicVolume: 0.18,
-    meta: { thirdPartial: true, thirdRatio: 1.2, thirdVolume: 0.1 }
+    harmonicVolume: 0.15,
+    meta: { thirdPartial: true, thirdRatio: 3, thirdVolume: 0.06, clickLayer: true, clickGain: 0.25 }
   },
 
-  /** Expand - lighter than open, for accordion/collapsible content reveal */
+  /** Expand - lighter than open, for accordion/collapsible content reveal
+   *  Two partials with a click transient. */
   expand: {
     type: "rise",
-    duration: 0.14,
-    frequency: 370,
-    endFrequency: 480,
-    volume: 0.48,
+    duration: 0.13,
+    frequency: 380,
+    endFrequency: 500,
+    volume: 0.45,
     harmonics: true,
     harmonicRatio: 1.5,
-    harmonicVolume: 0.16
+    harmonicVolume: 0.12,
+    meta: { clickLayer: true, clickGain: 0.20 }
   },
 
-  /** Collapse - paired with expand (mirrors expand direction) */
+  /** Collapse - paired with expand (mirrors expand direction)
+   *  Two partials with a click transient. */
   collapse: {
     type: "drop",
-    duration: 0.14,
-    frequency: 480,
-    endFrequency: 370,
-    volume: 0.48,
+    duration: 0.13,
+    frequency: 500,
+    endFrequency: 380,
+    volume: 0.45,
     harmonics: true,
     harmonicRatio: 1.5,
-    harmonicVolume: 0.16
+    harmonicVolume: 0.12,
+    meta: { clickLayer: true, clickGain: 0.20 }
   },
 };
 

@@ -25,7 +25,7 @@ export function SwitchDemo() {
               <Label className="text-xs" htmlFor={`sw-${opt.id}`}>
                 {opt.label}
               </Label>
-              <Switch id={`sw-${opt.id}`} sound="interaction.toggle" />
+              <Switch id={`sw-${opt.id}`} />
             </div>
           ))}
         </div>

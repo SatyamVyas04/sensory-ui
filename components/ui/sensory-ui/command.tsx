@@ -4,7 +4,7 @@ import * as React from "react";
 import {
   Command,
   CommandDialog,
-  CommandInput,
+  CommandInput as BaseCommandInput,
   CommandList,
   CommandEmpty,
   CommandGroup,
@@ -16,6 +16,28 @@ import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
 const DEFAULT_COMMAND_SOUND = "interaction.tap" as const;
+const DEFAULT_COMMAND_INPUT_SOUND = "interaction.subtle" as const;
+
+function CommandInput({
+  sound,
+  onValueChange,
+  ...props
+}: React.ComponentProps<typeof BaseCommandInput> & {
+  /** Sound to play on every keystroke / value change. Defaults to "interaction.subtle". Set to false to disable. */
+  sound?: SoundRole | false;
+}) {
+  const { playSound } = useSensoryUI();
+
+  const handleValueChange = React.useCallback(
+    (value: string) => {
+      if (sound !== false) void playSound(sound ?? DEFAULT_COMMAND_INPUT_SOUND);
+      onValueChange?.(value);
+    },
+    [sound, playSound, onValueChange]
+  );
+
+  return <BaseCommandInput onValueChange={handleValueChange} {...props} />;
+}
 
 function CommandItem({
   sound,

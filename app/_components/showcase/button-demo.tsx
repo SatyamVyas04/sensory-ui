@@ -17,16 +17,6 @@ export function ButtonDemo() {
             Primary
           </Button>
         </SoundTrigger>
-        <SoundTrigger soundRole="interaction.toggle">
-          <Button
-            className="w-full"
-            size="sm"
-            sound="interaction.toggle"
-            variant="secondary"
-          >
-            Subtle
-          </Button>
-        </SoundTrigger>
         <SoundTrigger soundRole="interaction.confirm">
           <Button
             className="w-full"
