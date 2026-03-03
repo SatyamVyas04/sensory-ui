@@ -57,20 +57,22 @@ creating distinct soundpack characters with minimal code duplication.
 
 ## Tune Types
 
-| Type     | Description                   | Example Roles                           |
-| -------- | ----------------------------- | --------------------------------------- |
-| click    | Short percussive transient    | interaction.tap, interaction.disabled   |
-| pop      | Brief tonal burst with attack | interaction.confirm                     |
-| toggle   | State change indicator        | interaction.toggle, navigation.switch   |
-| sweep    | Frequency glide (up/down)     | navigation.forward, navigation.backward |
-| chime    | Resonant tonal with decay     | notification.info, overlay.open         |
-| arpeggio | Sequence of notes             | hero.complete, hero.milestone           |
-| chord    | Multiple simultaneous notes   | Custom                                  |
-| burst    | Noise-based texture           | Extended sounds                         |
-| pulse    | Repeating pattern             | notification.warning                    |
-| rise     | Pitch ascends                 | interaction.confirm, overlay.open       |
-| drop     | Pitch descends                | notification.error, overlay.close       |
-| wobble   | Modulated sound               | Extended sounds                         |
+| Type     | Description                   | Example Roles                             |
+| -------- | ----------------------------- | ----------------------------------------- |
+| click    | Short percussive transient    | interaction.tap, interaction.confirm      |
+| tick     | Ultra-short soft transient    | interaction.subtle                        |
+| pop      | Brief tonal burst with attack | interaction.confirm                       |
+| toggle   | Noise click + tonal tail      | interaction.toggle                        |
+| sweep    | Frequency glide (up/down)     | navigation.forward, navigation.backward   |
+| whoosh   | Noise burst with filter sweep | navigation.tab                            |
+| chime    | Resonant tonal with decay     | notification.info, overlay.open           |
+| arpeggio | Sequence of notes             | hero.complete, hero.milestone             |
+| chord    | Multiple simultaneous notes   | Custom                                    |
+| burst    | Noise-based texture           | Extended sounds                           |
+| pulse    | Repeating pattern             | notification.warning                      |
+| rise     | Pitch ascends                 | interaction.confirm, overlay.open         |
+| drop     | Pitch descends                | notification.error, overlay.close         |
+| wobble   | Modulated sound               | Extended sounds                           |
 
 ---
 
