@@ -22,17 +22,6 @@ import {
   CRISP_INSTRUMENT,
 } from "./core/instruments";
 import { generateSoundPack } from "./core/pack-generator";
-import { INTERACTION_TUNES } from "./core/tunes";
-import { createSoundFromTune } from "./core/factory";
-import type { InstrumentConfig } from "./core/instruments";
-
-/**
- * Creates a pack-specific disabled sound with the given filter frequency.
- * A higher cutoff = brighter/crisper; lower = muffled/constrained.
- */
-function makeDisabledSound(filterFreq: number, instrument: InstrumentConfig): SoundSynthesizer {
-  return createSoundFromTune({ ...INTERACTION_TUNES.disabled, filterFreq }, instrument);
-}
 
 // ---------------------------------------------------------------------------
 // Sound Pack Type
@@ -136,7 +125,6 @@ const softHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
 
 export const softPack: GeneratedSoundPack = {
   ...generateSoundPack(SOFT_INSTRUMENT),
-  "interaction.disabled": makeDisabledSound(300, SOFT_INSTRUMENT),
   "hero.complete": softHeroComplete,
   "hero.milestone": softHeroMilestone,
 };
@@ -243,7 +231,6 @@ const aeroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
 
 export const aeroPack: GeneratedSoundPack = {
   ...generateSoundPack(AERO_INSTRUMENT),
-  "interaction.disabled": makeDisabledSound(400, AERO_INSTRUMENT),
   "hero.complete": aeroHeroComplete,
   "hero.milestone": aeroHeroMilestone,
 };
@@ -331,7 +318,6 @@ const arcadeHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoun
 // ---------------------------------------------------------------------------
 export const arcadePack: GeneratedSoundPack = {
   ...generateSoundPack(ARCADE_INSTRUMENT),
-  "interaction.disabled": makeDisabledSound(600, ARCADE_INSTRUMENT),
   "hero.complete": arcadeHeroComplete,
   "hero.milestone": arcadeHeroMilestone,
 };
@@ -429,7 +415,6 @@ const organicHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySou
 
 export const organicPack: GeneratedSoundPack = {
   ...generateSoundPack(ORGANIC_INSTRUMENT),
-  "interaction.disabled": makeDisabledSound(350, ORGANIC_INSTRUMENT),
   "hero.complete": organicHeroComplete,
   "hero.milestone": organicHeroMilestone,
 };
@@ -553,7 +538,6 @@ const glassHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
 
 export const glassPack: GeneratedSoundPack = {
   ...generateSoundPack(GLASS_INSTRUMENT),
-  "interaction.disabled": makeDisabledSound(500, GLASS_INSTRUMENT),
   "hero.complete": glassHeroComplete,
   "hero.milestone": glassHeroMilestone,
 };
@@ -667,7 +651,6 @@ const industrialHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: Play
 
 export const industrialPack: GeneratedSoundPack = {
   ...generateSoundPack(INDUSTRIAL_INSTRUMENT),
-  "interaction.disabled": makeDisabledSound(600, INDUSTRIAL_INSTRUMENT),
   "hero.complete": industrialHeroComplete,
   "hero.milestone": industrialHeroMilestone,
 };
@@ -754,7 +737,6 @@ const minimalHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySou
 
 export const minimalPack: GeneratedSoundPack = {
   ...generateSoundPack(MINIMAL_INSTRUMENT),
-  "interaction.disabled": makeDisabledSound(300, MINIMAL_INSTRUMENT),
   "hero.complete": minimalHeroComplete,
   "hero.milestone": minimalHeroMilestone,
 };
@@ -876,7 +858,6 @@ const retroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
 
 export const retroPack: GeneratedSoundPack = {
   ...generateSoundPack(RETRO_INSTRUMENT),
-  "interaction.disabled": makeDisabledSound(400, RETRO_INSTRUMENT),
   "hero.complete": retroHeroComplete,
   "hero.milestone": retroHeroMilestone,
 };
@@ -963,7 +944,6 @@ const crispHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
 
 export const crispPack: GeneratedSoundPack = {
   ...generateSoundPack(CRISP_INSTRUMENT),
-  "interaction.disabled": makeDisabledSound(500, CRISP_INSTRUMENT),
   "hero.complete": crispHeroComplete,
   "hero.milestone": crispHeroMilestone,
 };

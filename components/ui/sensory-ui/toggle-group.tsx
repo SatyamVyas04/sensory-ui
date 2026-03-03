@@ -8,14 +8,14 @@ import {
 import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
-const DEFAULT_TOGGLE_GROUP_SOUND = "interaction.toggleUp" as const;
+const DEFAULT_TOGGLE_GROUP_SOUND = "interaction.toggle" as const;
 
 function ToggleGroup({
   sound,
   onValueChange,
   ...props
 }: React.ComponentProps<typeof BaseToggleGroup> & {
-  /** Sound to play when the selected value changes. Defaults to "interaction.toggleUp". Set to false to disable. */
+  /** Sound to play when the selected value changes. Defaults to "interaction.toggle". Set to false to disable. */
   sound?: SoundRole | false;
 }) {
   const { playSound } = useSensoryUI();

@@ -19,7 +19,7 @@ export function CheckboxDemo() {
       icon={<IconSquareRoundedCheck className="size-4" />}
       title="Checkbox"
     >
-      <SoundTrigger soundRole="interaction.toggleUp / interaction.toggleDown">
+      <SoundTrigger soundRole="interaction.toggle">
         <div className="flex flex-col gap-3">
           {OPTIONS.map((opt) => (
             <div className="flex items-center gap-2.5" key={opt.id}>

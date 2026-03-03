@@ -27,16 +27,6 @@ export function ButtonDemo() {
             Confirm
           </Button>
         </SoundTrigger>
-        <SoundTrigger soundRole="interaction.disabled">
-          <Button
-            className="w-full"
-            disabled
-            size="sm"
-            variant="secondary"
-          >
-            Disabled
-          </Button>
-        </SoundTrigger>
         <SoundTrigger soundRole="notification.error">
           <Button
             className="w-full"

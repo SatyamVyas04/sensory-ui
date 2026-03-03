@@ -88,70 +88,51 @@ export interface BaseTune {
 // ---------------------------------------------------------------------------
 
 export const INTERACTION_TUNES: Record<string, BaseTune> = {
-  /** Tap - the default button/click sound */
+  /** Tap - primary bold click. Short percussive noise transient.
+   *  Reference: playConcept("click") — 8ms noise, bandpass 4000Hz Q=3, gain 0.5 */
   tap: {
     type: "click",
-    duration: 0.04,
-    filterFreq: 4500,
+    duration: 0.008,
+    filterFreq: 4000,
     filterQ: 3,
-    // Volume reduced from 0.9 to 0.65; perceived weight restored by sub-bass layer
-    volume: 0.65,
-    meta: { subFreq: 65, subDuration: 0.018, subVolume: 0.14 }
-  },
-
-  /** Toggle - generic binary state change */
-  toggle: {
-    type: "click",
-    duration: 0.035,
-    filterFreq: 3200,
-    filterQ: 2.5,
     volume: 0.50,
-    meta: { subFreq: 50, subDuration: 0.014, subVolume: 0.08 }
+    meta: { decayConstant: 50 }
   },
 
-  /** ToggleUp - state activating (checkbox check, switch on, radio select)
-   *  Slightly brighter click with a subtle higher-pitched sub layer */
-  toggleUp: {
-    type: "click",
-    duration: 0.035,
-    filterFreq: 3800,
-    filterQ: 3,
-    volume: 0.55,
-    meta: { subFreq: 75, subDuration: 0.016, subVolume: 0.10 }
-  },
-
-  /** ToggleDown - state deactivating (checkbox uncheck, switch off)
-   *  Slightly duller click with a lower-pitched sub layer */
-  toggleDown: {
-    type: "click",
-    duration: 0.03,
-    filterFreq: 2600,
+  /** Subtle - secondary softer click. Shorter, higher filtered, quieter.
+   *  Reference: playConcept("tick") — 4ms noise, highpass 3000Hz, gain 0.3 */
+  subtle: {
+    type: "tick",
+    duration: 0.004,
+    filterFreq: 3000,
     filterQ: 2,
-    volume: 0.45,
-    meta: { subFreq: 40, subDuration: 0.012, subVolume: 0.06 }
+    volume: 0.30,
+    meta: { decayConstant: 20 }
   },
 
-  /** Confirm - clean, sleek click with a focused transient.
-   *  Part of the click family (tap, toggle, toggleUp, toggleDown, confirm)
-   *  but slightly crisper and brighter for positive action completion. */
+  /** Toggle - tick-tock state change indicator. Noise click + tonal tail.
+   *  Reference: playConcept("toggle") — 12ms noise bandpass 2500Hz Q=3 gain 0.4
+   *  + sine 800→400Hz over 30ms, gain 0.15 */
+  toggle: {
+    type: "toggle",
+    duration: 0.04,
+    frequency: 800,
+    endFrequency: 400,
+    filterFreq: 2500,
+    filterQ: 3,
+    volume: 0.40,
+    meta: { noiseGain: 0.4, toneGain: 0.15, noiseDuration: 0.012, decayConstant: 80 }
+  },
+
+  /** Confirm - clean positive click. Slightly brighter/crisper than tap.
+   *  A short percussive transient with a subtle tonal warmth. */
   confirm: {
     type: "click",
-    duration: 0.038,
-    filterFreq: 5200,
-    filterQ: 3.5,
-    volume: 0.60,
-    meta: { subFreq: 80, subDuration: 0.016, subVolume: 0.12 }
-  },
-
-  /** Disabled - low-pitched, short click. Conveys "not actionable" without
-   *  sounding like an error notification. Same duration as other clicks. */
-  disabled: {
-    type: "click",
-    duration: 0.03,
-    filterFreq: 800,
-    filterQ: 1.2,
-    volume: 0.30,
-    meta: { subFreq: 30, subDuration: 0.010, subVolume: 0.04 }
+    duration: 0.010,
+    filterFreq: 5000,
+    filterQ: 3,
+    volume: 0.50,
+    meta: { decayConstant: 50 }
   },
 };
 
@@ -185,16 +166,15 @@ export const NAVIGATION_TUNES: Record<string, BaseTune> = {
   },
 
   /** Tab - quick whoosh for tab/segment switching.
-   *  Short filtered noise sweep that conveys lateral motion. */
+   *  Reference: playConcept("whoosh") — 80ms noise with sine envelope,
+   *  bandpass sweep 4000→1500Hz, gain 0.15 */
   tab: {
-    type: "sweep",
-    duration: 0.09,
-    frequency: 600,
-    endFrequency: 900,
-    volume: 0.40,
-    harmonics: true,
-    harmonicRatio: 3,
-    harmonicVolume: 0.08
+    type: "burst",
+    duration: 0.08,
+    filterFreq: 4000,
+    filterQ: 1,
+    volume: 0.15,
+    meta: { endFilterFreq: 1500, sineEnvelope: true }
   },
 };
 
@@ -255,7 +235,8 @@ export const NOTIFICATION_TUNES: Record<string, BaseTune> = {
 // ---------------------------------------------------------------------------
 
 export const OVERLAY_TUNES: Record<string, BaseTune> = {
-  /** Open - dialog/sheet/dropdown/popover opens (rise = openness) */
+  /** Open - dialog/sheet/dropdown/popover opens (rise = openness)
+   *  Includes a subtle click transient at the start for tactility. */
   open: {
     type: "rise",
     duration: 0.21,
@@ -265,10 +246,11 @@ export const OVERLAY_TUNES: Record<string, BaseTune> = {
     harmonics: true,
     harmonicRatio: 2,
     harmonicVolume: 0.18,
-    meta: { thirdPartial: true, thirdRatio: 1.2, thirdVolume: 0.1 }
+    meta: { thirdPartial: true, thirdRatio: 1.2, thirdVolume: 0.1, clickLayer: true }
   },
 
-  /** Close - tonal inverse of open (drop = closedness) */
+  /** Close - tonal inverse of open (drop = closedness)
+   *  Includes a subtle click transient at the start. */
   close: {
     type: "drop",
     duration: 0.21,
@@ -278,10 +260,11 @@ export const OVERLAY_TUNES: Record<string, BaseTune> = {
     harmonics: true,
     harmonicRatio: 2,
     harmonicVolume: 0.18,
-    meta: { thirdPartial: true, thirdRatio: 1.2, thirdVolume: 0.1 }
+    meta: { thirdPartial: true, thirdRatio: 1.2, thirdVolume: 0.1, clickLayer: true }
   },
 
-  /** Expand - lighter than open, for accordion/collapsible content reveal */
+  /** Expand - lighter than open, for accordion/collapsible content reveal
+   *  Includes a subtle click transient at the start. */
   expand: {
     type: "rise",
     duration: 0.14,
@@ -290,10 +273,12 @@ export const OVERLAY_TUNES: Record<string, BaseTune> = {
     volume: 0.48,
     harmonics: true,
     harmonicRatio: 1.5,
-    harmonicVolume: 0.16
+    harmonicVolume: 0.16,
+    meta: { clickLayer: true }
   },
 
-  /** Collapse - paired with expand (mirrors expand direction) */
+  /** Collapse - paired with expand (mirrors expand direction)
+   *  Includes a subtle click transient at the start. */
   collapse: {
     type: "drop",
     duration: 0.14,
@@ -302,7 +287,8 @@ export const OVERLAY_TUNES: Record<string, BaseTune> = {
     volume: 0.48,
     harmonics: true,
     harmonicRatio: 1.5,
-    harmonicVolume: 0.16
+    harmonicVolume: 0.16,
+    meta: { clickLayer: true }
   },
 };
 

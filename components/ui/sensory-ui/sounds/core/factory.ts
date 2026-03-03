@@ -18,7 +18,7 @@ import { createNoiseBuffer, applyDecayToBuffer } from "./instruments";
 
 /**
  * Create a click sound (short percussive transient)
- * Reads tune.meta.subFreq for an optional sub-bass layer (physical weight).
+ * Reference: playConcept("click") — noise with exponential decay, bandpass filter.
  */
 function createClickSound(
   tune: BaseTune,
@@ -27,55 +27,37 @@ function createClickSound(
   return (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
     const t = ctx.currentTime;
     const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
-    const duration = tune.duration * instrument.decayMult;
+    const duration = Math.max(0.008, tune.duration) * instrument.decayMult;
+    const meta = tune.meta as { decayConstant?: number } | undefined;
+    const decayConstant = meta?.decayConstant ?? 50;
 
-    // Use noise for clicks - filtered noise transient
-    const bufLen = Math.floor(ctx.sampleRate * Math.max(0.008, duration * 0.5));
-    const buffer = createNoiseBuffer(ctx, bufLen / ctx.sampleRate, "white");
-    applyDecayToBuffer(buffer, 0.3);
+    // Generate noise buffer with exponential decay (reference pattern)
+    const bufLen = Math.floor(ctx.sampleRate * duration);
+    const buffer = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufLen; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (decayConstant * instrument.decayMult));
+    }
 
     const src = ctx.createBufferSource();
     src.buffer = buffer;
 
     const filter = ctx.createBiquadFilter();
     filter.type = "bandpass";
-    filter.frequency.value = (tune.filterFreq ?? 3500) * instrument.pitchMult;
-    filter.Q.value = (tune.filterQ ?? 2) * instrument.q;
+    filter.frequency.value = (tune.filterFreq ?? 4000) * instrument.pitchMult;
+    filter.Q.value = (tune.filterQ ?? 3) * instrument.q;
 
     const gain = ctx.createGain();
-    gain.gain.setValueAtTime(vol, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+    gain.gain.value = vol;
 
     src.connect(filter);
     filter.connect(gain);
     gain.connect(ctx.destination);
 
-    // Sub-bass layer: adds physical weight to tap/toggle sounds (from tune.meta)
-    const meta = tune.meta as { subFreq?: number; subDuration?: number; subVolume?: number } | undefined;
-    const subNodes: AudioNode[] = [];
-    if (meta?.subFreq) {
-      const subFreq = meta.subFreq;
-      const subDur = meta.subDuration ?? 0.016;
-      const subVol = (meta.subVolume ?? 0.1) * instrument.gainMult;
-      const subOsc = ctx.createOscillator();
-      subOsc.type = "sine";
-      subOsc.frequency.value = subFreq;
-      const subGain = ctx.createGain();
-      subGain.gain.setValueAtTime(0.001, t);
-      subGain.gain.linearRampToValueAtTime(subVol, t + 0.003);
-      subGain.gain.exponentialRampToValueAtTime(0.001, t + subDur);
-      subOsc.connect(subGain);
-      subGain.connect(ctx.destination);
-      subNodes.push(subOsc, subGain);
-      subOsc.start(t);
-      subOsc.stop(t + subDur + 0.01);
-    }
-
     src.onended = () => {
       src.disconnect();
       filter.disconnect();
       gain.disconnect();
-      subNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
 
@@ -130,7 +112,8 @@ function createPopSound(
 }
 
 /**
- * Create a toggle sound (state change - click + tonal tail)
+ * Create a toggle sound (state change - noise click + tonal tail)
+ * Reference: playConcept("toggle") — 12ms noise bandpass 2500Hz + sine 800→400Hz
  */
 function createToggleSound(
   tune: BaseTune,
@@ -140,26 +123,34 @@ function createToggleSound(
     const t = ctx.currentTime;
     const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
     const duration = tune.duration * instrument.decayMult;
+    const meta = tune.meta as {
+      noiseGain?: number; toneGain?: number;
+      noiseDuration?: number; decayConstant?: number;
+    } | undefined;
 
     const nodes: AudioNode[] = [];
     const sources: AudioScheduledSourceNode[] = [];
 
-    // Noise click transient
-    const bufLen = Math.floor(ctx.sampleRate * 0.006);
-    const buffer = createNoiseBuffer(ctx, bufLen / ctx.sampleRate, "white");
-    applyDecayToBuffer(buffer, 0.28);
+    // Noise click transient (reference: 12ms, exp decay -i/80)
+    const noiseDur = (meta?.noiseDuration ?? 0.012) * instrument.decayMult;
+    const decayConstant = meta?.decayConstant ?? 80;
+    const bufLen = Math.floor(ctx.sampleRate * noiseDur);
+    const buffer = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufLen; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (decayConstant * instrument.decayMult));
+    }
 
     const src = ctx.createBufferSource();
     src.buffer = buffer;
 
     const filter = ctx.createBiquadFilter();
     filter.type = "bandpass";
-    filter.frequency.value = (tune.filterFreq ?? instrument.filterFreq);
-    filter.Q.value = (tune.filterQ ?? instrument.q) * 2;
+    filter.frequency.value = (tune.filterFreq ?? 2500) * instrument.pitchMult;
+    filter.Q.value = (tune.filterQ ?? 3) * instrument.q;
 
     const noiseGain = ctx.createGain();
-    noiseGain.gain.setValueAtTime(vol, t);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.022);
+    noiseGain.gain.value = (meta?.noiseGain ?? 0.4) * instrument.gainMult * (opts.volume ?? 1);
 
     src.connect(filter);
     filter.connect(noiseGain);
@@ -169,7 +160,7 @@ function createToggleSound(
     sources.push(src);
     src.start(t);
 
-    // Tonal tail
+    // Tonal tail (reference: sine 800→400Hz, gain 0.15→0.001 over 40ms)
     if (tune.frequency) {
       const osc = ctx.createOscillator();
       osc.type = instrument.oscType;
@@ -177,12 +168,13 @@ function createToggleSound(
       if (tune.endFrequency) {
         osc.frequency.exponentialRampToValueAtTime(
           tune.endFrequency * instrument.pitchMult,
-          t + duration
+          t + 0.03 * instrument.decayMult
         );
       }
 
       const oscGain = ctx.createGain();
-      oscGain.gain.setValueAtTime(vol * 0.5, t);
+      const toneVol = (meta?.toneGain ?? 0.15) * instrument.gainMult * (opts.volume ?? 1);
+      oscGain.gain.setValueAtTime(toneVol, t);
       oscGain.gain.exponentialRampToValueAtTime(0.001, t + duration);
 
       osc.connect(oscGain);
@@ -217,8 +209,8 @@ function createToggleSound(
 
 /**
  * Create a tick sound (subtle micro-interaction).
- * Uses filtered noise when `tune.filterFreq` is set (e.g., scroll/focus),
- * otherwise falls back to a pure tone oscillator.
+ * Reference: playConcept("tick") — 4ms noise with exp decay (-i/20),
+ * highpass 3000Hz, gain 0.3.
  */
 function createTickSound(
   tune: BaseTune,
@@ -227,73 +219,49 @@ function createTickSound(
   return (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
     const t = ctx.currentTime;
     const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
-    const duration = tune.duration * instrument.decayMult;
+    const duration = Math.max(0.004, tune.duration) * instrument.decayMult;
+    const meta = tune.meta as { decayConstant?: number } | undefined;
+    const decayConstant = meta?.decayConstant ?? 20;
 
-    // Filtered-noise tick - used for scroll/focus where filterFreq is defined
-    if (tune.filterFreq) {
-      const bufLen = Math.floor(ctx.sampleRate * Math.max(0.004, duration * 0.5));
-      const buffer = createNoiseBuffer(ctx, bufLen / ctx.sampleRate, "white");
-      applyDecayToBuffer(buffer, 0.25);
-
-      const src = ctx.createBufferSource();
-      src.buffer = buffer;
-
-      const filter = ctx.createBiquadFilter();
-      filter.type = "bandpass";
-      filter.frequency.value = tune.filterFreq * instrument.pitchMult;
-      filter.Q.value = (tune.filterQ ?? 2) * instrument.q;
-
-      const gain = ctx.createGain();
-      gain.gain.setValueAtTime(vol, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
-
-      src.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
-
-      src.onended = () => {
-        src.disconnect();
-        filter.disconnect();
-        gain.disconnect();
-        opts.onEnd?.();
-      };
-
-      src.start(t);
-      return { stop: () => { try { src.stop(); } catch { /* ok */ } } };
+    // Generate noise buffer with exponential decay (reference pattern)
+    const bufLen = Math.floor(ctx.sampleRate * duration);
+    const buffer = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufLen; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (decayConstant * instrument.decayMult));
     }
 
-    // Pure tone tick - used when only frequency is defined (e.g., system.focus)
-    const osc = ctx.createOscillator();
-    osc.type = instrument.oscType;
-    osc.frequency.value = (tune.frequency ?? 750) * instrument.pitchMult;
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = "highpass";
+    filter.frequency.value = (tune.filterFreq ?? 3000) * instrument.pitchMult;
 
     const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.001, t);
-    gain.gain.linearRampToValueAtTime(vol, t + 0.005);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+    gain.gain.value = vol;
 
-    osc.connect(gain);
+    src.connect(filter);
+    filter.connect(gain);
     gain.connect(ctx.destination);
 
-    osc.onended = () => {
-      osc.disconnect();
+    src.onended = () => {
+      src.disconnect();
+      filter.disconnect();
       gain.disconnect();
       opts.onEnd?.();
     };
 
-    osc.start(t);
-    osc.stop(t + duration + 0.01);
-
-    return {
-      stop: () => { try { osc.stop(); } catch { /* ok */ } }
-    };
+    src.start(t);
+    return { stop: () => { try { src.stop(); } catch { /* ok */ } } };
   };
 }
 
 /**
  * Create a sweep sound (frequency glide).
  * Supports an optional harmonic overtone when tune.harmonics is set,
- * which enriches open/close/expand/collapse sounds.
+ * and an optional click transient layer when tune.meta.clickLayer is true
+ * (used by overlay open/close/expand/collapse sounds for tactility).
  */
 function createSweepSound(
   tune: BaseTune,
@@ -308,6 +276,7 @@ function createSweepSound(
 
     const oscs: OscillatorNode[] = [];
     const gainNodes: GainNode[] = [];
+    const extraNodes: AudioNode[] = [];
 
     const osc = ctx.createOscillator();
     osc.type = instrument.oscType;
@@ -340,9 +309,35 @@ function createSweepSound(
       gainNodes.push(harmGain);
     }
 
+    // Click transient layer for overlay sounds (subtle tactile click at the start)
+    const meta = tune.meta as { clickLayer?: boolean } | undefined;
+    if (meta?.clickLayer) {
+      const clickDur = 0.006;
+      const clickBufLen = Math.floor(ctx.sampleRate * clickDur);
+      const clickBuffer = ctx.createBuffer(1, clickBufLen, ctx.sampleRate);
+      const clickData = clickBuffer.getChannelData(0);
+      for (let i = 0; i < clickBufLen; i++) {
+        clickData[i] = (Math.random() * 2 - 1) * Math.exp(-i / 30);
+      }
+      const clickSrc = ctx.createBufferSource();
+      clickSrc.buffer = clickBuffer;
+      const clickFilter = ctx.createBiquadFilter();
+      clickFilter.type = "bandpass";
+      clickFilter.frequency.value = 3500 * instrument.pitchMult;
+      clickFilter.Q.value = 2;
+      const clickGain = ctx.createGain();
+      clickGain.gain.value = vol * 0.3;
+      clickSrc.connect(clickFilter);
+      clickFilter.connect(clickGain);
+      clickGain.connect(ctx.destination);
+      extraNodes.push(clickSrc, clickFilter, clickGain);
+      clickSrc.start(t);
+    }
+
     const cleanup = () => {
       oscs.forEach(o => { try { o.disconnect(); } catch { /* ok */ } });
       gainNodes.forEach(g => { try { g.disconnect(); } catch { /* ok */ } });
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
     osc.onended = cleanup;
@@ -590,7 +585,10 @@ function createChordSound(
 }
 
 /**
- * Create a burst sound (noise texture)
+ * Create a burst sound (noise texture).
+ * Also handles whoosh-style sounds when meta.sineEnvelope is true
+ * (used by navigation.tab).
+ * Reference: playConcept("whoosh") — sine-envelope noise, bandpass sweep.
  */
 function createBurstSound(
   tune: BaseTune,
@@ -600,21 +598,44 @@ function createBurstSound(
     const t = ctx.currentTime;
     const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
     const duration = tune.duration * instrument.decayMult;
+    const meta = tune.meta as { endFilterFreq?: number; sineEnvelope?: boolean } | undefined;
 
-    const buffer = createNoiseBuffer(ctx, duration, "white");
-    applyDecayToBuffer(buffer, 0.4);
+    // Generate noise buffer
+    const bufLen = Math.floor(ctx.sampleRate * duration);
+    const buffer = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    if (meta?.sineEnvelope) {
+      // Whoosh: sine-envelope noise (reference pattern)
+      for (let i = 0; i < bufLen; i++) {
+        const env = Math.sin((i / bufLen) * Math.PI);
+        data[i] = (Math.random() * 2 - 1) * env;
+      }
+    } else {
+      // Standard burst: noise with decay
+      for (let i = 0; i < bufLen; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      applyDecayToBuffer(buffer, 0.4);
+    }
 
     const src = ctx.createBufferSource();
     src.buffer = buffer;
 
     const filter = ctx.createBiquadFilter();
     filter.type = "bandpass";
-    filter.frequency.value = instrument.filterFreq;
-    filter.Q.value = instrument.q;
+    const startFilterFreq = (tune.filterFreq ?? instrument.filterFreq) * instrument.pitchMult;
+    filter.frequency.setValueAtTime(startFilterFreq, t);
+    // Sweep filter frequency for whoosh effect
+    if (meta?.endFilterFreq) {
+      filter.frequency.exponentialRampToValueAtTime(
+        meta.endFilterFreq * instrument.pitchMult, t + duration
+      );
+    }
+    filter.Q.value = (tune.filterQ ?? instrument.q);
 
     const gain = ctx.createGain();
-    gain.gain.setValueAtTime(vol, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+    gain.gain.value = vol;
 
     src.connect(filter);
     filter.connect(gain);

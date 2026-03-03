@@ -10,11 +10,11 @@ export function SliderDemo() {
 
   return (
     <DemoCard
-      description="Plays once on drop"
+      description="Subtle tick on every value change"
       icon={<IconAdjustments className="size-4" />}
       title="Slider"
     >
-      <SoundTrigger soundRole="interaction.tap">
+      <SoundTrigger soundRole="interaction.subtle">
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">

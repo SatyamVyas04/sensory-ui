@@ -18,7 +18,7 @@ export function SwitchDemo() {
       icon={<IconToggleLeft className="size-4" />}
       title="Switch"
     >
-      <SoundTrigger soundRole="interaction.toggleUp / interaction.toggleDown">
+      <SoundTrigger soundRole="interaction.toggle">
         <div className="flex flex-col gap-3">
           {OPTIONS.map((opt) => (
             <div className="flex items-center justify-between" key={opt.id}>
