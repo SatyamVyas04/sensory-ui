@@ -292,6 +292,12 @@ function createSweepSound(
     oscs.push(osc);
     gainNodes.push(gain);
 
+    // Parse meta for overlay enhancements
+    const meta = tune.meta as {
+      clickLayer?: boolean; clickGain?: number;
+      thirdPartial?: boolean; thirdRatio?: number; thirdVolume?: number;
+    } | undefined;
+
     // Harmonic layer for richer overlay open/close/expand/collapse sounds
     if (tune.harmonics && tune.harmonicRatio) {
       const harmRatio = tune.harmonicRatio;
@@ -309,15 +315,31 @@ function createSweepSound(
       gainNodes.push(harmGain);
     }
 
+    // Third partial for richer timbre (adds bell-like quality to overlay sounds)
+    if (meta?.thirdPartial) {
+      const thirdRatio = meta.thirdRatio ?? 3;
+      const thirdVol = vol * (meta.thirdVolume ?? 0.06);
+      const thirdOsc = ctx.createOscillator();
+      thirdOsc.type = "sine";
+      thirdOsc.frequency.setValueAtTime(startFreq * thirdRatio, t);
+      thirdOsc.frequency.exponentialRampToValueAtTime(endFreq * thirdRatio, t + duration);
+      const thirdGain = ctx.createGain();
+      thirdGain.gain.setValueAtTime(thirdVol, t);
+      thirdGain.gain.exponentialRampToValueAtTime(0.001, t + duration * 0.6);
+      thirdOsc.connect(thirdGain);
+      thirdGain.connect(ctx.destination);
+      oscs.push(thirdOsc);
+      gainNodes.push(thirdGain);
+    }
+
     // Click transient layer for overlay sounds (subtle tactile click at the start)
-    const meta = tune.meta as { clickLayer?: boolean } | undefined;
     if (meta?.clickLayer) {
-      const clickDur = 0.006;
+      const clickDur = 0.005;
       const clickBufLen = Math.floor(ctx.sampleRate * clickDur);
       const clickBuffer = ctx.createBuffer(1, clickBufLen, ctx.sampleRate);
       const clickData = clickBuffer.getChannelData(0);
       for (let i = 0; i < clickBufLen; i++) {
-        clickData[i] = (Math.random() * 2 - 1) * Math.exp(-i / 30);
+        clickData[i] = (Math.random() * 2 - 1) * Math.exp(-i / 25);
       }
       const clickSrc = ctx.createBufferSource();
       clickSrc.buffer = clickBuffer;
@@ -325,12 +347,12 @@ function createSweepSound(
       clickFilter.type = "bandpass";
       clickFilter.frequency.value = 3500 * instrument.pitchMult;
       clickFilter.Q.value = 2;
-      const clickGain = ctx.createGain();
-      clickGain.gain.value = vol * 0.3;
+      const clickGainNode = ctx.createGain();
+      clickGainNode.gain.value = vol * (meta.clickGain ?? 0.25);
       clickSrc.connect(clickFilter);
-      clickFilter.connect(clickGain);
-      clickGain.connect(ctx.destination);
-      extraNodes.push(clickSrc, clickFilter, clickGain);
+      clickFilter.connect(clickGainNode);
+      clickGainNode.connect(ctx.destination);
+      extraNodes.push(clickSrc, clickFilter, clickGainNode);
       clickSrc.start(t);
     }
 

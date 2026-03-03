@@ -15,10 +15,7 @@ export function ToggleDemo() {
       title="Toggle Group"
     >
       <SoundTrigger soundRole="interaction.toggle">
-        <ToggleGroup
-          className="w-full justify-between"
-          type="multiple"
-        >
+        <ToggleGroup className="w-full justify-between" type="multiple">
           <ToggleGroupItem aria-label="Bold" value="bold">
             <IconBold className="size-3.5" />
             Bold

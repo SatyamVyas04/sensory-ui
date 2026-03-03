@@ -46,7 +46,8 @@ const NOTES = {
 const softHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.65;
-  const notes = [NOTES.C4, NOTES.E4, NOTES.G4, NOTES.C5];
+  // Lullaby resolution: descend from E→C then rise to G→C5
+  const notes = [NOTES.E4, NOTES.C4, NOTES.G4, NOTES.C5];
   const oscs: OscillatorNode[] = [];
   const gains: GainNode[] = [];
 
@@ -88,7 +89,8 @@ const softHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOp
 const softHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.55;
-  const notes = [NOTES.G3, NOTES.C4];
+  // Gentle descending major 3rd
+  const notes = [NOTES.E4, NOTES.C4];
   const oscs: OscillatorNode[] = [];
 
   notes.forEach((freq, i) => {
@@ -136,7 +138,8 @@ export const softPack: GeneratedSoundPack = {
 const aeroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.7;
-  const notes = [NOTES.C4, NOTES.E4, NOTES.G4, NOTES.C5, NOTES.E5];
+  // Open-sky ascending 4ths and 5ths
+  const notes = [NOTES.D4, NOTES.G4, NOTES.A4, NOTES.D5, NOTES.G5];
   const oscs: OscillatorNode[] = [];
 
   notes.forEach((freq, i) => {
@@ -185,7 +188,8 @@ const aeroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOp
 const aeroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.6;
-  const notes = [NOTES.C4, NOTES.E4, NOTES.G4];
+  // Open ascending 5ths
+  const notes = [NOTES.D4, NOTES.A4, NOTES.D5];
   const oscs: OscillatorNode[] = [];
 
   notes.forEach((freq, i) => {
@@ -242,7 +246,8 @@ export const aeroPack: GeneratedSoundPack = {
 const arcadeHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.6;
-  const notes = [NOTES.C5, NOTES.E5, NOTES.G5, NOTES.C6, NOTES.E6, NOTES.G6, NOTES.C6 * 2];
+  // G major ascending fanfare
+  const notes = [NOTES.G4, NOTES.B4, NOTES.D5, NOTES.G5, NOTES.B5, NOTES.D6, NOTES.G6];
   const oscs: OscillatorNode[] = [];
 
   notes.forEach((freq, i) => {
@@ -279,7 +284,8 @@ const arcadeHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
 const arcadeHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.5;
-  const notes = [NOTES.C5, NOTES.E5, NOTES.G5, NOTES.C6];
+  // G major ascending arpeggio
+  const notes = [NOTES.G4, NOTES.B4, NOTES.D5, NOTES.G5];
   const oscs: OscillatorNode[] = [];
 
   notes.forEach((freq, i) => {
@@ -329,7 +335,8 @@ export const arcadePack: GeneratedSoundPack = {
 const organicHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.7;
-  const notes = [NOTES.C4, NOTES.E4, NOTES.G4, NOTES.C5, NOTES.E5];
+  // Bouncing pattern: up-down-up for organic/xylophone feel
+  const notes = [NOTES.C4, NOTES.G4, NOTES.E4, NOTES.A4, NOTES.C5];
   const oscs: OscillatorNode[] = [];
 
   notes.forEach((freq, i) => {
@@ -378,7 +385,8 @@ const organicHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoun
 const organicHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.6;
-  const notes = [NOTES.G3, NOTES.C4, NOTES.E4];
+  // Ascending 5ths bounce
+  const notes = [NOTES.C4, NOTES.G4, NOTES.C5];
   const oscs: OscillatorNode[] = [];
 
   notes.forEach((freq, i) => {
@@ -426,8 +434,8 @@ export const organicPack: GeneratedSoundPack = {
 const glassHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.45;
-  // Pentatonic scale for crystal chime feel
-  const notes = [NOTES.C5, NOTES.E5, NOTES.G5, NOTES.A5, NOTES.C6];
+  // Ascending run with major-7th shimmer
+  const notes = [NOTES.E5, NOTES.G5, NOTES.B5, NOTES.C6, NOTES.E6];
   const oscs: OscillatorNode[] = [];
 
   notes.forEach((freq, i) => {
@@ -489,8 +497,8 @@ const glassHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
 const glassHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.4;
-  // Simple triad for milestone
-  const notes = [NOTES.G4, NOTES.C5, NOTES.E5];
+  // Ascending with open voicing
+  const notes = [NOTES.G4, NOTES.B4, NOTES.E5];
   const oscs: OscillatorNode[] = [];
 
   notes.forEach((freq, i) => {
@@ -551,8 +559,8 @@ const industrialHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlayS
   const vol = (opts.volume ?? 1) * 0.7;
   const oscs: OscillatorNode[] = [];
 
-  // Power chord hit C + G
-  const chordFreqs = [NOTES.C3, NOTES.G3, NOTES.C4];
+  // E power chord hit
+  const chordFreqs = [NOTES.E3, NOTES.B3, NOTES.E4];
   chordFreqs.forEach((freq) => {
     const osc = ctx.createOscillator();
     osc.type = "sawtooth";
@@ -570,8 +578,8 @@ const industrialHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlayS
     osc.stop(t + 0.55);
   });
 
-  // Rising metallic arpeggio
-  const arpeggioNotes = [NOTES.C4, NOTES.E4, NOTES.G4, NOTES.C5];
+  // Rising E minor arpeggio
+  const arpeggioNotes = [NOTES.E4, NOTES.G4, NOTES.B4, NOTES.E5];
   arpeggioNotes.forEach((freq, i) => {
     const noteStart = t + 0.35 + i * 0.1;
     const isLast = i === arpeggioNotes.length - 1;
@@ -607,8 +615,8 @@ const industrialHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: Play
   const vol = (opts.volume ?? 1) * 0.6;
   const oscs: OscillatorNode[] = [];
 
-  // Power fifth hit
-  [NOTES.C3, NOTES.G3].forEach((freq, i) => {
+  // E power fifth hit
+  [NOTES.E3, NOTES.B3].forEach((freq, i) => {
     const osc = ctx.createOscillator();
     osc.type = "sawtooth";
     osc.frequency.value = freq * 0.7;
@@ -625,10 +633,10 @@ const industrialHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: Play
     osc.stop(t + 0.45);
   });
 
-  // Octave stab
+  // E octave stab
   const osc = ctx.createOscillator();
   osc.type = "sawtooth";
-  osc.frequency.value = NOTES.C4 * 0.7;
+  osc.frequency.value = NOTES.E4 * 0.7;
 
   const g = ctx.createGain();
   g.gain.setValueAtTime(vol * 0.6, t + 0.25);
@@ -750,8 +758,8 @@ const retroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
   const vol = (opts.volume ?? 1) * 0.55;
   const oscs: OscillatorNode[] = [];
 
-  // Opening chord C major with detuned saws
-  const chordNotes = [NOTES.C4, NOTES.E4, NOTES.G4];
+  // Opening A minor chord with detuned saws
+  const chordNotes = [NOTES.A3, NOTES.C4, NOTES.E4];
   chordNotes.forEach((freq) => {
     [-6, 6].forEach((cents) => {
       const osc = ctx.createOscillator();
@@ -772,8 +780,8 @@ const retroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
     });
   });
 
-  // Rising arpeggio tail
-  const arpeggioNotes = [NOTES.C5, NOTES.E5, NOTES.G5, NOTES.C6];
+  // Rising A minor arpeggio tail
+  const arpeggioNotes = [NOTES.A4, NOTES.C5, NOTES.E5, NOTES.A5];
   arpeggioNotes.forEach((freq, i) => {
     const noteStart = t + 0.35 + i * 0.1;
     const isLast = i === arpeggioNotes.length - 1;
@@ -810,8 +818,8 @@ const retroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
   const vol = (opts.volume ?? 1) * 0.5;
   const oscs: OscillatorNode[] = [];
 
-  // Chord stab
-  [NOTES.C4, NOTES.E4, NOTES.G4].forEach((freq) => {
+  // A minor chord stab
+  [NOTES.A3, NOTES.C4, NOTES.E4].forEach((freq) => {
     [-5, 5].forEach((cents) => {
       const osc = ctx.createOscillator();
       osc.type = "sawtooth";
@@ -831,10 +839,10 @@ const retroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
     });
   });
 
-  // Octave resolution
+  // A octave resolution
   const osc = ctx.createOscillator();
   osc.type = "sawtooth";
-  osc.frequency.value = NOTES.C5 * 0.85;
+  osc.frequency.value = NOTES.A4 * 0.85;
   osc.detune.value = 5;
 
   const g = ctx.createGain();
@@ -869,7 +877,8 @@ export const retroPack: GeneratedSoundPack = {
 const crispHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.6;
-  const notes = [NOTES.C5, NOTES.E5, NOTES.G5, NOTES.C6, NOTES.E6, NOTES.G6];
+  // Pentatonic scale run with crisp attack
+  const notes = [NOTES.C5, NOTES.D5, NOTES.E5, NOTES.G5, NOTES.A5, NOTES.C6];
   const oscs: OscillatorNode[] = [];
 
   notes.forEach((freq, i) => {
@@ -907,7 +916,8 @@ const crispHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
 const crispHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
   const vol = (opts.volume ?? 1) * 0.55;
-  const notes = [NOTES.C5, NOTES.E5, NOTES.G5, NOTES.C6];
+  // Pentatonic skip pattern
+  const notes = [NOTES.C5, NOTES.D5, NOTES.G5, NOTES.C6];
   const oscs: OscillatorNode[] = [];
 
   notes.forEach((freq, i) => {
