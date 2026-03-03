@@ -150,6 +150,7 @@ registry.json                 ← shadcn registry manifest (for `shadcn build`)
 | [components.md](./components.md)     | Component API, `sound` prop usage, event triggers      |
 | [registry.md](./registry.md)         | shadcn registry publishing (implemented in v0.5)       |
 | [sound-packs.md](./sound-packs.md)   | Per-pack sound design tables (9 packs total)           |
+| [testing.md](./testing.md)           | Testing guide with commands for registry components    |
 
 ---
 
