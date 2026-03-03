@@ -20,20 +20,23 @@ const DEFAULT_NAV_LINK_SOUND = "navigation.tab" as const;
 
 function NavigationMenuTrigger({
   sound,
+  volume,
   onClick,
   ...props
 }: React.ComponentProps<typeof BaseNavigationMenuTrigger> & {
   /** Sound to play when this trigger is clicked. Defaults to "overlay.open". Set to false to disable. */
   sound?: SoundRole | false;
+  /** Per-component volume multiplier (0–1). Stacks with master volume. */
+  volume?: number;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (sound !== false) void playSound(sound ?? DEFAULT_NAV_TRIGGER_SOUND);
+      if (sound !== false) void playSound(sound ?? DEFAULT_NAV_TRIGGER_SOUND, { volume });
       onClick?.(e);
     },
-    [sound, playSound, onClick]
+    [sound, volume, playSound, onClick]
   );
 
   return <BaseNavigationMenuTrigger onClick={handleClick} {...props} />;
@@ -41,20 +44,23 @@ function NavigationMenuTrigger({
 
 function NavigationMenuLink({
   sound,
+  volume,
   onClick,
   ...props
 }: React.ComponentProps<typeof BaseNavigationMenuLink> & {
   /** Sound to play when this link is clicked. Defaults to "navigation.tab". Set to false to disable. */
   sound?: SoundRole | false;
+  /** Per-component volume multiplier (0–1). Stacks with master volume. */
+  volume?: number;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (sound !== false) void playSound(sound ?? DEFAULT_NAV_LINK_SOUND);
+      if (sound !== false) void playSound(sound ?? DEFAULT_NAV_LINK_SOUND, { volume });
       onClick?.(e);
     },
-    [sound, playSound, onClick]
+    [sound, volume, playSound, onClick]
   );
 
   return <BaseNavigationMenuLink onClick={handleClick} {...props} />;

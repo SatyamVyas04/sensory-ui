@@ -16,6 +16,7 @@ const DEFAULT_ACCORDION_COLLAPSE_SOUND = "overlay.collapse" as const;
 function Accordion({
   expandSound,
   collapseSound,
+  volume,
   onValueChange,
   ...props
 }: React.ComponentProps<typeof BaseAccordion> & {
@@ -29,6 +30,8 @@ function Accordion({
    * Defaults to "overlay.collapse". Set to false to disable.
    */
   collapseSound?: SoundRole | false;
+  /** Per-component volume multiplier (0–1). Stacks with master volume. */
+  volume?: number;
 }) {
   const { playSound } = useSensoryUI();
   const prevValueRef = React.useRef<string | string[] | undefined>(undefined);
@@ -50,9 +53,9 @@ function Accordion({
         })();
 
         if (isExpanding && expandSound !== false) {
-          void playSound(expandSound ?? DEFAULT_ACCORDION_EXPAND_SOUND);
+          void playSound(expandSound ?? DEFAULT_ACCORDION_EXPAND_SOUND, { volume });
         } else if (!isExpanding && collapseSound !== false) {
-          void playSound(collapseSound ?? DEFAULT_ACCORDION_COLLAPSE_SOUND);
+          void playSound(collapseSound ?? DEFAULT_ACCORDION_COLLAPSE_SOUND, { volume });
         }
       }
 
@@ -60,7 +63,7 @@ function Accordion({
       // Cast needed because Radix overloads onValueChange per type
       (onValueChange as ((v: string & string[]) => void) | undefined)?.(value);
     },
-    [expandSound, collapseSound, playSound, onValueChange]
+    [expandSound, collapseSound, volume, playSound, onValueChange]
   );
 
   return <BaseAccordion onValueChange={handleValueChange} {...props} />;

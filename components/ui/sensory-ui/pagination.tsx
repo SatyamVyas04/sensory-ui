@@ -19,20 +19,23 @@ const DEFAULT_PAGINATION_NEXT_SOUND = "navigation.forward" as const;
 
 function PaginationLink({
   sound,
+  volume,
   onClick,
   ...props
 }: React.ComponentProps<typeof BasePaginationLink> & {
   /** Sound to play when this page link is clicked. Defaults to "navigation.tab". Set to false to disable. */
   sound?: SoundRole | false;
+  /** Per-component volume multiplier (0–1). Stacks with master volume. */
+  volume?: number;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (sound !== false) void playSound(sound ?? DEFAULT_PAGINATION_LINK_SOUND);
+      if (sound !== false) void playSound(sound ?? DEFAULT_PAGINATION_LINK_SOUND, { volume });
       onClick?.(e);
     },
-    [sound, playSound, onClick]
+    [sound, volume, playSound, onClick]
   );
 
   return <BasePaginationLink onClick={handleClick} {...props} />;
@@ -40,20 +43,23 @@ function PaginationLink({
 
 function PaginationPrevious({
   sound,
+  volume,
   onClick,
   ...props
 }: React.ComponentProps<typeof BasePaginationPrevious> & {
   /** Sound to play when navigating to the previous page. Defaults to "navigation.backward". Set to false to disable. */
   sound?: SoundRole | false;
+  /** Per-component volume multiplier (0–1). Stacks with master volume. */
+  volume?: number;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (sound !== false) void playSound(sound ?? DEFAULT_PAGINATION_PREV_SOUND);
+      if (sound !== false) void playSound(sound ?? DEFAULT_PAGINATION_PREV_SOUND, { volume });
       onClick?.(e);
     },
-    [sound, playSound, onClick]
+    [sound, volume, playSound, onClick]
   );
 
   return <BasePaginationPrevious onClick={handleClick} {...props} />;
@@ -61,20 +67,23 @@ function PaginationPrevious({
 
 function PaginationNext({
   sound,
+  volume,
   onClick,
   ...props
 }: React.ComponentProps<typeof BasePaginationNext> & {
   /** Sound to play when navigating to the next page. Defaults to "navigation.forward". Set to false to disable. */
   sound?: SoundRole | false;
+  /** Per-component volume multiplier (0–1). Stacks with master volume. */
+  volume?: number;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (sound !== false) void playSound(sound ?? DEFAULT_PAGINATION_NEXT_SOUND);
+      if (sound !== false) void playSound(sound ?? DEFAULT_PAGINATION_NEXT_SOUND, { volume });
       onClick?.(e);
     },
-    [sound, playSound, onClick]
+    [sound, volume, playSound, onClick]
   );
 
   return <BasePaginationNext onClick={handleClick} {...props} />;

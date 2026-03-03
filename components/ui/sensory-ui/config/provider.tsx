@@ -120,10 +120,19 @@ export function SensoryUIProvider({
       if (typeof window === "undefined") return null;
       if (!shouldPlay) return null;
 
-      const source = resolveRole(role, config);
-      if (!source) return null;
-
       const finalVolume = (options.volume ?? 1) * config.volume;
+
+      // Detect raw URLs / data-URIs passed via usePlaySound and bypass
+      // role resolution — send them straight to the engine.
+      const isRawSource =
+        typeof role === "string" &&
+        (role.startsWith("/") ||
+          role.startsWith("http://") ||
+          role.startsWith("https://") ||
+          role.startsWith("data:"));
+
+      const source = isRawSource ? role : resolveRole(role, config);
+      if (!source) return null;
 
       try {
         return await enginePlaySound(source, { ...options, volume: finalVolume });

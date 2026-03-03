@@ -9,20 +9,23 @@ const DEFAULT_SWITCH_SOUND = "interaction.toggle" as const;
 
 function Switch({
   sound,
+  volume,
   onCheckedChange,
   ...props
 }: React.ComponentProps<typeof BaseSwitch> & {
   /** Sound to play when the switch is toggled. Defaults to "interaction.toggle". Set to false to disable. */
   sound?: SoundRole | false;
+  /** Per-component volume multiplier (0–1). Stacks with master volume. */
+  volume?: number;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleCheckedChange = React.useCallback(
     (checked: boolean) => {
-      if (sound !== false) void playSound(sound ?? DEFAULT_SWITCH_SOUND);
+      if (sound !== false) void playSound(sound ?? DEFAULT_SWITCH_SOUND, { volume });
       onCheckedChange?.(checked);
     },
-    [sound, playSound, onCheckedChange]
+    [sound, volume, playSound, onCheckedChange]
   );
 
   return <BaseSwitch onCheckedChange={handleCheckedChange} {...props} />;

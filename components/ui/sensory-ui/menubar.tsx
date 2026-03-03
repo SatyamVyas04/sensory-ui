@@ -27,20 +27,23 @@ const DEFAULT_MENUBAR_ITEM_SOUND = "interaction.tap" as const;
 
 function MenubarTrigger({
   sound,
+  volume,
   onClick,
   ...props
 }: React.ComponentProps<typeof BaseMenubarTrigger> & {
   /** Sound to play when this menu trigger is clicked. Defaults to "overlay.open". Set to false to disable. */
   sound?: SoundRole | false;
+  /** Per-component volume multiplier (0–1). Stacks with master volume. */
+  volume?: number;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (sound !== false) void playSound(sound ?? DEFAULT_MENUBAR_TRIGGER_SOUND);
+      if (sound !== false) void playSound(sound ?? DEFAULT_MENUBAR_TRIGGER_SOUND, { volume });
       onClick?.(e);
     },
-    [sound, playSound, onClick]
+    [sound, volume, playSound, onClick]
   );
 
   return <BaseMenubarTrigger onClick={handleClick} {...props} />;
@@ -48,20 +51,23 @@ function MenubarTrigger({
 
 function MenubarItem({
   sound,
+  volume,
   onSelect,
   ...props
 }: React.ComponentProps<typeof BaseMenubarItem> & {
   /** Sound to play when this item is selected. Defaults to "interaction.tap". Set to false to disable. */
   sound?: SoundRole | false;
+  /** Per-component volume multiplier (0–1). Stacks with master volume. */
+  volume?: number;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleSelect = React.useCallback(
     (e: Event) => {
-      if (sound !== false) void playSound(sound ?? DEFAULT_MENUBAR_ITEM_SOUND);
+      if (sound !== false) void playSound(sound ?? DEFAULT_MENUBAR_ITEM_SOUND, { volume });
       onSelect?.(e);
     },
-    [sound, playSound, onSelect]
+    [sound, volume, playSound, onSelect]
   );
 
   return <BaseMenubarItem onSelect={handleSelect} {...props} />;

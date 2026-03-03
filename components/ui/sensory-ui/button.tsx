@@ -12,40 +12,27 @@ const DEFAULT_BUTTON_SOUND = "interaction.tap" as const;
 
 function Button({
   sound,
+  volume,
   onClick,
-  onKeyDown,
   ...props
 }: React.ComponentProps<typeof BaseButton> & {
-  /** Sound to play on click/keydown. Defaults to "interaction.tap". Set to false to disable. */
+  /** Sound to play on click. Defaults to "interaction.tap". Set to false to disable. */
   sound?: SoundRole | false;
+  /** Per-component volume multiplier (0–1). Stacks with master volume. */
+  volume?: number;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (sound !== false) void playSound(sound ?? DEFAULT_BUTTON_SOUND);
+      if (sound !== false)
+        void playSound(sound ?? DEFAULT_BUTTON_SOUND, { volume });
       onClick?.(e);
     },
-    [sound, playSound, onClick]
+    [sound, volume, playSound, onClick]
   );
 
-  const handleKeyDown = React.useCallback(
-    (e: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (e.key === "Enter" || e.key === " ") {
-        if (sound !== false) void playSound(sound ?? DEFAULT_BUTTON_SOUND);
-      }
-      onKeyDown?.(e);
-    },
-    [sound, playSound, onKeyDown]
-  );
-
-  return (
-    <BaseButton
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      {...props}
-    />
-  );
+  return <BaseButton onClick={handleClick} {...props} />;
 }
 
 export { Button, buttonVariants };

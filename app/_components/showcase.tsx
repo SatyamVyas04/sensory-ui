@@ -185,7 +185,7 @@ export function Showcase() {
           <SensoryUIProvider
             config={{
               theme: selectedPack,
-              volume: 0.9,
+              volume: 0.5,
               categories: {
                 interaction: true,
                 navigation: true,

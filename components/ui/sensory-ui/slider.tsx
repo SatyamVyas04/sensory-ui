@@ -9,6 +9,7 @@ const DEFAULT_SLIDER_SOUND = "interaction.subtle" as const;
 
 function Slider({
   sound,
+  volume,
   onValueChange,
   ...props
 }: React.ComponentProps<typeof BaseSlider> & {
@@ -17,15 +18,17 @@ function Slider({
    * Defaults to "interaction.subtle". Set to false to disable.
    */
   sound?: SoundRole | false;
+  /** Per-component volume multiplier (0–1). Stacks with master volume. */
+  volume?: number;
 }) {
   const { playSound } = useSensoryUI();
 
   const handleValueChange = React.useCallback(
     (values: number[]) => {
-      if (sound !== false) void playSound(sound ?? DEFAULT_SLIDER_SOUND);
+      if (sound !== false) void playSound(sound ?? DEFAULT_SLIDER_SOUND, { volume });
       onValueChange?.(values);
     },
-    [sound, playSound, onValueChange]
+    [sound, volume, playSound, onValueChange]
   );
 
   return <BaseSlider onValueChange={handleValueChange} {...props} />;
