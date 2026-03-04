@@ -5,31 +5,30 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/sensory-ui/toggle-group";
-import { DemoCard, SoundTrigger } from "./demo-card";
+import { DemoCard } from "./demo-card";
 
 export function ToggleDemo() {
   return (
     <DemoCard
       description="Select formatting options to toggle"
       icon={<IconBold className="size-4" />}
+      soundRoles={["interaction.toggle"]}
       title="Toggle Group"
     >
-      <SoundTrigger soundRole="interaction.toggle">
-        <ToggleGroup className="w-full justify-between" type="multiple">
-          <ToggleGroupItem aria-label="Bold" value="bold">
-            <IconBold className="size-3.5" />
-            Bold
-          </ToggleGroupItem>
-          <ToggleGroupItem aria-label="Italic" value="italic">
-            <IconItalic className="size-3.5" />
-            Italic
-          </ToggleGroupItem>
-          <ToggleGroupItem aria-label="Underline" value="underline">
-            <IconUnderline className="size-3.5" />
-            Underline
-          </ToggleGroupItem>
-        </ToggleGroup>
-      </SoundTrigger>
+      <ToggleGroup className="w-full justify-between" type="multiple">
+        <ToggleGroupItem aria-label="Bold" value="bold">
+          <IconBold className="size-3.5" />
+          Bold
+        </ToggleGroupItem>
+        <ToggleGroupItem aria-label="Italic" value="italic">
+          <IconItalic className="size-3.5" />
+          Italic
+        </ToggleGroupItem>
+        <ToggleGroupItem aria-label="Underline" value="underline">
+          <IconUnderline className="size-3.5" />
+          Underline
+        </ToggleGroupItem>
+      </ToggleGroup>
     </DemoCard>
   );
 }

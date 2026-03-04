@@ -6,49 +6,48 @@ import {
   IconArrowRight,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/sensory-ui/button";
-import { DemoCard, SoundTrigger } from "./demo-card";
+import { DemoCard } from "./demo-card";
 
 export function NavigationDemo() {
   return (
     <DemoCard
       description="Directional movement and scrolling"
       icon={<IconArrowRight className="size-4" />}
+      soundRoles={[
+        "navigation.forward",
+        "navigation.backward",
+        "navigation.tab",
+      ]}
       title="Navigation"
     >
       <div className="flex flex-col gap-3">
-        <SoundTrigger soundRole="navigation.forward">
-          <Button
-            className="w-full justify-start"
-            size="sm"
-            sound="navigation.forward"
-            variant="outline"
-          >
-            <IconArrowRight className="size-3.5" />
-            Navigate Forward
-          </Button>
-        </SoundTrigger>
-        <SoundTrigger soundRole="navigation.backward">
-          <Button
-            className="w-full justify-start"
-            size="sm"
-            sound="navigation.backward"
-            variant="outline"
-          >
-            <IconArrowLeft className="size-3.5" />
-            Navigate Back
-          </Button>
-        </SoundTrigger>
-        <SoundTrigger soundRole="navigation.tab">
-          <Button
-            className="w-full justify-start"
-            size="sm"
-            sound="navigation.tab"
-            variant="ghost"
-          >
-            <IconArrowDown className="size-3.5" />
-            Switch Tab
-          </Button>
-        </SoundTrigger>
+        <Button
+          className="w-full justify-start"
+          size="sm"
+          sound="navigation.forward"
+          variant="outline"
+        >
+          <IconArrowRight className="size-3.5" />
+          Navigate Forward
+        </Button>
+        <Button
+          className="w-full justify-start"
+          size="sm"
+          sound="navigation.backward"
+          variant="outline"
+        >
+          <IconArrowLeft className="size-3.5" />
+          Navigate Back
+        </Button>
+        <Button
+          className="w-full justify-start"
+          size="sm"
+          sound="navigation.tab"
+          variant="ghost"
+        >
+          <IconArrowDown className="size-3.5" />
+          Switch Tab
+        </Button>
       </div>
     </DemoCard>
   );

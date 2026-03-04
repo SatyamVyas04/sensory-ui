@@ -5,10 +5,15 @@ import { AccordionDemo } from "./accordion-demo";
 import { ButtonDemo } from "./button-demo";
 import { CarouselDemo } from "./carousel-demo";
 import { CheckboxDemo } from "./checkbox-demo";
+import { CollapsibleDemo } from "./collapsible-demo";
+import { CommandDemo } from "./command-demo";
 import { DialogDemo } from "./dialog-demo";
+import { DrawerDemo } from "./drawer-demo";
+import { DropdownMenuDemo } from "./dropdown-menu-demo";
 import { HeroDemo } from "./hero-demo";
 import { NavigationDemo } from "./navigation-demo";
 import { NotificationsDemo } from "./notifications-demo";
+import { PaginationDemo } from "./pagination-demo";
 import { RadioGroupDemo } from "./radio-group-demo";
 import { SelectDemo } from "./select-demo";
 import { SliderDemo } from "./slider-demo";
@@ -48,34 +53,39 @@ function StaggerColumn({
 export function ShowcaseGrid() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-6">
-      {/* Column 1 - activation: clicks, toggles, state changes */}
+      {/* Column 1 — Activation: clicks, toggles, state changes */}
       <StaggerColumn index={0}>
         <ButtonDemo />
         <RadioGroupDemo />
         <CheckboxDemo />
+        <SwitchDemo />
+        <ToggleDemo />
       </StaggerColumn>
 
-      {/* Column 2 - navigation: direction, selection, spatial movement */}
+      {/* Column 2 — Navigation: direction, selection, spatial movement */}
       <StaggerColumn index={1}>
         <TabsDemo />
         <CarouselDemo />
-        <ToggleDemo />
         <SliderDemo />
+        <PaginationDemo />
+        <NavigationDemo />
       </StaggerColumn>
 
-      {/* Column 3 - system: open/close overlays, expand/collapse */}
+      {/* Column 3 — Overlays: open/close, expand/collapse */}
       <StaggerColumn index={2}>
         <DialogDemo />
+        <DrawerDemo />
+        <DropdownMenuDemo />
         <AccordionDemo />
-        <SelectDemo />
-        <SwitchDemo />
+        <CollapsibleDemo />
       </StaggerColumn>
 
-      {/* Column 4 - feedback: notifications and hero moments */}
+      {/* Column 4 — System & Feedback: menus, notifications, hero */}
       <StaggerColumn index={3}>
+        <SelectDemo />
+        <CommandDemo />
         <NotificationsDemo />
         <HeroDemo />
-        <NavigationDemo />
       </StaggerColumn>
     </div>
   );

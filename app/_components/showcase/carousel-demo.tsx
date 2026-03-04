@@ -9,7 +9,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/sensory-ui/carousel";
-import { DemoCard, SoundTrigger } from "./demo-card";
+import { DemoCard } from "./demo-card";
 
 const SLIDES = [
   { label: "Step 1", copy: "Install the component" },
@@ -22,36 +22,35 @@ export function CarouselDemo() {
     <DemoCard
       description="Prev/next trigger navigation cues"
       icon={<IconCarouselHorizontal className="size-4" />}
+      soundRoles={["navigation.backward", "navigation.forward"]}
       title="Carousel"
     >
-      <SoundTrigger soundRole="navigation.backward / forward">
-        <Carousel aria-label="Demo carousel showing steps" className="w-full">
-          <CarouselContent>
-            {SLIDES.map((slide) => (
-              <CarouselItem key={slide.label}>
-                <div className="flex h-16 flex-col items-start justify-center border border-border bg-muted/30 px-4">
-                  <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
-                    {slide.label}
-                  </span>
-                  <span className="mt-0.5 text-foreground text-xs">
-                    {slide.copy}
-                  </span>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <ButtonGroup className="mt-2">
-            <CarouselPrevious
-              className="relative top-0 left-0 translate-y-0"
-              sound="navigation.backward"
-            />
-            <CarouselNext
-              className="relative top-0 right-0 translate-y-0"
-              sound="navigation.forward"
-            />
-          </ButtonGroup>
-        </Carousel>
-      </SoundTrigger>
+      <Carousel aria-label="Demo carousel showing steps" className="w-full">
+        <CarouselContent>
+          {SLIDES.map((slide) => (
+            <CarouselItem key={slide.label}>
+              <div className="flex h-16 flex-col items-start justify-center border border-border bg-muted/30 px-4">
+                <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
+                  {slide.label}
+                </span>
+                <span className="mt-0.5 text-foreground text-xs">
+                  {slide.copy}
+                </span>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <ButtonGroup className="mt-2">
+          <CarouselPrevious
+            className="relative top-0 left-0 translate-y-0"
+            sound="navigation.backward"
+          />
+          <CarouselNext
+            className="relative top-0 right-0 translate-y-0"
+            sound="navigation.forward"
+          />
+        </ButtonGroup>
+      </Carousel>
     </DemoCard>
   );
 }

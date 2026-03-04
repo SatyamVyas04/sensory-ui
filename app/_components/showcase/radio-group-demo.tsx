@@ -6,7 +6,7 @@ import {
   RadioGroup,
   RadioGroupItem,
 } from "@/components/ui/sensory-ui/radio-group";
-import { DemoCard, SoundTrigger } from "./demo-card";
+import { DemoCard } from "./demo-card";
 
 const OPTIONS = [
   { value: "light", label: "Light", desc: "low feedback" },
@@ -19,26 +19,25 @@ export function RadioGroupDemo() {
     <DemoCard
       description="Select an option to hear the feedback"
       icon={<IconRadio className="size-4" />}
+      soundRoles={["interaction.toggle"]}
       title="Radio Group"
     >
-      <SoundTrigger soundRole="interaction.toggle">
-        <RadioGroup defaultValue="medium" sound="interaction.toggle">
-          {OPTIONS.map((opt) => (
-            <div className="flex items-center gap-2.5" key={opt.value}>
-              <RadioGroupItem id={`rg-${opt.value}`} value={opt.value} />
-              <Label
-                className="flex cursor-pointer items-baseline gap-1.5 text-xs"
-                htmlFor={`rg-${opt.value}`}
-              >
-                {opt.label}
-                <span className="font-mono text-[10px] text-muted-foreground/60">
-                  {opt.desc}
-                </span>
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </SoundTrigger>
+      <RadioGroup defaultValue="medium" sound="interaction.toggle">
+        {OPTIONS.map((opt) => (
+          <div className="flex items-center gap-2.5" key={opt.value}>
+            <RadioGroupItem id={`rg-${opt.value}`} value={opt.value} />
+            <Label
+              className="flex cursor-pointer items-baseline gap-1.5 text-xs"
+              htmlFor={`rg-${opt.value}`}
+            >
+              {opt.label}
+              <span className="font-mono text-[10px] text-muted-foreground/60">
+                {opt.desc}
+              </span>
+            </Label>
+          </div>
+        ))}
+      </RadioGroup>
     </DemoCard>
   );
 }

@@ -2,41 +2,28 @@
 
 import { IconClick } from "@tabler/icons-react";
 import { Button } from "@/components/ui/sensory-ui/button";
-import { DemoCard, SoundTrigger } from "./demo-card";
+import { DemoCard } from "./demo-card";
 
 export function ButtonDemo() {
   return (
     <DemoCard
       description="Click to trigger each activation"
       icon={<IconClick className="size-4" />}
+      soundRoles={["interaction.tap", "interaction.confirm"]}
       title="Button"
     >
       <div className="flex flex-col gap-3">
-        <SoundTrigger soundRole="interaction.tap">
-          <Button className="w-full" size="sm" sound="interaction.tap">
-            Primary
-          </Button>
-        </SoundTrigger>
-        <SoundTrigger soundRole="interaction.confirm">
-          <Button
-            className="w-full"
-            size="sm"
-            sound="interaction.confirm"
-            variant="outline"
-          >
-            Confirm
-          </Button>
-        </SoundTrigger>
-        <SoundTrigger soundRole="notification.error">
-          <Button
-            className="w-full"
-            size="sm"
-            sound="notification.error"
-            variant="destructive"
-          >
-            Error
-          </Button>
-        </SoundTrigger>
+        <Button className="w-full" size="sm" sound="interaction.tap">
+          Normal Action
+        </Button>
+        <Button
+          className="w-full"
+          size="sm"
+          sound="interaction.confirm"
+          variant="outline"
+        >
+          Confirm Action
+        </Button>
       </div>
     </DemoCard>
   );

@@ -8,6 +8,7 @@ export function SoundRolesOverview() {
     <DemoCard
       description="All 17 semantic sound roles across 5 categories"
       icon={<IconBell className="size-4" />}
+      soundRoles={[]}
       title="+ More Sound Roles"
     >
       <p className="text-muted-foreground text-xs/relaxed">
