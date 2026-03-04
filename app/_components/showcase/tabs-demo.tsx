@@ -14,7 +14,6 @@ export function TabsDemo() {
     <DemoCard
       description="Switch tabs to hear navigation cues"
       icon={<IconLayoutGrid className="size-4" />}
-      soundRoles={["navigation.tab"]}
       title="Tabs"
     >
       <Tabs defaultValue="preview" sound="navigation.tab">

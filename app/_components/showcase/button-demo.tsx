@@ -9,7 +9,6 @@ export function ButtonDemo() {
     <DemoCard
       description="Click to trigger each activation"
       icon={<IconClick className="size-4" />}
-      soundRoles={["interaction.tap", "interaction.confirm"]}
       title="Button"
     >
       <div className="flex flex-col gap-3">

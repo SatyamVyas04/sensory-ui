@@ -9,7 +9,6 @@ export function HeroDemo() {
     <DemoCard
       description="Milestone and task completion sounds"
       icon={<IconTrophy className="size-4" />}
-      soundRoles={["hero.complete", "hero.milestone"]}
       title="Hero Moments"
     >
       <div className="flex flex-col gap-3">

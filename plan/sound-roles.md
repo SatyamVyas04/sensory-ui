@@ -26,17 +26,17 @@ Total: **17 sounds**
 
 Fired when the user performs a direct action — pressing a button, toggling a state, confirming a form, or providing subtle feedback during continuous interactions.
 
-| Role    | Full Key              | Duration | Description                                                         | Typical Trigger                     |
-| ------- | --------------------- | -------- | ------------------------------------------------------------------- | ----------------------------------- |
-| Tap     | `interaction.tap`     | ~8 ms    | The default click/tap sound. Noise click, bandpass 4000 Hz.         | Primary button click                |
-| Subtle  | `interaction.subtle`  | ~4 ms    | Secondary soft click. Bandpass ~2200 Hz, low Q. Quietest click.  | Slider drag, command input keypress |
-| Toggle  | `interaction.toggle`  | ~52 ms   | Noise click (12 ms) + tonal tail (40 ms). Tick-tock state change.   | Checkbox, switch, radio, toggle     |
-| Confirm | `interaction.confirm` | ~10 ms   | Crisp noise click, bandpass 5000 Hz. Brighter than tap.             | Form submit, save confirm           |
+| Role    | Full Key              | Duration | Description                                                                  | Typical Trigger                     |
+| ------- | --------------------- | -------- | ---------------------------------------------------------------------------- | ----------------------------------- |
+| Tap     | `interaction.tap`     | ~8 ms    | The default click/tap sound. Noise click, bandpass 4000 Hz.                  | Primary button click                |
+| Subtle  | `interaction.subtle`  | ~8 ms    | Keyboard click. Crisp bandpass ~3600 Hz, tighter Q. Focused mechanical tick. | Slider drag, command input keypress |
+| Toggle  | `interaction.toggle`  | ~52 ms   | Noise click (12 ms) + tonal tail (40 ms). Tick-tock state change.            | Checkbox, switch, radio, toggle     |
+| Confirm | `interaction.confirm` | ~10 ms   | Crisp noise click, bandpass 5000 Hz. Brighter than tap.                      | Form submit, save confirm           |
 
 **Design notes:**
 
 - No hard transient attacks. All sounds should feel like gentle taps.
-- `interaction.subtle` is the quietest sound in this category — designed for high-frequency interactions (slider drags, keystrokes) where a full tap would be too intrusive.
+- `interaction.subtle` is a crisp keyboard-click sound — designed for high-frequency interactions (slider drags, keystrokes) where a full tap would be too heavy. Tighter bandpass (3600 Hz, Q 3.5) gives it a focused mechanical "clack" transient.
 - `interaction.toggle` is distinct from `interaction.tap` — it conveys state change via a noise click followed by a tonal sweep tail.
 - `interaction.confirm` should feel resolved and crisp — brighter bandpass filter than tap.
 - There is no `interaction.disabled` role — disabled buttons cannot be clicked, so no sound is needed.
@@ -47,11 +47,11 @@ Fired when the user performs a direct action — pressing a button, toggling a s
 
 Fired when the user moves through space — between pages, tabs, or steps.
 
-| Role     | Full Key              | Duration   | Description                                           | Typical Trigger                           |
-| -------- | --------------------- | ---------- | ----------------------------------------------------- | ----------------------------------------- |
-| Forward  | `navigation.forward`  | 150–250 ms | A rightward / upward sweep.                           | Next step, next page, carousel next       |
-| Backward | `navigation.backward` | 150–250 ms | A leftward / downward sweep. Tonal mirror of forward. | Back button, previous step, carousel prev |
-| Tab      | `navigation.tab`      | ~40 ms     | Short tonal pop with upward pitch bend. Quick positional "step" feel.  | Tab switch, segment switch, pagination    |
+| Role     | Full Key              | Duration   | Description                                                           | Typical Trigger                           |
+| -------- | --------------------- | ---------- | --------------------------------------------------------------------- | ----------------------------------------- |
+| Forward  | `navigation.forward`  | 150–250 ms | A rightward / upward sweep.                                           | Next step, next page, carousel next       |
+| Backward | `navigation.backward` | 150–250 ms | A leftward / downward sweep. Tonal mirror of forward.                 | Back button, previous step, carousel prev |
+| Tab      | `navigation.tab`      | ~40 ms     | Short tonal pop with upward pitch bend. Quick positional "step" feel. | Tab switch, segment switch, pagination    |
 
 **Design notes:**
 

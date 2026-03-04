@@ -57,21 +57,21 @@ creating distinct soundpack characters with minimal code duplication.
 
 ## Tune Types
 
-| Type     | Description                   | Example Roles                             |
-| -------- | ----------------------------- | ----------------------------------------- |
-| click    | Short percussive transient    | interaction.tap, interaction.subtle, interaction.confirm |
-| pop      | Brief tonal burst with attack | navigation.tab                            |
-| toggle   | Noise click + tonal tail      | interaction.toggle                        |
-| tick     | Ultra-short soft transient    | Extended sounds (micro-interactions)      |
-| sweep    | Frequency glide (up/down)     | navigation.forward, navigation.backward   |
-| chime    | Resonant tonal with decay     | notification.info                         |
+| Type     | Description                   | Example Roles                                                                                 |
+| -------- | ----------------------------- | --------------------------------------------------------------------------------------------- |
+| click    | Short percussive transient    | interaction.tap, interaction.subtle, interaction.confirm                                      |
+| pop      | Brief tonal burst with attack | navigation.tab                                                                                |
+| toggle   | Noise click + tonal tail      | interaction.toggle                                                                            |
+| tick     | Ultra-short soft transient    | Extended sounds (micro-interactions)                                                          |
+| sweep    | Frequency glide (up/down)     | navigation.forward, navigation.backward                                                       |
+| chime    | Resonant tonal with decay     | notification.info                                                                             |
 | arpeggio | Sequence of notes             | notification.success, notification.warning, notification.error, hero.complete, hero.milestone |
-| chord    | Multiple simultaneous notes   | Custom                                    |
-| burst    | Noise-based texture           | Extended sounds                           |
-| pulse    | Repeating pattern             | Extended sounds                           |
-| rise     | Pitch ascends                 | overlay.open, overlay.expand              |
-| drop     | Pitch descends                | overlay.close, overlay.collapse           |
-| wobble   | Modulated sound               | Extended sounds                           |
+| chord    | Multiple simultaneous notes   | Custom                                                                                        |
+| burst    | Noise-based texture           | Extended sounds                                                                               |
+| pulse    | Repeating pattern             | Extended sounds                                                                               |
+| rise     | Pitch ascends                 | overlay.open, overlay.expand                                                                  |
+| drop     | Pitch descends                | overlay.close, overlay.collapse                                                               |
+| wobble   | Modulated sound               | Extended sounds                                                                               |
 
 ---
 
@@ -120,7 +120,7 @@ All packs comply with the rules in the `generating-sounds-with-ai` skill:
 - **`param-click-duration`** - click sounds are 5–15 ms
 - **`param-filter-frequency-range`** - bandpass clicks use 2.8–4 kHz
 - **`param-reasonable-gain`** - no gain exceeds 1.0
-- **`param-q-value-range`** - click filter Q is 1.2–3
+- **`param-q-value-range`** - click filter Q is 1.2–4
 
 ---
 

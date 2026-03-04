@@ -12,7 +12,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/sensory-ui/button";
 
 const ease = [0.32, 0.72, 0, 1] as const;
@@ -26,7 +26,7 @@ export function Hero({ stars }: HeroProps) {
   const [copied, setCopied] = useState(false);
 
   const fadeUp = (delay = 0) => ({
-    initial: { opacity: 0, y: prefersReduced ? 0 : 16 },
+    initial: { opacity: 0, y: prefersReduced ? 0 : 12 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.25, ease, delay },
   });
@@ -46,7 +46,7 @@ export function Hero({ stars }: HeroProps) {
     >
       {/* Skip to main content */}
       <a
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:bg-primary focus:px-3 focus:py-1.5 focus:font-medium focus:text-primary-foreground focus:text-xs focus-visible:ring-2 focus-visible:ring-ring"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-8 focus:left-1/2 focus:z-100 focus:-translate-x-1/2 focus:-translate-y-1/2 focus:bg-primary focus:px-3 focus:py-1.5 focus:font-medium focus:text-primary-foreground focus:text-xs focus-visible:ring-2 focus-visible:ring-ring"
         href="#main-content"
       >
         Skip to main content
@@ -58,8 +58,8 @@ export function Hero({ stars }: HeroProps) {
         className="pointer-events-none absolute inset-0 w-full select-none"
       >
         <Image
-          alt=""
-          className="h-full w-full object-cover"
+          alt="hero background"
+          className="h-full w-full object-cover dark:invert"
           fill
           priority
           src="/hero-background.jpg"
@@ -80,8 +80,8 @@ export function Hero({ stars }: HeroProps) {
       <motion.header
         animate={{ opacity: 1, y: 0 }}
         className="absolute top-0 right-0 left-0 z-50"
-        initial={{ opacity: 0, y: prefersReduced ? 0 : -6 }}
-        transition={{ duration: 0.2, ease }}
+        initial={{ opacity: 0, y: prefersReduced ? 0 : -8 }}
+        transition={{ duration: 0.25, ease }}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link
@@ -91,7 +91,7 @@ export function Hero({ stars }: HeroProps) {
             <Image
               alt=""
               aria-hidden="true"
-              className="size-6 rounded-sm border border-border dark:invert"
+              className="size-6 rounded-sm border border-border"
               height={256}
               src="/icon-256.png"
               width={256}
@@ -100,6 +100,17 @@ export function Hero({ stars }: HeroProps) {
           </Link>
 
           <nav aria-label="Site links" className="flex items-center gap-2">
+            <ModeToggle />
+            <Button asChild className="size-8 bg-transparent" variant="outline">
+              <Link
+                aria-label="Twitter/X - @SatyamVyas04"
+                href="https://x.com/SatyamVyas04"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <IconBrandX aria-hidden="true" className="size-4" />
+              </Link>
+            </Button>
             <Button
               asChild
               className="relative bg-transparent"
@@ -112,22 +123,11 @@ export function Hero({ stars }: HeroProps) {
                 target="_blank"
               >
                 <IconBrandGithub aria-hidden="true" className="size-3.5" />
-                {stars > 0 && (
+                {stars >= 0 && (
                   <span className="hidden text-muted-foreground tabular-nums sm:inline">
                     {stars} &#9733;
                   </span>
                 )}
-              </Link>
-            </Button>
-
-            <Button asChild className="size-8 bg-transparent" variant="outline">
-              <Link
-                aria-label="Twitter/X - @SatyamVyas04"
-                href="https://x.com/SatyamVyas04"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <IconBrandX aria-hidden="true" className="size-4" />
               </Link>
             </Button>
           </nav>
@@ -189,12 +189,12 @@ export function Hero({ stars }: HeroProps) {
               <AnimatePresence initial={false} mode="popLayout">
                 <motion.div
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  initial={{ opacity: 0, scale: 0.95 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, scale: 0.8 }}
                   key={copied ? "check" : "copy"}
                   transition={{
                     type: "spring",
-                    duration: 0.3,
+                    duration: 0.25,
                     bounce: 0,
                   }}
                 >
@@ -219,11 +219,7 @@ export function Hero({ stars }: HeroProps) {
               size="default"
               sound="interaction.toggle"
             >
-              <Link
-                href="https://github.com/SatyamVyas04/sensory-ui"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
+              <Link href="/docs" rel="noopener noreferrer" target="_blank">
                 Get Started
                 <IconArrowRight aria-hidden="true" className="size-4" />
               </Link>
@@ -253,7 +249,7 @@ export function Hero({ stars }: HeroProps) {
                 { value: "< 3kb", label: "gzipped" },
               ].map(({ value, label }, index, array) => (
                 <div
-                  className="flex flex-col items-center justify-center gap-1 gap-1.5 sm:flex-row sm:items-baseline"
+                  className="flex flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-baseline"
                   key={label}
                 >
                   <dt className="sr-only">{label}</dt>

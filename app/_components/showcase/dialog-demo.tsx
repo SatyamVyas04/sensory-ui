@@ -18,7 +18,6 @@ export function DialogDemo() {
     <DemoCard
       description="Open & close to trigger system sounds"
       icon={<IconWindowMaximize className="size-4" />}
-      soundRoles={["overlay.open", "overlay.close", "interaction.confirm"]}
       title="Dialog"
     >
       <Dialog closeSound="overlay.close" sound="overlay.open">

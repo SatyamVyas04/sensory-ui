@@ -22,7 +22,6 @@ export function CarouselDemo() {
     <DemoCard
       description="Prev/next trigger navigation cues"
       icon={<IconCarouselHorizontal className="size-4" />}
-      soundRoles={["navigation.backward", "navigation.forward"]}
       title="Carousel"
     >
       <Carousel aria-label="Demo carousel showing steps" className="w-full">

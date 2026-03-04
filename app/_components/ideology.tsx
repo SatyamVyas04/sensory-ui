@@ -2,38 +2,39 @@
 
 import {
   IconAccessible,
-  IconBraces,
-  IconFeather,
-  IconToggleLeft,
+  IconBulb,
+  IconHeartHandshake,
+  IconScale,
 } from "@tabler/icons-react";
 import { motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
 
 const ease = [0.32, 0.72, 0, 1] as const;
 
 const PRINCIPLES = [
   {
-    icon: IconBraces,
-    title: "Semantic, not decorative",
+    icon: IconBulb,
+    title: "Informative, not decorative",
     description:
-      "Every sound maps to an interaction class. Activation, navigation, system, notifications. Not random noise. A vocabulary.",
+      "Sound confirms actions, signals errors, and reinforces state changes. If it doesn't communicate something useful, it doesn't play.",
   },
   {
-    icon: IconToggleLeft,
-    title: "Explicit opt-in",
+    icon: IconScale,
+    title: "Weight matches action",
     description:
-      "Components stay silent until you pass a sound prop. Zero magic. Zero surprises. Full control.",
+      "A subtle tick for a checkbox. A short sweep for navigation. A richer chime for a milestone. Sound weight scales with interaction significance.",
   },
   {
     icon: IconAccessible,
     title: "Accessible by default",
     description:
-      "Honors prefers-reduced-motion. Global kill-switch. Per-category toggles. Sound enhances, never distracts.",
+      "Respects prefers-reduced-motion. Global kill-switch. Per-category toggles. Every audio cue has a visual equivalent - sound enhances, never replaces.",
   },
   {
-    icon: IconFeather,
-    title: "Featherweight",
+    icon: IconHeartHandshake,
+    title: "Reassuring, never punishing",
     description:
-      "Under 3 KB gzipped. No bundled audio files, no global side effects. Drops into any shadcn project.",
+      "Sounds create comfort and confirm intent. Errors are gentle nudges, not harsh buzzers. Under 3 KB. No bundled files. No side effects.",
   },
 ] as const;
 
@@ -48,7 +49,10 @@ export function Ideology() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <motion.div
-          initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
+          initial={{
+            opacity: 0,
+            y: prefersReduced ? 0 : 12,
+          }}
           transition={{ duration: 0.25, ease }}
           viewport={{ once: true, margin: "-80px" }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -60,16 +64,16 @@ export function Ideology() {
             className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
             id="ideology-heading"
           >
-            Sound with intention.
+            Sound with <span className="text-primary">intention.</span>
           </h2>
           <p className="mt-4 max-w-lg text-muted-foreground text-sm/relaxed">
-            UI sound is a craft, not a gimmick. Four principles keep sensory-ui
+            UI sound is a craft, not a gimmick. These principles keep sensory-ui
             from becoming noise.
           </p>
         </motion.div>
 
         <motion.div
-          className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2"
+          className="mt-12 grid gap-px border border-primary/25 bg-primary/25 sm:grid-cols-2"
           initial="hidden"
           variants={{
             hidden: {},
@@ -78,29 +82,43 @@ export function Ideology() {
           viewport={{ once: true, margin: "-80px" }}
           whileInView="show"
         >
-          {PRINCIPLES.map(({ icon: Icon, title, description }) => (
+          {PRINCIPLES.map((principle, index) => (
             <motion.div
-              className="flex flex-col gap-3.5 bg-background p-8"
-              key={title}
+              className="group relative flex flex-col gap-3.5 bg-background p-8"
+              key={principle.title}
               variants={{
                 hidden: {
                   opacity: 0,
-                  y: prefersReduced ? 0 : 10,
+                  y: prefersReduced ? 0 : 12,
+                  x: prefersReduced ? 0 : 12,
                 },
                 show: {
                   opacity: 1,
                   y: 0,
+                  x: 0,
                   transition: { duration: 0.25, ease },
                 },
               }}
             >
-              <Icon aria-hidden="true" className="size-6 text-primary" />
+              <principle.icon
+                aria-hidden="true"
+                className="relative z-10 size-6 text-primary"
+              />
               <div>
-                <h3 className="font-semibold text-base">{title}</h3>
-                <p className="mt-2 text-muted-foreground text-sm/relaxed">
-                  {description}
+                <h3 className="relative z-10 font-semibold text-base">
+                  {principle.title}
+                </h3>
+                <p className="relative z-10 mt-2 text-muted-foreground text-sm/relaxed">
+                  {principle.description}
                 </p>
               </div>
+              <Image
+                alt=""
+                className="pointer-events-none absolute top-0 left-0 z-0 h-full w-full items-center justify-center object-cover opacity-15 transition-opacity group-hover:opacity-25"
+                height={240}
+                src={`/dither/dither-${index + 1}.png`}
+                width={400}
+              />
             </motion.div>
           ))}
         </motion.div>

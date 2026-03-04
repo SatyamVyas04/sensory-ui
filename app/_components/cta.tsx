@@ -6,8 +6,8 @@ import {
   IconFileText,
 } from "@tabler/icons-react";
 import { motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
-
 import { Button } from "@/components/ui/sensory-ui/button";
 
 const ease = [0.32, 0.72, 0, 1] as const;
@@ -21,10 +21,16 @@ export function CTA() {
       className="border-border border-t py-24"
       id="cta"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="relative mx-auto max-w-7xl border border-border px-4 sm:px-6">
+        <Image
+          alt="CTA Background"
+          className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover opacity-15"
+          fill
+          src="/dither/cta-dither.png"
+        />
         <motion.div
-          className="border border-border p-12 text-center sm:p-16"
-          initial={{ opacity: 0, y: prefersReduced ? 0 : 16 }}
+          className="relative z-10 p-12 text-center sm:p-16"
+          initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
           transition={{ duration: 0.25, ease }}
           viewport={{ once: true, margin: "-80px" }}
           whileInView={{ opacity: 1, y: 0 }}

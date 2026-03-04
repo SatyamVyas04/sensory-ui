@@ -121,14 +121,18 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    overscroll-behavior: none;
+  }
   body {
     @apply bg-background text-foreground;
   }
-}
-
-@layer base {
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+  ::selection,
+  ::-moz-selection {
+    @apply bg-primary text-white;
   }
 }

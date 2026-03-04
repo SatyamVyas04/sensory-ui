@@ -16,12 +16,6 @@ export function NotificationsDemo() {
     <DemoCard
       description="Toast notifications with sound"
       icon={<IconBell className="size-4" />}
-      soundRoles={[
-        "notification.info",
-        "notification.success",
-        "notification.warning",
-        "notification.error",
-      ]}
       title="Notifications"
     >
       <div className="flex flex-col gap-3">

@@ -74,8 +74,8 @@ export function Showcase() {
   const fadeUp = {
     initial: { opacity: 0, y: prefersReduced ? 0 : 12 },
     whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: "-100px", amount: 0.3 },
-    transition: { duration: 0.2, ease },
+    viewport: { once: true, margin: "-80px", amount: 0.2 },
+    transition: { duration: 0.25, ease },
   };
 
   return (
@@ -99,7 +99,7 @@ export function Showcase() {
                 className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
                 id="showcase-heading"
               >
-                Feel the difference.
+                Feel the <span className="text-primary">difference.</span>
               </h2>
               <p className="mt-4 max-w-2xl text-pretty text-muted-foreground text-sm/relaxed">
                 Every component listens for the{" "}
@@ -110,20 +110,21 @@ export function Showcase() {
                 <strong className="font-semibold text-foreground">
                   24 components
                 </strong>
-                . Instant feedback that feels right.
+                . <br />
+                Instant feedback that feels right.
               </p>
             </div>
 
             {/* Pack selector */}
             <motion.div
               className="flex flex-col gap-2"
-              initial={{ opacity: 0, y: prefersReduced ? 0 : 8 }}
+              initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
               transition={{
-                duration: 0.2,
+                duration: 0.25,
                 ease,
                 delay: prefersReduced ? 0 : 0.1,
               }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: "-80px" }}
               whileInView={{ opacity: 1, y: 0 }}
             >
               <label
@@ -147,7 +148,7 @@ export function Showcase() {
                     {(() => {
                       const pack = PACKS.find((p) => p.value === selectedPack);
                       return pack ? (
-                        <span className="flex items-center gap-2">
+                        <span className="flex items-baseline gap-2">
                           <span className="font-medium">{pack.label}</span>
                           <span className="text-[10px] text-muted-foreground">
                             {pack.description}
@@ -202,9 +203,9 @@ export function Showcase() {
         {/* Note about sounds */}
         <motion.p
           className="mt-8 text-center text-muted-foreground/80 text-xs"
-          initial={{ opacity: 0, y: prefersReduced ? 0 : 6 }}
-          transition={{ duration: 0.2, ease, delay: prefersReduced ? 0 : 0.5 }}
-          viewport={{ once: true, margin: "-40px" }}
+          initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
+          transition={{ duration: 0.25, ease, delay: prefersReduced ? 0 : 0.2 }}
+          viewport={{ once: true, margin: "-80px" }}
           whileInView={{ opacity: 1, y: 0 }}
         >
           Sounds generated in real time via Web Audio API. No files. No latency.

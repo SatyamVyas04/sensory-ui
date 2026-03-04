@@ -5,6 +5,8 @@ import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
+import { ThemeProvider } from "@/components/theme-provider";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -100,28 +102,35 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${GeistPixelCircle.variable} bg-secondary font-sans antialiased`}
       >
-        <SensoryUIProvider
-          config={{
-            theme: "arcade",
-            volume: 0.4,
-            categories: {
-              interaction: true,
-              navigation: true,
-              notification: true,
-              overlay: true,
-              hero: true,
-            },
-          }}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          disableTransitionOnChange
+          enableSystem
         >
-          <div className="mx-auto min-w-0 max-w-400 border-border border-x bg-background shadow-xl">
-            {children}
-          </div>
-          <Toaster position="bottom-right" />
-        </SensoryUIProvider>
+          <SensoryUIProvider
+            config={{
+              theme: "arcade",
+              volume: 0.75,
+              categories: {
+                interaction: true,
+                navigation: true,
+                notification: true,
+                overlay: true,
+                hero: true,
+              },
+            }}
+          >
+            <div className="mx-auto min-w-0 max-w-400 border-border border-x bg-background shadow-xl">
+              {children}
+            </div>
+            <Toaster position="bottom-right" />
+          </SensoryUIProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

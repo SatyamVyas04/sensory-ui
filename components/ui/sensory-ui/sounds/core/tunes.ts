@@ -99,15 +99,15 @@ export const INTERACTION_TUNES: Record<string, BaseTune> = {
     meta: { decayConstant: 35 }
   },
 
-  /** Subtle - barely-there micro-click. Softest, shortest, most constrained.
-   *  Uses bandpass (not highpass) for a warm, narrow click without harsh highs. */
+  /** Subtle - keyboard click. A crisp, focused mechanical tick.
+   *  Higher bandpass center + tighter Q for a defined "clack" transient. */
   subtle: {
     type: "click",
-    duration: 0.004,
-    filterFreq: 2200,
-    filterQ: 1.5,
-    volume: 0.15,
-    meta: { decayConstant: 12 }
+    duration: 0.008,
+    filterFreq: 3600,
+    filterQ: 3.5,
+    volume: 0.2,
+    meta: { decayConstant: 25 }
   },
 
   /** Toggle - smooth state-change click. Soft noise layer + tonal glide.

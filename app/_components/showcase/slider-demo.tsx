@@ -12,10 +12,9 @@ export function SliderDemo() {
     <DemoCard
       description="Subtle tick on every value change"
       icon={<IconAdjustments className="size-4" />}
-      soundRoles={["interaction.subtle"]}
       title="Slider"
     >
-      <div className="flex flex-col gap-3">
+      <div className="mb-1 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
             Volume

@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -17,7 +16,6 @@ interface DemoCardProps {
   children: React.ReactNode;
   description: string;
   icon: React.ReactNode;
-  soundRoles: string[];
   title: string;
 }
 
@@ -26,18 +24,17 @@ export function DemoCard({
   description,
   icon,
   children,
-  soundRoles,
 }: DemoCardProps) {
   const prefersReduced = useReducedMotion();
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: prefersReduced ? 0 : 8 }}
-      transition={{ duration: 0.2, ease }}
-      viewport={{ once: true, margin: "-60px", amount: 0.2 }}
+      initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
+      transition={{ duration: 0.25, ease }}
+      viewport={{ once: true, margin: "-80px", amount: 0.2 }}
       whileInView={{ opacity: 1, y: 0 }}
     >
-      <Card className="transition-[ring-color] duration-200 hover:ring-primary/50">
+      <Card className="max-h-96 overflow-hidden transition-[box-shadow,ring-color] duration-200 hover:ring-primary/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xs">
             <span aria-hidden="true" className="text-primary">
@@ -49,19 +46,9 @@ export function DemoCard({
             {description}
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex-1">{children}</CardContent>
-        {soundRoles.length > 0 && (
-          <CardFooter className="flex-wrap gap-1.5 p-1">
-            {soundRoles.map((role) => (
-              <span
-                className="inline-flex items-center bg-muted px-1.5 py-0.5 font-mono text-[8px] text-muted-foreground"
-                key={role}
-              >
-                {role}
-              </span>
-            ))}
-          </CardFooter>
-        )}
+        <CardContent className="mask-[linear-gradient(to_bottom,black_90%,transparent)] relative flex-1">
+          {children}
+        </CardContent>
       </Card>
     </motion.div>
   );
