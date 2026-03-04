@@ -25,7 +25,6 @@ export interface SensoryUIConfig {
    */
   theme: SoundPackName | (string & {});
   /** Per-category enable/disable toggles. */
-  /** Per-category enable/disable toggles. */
   categories: Record<SoundCategory, boolean>;
   /**
    * Role-level source overrides.

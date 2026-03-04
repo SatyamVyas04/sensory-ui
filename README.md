@@ -1,36 +1,168 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# sensory-ui
 
-## Getting Started
+A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions with 17 sound roles across 24 components — built for [shadcn/ui](https://ui.shadcn.com).
 
-First, run the development server:
+## Quick Install
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx shadcn@latest add https://sensory-ui.com/r/sensory-ui
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Or install individual pieces:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-core    # core engine only
+npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-button   # single component
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup
 
-## Learn More
+Wrap your app with `SensoryUIProvider`:
 
-To learn more about Next.js, take a look at the following resources:
+```tsx
+// app/layout.tsx
+import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <SensoryUIProvider>
+          {children}
+        </SensoryUIProvider>
+      </body>
+    </html>
+  );
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Use the sound-enabled components:
 
-## Deploy on Vercel
+```tsx
+import { Button } from "@/components/ui/sensory-ui/button";
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+export function SaveButton() {
+  return <Button sound="interaction.tap">Save</Button>;
+}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+```
+sensory-ui/
+├── app/                            # Next.js App Router
+│   ├── layout.tsx                  # Root layout (providers, metadata, fonts)
+│   ├── page.tsx                    # Landing page (server component)
+│   ├── globals.css                 # Global styles (Tailwind v4)
+│   ├── r/[name]/route.ts           # Registry API (serves component manifests)
+│   └── _components/                # Landing page sections
+│       ├── hero.tsx                # Hero with install command
+│       ├── showcase.tsx            # Interactive component demos
+│       ├── ideology.tsx            # Design philosophy
+│       ├── inspiration.tsx         # Sound role explorer
+│       ├── cta.tsx                 # Call-to-action
+│       └── footer.tsx              # Site footer (server component)
+├── components/
+│   ├── theme-provider.tsx          # next-themes wrapper
+│   └── ui/
+│       ├── sensory-ui/             # Sound-enabled components
+│       │   ├── config/             # Core engine layer
+│       │   │   ├── engine.ts       # Web Audio API engine (singleton AudioContext)
+│       │   │   ├── provider.tsx    # SensoryUIProvider (React context)
+│       │   │   ├── config.ts       # Config types, defaults, mergeConfig, resolveRole
+│       │   │   ├── sound-roles.ts  # 17 sound role type definitions
+│       │   │   ├── registry.ts     # Pack name → SoundPack mapping
+│       │   │   └── use-play-sound.ts # usePlaySound() hook
+│       │   ├── sounds/             # Audio synthesis
+│       │   │   ├── core/           # Tune + instrument → synthesizer system
+│       │   │   │   ├── tunes.ts        # Musical content (frequencies, durations)
+│       │   │   │   ├── instruments.ts  # 9 instrument configs (oscillator, filter, envelope)
+│       │   │   │   ├── factory.ts      # Combines tunes + instruments → synthesizers
+│       │   │   │   └── pack-generator.ts # Generates full packs from instruments
+│       │   │   └── packs.ts        # All 9 sound packs + custom hero sounds
+│       │   └── *.tsx               # 24 patched components (button, dialog, tabs…)
+│       └── *.tsx                   # Base shadcn/ui components (unmodified)
+├── hooks/
+│   └── use-mobile.ts               # Mobile breakpoint hook
+├── lib/
+│   └── utils.ts                    # cn() utility (clsx + tailwind-merge)
+├── plan/                           # Architecture documentation
+│   ├── overview.md                 # Project overview and file structure
+│   ├── engine.md                   # Web Audio engine spec
+│   ├── provider.md                 # React provider architecture
+│   ├── sound-roles.md              # Sound categories and roles
+│   ├── components.md               # Component API and sound prop usage
+│   ├── config.md                   # Configuration system
+│   ├── registry.md                 # shadcn registry distribution
+│   ├── sound-packs.md              # Per-pack sound design
+│   ├── installation.md             # Installation flow
+│   └── testing.md                  # Testing guide
+└── public/                         # Static assets (icons, images)
+```
+
+## Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| [Next.js 16](https://nextjs.org) (App Router, Turbopack) | Framework |
+| [React 19](https://react.dev) | UI library |
+| [TypeScript 5.9](https://typescriptlang.org) | Type safety |
+| [Tailwind CSS v4](https://tailwindcss.com) | Styling |
+| [shadcn/ui](https://ui.shadcn.com) + [Radix UI](https://radix-ui.com) | Base components |
+| [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) | Sound synthesis (no audio files) |
+| [Motion](https://motion.dev) (Framer Motion) | Animations |
+| [Geist](https://vercel.com/font) | Typography |
+| [Biome](https://biomejs.dev) / [Ultracite](https://github.com/haydenbleasel/ultracite) | Linting and formatting |
+
+## Sound System
+
+**17 semantic roles** across 5 categories:
+
+| Category | Roles | Use Case |
+|---|---|---|
+| `interaction` | `tap`, `subtle`, `toggle`, `confirm` | Direct user actions |
+| `overlay` | `open`, `close`, `expand`, `collapse` | Surface state changes |
+| `navigation` | `forward`, `backward`, `tab` | Spatial movement |
+| `notification` | `info`, `success`, `warning`, `error` | System messages |
+| `hero` | `complete`, `milestone` | Celebratory moments (disabled by default) |
+
+**9 sound packs:** `soft`, `aero` (default), `arcade`, `organic`, `glass`, `industrial`, `minimal`, `retro`, `crisp`
+
+All sounds are synthesized at runtime via the Web Audio API — no audio files, no base64 blobs, no network requests.
+
+## Configuration
+
+```tsx
+<SensoryUIProvider config={{
+  theme: "arcade",           // Sound pack
+  volume: 0.5,               // Master volume (0–1)
+  categories: {
+    interaction: true,
+    notification: true,
+    hero: false,              // Disabled by default
+  },
+  reducedMotion: "inherit",   // Respects prefers-reduced-motion
+}}>
+```
+
+## Development
+
+```bash
+npm install       # Install dependencies
+npm run dev       # Start dev server (http://localhost:3000)
+npm run build     # Production build
+npm run check     # Lint and format check (Biome/Ultracite)
+npm run fix       # Auto-fix lint and format issues
+```
+
+## Accessibility
+
+- Respects `prefers-reduced-motion` (suppresses sounds when enabled)
+- Global kill-switch via `enabled: false` config
+- Per-category toggles to disable sound groups
+- Every audio cue has a visual equivalent — sound enhances, never replaces
+- `sound={false}` on any component to opt out
+
+## License
+
+MIT

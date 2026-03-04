@@ -123,7 +123,7 @@ export function Hero({ stars }: HeroProps) {
                 target="_blank"
               >
                 <IconBrandGithub aria-hidden="true" className="size-3.5" />
-                {stars >= 0 && (
+                {stars > 0 && (
                   <span className="hidden text-muted-foreground tabular-nums sm:inline">
                     {stars} &#9733;
                   </span>
@@ -244,7 +244,7 @@ export function Hero({ stars }: HeroProps) {
             <dl className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap sm:gap-x-3 sm:gap-y-2 lg:justify-start">
               {[
                 { value: "24", label: "components" },
-                { value: "19", label: "roles" },
+                { value: "17", label: "roles" },
                 { value: "9", label: "sound packs" },
                 { value: "< 3kb", label: "gzipped" },
               ].map(({ value, label }, index, array) => (
