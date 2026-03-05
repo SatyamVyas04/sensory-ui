@@ -323,7 +323,13 @@ for name in core accordion alert-dialog button carousel checkbox collapsible \
   toggle toggle-group; do
   file="public/r/sensory-ui-${name}.json"
   if [ -f "$file" ]; then
-    files=$(python3 -c "import json; print(len(json.load(open('$file')).get('files',[])))")
+    files=$(python3 -c "
+import json, sys
+try:
+    print(len(json.load(open('$file')).get('files',[])))
+except Exception as e:
+    print(f'ERROR: {e}', file=sys.stderr); sys.exit(1)
+" 2>&1)
     echo "✓ sensory-ui-${name} (${files} files)"
   else
     echo "✗ MISSING: $file"
@@ -332,8 +338,18 @@ done
 
 # Validate meta-block
 file="public/r/sensory-ui.json"
-deps=$(python3 -c "import json; print(len(json.load(open('$file')).get('registryDependencies',[])))")
-echo "✓ sensory-ui meta-block (${deps} dependencies)"
+if [ -f "$file" ]; then
+  deps=$(python3 -c "
+import json, sys
+try:
+    print(len(json.load(open('$file')).get('registryDependencies',[])))
+except Exception as e:
+    print(f'ERROR: {e}', file=sys.stderr); sys.exit(1)
+" 2>&1)
+  echo "✓ sensory-ui meta-block (${deps} dependencies)"
+else
+  echo "✗ MISSING: $file"
+fi
 ```
 
 ### Individual component file checks
@@ -341,15 +357,18 @@ echo "✓ sensory-ui meta-block (${deps} dependencies)"
 ```bash
 # Check that each component's built JSON has inline file content
 python3 -c "
-import json, glob
+import json, glob, sys
 for f in sorted(glob.glob('public/r/sensory-ui-*.json')):
-    d = json.load(open(f))
-    name = d.get('name','?')
-    files = d.get('files',[])
-    empty = [x['path'] for x in files if not x.get('content')]
-    if empty:
-        print(f'✗ {name}: files missing content: {empty}')
-    else:
-        print(f'✓ {name}: {len(files)} file(s) with content')
+    try:
+        d = json.load(open(f))
+        name = d.get('name','?')
+        files = d.get('files',[])
+        empty = [x['path'] for x in files if not x.get('content')]
+        if empty:
+            print(f'✗ {name}: files missing content: {empty}')
+        else:
+            print(f'✓ {name}: {len(files)} file(s) with content')
+    except Exception as e:
+        print(f'✗ {f}: failed to parse — {e}', file=sys.stderr)
 "
 ```
