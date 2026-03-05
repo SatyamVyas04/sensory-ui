@@ -313,6 +313,7 @@ After running `npm run registry:build`, validate each component's registry JSON 
 
 ```bash
 # Validate all built registry JSON files exist and have content
+fail=0
 for name in core accordion alert-dialog button carousel checkbox collapsible \
   command context-menu dialog drawer dropdown-menu menubar navigation-menu \
   pagination popover radio-group select sheet sidebar slider switch tabs \
@@ -325,10 +326,16 @@ try:
     print(len(json.load(open('$file')).get('files',[])))
 except Exception as e:
     print(f'ERROR: {e}', file=sys.stderr); sys.exit(1)
-" 2>&1)
-    echo "✓ sensory-ui-${name} (${files} files)"
+"); status=$?
+    if [ $status -ne 0 ] || [ "$files" = "0" ]; then
+      echo "✗ sensory-ui-${name}: parse error or 0 files"
+      fail=1
+    else
+      echo "✓ sensory-ui-${name} (${files} files)"
+    fi
   else
     echo "✗ MISSING: $file"
+    fail=1
   fi
 done
 
@@ -341,11 +348,23 @@ try:
     print(len(json.load(open('$file')).get('registryDependencies',[])))
 except Exception as e:
     print(f'ERROR: {e}', file=sys.stderr); sys.exit(1)
-" 2>&1)
-  echo "✓ sensory-ui meta-block (${deps} dependencies)"
+"); status=$?
+  if [ $status -ne 0 ] || [ "$deps" = "0" ]; then
+    echo "✗ sensory-ui meta-block: parse error or 0 dependencies"
+    fail=1
+  else
+    echo "✓ sensory-ui meta-block (${deps} dependencies)"
+  fi
 else
   echo "✗ MISSING: $file"
+  fail=1
 fi
+
+if [ "$fail" -ne 0 ]; then
+  echo "Registry validation failed"
+  exit 1
+fi
+echo "All registry validations passed"
 ```
 
 ### Individual component file checks
@@ -354,6 +373,7 @@ fi
 # Check that each component's built JSON has inline file content
 python3 -c "
 import json, glob, sys
+fail = False
 for f in sorted(glob.glob('public/r/sensory-ui-*.json')):
     try:
         d = json.load(open(f))
@@ -362,9 +382,13 @@ for f in sorted(glob.glob('public/r/sensory-ui-*.json')):
         empty = [x['path'] for x in files if not x.get('content')]
         if empty:
             print(f'✗ {name}: files missing content: {empty}')
+            fail = True
         else:
             print(f'✓ {name}: {len(files)} file(s) with content')
     except Exception as e:
         print(f'✗ {f}: failed to parse — {e}', file=sys.stderr)
+        fail = True
+if fail:
+    sys.exit(1)
 "
 ```
