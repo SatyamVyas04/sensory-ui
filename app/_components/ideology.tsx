@@ -35,7 +35,7 @@ const PRINCIPLES = [
     icon: IconHeartHandshake,
     title: "Reassuring, never punishing",
     description:
-      "Sounds create comfort and confirm intent. Errors are gentle nudges, not harsh buzzers. Under 3 KB. No bundled files. No side effects.",
+      "Sounds create comfort and confirm intent. Errors are gentle nudges, not harsh buzzers. Under 30 KB. No bundled files. No side effects.",
   },
 ] as const;
 
@@ -58,7 +58,7 @@ export function Ideology() {
             posthog.capture("section_viewed", { section: "ideology" })
           }
           transition={{ duration: 0.25, ease }}
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, margin: "-100px" }}
           whileInView={{ opacity: 1, y: 0 }}
         >
           <span className="font-mono text-muted-foreground text-xs uppercase tracking-widest">
@@ -81,9 +81,9 @@ export function Ideology() {
           initial="hidden"
           variants={{
             hidden: {},
-            show: { transition: { staggerChildren: 0.05 } },
+            show: { transition: { staggerChildren: 0.1 } },
           }}
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, margin: "-100px" }}
           whileInView="show"
         >
           {PRINCIPLES.map((principle, index) => (

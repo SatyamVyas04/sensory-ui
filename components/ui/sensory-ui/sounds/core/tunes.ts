@@ -95,7 +95,7 @@ export const INTERACTION_TUNES: Record<string, BaseTune> = {
     duration: 0.008,
     filterFreq: 3800,
     filterQ: 2.5,
-    volume: 0.40,
+    volume: 0.80,
     meta: { decayConstant: 35 }
   },
 
@@ -106,7 +106,7 @@ export const INTERACTION_TUNES: Record<string, BaseTune> = {
     duration: 0.008,
     filterFreq: 3600,
     filterQ: 3.5,
-    volume: 0.2,
+    volume: 0.40,
     meta: { decayConstant: 25 }
   },
 
@@ -119,7 +119,7 @@ export const INTERACTION_TUNES: Record<string, BaseTune> = {
     endFrequency: 480,
     filterFreq: 2200,
     filterQ: 2,
-    volume: 0.32,
+    volume: 0.64,
     meta: { noiseGain: 0.20, toneGain: 0.22, noiseDuration: 0.008, decayConstant: 60 }
   },
 
@@ -130,7 +130,7 @@ export const INTERACTION_TUNES: Record<string, BaseTune> = {
     duration: 0.012,
     filterFreq: 5500,
     filterQ: 4,
-    volume: 0.55,
+    volume: 0.60,
     meta: { decayConstant: 55 }
   },
 };

@@ -8,12 +8,11 @@ import {
   IconCopy,
   IconWaveSine,
 } from "@tabler/icons-react";
-import { Calligraph } from "calligraph";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import posthog from "posthog-js";
-import { useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/sensory-ui/button";
 
@@ -30,12 +29,11 @@ const INSTALL_TARGETS = [
 
 const ease = [0.32, 0.72, 0, 1] as const;
 
-interface HeroProps {
-  stars: number | null;
-}
-
-export function Hero({ stars }: HeroProps) {
-  const prefersReduced = useReducedMotion();
+/**
+ * Isolated component for the cycling install command.
+ * Only this component re-renders every 2.5s — not the entire Hero.
+ */
+const InstallCommand = memo(function InstallCommand() {
   const [copied, setCopied] = useState(false);
   const [targetIndex, setTargetIndex] = useState(0);
 
@@ -48,20 +46,78 @@ export function Hero({ stars }: HeroProps) {
 
   const currentTarget = INSTALL_TARGETS[targetIndex];
 
-  const fadeUp = (delay = 0) => ({
-    initial: { opacity: 0, y: prefersReduced ? 0 : 12 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.25, ease, delay },
-  });
-
-  const copyInstallCommand = async () => {
-    await navigator.clipboard.writeText(
-      `npx shadcn@latest add https://sensory-ui.com/r/${currentTarget}`
-    );
-    posthog.capture("install_command_copied", { target: currentTarget });
+  const copyInstallCommand = useCallback(async () => {
+    const text = `npx shadcn@latest add https://sensory-ui.com/r/${INSTALL_TARGETS[targetIndex]}`;
+    await navigator.clipboard.writeText(text);
+    posthog.capture("install_command_copied", {
+      target: INSTALL_TARGETS[targetIndex],
+    });
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
+  }, [targetIndex]);
+
+  return (
+    <>
+      <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap px-3 py-2 font-mono text-[11px] text-primary sm:px-4 sm:py-2 sm:text-xs">
+        <span className="text-foreground">$</span> npx shadcn@latest add{" "}
+        <br className="sm:hidden" />
+        https://sensory-ui.com/r/
+        <AnimatePresence initial={false} mode="popLayout">
+          <motion.span
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            className="inline-block"
+            exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+            initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+            key={currentTarget}
+            transition={{ duration: 0.3, ease }}
+          >
+            {currentTarget}
+          </motion.span>
+        </AnimatePresence>
+      </code>
+      <Button
+        aria-label={copied ? "Copied to clipboard" : "Copy install command"}
+        className="w-full touch-manipulation rounded-none border-primary/30 border-t bg-primary/10 text-primary hover:bg-primary/20 sm:w-auto sm:border-l-2"
+        onClick={copyInstallCommand}
+        sound="hero.milestone"
+        variant="ghost"
+      >
+        <AnimatePresence initial={false} mode="popLayout">
+          <motion.div
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            key={copied ? "check" : "copy"}
+            transition={{ type: "spring", duration: 0.25, bounce: 0 }}
+          >
+            {copied ? (
+              <IconCheck className="size-4" />
+            ) : (
+              <IconCopy className="size-4" />
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </Button>
+    </>
+  );
+});
+
+interface HeroProps {
+  stars: number | null;
+}
+
+export function Hero({ stars }: HeroProps) {
+  const prefersReduced = useReducedMotion();
+
+  const fadeUp = useMemo(
+    () =>
+      (delay = 0) => ({
+        initial: { opacity: 0, y: prefersReduced ? 0 : 12 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.25, ease, delay },
+      }),
+    [prefersReduced]
+  );
 
   return (
     <section
@@ -168,7 +224,7 @@ export function Hero({ stars }: HeroProps) {
           >
             <span className="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/5 px-2.5 py-1 font-mono text-primary text-xs">
               <IconWaveSine aria-hidden="true" className="size-3" />
-              v0.5&nbsp;·&nbsp;Early Preview
+              v1&nbsp;·&nbsp;Early Preview
             </span>
           </motion.div>
 
@@ -192,47 +248,12 @@ export function Hero({ stars }: HeroProps) {
             Using a single prop.
           </motion.p>
 
-          {/* Installation command */}
+          {/* Installation command — isolated to avoid re-rendering the whole hero */}
           <motion.div
             {...fadeUp(0.15)}
             className="mt-5 flex min-w-0 flex-col items-stretch gap-0 overflow-hidden border border-primary/30 bg-card/40 backdrop-blur-sm sm:flex-row"
           >
-            <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap px-3 py-2 font-mono text-[11px] text-primary will-change-transform sm:px-4 sm:py-2 sm:text-xs">
-              <span className="text-foreground">$</span> npx shadcn@latest add
-              https://sensory-ui.com/r/
-              <Calligraph animation="smooth" as="span">
-                {currentTarget}
-              </Calligraph>
-            </code>
-            <Button
-              aria-label={
-                copied ? "Copied to clipboard" : "Copy install command"
-              }
-              className="w-full touch-manipulation rounded-none border-primary/30 border-t bg-primary/10 text-primary hover:bg-primary/20 sm:w-auto sm:border-l-2"
-              onClick={copyInstallCommand}
-              sound="hero.milestone"
-              variant="ghost"
-            >
-              <AnimatePresence initial={false} mode="popLayout">
-                <motion.div
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  key={copied ? "check" : "copy"}
-                  transition={{
-                    type: "spring",
-                    duration: 0.25,
-                    bounce: 0,
-                  }}
-                >
-                  {copied ? (
-                    <IconCheck className="size-4" />
-                  ) : (
-                    <IconCopy className="size-4" />
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </Button>
+            <InstallCommand />
           </motion.div>
 
           {/* CTAs */}
@@ -273,7 +294,7 @@ export function Hero({ stars }: HeroProps) {
                 { value: "24", label: "components" },
                 { value: "17", label: "roles" },
                 { value: "9", label: "sound packs" },
-                { value: "0 deps", label: "zero dependencies" },
+                { value: "~26kb", label: "gzipped size" },
               ].map(({ value, label }, index, array) => (
                 <div
                   className="flex flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-baseline"

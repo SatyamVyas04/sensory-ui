@@ -12,16 +12,16 @@ export function ButtonDemo() {
       title="Button"
     >
       <div className="flex flex-col gap-3">
-        <Button className="w-full" size="sm" sound="interaction.tap">
-          Normal Action
+        <Button className="w-full" size="sm" sound="interaction.confirm">
+          Normal 'Tick' Sound
         </Button>
         <Button
           className="w-full"
           size="sm"
-          sound="interaction.confirm"
+          sound="interaction.tap"
           variant="outline"
         >
-          Confirm Action
+          Subtle 'Tock' Sound
         </Button>
       </div>
     </DemoCard>
