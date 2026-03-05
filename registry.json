@@ -71,7 +71,10 @@
       "type": "registry:ui",
       "title": "Sensory Accordion",
       "description": "Accordion with expand/collapse sounds.",
-      "registryDependencies": ["sensory-ui-core", "accordion"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "accordion"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/accordion.tsx",
@@ -84,7 +87,10 @@
       "type": "registry:ui",
       "title": "Sensory Alert Dialog",
       "description": "Alert dialog with open/close sounds.",
-      "registryDependencies": ["sensory-ui-core", "alert-dialog"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "alert-dialog"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/alert-dialog.tsx",
@@ -97,7 +103,10 @@
       "type": "registry:ui",
       "title": "Sensory Button",
       "description": "Button with click sound.",
-      "registryDependencies": ["sensory-ui-core", "button"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "button"
+      ],
       "files": [
         { "path": "components/ui/sensory-ui/button.tsx", "type": "registry:ui" }
       ]
@@ -107,7 +116,10 @@
       "type": "registry:ui",
       "title": "Sensory Carousel",
       "description": "Carousel with navigation sounds on prev/next buttons.",
-      "registryDependencies": ["sensory-ui-core", "carousel"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "carousel"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/carousel.tsx",
@@ -120,7 +132,10 @@
       "type": "registry:ui",
       "title": "Sensory Checkbox",
       "description": "Checkbox with check sound.",
-      "registryDependencies": ["sensory-ui-core", "checkbox"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "checkbox"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/checkbox.tsx",
@@ -133,7 +148,10 @@
       "type": "registry:ui",
       "title": "Sensory Collapsible",
       "description": "Collapsible with open/close sounds.",
-      "registryDependencies": ["sensory-ui-core", "collapsible"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "collapsible"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/collapsible.tsx",
@@ -146,7 +164,10 @@
       "type": "registry:ui",
       "title": "Sensory Command",
       "description": "Command palette with item selection sound.",
-      "registryDependencies": ["sensory-ui-core", "command"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "command"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/command.tsx",
@@ -159,7 +180,10 @@
       "type": "registry:ui",
       "title": "Sensory Context Menu",
       "description": "Context menu with open/close and item selection sounds.",
-      "registryDependencies": ["sensory-ui-core", "context-menu"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "context-menu"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/context-menu.tsx",
@@ -172,7 +196,10 @@
       "type": "registry:ui",
       "title": "Sensory Dialog",
       "description": "Dialog with open/close sounds.",
-      "registryDependencies": ["sensory-ui-core", "dialog"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "dialog"
+      ],
       "files": [
         { "path": "components/ui/sensory-ui/dialog.tsx", "type": "registry:ui" }
       ]
@@ -182,7 +209,10 @@
       "type": "registry:ui",
       "title": "Sensory Drawer",
       "description": "Drawer with open/close sounds.",
-      "registryDependencies": ["sensory-ui-core", "drawer"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "drawer"
+      ],
       "files": [
         { "path": "components/ui/sensory-ui/drawer.tsx", "type": "registry:ui" }
       ]
@@ -192,7 +222,10 @@
       "type": "registry:ui",
       "title": "Sensory Dropdown Menu",
       "description": "Dropdown menu with open/close and item selection sounds.",
-      "registryDependencies": ["sensory-ui-core", "dropdown-menu"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "dropdown-menu"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/dropdown-menu.tsx",
@@ -205,7 +238,10 @@
       "type": "registry:ui",
       "title": "Sensory Menubar",
       "description": "Menubar with trigger and item selection sounds.",
-      "registryDependencies": ["sensory-ui-core", "menubar"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "menubar"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/menubar.tsx",
@@ -218,7 +254,10 @@
       "type": "registry:ui",
       "title": "Sensory Navigation Menu",
       "description": "Navigation menu with trigger and link click sounds.",
-      "registryDependencies": ["sensory-ui-core", "navigation-menu"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "navigation-menu"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/navigation-menu.tsx",
@@ -231,7 +270,10 @@
       "type": "registry:ui",
       "title": "Sensory Pagination",
       "description": "Pagination with page link click sounds.",
-      "registryDependencies": ["sensory-ui-core", "pagination"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "pagination"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/pagination.tsx",
@@ -244,7 +286,10 @@
       "type": "registry:ui",
       "title": "Sensory Popover",
       "description": "Popover with open/close sounds.",
-      "registryDependencies": ["sensory-ui-core", "popover"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "popover"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/popover.tsx",
@@ -257,7 +302,10 @@
       "type": "registry:ui",
       "title": "Sensory Radio Group",
       "description": "Radio group with value change sound.",
-      "registryDependencies": ["sensory-ui-core", "radio-group"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "radio-group"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/radio-group.tsx",
@@ -270,7 +318,10 @@
       "type": "registry:ui",
       "title": "Sensory Select",
       "description": "Select with open/close sounds.",
-      "registryDependencies": ["sensory-ui-core", "select"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "select"
+      ],
       "files": [
         { "path": "components/ui/sensory-ui/select.tsx", "type": "registry:ui" }
       ]
@@ -280,7 +331,10 @@
       "type": "registry:ui",
       "title": "Sensory Sheet",
       "description": "Sheet with open/close sounds.",
-      "registryDependencies": ["sensory-ui-core", "sheet"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "sheet"
+      ],
       "files": [
         { "path": "components/ui/sensory-ui/sheet.tsx", "type": "registry:ui" }
       ]
@@ -290,7 +344,10 @@
       "type": "registry:ui",
       "title": "Sensory Sidebar",
       "description": "Sidebar with open/close sounds.",
-      "registryDependencies": ["sensory-ui-core", "sidebar"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "sidebar"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/sidebar.tsx",
@@ -303,7 +360,10 @@
       "type": "registry:ui",
       "title": "Sensory Slider",
       "description": "Slider with value commit sound.",
-      "registryDependencies": ["sensory-ui-core", "slider"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "slider"
+      ],
       "files": [
         { "path": "components/ui/sensory-ui/slider.tsx", "type": "registry:ui" }
       ]
@@ -313,7 +373,10 @@
       "type": "registry:ui",
       "title": "Sensory Switch",
       "description": "Switch with toggle sound.",
-      "registryDependencies": ["sensory-ui-core", "switch"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "switch"
+      ],
       "files": [
         { "path": "components/ui/sensory-ui/switch.tsx", "type": "registry:ui" }
       ]
@@ -323,7 +386,10 @@
       "type": "registry:ui",
       "title": "Sensory Tabs",
       "description": "Tabs with tab change sound.",
-      "registryDependencies": ["sensory-ui-core", "tabs"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "tabs"
+      ],
       "files": [
         { "path": "components/ui/sensory-ui/tabs.tsx", "type": "registry:ui" }
       ]
@@ -333,7 +399,10 @@
       "type": "registry:ui",
       "title": "Sensory Toggle",
       "description": "Toggle with pressed state change sound.",
-      "registryDependencies": ["sensory-ui-core", "toggle"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "toggle"
+      ],
       "files": [
         { "path": "components/ui/sensory-ui/toggle.tsx", "type": "registry:ui" }
       ]
@@ -343,7 +412,10 @@
       "type": "registry:ui",
       "title": "Sensory Toggle Group",
       "description": "Toggle group with value change sound.",
-      "registryDependencies": ["sensory-ui-core", "toggle-group"],
+      "registryDependencies": [
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "toggle-group"
+      ],
       "files": [
         {
           "path": "components/ui/sensory-ui/toggle-group.tsx",
@@ -357,31 +429,31 @@
       "title": "sensory-ui",
       "description": "Install all sensory-ui components at once. Semantic, opt-in sound layer for shadcn/ui.",
       "registryDependencies": [
-        "sensory-ui-core",
-        "sensory-ui-accordion",
-        "sensory-ui-alert-dialog",
-        "sensory-ui-button",
-        "sensory-ui-carousel",
-        "sensory-ui-checkbox",
-        "sensory-ui-collapsible",
-        "sensory-ui-command",
-        "sensory-ui-context-menu",
-        "sensory-ui-dialog",
-        "sensory-ui-drawer",
-        "sensory-ui-dropdown-menu",
-        "sensory-ui-menubar",
-        "sensory-ui-navigation-menu",
-        "sensory-ui-pagination",
-        "sensory-ui-popover",
-        "sensory-ui-radio-group",
-        "sensory-ui-select",
-        "sensory-ui-sheet",
-        "sensory-ui-sidebar",
-        "sensory-ui-slider",
-        "sensory-ui-switch",
-        "sensory-ui-tabs",
-        "sensory-ui-toggle",
-        "sensory-ui-toggle-group"
+        "https://sensory-ui.com/r/sensory-ui-core",
+        "https://sensory-ui.com/r/sensory-ui-accordion",
+        "https://sensory-ui.com/r/sensory-ui-alert-dialog",
+        "https://sensory-ui.com/r/sensory-ui-button",
+        "https://sensory-ui.com/r/sensory-ui-carousel",
+        "https://sensory-ui.com/r/sensory-ui-checkbox",
+        "https://sensory-ui.com/r/sensory-ui-collapsible",
+        "https://sensory-ui.com/r/sensory-ui-command",
+        "https://sensory-ui.com/r/sensory-ui-context-menu",
+        "https://sensory-ui.com/r/sensory-ui-dialog",
+        "https://sensory-ui.com/r/sensory-ui-drawer",
+        "https://sensory-ui.com/r/sensory-ui-dropdown-menu",
+        "https://sensory-ui.com/r/sensory-ui-menubar",
+        "https://sensory-ui.com/r/sensory-ui-navigation-menu",
+        "https://sensory-ui.com/r/sensory-ui-pagination",
+        "https://sensory-ui.com/r/sensory-ui-popover",
+        "https://sensory-ui.com/r/sensory-ui-radio-group",
+        "https://sensory-ui.com/r/sensory-ui-select",
+        "https://sensory-ui.com/r/sensory-ui-sheet",
+        "https://sensory-ui.com/r/sensory-ui-sidebar",
+        "https://sensory-ui.com/r/sensory-ui-slider",
+        "https://sensory-ui.com/r/sensory-ui-switch",
+        "https://sensory-ui.com/r/sensory-ui-tabs",
+        "https://sensory-ui.com/r/sensory-ui-toggle",
+        "https://sensory-ui.com/r/sensory-ui-toggle-group"
       ],
       "files": []
     }

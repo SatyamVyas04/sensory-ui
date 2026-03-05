@@ -22,6 +22,28 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-static";
 
+// ---------------------------------------------------------------------------
+// Registry base URL — used to build full URLs for registryDependencies so the
+// shadcn CLI fetches custom items from *this* registry instead of ui.shadcn.com.
+// ---------------------------------------------------------------------------
+
+const TRAILING_SLASH = /\/$/;
+
+function getRegistryBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL.replace(TRAILING_SLASH, "");
+  }
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return "http://localhost:3000";
+}
+
+const REGISTRY_BASE = getRegistryBaseUrl();
+
 const SENSORY_UI_DIR = join(process.cwd(), "components", "ui", "sensory-ui");
 const ALLOWED_EXTENSIONS = new Set([".ts", ".tsx"]);
 
@@ -125,7 +147,7 @@ function buildComponentItem(componentName: string) {
     title: `Sensory ${componentName.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}`,
     description: `${componentName.replace(/-/g, " ")} with sound support.`,
     files: [fileData],
-    registryDependencies: ["sensory-ui-core", componentName],
+    registryDependencies: [`${REGISTRY_BASE}/r/sensory-ui-core`, componentName],
   };
 }
 
@@ -141,8 +163,8 @@ function buildMetaItem() {
     dependencies: [],
     devDependencies: [],
     registryDependencies: [
-      "sensory-ui-core",
-      ...componentNames.map((n) => `sensory-ui-${n}`),
+      `${REGISTRY_BASE}/r/sensory-ui-core`,
+      ...componentNames.map((n) => `${REGISTRY_BASE}/r/sensory-ui-${n}`),
     ],
   };
 }

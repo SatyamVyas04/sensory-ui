@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import posthog from "posthog-js";
 import { useState } from "react";
 import {
   Select,
@@ -86,7 +87,12 @@ export function Showcase() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* Section header */}
-        <motion.div {...fadeUp}>
+        <motion.div
+          {...fadeUp}
+          onViewportEnter={() =>
+            posthog.capture("section_viewed", { section: "showcase" })
+          }
+        >
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <div className="flex-1">
               <span
@@ -134,9 +140,10 @@ export function Showcase() {
                 Sound Pack
               </label>
               <Select
-                onValueChange={(value) =>
-                  setSelectedPack(value as SoundPackName)
-                }
+                onValueChange={(value) => {
+                  setSelectedPack(value as SoundPackName);
+                  posthog.capture("sound_pack_changed", { pack: value });
+                }}
                 value={selectedPack}
               >
                 <SelectTrigger

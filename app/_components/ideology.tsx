@@ -8,6 +8,7 @@ import {
 } from "@tabler/icons-react";
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
+import posthog from "posthog-js";
 
 const ease = [0.32, 0.72, 0, 1] as const;
 
@@ -53,6 +54,9 @@ export function Ideology() {
             opacity: 0,
             y: prefersReduced ? 0 : 12,
           }}
+          onViewportEnter={() =>
+            posthog.capture("section_viewed", { section: "ideology" })
+          }
           transition={{ duration: 0.25, ease }}
           viewport={{ once: true, margin: "-80px" }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -18,14 +18,14 @@ The core idea is simple: UI interactions have meaning, and sound can reinforce t
 
 ## Core Philosophy
 
-| Principle                     | What It Means in Practice                                                                                                                 |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **Semantic, not decorative**  | Every sound maps to a meaningful interaction type (activation, navigation, system feedback). No random audio.                             |
-| **Explicit opt-in only**      | No component ever makes a sound unless you pass a `sound` prop to it. Nothing is automatic.                                               |
-| **Accessibility-first**       | Respects `prefers-reduced-motion`, provides a global kill-switch, and never forces audio on users.                                        |
-| **Minimal runtime footprint** | The sound engine is < 3 KB minified. No heavy DSP chains, no AudioWorklets, no bundled audio blobs.                                       |
-| **Registry-native**           | Built specifically for the shadcn/ui distribution model. One install command, then it lives inside your project like any other component. |
-| **Composable**                | Works with any combination of Radix primitives, any shadcn/ui component, or raw HTML elements via the `usePlaySound` hook.                |
+| Principle                     | What It Means in Practice                                                                                                                                                         |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Semantic, not decorative**  | Every sound maps to a meaningful interaction type (activation, navigation, system feedback). No random audio.                                                                     |
+| **Explicit opt-in only**      | No component ever makes a sound unless you pass a `sound` prop to it. Nothing is automatic.                                                                                       |
+| **Accessibility-first**       | Respects `prefers-reduced-motion`, provides a global kill-switch, and never forces audio on users.                                                                                |
+| **Minimal runtime footprint** | Zero npm dependencies. The engine (~2 KB gzipped) and full library (~26 KB gzipped) use only native Web Audio API. No heavy DSP chains, no AudioWorklets, no bundled audio blobs. |
+| **Registry-native**           | Built specifically for the shadcn/ui distribution model. One install command, then it lives inside your project like any other component.                                         |
+| **Composable**                | Works with any combination of Radix primitives, any shadcn/ui component, or raw HTML elements via the `usePlaySound` hook.                                                        |
 
 ---
 

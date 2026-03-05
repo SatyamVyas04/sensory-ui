@@ -185,6 +185,14 @@ pnpm dev                     # start dev server
 npx shadcn@latest add http://localhost:3000/r/sensory-ui  # test install
 ```
 
+> **Full-URL registryDependencies:** The route handler resolves the registry base
+> URL via `getRegistryBaseUrl()` so that `registryDependencies` contain full URLs
+> (e.g. `http://localhost:3000/r/sensory-ui-core` locally, or
+> `https://sensory-ui.com/r/sensory-ui-core` in production). This ensures the
+> shadcn CLI fetches custom items from _this_ registry instead of `ui.shadcn.com`.
+> Set `NEXT_PUBLIC_APP_URL` for explicit control, or rely on Vercel's auto-set
+> `VERCEL_PROJECT_PRODUCTION_URL` / `VERCEL_URL` env vars.
+
 ### Quick test
 
 Temporarily set `volume: 1.0` in `sensory.config.js` and click a Button with `sound="interaction.tap"`. You should hear the tap sound.

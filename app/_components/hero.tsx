@@ -8,12 +8,25 @@ import {
   IconCopy,
   IconWaveSine,
 } from "@tabler/icons-react";
+import { Calligraph } from "calligraph";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import posthog from "posthog-js";
+import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/sensory-ui/button";
+
+const INSTALL_TARGETS = [
+  "sensory-ui",
+  "sensory-ui-core",
+  "sensory-ui-button",
+  "sensory-ui-dialog",
+  "sensory-ui-tabs",
+  "sensory-ui-slider",
+  "sensory-ui-checkbox",
+  "sensory-ui-switch",
+] as const;
 
 const ease = [0.32, 0.72, 0, 1] as const;
 
@@ -24,6 +37,16 @@ interface HeroProps {
 export function Hero({ stars }: HeroProps) {
   const prefersReduced = useReducedMotion();
   const [copied, setCopied] = useState(false);
+  const [targetIndex, setTargetIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTargetIndex((i) => (i + 1) % INSTALL_TARGETS.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentTarget = INSTALL_TARGETS[targetIndex];
 
   const fadeUp = (delay = 0) => ({
     initial: { opacity: 0, y: prefersReduced ? 0 : 12 },
@@ -33,8 +56,9 @@ export function Hero({ stars }: HeroProps) {
 
   const copyInstallCommand = async () => {
     await navigator.clipboard.writeText(
-      "npx shadcn@latest add https://sensory-ui.com/r/sensory-ui"
+      `npx shadcn@latest add https://sensory-ui.com/r/${currentTarget}`
     );
+    posthog.capture("install_command_copied", { target: currentTarget });
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -173,9 +197,12 @@ export function Hero({ stars }: HeroProps) {
             {...fadeUp(0.15)}
             className="mt-5 flex min-w-0 flex-col items-stretch gap-0 overflow-hidden border border-primary/30 bg-card/40 backdrop-blur-sm sm:flex-row"
           >
-            <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap px-3 py-2 font-mono text-[11px] text-primary sm:px-4 sm:py-2 sm:text-xs">
+            <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap px-3 py-2 font-mono text-[11px] text-primary will-change-transform sm:px-4 sm:py-2 sm:text-xs">
               <span className="text-foreground">$</span> npx shadcn@latest add
-              https://sensory-ui.com/r/sensory-ui
+              https://sensory-ui.com/r/
+              <Calligraph animation="smooth" as="span">
+                {currentTarget}
+              </Calligraph>
             </code>
             <Button
               aria-label={
@@ -246,7 +273,7 @@ export function Hero({ stars }: HeroProps) {
                 { value: "24", label: "components" },
                 { value: "17", label: "roles" },
                 { value: "9", label: "sound packs" },
-                { value: "< 3kb", label: "gzipped" },
+                { value: "0 deps", label: "zero dependencies" },
               ].map(({ value, label }, index, array) => (
                 <div
                   className="flex flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-baseline"

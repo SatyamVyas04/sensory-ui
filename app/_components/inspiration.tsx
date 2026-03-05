@@ -2,6 +2,7 @@
 
 import { IconArrowUpRight, IconPlayerPlayFilled } from "@tabler/icons-react";
 import { motion, useReducedMotion } from "motion/react";
+import posthog from "posthog-js";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 import { usePlaySound } from "@/components/ui/sensory-ui/config/use-play-sound";
 
@@ -47,7 +48,10 @@ function RoleButton({ category, role }: { category: string; role: string }) {
   return (
     <button
       className="group/role flex items-center gap-1.5 border border-border bg-muted/30 px-2 py-1 font-mono text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary/5 hover:text-foreground active:bg-primary/10"
-      onClick={play}
+      onClick={() => {
+        play();
+        posthog.capture("sound_role_played", { role: soundRole });
+      }}
       type="button"
     >
       <IconPlayerPlayFilled
@@ -75,6 +79,9 @@ export function Inspiration() {
           {/* Left column - reasoning */}
           <motion.div
             initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
+            onViewportEnter={() =>
+              posthog.capture("section_viewed", { section: "inspiration" })
+            }
             transition={{ duration: 0.25, ease }}
             viewport={{ once: true, margin: "-80px" }}
             whileInView={{ opacity: 1, y: 0 }}

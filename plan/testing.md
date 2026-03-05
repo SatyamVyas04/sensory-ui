@@ -25,6 +25,7 @@ npx tsc --noEmit
 ```
 
 This checks:
+
 - All 17 sound roles are correctly typed
 - All component `sound` props accept `SoundRole | false`
 - Pack generator covers all roles
@@ -61,6 +62,7 @@ npm run build
 ```
 
 Validates:
+
 - All pages render without errors
 - No missing imports or broken references
 - Sound packs generate correctly at build time
@@ -117,7 +119,14 @@ npx shadcn@latest add http://localhost:3000/r/sensory-ui-slider
 npx shadcn@latest add http://localhost:3000/r/sensory-ui-checkbox
 ```
 
+> **Note:** The route handler uses `getRegistryBaseUrl()` to build full URLs for
+> `registryDependencies` (so the shadcn CLI resolves custom items from _this_
+> registry, not `ui.shadcn.com`). For local testing it defaults to
+> `http://localhost:3000`. In production, set `NEXT_PUBLIC_APP_URL` or rely on
+> Vercel's auto-set `VERCEL_PROJECT_PRODUCTION_URL` / `VERCEL_URL` env vars.
+
 After install, verify:
+
 1. `components/ui/sensory-ui/` folder is created with all expected files
 2. TypeScript compilation passes in the test project
 3. Wrapping app with `<SensoryUIProvider>` works
@@ -163,7 +172,7 @@ import { Checkbox } from "@/components/ui/sensory-ui/checkbox";
 import { Switch } from "@/components/ui/sensory-ui/switch";
 
 // Default (interaction.toggle)
-<Switch />
+<Switch />;
 ```
 
 ### Slider
@@ -172,55 +181,64 @@ import { Switch } from "@/components/ui/sensory-ui/switch";
 import { Slider } from "@/components/ui/sensory-ui/slider";
 
 // Default (interaction.subtle on every value change)
-<Slider defaultValue={[50]} max={100} step={1} />
+<Slider defaultValue={[50]} max={100} step={1} />;
 ```
 
 ### Command
 
 ```tsx
 import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandItem,
+	Command,
+	CommandInput,
+	CommandList,
+	CommandItem,
 } from "@/components/ui/sensory-ui/command";
 
 // CommandInput plays interaction.subtle per keystroke
 // CommandItem plays interaction.tap on select
 <Command>
-  <CommandInput placeholder="Search..." />
-  <CommandList>
-    <CommandItem>Item 1</CommandItem>
-  </CommandList>
-</Command>
+	<CommandInput placeholder="Search..." />
+	<CommandList>
+		<CommandItem>Item 1</CommandItem>
+	</CommandList>
+</Command>;
 ```
 
 ### Tabs
 
 ```tsx
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/sensory-ui/tabs";
+import {
+	Tabs,
+	TabsList,
+	TabsTrigger,
+	TabsContent,
+} from "@/components/ui/sensory-ui/tabs";
 
 // Default (navigation.tab on tab switch)
 <Tabs defaultValue="tab1">
-  <TabsList>
-    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
-    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
-  </TabsList>
-  <TabsContent value="tab1">Content 1</TabsContent>
-  <TabsContent value="tab2">Content 2</TabsContent>
-</Tabs>
+	<TabsList>
+		<TabsTrigger value="tab1">Tab 1</TabsTrigger>
+		<TabsTrigger value="tab2">Tab 2</TabsTrigger>
+	</TabsList>
+	<TabsContent value="tab1">Content 1</TabsContent>
+	<TabsContent value="tab2">Content 2</TabsContent>
+</Tabs>;
 ```
 
 ### Dialog
 
 ```tsx
-import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/sensory-ui/dialog";
+import {
+	Dialog,
+	DialogTrigger,
+	DialogContent,
+} from "@/components/ui/sensory-ui/dialog";
 
 // Default (overlay.open on open, overlay.close on close)
 <Dialog>
-  <DialogTrigger>Open</DialogTrigger>
-  <DialogContent>Content</DialogContent>
-</Dialog>
+	<DialogTrigger>Open</DialogTrigger>
+	<DialogContent>Content</DialogContent>
+</Dialog>;
 ```
 
 ---
@@ -231,7 +249,7 @@ Switch packs via the provider to test each instrument's character:
 
 ```tsx
 <SensoryUIProvider config={{ theme: "soft" }}>
-  {/* All sounds will use the soft instrument */}
+	{/* All sounds will use the soft instrument */}
 </SensoryUIProvider>
 ```
 
@@ -296,14 +314,14 @@ This is handled by `activePlayback` tracking in `engine.ts`, which stops the pre
 
 ## Quick Reference
 
-| Command | Purpose |
-|---------|---------|
-| `npm run dev` | Start dev server for interactive testing |
-| `npm run build` | Full production build |
-| `npm run check` | Biome/Ultracite lint (sensory-ui files only) |
-| `npm run fix` | Biome/Ultracite auto-fix |
-| `npx tsc --noEmit` | TypeScript compilation check |
-| `npm run registry:build` | Generate registry JSON files |
+| Command                  | Purpose                                      |
+| ------------------------ | -------------------------------------------- |
+| `npm run dev`            | Start dev server for interactive testing     |
+| `npm run build`          | Full production build                        |
+| `npm run check`          | Biome/Ultracite lint (sensory-ui files only) |
+| `npm run fix`            | Biome/Ultracite auto-fix                     |
+| `npx tsc --noEmit`       | TypeScript compilation check                 |
+| `npm run registry:build` | Generate registry JSON files                 |
 
 ---
 

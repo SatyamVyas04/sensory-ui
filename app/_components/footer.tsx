@@ -4,11 +4,12 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="border-border border-t py-16">
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
-          {/* Brand Section */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-2">
+    <footer className="border-border border-t bg-muted/20 py-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Top section */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {/* Brand */}
+          <div>
             <Link
               className="inline-flex items-center gap-2.5 font-semibold text-base transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               href="/"
@@ -16,63 +17,91 @@ export function Footer() {
               <Image
                 alt=""
                 aria-hidden="true"
-                className="size-8 rounded-sm border border-border"
+                className="size-7 rounded-sm border border-border"
                 height={256}
                 src="/icon-256.png"
                 width={256}
               />
               <span>sensory-ui</span>
             </Link>
-            <p className="mt-2 text-muted-foreground text-sm">
-              Semantic audio feedback for shadcn/ui. <br />
-              Using a single prop.
+            <p className="mt-3 text-muted-foreground text-sm leading-relaxed">
+              Semantic audio feedback for shadcn/ui using a single prop.
             </p>
           </div>
 
-          {/* Links Section */}
-          <div>
-            <h3 className="mb-4 font-bold">Resources</h3>
-            <ul className="space-y-3 text-muted-foreground text-sm">
-              <li className="hover:text-foreground">
-                <Link href="/docs">Documentation</Link>
+          {/* Nav links */}
+          <nav aria-label="Footer navigation" className="lg:pl-12">
+            <h3 className="font-semibold text-sm">Resources</h3>
+            <ul className="mt-4 space-y-3 text-muted-foreground text-sm">
+              <li>
+                <Link
+                  className="transition-colors hover:text-foreground"
+                  href="/docs"
+                >
+                  Documentation
+                </Link>
               </li>
-              <li className="hover:text-foreground">
-                <Link href="/components">Components</Link>
+              <li>
+                <Link
+                  className="transition-colors hover:text-foreground"
+                  href="/components"
+                >
+                  Components
+                </Link>
               </li>
-              <li className="hover:text-foreground">
-                <Link href="/examples">Examples</Link>
+              <li>
+                <Link
+                  className="transition-colors hover:text-foreground"
+                  href="/examples"
+                >
+                  Examples
+                </Link>
               </li>
             </ul>
-          </div>
+          </nav>
 
-          {/* Social Section */}
-          <div>
-            <h3 className="mb-4 font-bold">Connect</h3>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <a
-                  className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
-                  href="https://github.com/SatyamVyas04/sensory-ui"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <IconBrandGithub aria-hidden="true" className="size-4" />
-                  <span>GitHub</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
-                  href="https://x.com/SatyamVyas04"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <IconBrandX aria-hidden="true" className="size-4" />
-                  <span>X (Twitter)</span>
-                </a>
-              </li>
-            </ul>
+          {/* Socials */}
+          <div className="lg:pl-12">
+            <h3 className="font-semibold text-sm">Connect</h3>
+            <div className="mt-4 flex items-center gap-4">
+              <a
+                aria-label="GitHub"
+                className="text-muted-foreground transition-colors hover:text-foreground"
+                href="https://github.com/SatyamVyas04/sensory-ui"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <IconBrandGithub aria-hidden="true" className="size-5" />
+              </a>
+              <a
+                aria-label="X (Twitter)"
+                className="text-muted-foreground transition-colors hover:text-foreground"
+                href="https://x.com/SatyamVyas04"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <IconBrandX aria-hidden="true" className="size-5" />
+              </a>
+            </div>
           </div>
+        </div>
+
+        {/* Bottom section */}
+        <div className="mt-12 border-border border-t pt-8">
+          <p className="text-muted-foreground text-xs">
+            <span>&copy; {new Date().getFullYear()} sensory-ui. </span>
+            <span>
+              Built by{" "}
+              <a
+                className="underline underline-offset-2 transition-colors hover:text-foreground"
+                href="https://github.com/SatyamVyas04"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Satyam
+              </a>
+            </span>
+          </p>
         </div>
       </div>
     </footer>

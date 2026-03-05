@@ -183,7 +183,11 @@ export async function playSound(
 
 	// Cancel the previously playing sound to prevent overlapping audio.
 	if (activePlayback) {
-		try { activePlayback.stop(); } catch { /* ok */ }
+		try {
+			activePlayback.stop();
+		} catch {
+			/* ok */
+		}
 		activePlayback = null;
 	}
 
@@ -310,7 +314,7 @@ In v1.0, only the master volume from `sensory.config.js` and the optional per-ca
 
 ## Engine Size Budget
 
-The engine must stay under **3 KB minified + gzipped**. The implementation above is well within that budget. If Web Audio API wrappers or fallback paths are added, they must be tree-shakeable.
+The engine (`engine.ts`) is ~2 KB gzipped. The full core (`config/`) is ~6 KB gzipped. All 9 sound packs (`sounds/`) add ~16 KB gzipped. Component wrappers add ~4 KB gzipped. Total library: ~26 KB gzipped source. After bundler minification and tree-shaking, the shipped size will be smaller. All code must remain tree-shakeable.
 
 ---
 

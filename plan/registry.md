@@ -57,13 +57,13 @@ The registry manifests conform to the `registry-item.json` schema from shadcn/ui
 
 ### `sensory-ui` (meta-block)
 
-| Field                  | Value                                             | Notes                                                |
-| ---------------------- | ------------------------------------------------- | ---------------------------------------------------- |
-| `$schema`              | `https://ui.shadcn.com/schema/registry-item.json` | Standard shadcn schema                               |
-| `name`                 | `"sensory-ui"`                                    | Unique identifier                                    |
-| `type`                 | `"registry:block"`                                | Multi-file block                                     |
-| `files`                | `[]`                                              | Empty - uses `registryDependencies` to pull in files |
-| `registryDependencies` | `["sensory-ui-core", "sensory-ui-button", ...]`   | References core + all 24 component items             |
+| Field                  | Value                                             | Notes                                                 |
+| ---------------------- | ------------------------------------------------- | ----------------------------------------------------- |
+| `$schema`              | `https://ui.shadcn.com/schema/registry-item.json` | Standard shadcn schema                                |
+| `name`                 | `"sensory-ui"`                                    | Unique identifier                                     |
+| `type`                 | `"registry:block"`                                | Multi-file block                                      |
+| `files`                | `[]`                                              | Empty - uses `registryDependencies` to pull in files  |
+| `registryDependencies` | Full URLs to all sensory-ui items                 | e.g. `https://sensory-ui.com/r/sensory-ui-core`, etc. |
 
 ### `sensory-ui-core`
 
@@ -78,13 +78,13 @@ The registry manifests conform to the `registry-item.json` schema from shadcn/ui
 
 ### `sensory-ui-<name>` (individual components)
 
-| Field                  | Value                                             | Notes                                       |
-| ---------------------- | ------------------------------------------------- | ------------------------------------------- |
-| `$schema`              | `https://ui.shadcn.com/schema/registry-item.json` | Standard shadcn schema                      |
-| `name`                 | `"sensory-ui-button"` etc.                        | Component-specific identifier               |
-| `type`                 | `"registry:ui"`                                   | Single UI component                         |
-| `files`                | Single component `.tsx` file                      | Embedded file content                       |
-| `registryDependencies` | `["sensory-ui-core", "<shadcn-name>"]`            | Depends on core + matching shadcn component |
+| Field                  | Value                                             | Notes                                             |
+| ---------------------- | ------------------------------------------------- | ------------------------------------------------- |
+| `$schema`              | `https://ui.shadcn.com/schema/registry-item.json` | Standard shadcn schema                            |
+| `name`                 | `"sensory-ui-button"` etc.                        | Component-specific identifier                     |
+| `type`                 | `"registry:ui"`                                   | Single UI component                               |
+| `files`                | Single component `.tsx` file                      | Embedded file content                             |
+| `registryDependencies` | `["<base>/r/sensory-ui-core", "<shadcn-name>"]`   | Full URL for core; bare name for shadcn component |
 
 ### File Types
 
@@ -120,7 +120,10 @@ The `registry.json` file follows the official schema for the `shadcn build` work
 		{
 			"name": "sensory-ui-button",
 			"type": "registry:ui",
-			"registryDependencies": ["sensory-ui-core", "button"],
+			"registryDependencies": [
+				"https://sensory-ui.com/r/sensory-ui-core",
+				"button"
+			],
 			"files": [
 				{
 					"path": "components/ui/sensory-ui/button.tsx",
@@ -133,8 +136,8 @@ The `registry.json` file follows the official schema for the `shadcn build` work
 			"name": "sensory-ui",
 			"type": "registry:block",
 			"registryDependencies": [
-				"sensory-ui-core",
-				"sensory-ui-button" /* ... */
+				"https://sensory-ui.com/r/sensory-ui-core",
+				"https://sensory-ui.com/r/sensory-ui-button" /* ... */
 			],
 			"files": []
 		}
@@ -154,6 +157,16 @@ The `registry.json` file follows the official schema for the `shadcn build` work
 // - Normalises Windows backslashes to forward slashes in paths
 // - Classifies files into registry:ui, registry:lib, or registry:hook
 // - GET handler is async and awaits params (Next.js 15+ async params API)
+//
+// Registry base URL resolution (getRegistryBaseUrl):
+// - All sensory-ui registryDependencies use FULL URLs so the shadcn CLI
+//   fetches custom items from this registry instead of ui.shadcn.com.
+// - Standard shadcn items (e.g. "button", "accordion") remain bare names.
+// - Base URL resolution priority:
+//   1. NEXT_PUBLIC_APP_URL env var (explicit, recommended)
+//   2. VERCEL_PROJECT_PRODUCTION_URL (auto-set by Vercel)
+//   3. VERCEL_URL (auto-set by Vercel, preview deploys)
+//   4. http://localhost:3000 (fallback for local dev)
 ```
 
 The route handler serves manifests when the CLI fetches the URL. Core item contains 13 files (6 config + 7 sounds); each component item contains 1 `.tsx` file; the meta `sensory-ui` item has empty `files` and lists all 25 entries in `registryDependencies`.

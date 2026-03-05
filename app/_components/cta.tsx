@@ -8,6 +8,7 @@ import {
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import posthog from "posthog-js";
 import { Button } from "@/components/ui/sensory-ui/button";
 
 const ease = [0.32, 0.72, 0, 1] as const;
@@ -58,6 +59,9 @@ export function CTA() {
             >
               <Link
                 href="https://github.com/SatyamVyas04/sensory-ui"
+                onClick={() =>
+                  posthog.capture("cta_clicked", { button: "github" })
+                }
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -73,7 +77,12 @@ export function CTA() {
               sound="navigation.forward"
               variant="outline"
             >
-              <Link href="/docs">
+              <Link
+                href="/docs"
+                onClick={() =>
+                  posthog.capture("cta_clicked", { button: "docs" })
+                }
+              >
                 <IconFileText aria-hidden="true" className="size-4" />
                 Read the docs
                 <IconArrowRight aria-hidden="true" className="size-3.5" />
