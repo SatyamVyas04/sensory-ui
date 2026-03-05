@@ -1,6 +1,9 @@
+"use client";
+
 import { IconBrandGithub, IconBrandX } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
+import posthog from "posthog-js";
 
 export function Footer() {
   return (
@@ -37,6 +40,9 @@ export function Footer() {
                 <Link
                   className="transition-colors hover:text-foreground"
                   href="/docs"
+                  onClick={() =>
+                    posthog.capture("footer_link_clicked", { link: "docs" })
+                  }
                 >
                   Documentation
                 </Link>
@@ -45,6 +51,11 @@ export function Footer() {
                 <Link
                   className="transition-colors hover:text-foreground"
                   href="/components"
+                  onClick={() =>
+                    posthog.capture("footer_link_clicked", {
+                      link: "components",
+                    })
+                  }
                 >
                   Components
                 </Link>
@@ -53,6 +64,9 @@ export function Footer() {
                 <Link
                   className="transition-colors hover:text-foreground"
                   href="/examples"
+                  onClick={() =>
+                    posthog.capture("footer_link_clicked", { link: "examples" })
+                  }
                 >
                   Examples
                 </Link>
@@ -68,6 +82,9 @@ export function Footer() {
                 aria-label="GitHub"
                 className="text-muted-foreground transition-colors hover:text-foreground"
                 href="https://github.com/SatyamVyas04/sensory-ui"
+                onClick={() =>
+                  posthog.capture("footer_link_clicked", { link: "github" })
+                }
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -77,6 +94,9 @@ export function Footer() {
                 aria-label="X (Twitter)"
                 className="text-muted-foreground transition-colors hover:text-foreground"
                 href="https://x.com/SatyamVyas04"
+                onClick={() =>
+                  posthog.capture("footer_link_clicked", { link: "twitter" })
+                }
                 rel="noopener noreferrer"
                 target="_blank"
               >

@@ -185,6 +185,9 @@ export function Hero({ stars }: HeroProps) {
               <Link
                 aria-label="Twitter/X - @SatyamVyas04"
                 href="https://x.com/SatyamVyas04"
+                onClick={() =>
+                  posthog.capture("hero_nav_link_clicked", { link: "twitter" })
+                }
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -199,6 +202,9 @@ export function Hero({ stars }: HeroProps) {
               <Link
                 aria-label="GitHub - SatyamVyas04/sensory-ui"
                 href="https://github.com/SatyamVyas04/sensory-ui"
+                onClick={() =>
+                  posthog.capture("hero_nav_link_clicked", { link: "github" })
+                }
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -267,7 +273,16 @@ export function Hero({ stars }: HeroProps) {
               size="default"
               sound="interaction.toggle"
             >
-              <Link href="/docs" rel="noopener noreferrer" target="_blank">
+              <Link
+                href="/docs"
+                onClick={() =>
+                  posthog.capture("hero_cta_clicked", {
+                    button: "get_started",
+                  })
+                }
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 Get Started
                 <IconArrowRight aria-hidden="true" className="size-4" />
               </Link>
@@ -280,7 +295,16 @@ export function Hero({ stars }: HeroProps) {
               sound="interaction.toggle"
               variant="outline"
             >
-              <Link href="#showcase">See It in Action</Link>
+              <Link
+                href="#showcase"
+                onClick={() =>
+                  posthog.capture("hero_cta_clicked", {
+                    button: "see_in_action",
+                  })
+                }
+              >
+                See It in Action
+              </Link>
             </Button>
           </motion.div>
 

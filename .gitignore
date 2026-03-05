@@ -44,3 +44,4 @@ yarn-error.log*
 next-env.d.ts
 package-lock.json
 yarn.lock
+.env.local

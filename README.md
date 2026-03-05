@@ -1,168 +1,285 @@
-# sensory-ui
+<div align="center">
+  <img width="1897" height="1125" alt="readme-banner" src="https://github.com/user-attachments/assets/389899c0-6ef9-4791-9624-d198c799ba85" />
 
-A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions with 17 sound roles across 24 components — built for [shadcn/ui](https://ui.shadcn.com).
+  <h1>sensory-ui</h1>
+  <p>A semantic, opt-in sound layer for React and Next.js apps.<br/>17 sound roles · 9 sound packs · 24 components — built for <a href="https://ui.shadcn.com">shadcn/ui</a>.</p>
 
-## Quick Install
+  <p>
+    <a href="https://sensory-ui.com">Website</a> ·
+    <a href="#quick-installation">Install</a> ·
+    <a href="#sound-packs">Sound Packs</a> ·
+    <a href="#sound-roles">Sound Roles</a> ·
+    <a href="#available-components">Components</a>
+  </p>
+</div>
+
+---
+
+## Table of Contents
+
+- [Quick Installation](#quick-installation)
+- [Setup](#setup)
+- [Configuration](#configuration)
+- [Sound Packs](#sound-packs)
+- [Sound Roles](#sound-roles)
+- [Available Components](#available-components)
+- [Development](#development)
+- [License](#license)
+
+---
+
+## Quick Installation
+
+Install the full library with a single command via the shadcn CLI:
 
 ```bash
 npx shadcn@latest add https://sensory-ui.com/r/sensory-ui
 ```
 
-Or install individual pieces:
+Or pick only what you need:
 
 ```bash
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-core    # core engine only
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-button   # single component
+# Core engine only (no components)
+npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-core
+
+# A single component
+npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-button
+npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-dialog
 ```
+
+> **Prerequisites:** Next.js 13.4+, shadcn/ui initialised (`components.json` present), Node.js 18+.
+
+---
 
 ## Setup
 
-Wrap your app with `SensoryUIProvider`:
+### 1. Wrap your app with the provider
 
 ```tsx
 // app/layout.tsx
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>
-        <SensoryUIProvider>
-          {children}
-        </SensoryUIProvider>
-      </body>
-    </html>
-  );
+export default function RootLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
+	return (
+		<html lang="en">
+			<body>
+				<SensoryUIProvider>{children}</SensoryUIProvider>
+			</body>
+		</html>
+	);
 }
 ```
 
-Use the sound-enabled components:
+### 2. Use sound-enabled components
+
+Drop in any sensory-ui component the same way you'd use its shadcn counterpart — just add a `sound` prop:
 
 ```tsx
 import { Button } from "@/components/ui/sensory-ui/button";
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/sensory-ui/dialog";
 
-export function SaveButton() {
-  return <Button sound="interaction.tap">Save</Button>;
+// Single sound role
+<Button sound="interaction.tap">Save</Button>
+
+// Object form with open/close sounds
+<Dialog sound={{ open: "overlay.open", close: "overlay.close" }}>
+  ...
+</Dialog>
+```
+
+### 3. Use the hook directly (optional)
+
+For anything not covered by a patched component, use the `usePlaySound` hook:
+
+```tsx
+import { usePlaySound } from "@/components/ui/sensory-ui/config/use-play-sound";
+
+function MyComponent() {
+	const play = usePlaySound();
+	return <div onMouseEnter={() => play("interaction.subtle")}>Hover me</div>;
 }
 ```
 
-## Project Structure
-
-```
-sensory-ui/
-├── app/                            # Next.js App Router
-│   ├── layout.tsx                  # Root layout (providers, metadata, fonts)
-│   ├── page.tsx                    # Landing page (server component)
-│   ├── globals.css                 # Global styles (Tailwind v4)
-│   ├── r/[name]/route.ts           # Registry API (serves component manifests)
-│   └── _components/                # Landing page sections
-│       ├── hero.tsx                # Hero with install command
-│       ├── showcase.tsx            # Interactive component demos
-│       ├── ideology.tsx            # Design philosophy
-│       ├── inspiration.tsx         # Sound role explorer
-│       ├── cta.tsx                 # Call-to-action
-│       └── footer.tsx              # Site footer (server component)
-├── components/
-│   ├── theme-provider.tsx          # next-themes wrapper
-│   └── ui/
-│       ├── sensory-ui/             # Sound-enabled components
-│       │   ├── config/             # Core engine layer
-│       │   │   ├── engine.ts       # Web Audio API engine (singleton AudioContext)
-│       │   │   ├── provider.tsx    # SensoryUIProvider (React context)
-│       │   │   ├── config.ts       # Config types, defaults, mergeConfig, resolveRole
-│       │   │   ├── sound-roles.ts  # 17 sound role type definitions
-│       │   │   ├── registry.ts     # Pack name → SoundPack mapping
-│       │   │   └── use-play-sound.ts # usePlaySound() hook
-│       │   ├── sounds/             # Audio synthesis
-│       │   │   ├── core/           # Tune + instrument → synthesizer system
-│       │   │   │   ├── tunes.ts        # Musical content (frequencies, durations)
-│       │   │   │   ├── instruments.ts  # 9 instrument configs (oscillator, filter, envelope)
-│       │   │   │   ├── factory.ts      # Combines tunes + instruments → synthesizers
-│       │   │   │   └── pack-generator.ts # Generates full packs from instruments
-│       │   │   └── packs.ts        # All 9 sound packs + custom hero sounds
-│       │   └── *.tsx               # 24 patched components (button, dialog, tabs…)
-│       └── *.tsx                   # Base shadcn/ui components (unmodified)
-├── hooks/
-│   └── use-mobile.ts               # Mobile breakpoint hook
-├── lib/
-│   └── utils.ts                    # cn() utility (clsx + tailwind-merge)
-├── plan/                           # Architecture documentation
-│   ├── overview.md                 # Project overview and file structure
-│   ├── engine.md                   # Web Audio engine spec
-│   ├── provider.md                 # React provider architecture
-│   ├── sound-roles.md              # Sound categories and roles
-│   ├── components.md               # Component API and sound prop usage
-│   ├── config.md                   # Configuration system
-│   ├── registry.md                 # shadcn registry distribution
-│   ├── sound-packs.md              # Per-pack sound design
-│   ├── installation.md             # Installation flow
-│   └── testing.md                  # Testing guide
-└── public/                         # Static assets (icons, images)
-```
-
-## Tech Stack
-
-| Technology | Purpose |
-|---|---|
-| [Next.js 16](https://nextjs.org) (App Router, Turbopack) | Framework |
-| [React 19](https://react.dev) | UI library |
-| [TypeScript 5.9](https://typescriptlang.org) | Type safety |
-| [Tailwind CSS v4](https://tailwindcss.com) | Styling |
-| [shadcn/ui](https://ui.shadcn.com) + [Radix UI](https://radix-ui.com) | Base components |
-| [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) | Sound synthesis (no audio files) |
-| [Motion](https://motion.dev) (Framer Motion) | Animations |
-| [Geist](https://vercel.com/font) | Typography |
-| [Biome](https://biomejs.dev) / [Ultracite](https://github.com/haydenbleasel/ultracite) | Linting and formatting |
-
-## Sound System
-
-**17 semantic roles** across 5 categories:
-
-| Category | Roles | Use Case |
-|---|---|---|
-| `interaction` | `tap`, `subtle`, `toggle`, `confirm` | Direct user actions |
-| `overlay` | `open`, `close`, `expand`, `collapse` | Surface state changes |
-| `navigation` | `forward`, `backward`, `tab` | Spatial movement |
-| `notification` | `info`, `success`, `warning`, `error` | System messages |
-| `hero` | `complete`, `milestone` | Celebratory moments (disabled by default) |
-
-**9 sound packs:** `soft`, `aero` (default), `arcade`, `organic`, `glass`, `industrial`, `minimal`, `retro`, `crisp`
-
-All built-in sound packs are synthesized at runtime via the Web Audio API — no audio files, no base64 blobs, no network requests for built-in audio. Custom role overrides may instead load audio from URLs or base64 data URIs at runtime.
+---
 
 ## Configuration
 
+After installation, a `sensory.config.js` file is created at your project root. Pass it to the provider at runtime:
+
 ```tsx
-<SensoryUIProvider config={{
-  theme: "arcade",           // Sound pack
-  volume: 0.5,               // Master volume (0–1)
-  categories: {
-    interaction: true,
-    notification: true,
-    hero: false,              // Disabled by default
-  },
-  reducedMotion: "inherit",   // Respects prefers-reduced-motion
-}}>
+import config from "@/sensory.config.js";
+
+<SensoryUIProvider config={config}>{children}</SensoryUIProvider>;
 ```
+
+```js
+// sensory.config.js
+module.exports = {
+	enabled: true, // global kill-switch
+	volume: 0.35, // master volume (0.0 – 1.0)
+	theme: "aero", // active sound pack
+
+	categories: {
+		interaction: true,
+		navigation: true,
+		notification: true,
+		overlay: true,
+		hero: false, // disabled by default — must opt in
+	},
+
+	overrides: {
+		// Map any role to a custom audio file or base64 URI
+		// "interaction.tap": "/sounds/my-click.mp3",
+	},
+
+	reducedMotion: "inherit", // "inherit" | "force-off" | "force-on"
+};
+```
+
+You can also pass config inline to the provider without a config file:
+
+```tsx
+<SensoryUIProvider config={{ theme: "arcade", volume: 0.5 }}>
+	{children}
+</SensoryUIProvider>
+```
+
+---
+
+## Sound Packs
+
+Nine built-in packs — all synthesized via the Web Audio API at runtime. No audio files, no network requests.
+
+| Pack         | Character                                                 |
+| ------------ | --------------------------------------------------------- |
+| `soft`       | Warm, rounded, gentle — felt mallets on soft pads         |
+| `aero`       | Airy, breathy, ethereal — wind through chimes _(default)_ |
+| `arcade`     | 8-bit chiptune — square waves, punchy NES vibe            |
+| `organic`    | Natural, warm, wooden — marimba and wood blocks           |
+| `glass`      | Crystalline, bright — struck glass or bells               |
+| `industrial` | Metallic, harsh, mechanical — machines and metal          |
+| `minimal`    | Clean, sparse, understated — pure tones only              |
+| `retro`      | Analog synth — vintage dual-detuned sawtooth              |
+| `crisp`      | Sharp, defined, precise — tight envelopes                 |
+
+Switch packs with a one-line change:
+
+```js
+// sensory.config.js
+module.exports = { theme: "glass" };
+```
+
+---
+
+## Sound Roles
+
+17 semantic roles across 5 categories. Every sound maps to a meaningful interaction type — nothing is decorative.
+
+### `interaction` — Direct user actions (40–90 ms)
+
+| Role                  | Trigger                         |
+| --------------------- | ------------------------------- |
+| `interaction.tap`     | Primary button click            |
+| `interaction.subtle`  | Slider drag, command keypress   |
+| `interaction.toggle`  | Checkbox, switch, radio, toggle |
+| `interaction.confirm` | Form submit, save confirm       |
+
+### `overlay` — Surface open / close (120–300 ms)
+
+| Role               | Trigger                               |
+| ------------------ | ------------------------------------- |
+| `overlay.open`     | Dialog, sheet, dropdown open          |
+| `overlay.close`    | Dialog, sheet, dropdown close         |
+| `overlay.expand`   | Accordion expand, collapsible open    |
+| `overlay.collapse` | Accordion collapse, collapsible close |
+
+### `navigation` — Moving through space (100–250 ms)
+
+| Role                  | Trigger                              |
+| --------------------- | ------------------------------------ |
+| `navigation.forward`  | Next step, next page, carousel next  |
+| `navigation.backward` | Back button, previous, carousel prev |
+| `navigation.tab`      | Tab switch, segment switch           |
+
+### `notification` — System feedback (200–600 ms)
+
+| Role                   | Trigger                          |
+| ---------------------- | -------------------------------- |
+| `notification.info`    | Info toast, passive alert        |
+| `notification.success` | Success toast, form saved        |
+| `notification.warning` | Quota alert, confirmation needed |
+| `notification.error`   | Error toast, connection failed   |
+
+### `hero` — Celebratory moments (800–1800 ms) _(disabled by default)_
+
+| Role             | Trigger                           |
+| ---------------- | --------------------------------- |
+| `hero.complete`  | Checklist complete, upload done   |
+| `hero.milestone` | Onboarding finished, first action |
+
+> Hero sounds must be explicitly enabled in `sensory.config.js` via `categories: { hero: true }`.
+
+---
+
+## Available Components
+
+25 installable components. Each is a drop-in replacement for its shadcn/ui counterpart with an added `sound` prop.
+
+|                   |                 |                |
+| ----------------- | --------------- | -------------- |
+| `accordion`       | `alert-dialog`  | `button`       |
+| `carousel`        | `checkbox`      | `collapsible`  |
+| `command`         | `context-menu`  | `dialog`       |
+| `drawer`          | `dropdown-menu` | `menubar`      |
+| `navigation-menu` | `pagination`    | `popover`      |
+| `radio-group`     | `select`        | `sheet`        |
+| `sidebar`         | `slider`        | `switch`       |
+| `tabs`            | `toggle`        | `toggle-group` |
+| `core`            |                 |                |
+
+Install any component individually:
+
+```bash
+npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-<name>
+# e.g.
+npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-tabs
+```
+
+---
 
 ## Development
 
 ```bash
-npm install       # Install dependencies
-npm run dev       # Start dev server (http://localhost:3000)
-npm run build     # Production build
-npm run check     # Lint and format check (Biome/Ultracite)
-npm run fix       # Auto-fix lint and format issues
+# Clone and install
+git clone https://github.com/SatyamVyas04/sensory-ui.git
+cd sensory-ui
+npm install
+
+# Start dev server
+npm run dev
+
+# Lint & format
+npm run check
+npm run fix
+
+# Build registry
+npm run registry:build
 ```
 
-## Accessibility
+The dev server runs the landing page at `http://localhost:3000`, including the interactive component showcase. Registry manifests are served from `app/r/[name]/route.ts`.
 
-- Respects `prefers-reduced-motion` (suppresses sounds when enabled)
-- Global kill-switch via `enabled: false` config
-- Per-category toggles to disable sound groups
-- Every audio cue has a visual equivalent — sound enhances, never replaces
-- `sound={false}` on any component to opt out
+---
 
 ## License
 
-MIT
+[MIT](./LICENSE) — free to use in personal and commercial projects.
+
+---
+
+<div align="center">
+  <p>Built by <a href="https://twitter.com/SatyamVyas04">@SatyamVyas04</a></p>
+</div>
