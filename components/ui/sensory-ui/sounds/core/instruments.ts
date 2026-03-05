@@ -95,7 +95,7 @@ export const INDUSTRIAL_INSTRUMENT: InstrumentConfig = {
   q: 12,
   oscType: "sawtooth",
   decayMult: 0.6,
-  gainMult: 1.2,
+  gainMult: 1.0,
   pitchMult: 0.7,
 };
 

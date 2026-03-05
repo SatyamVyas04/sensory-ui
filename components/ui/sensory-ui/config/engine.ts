@@ -86,6 +86,9 @@ export async function decodeAudioData(source: string): Promise<AudioBuffer> {
 
   const ctx = getAudioContext();
   const response = await fetch(source);
+  if (!response.ok) {
+    throw new Error(`[sensory-ui] Failed to fetch audio: ${response.status} ${response.statusText}`);
+  }
   const arrayBuffer = await response.arrayBuffer();
   const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
 
