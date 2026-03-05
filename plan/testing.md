@@ -11,7 +11,7 @@
 npm install
 
 # Ensure TypeScript compiles without errors
-npx -p typescript tsc --noEmit
+npx tsc --noEmit
 ```
 
 ---
@@ -21,7 +21,7 @@ npx -p typescript tsc --noEmit
 The fastest way to validate all sensory-ui modules:
 
 ```bash
-npx -p typescript tsc --noEmit
+npx tsc --noEmit
 ```
 
 This checks:
@@ -69,9 +69,21 @@ Validates:
 
 ## 4. Linting
 
+### Biome (primary linter, sensory-ui files only)
+
+```bash
+npm run check
+```
+
+Runs `ultracite check` (Biome-based). Scopes to `components/ui/sensory-ui/**/*` via `biome.jsonc`.
+
+### ESLint (Next.js rules, full project)
+
 ```bash
 npm run lint
 ```
+
+Runs ESLint with `eslint-config-next` for React hooks, accessibility, and import rules.
 
 ---
 
@@ -292,6 +304,52 @@ This is handled by `activePlayback` tracking in `engine.ts`, which stops the pre
 |---------|---------|
 | `npm run dev` | Start dev server for interactive testing |
 | `npm run build` | Full production build |
-| `npm run lint` | ESLint check |
-| `npx -p typescript tsc --noEmit` | TypeScript compilation check |
+| `npm run check` | Biome/Ultracite lint (sensory-ui files only) |
+| `npm run lint` | ESLint check (full project, Next.js rules) |
+| `npx tsc --noEmit` | TypeScript compilation check |
 | `npm run registry:build` | Generate registry JSON files |
+
+---
+
+## Component-by-Component Registry Validation
+
+After running `npm run registry:build`, validate each component's registry JSON individually:
+
+```bash
+# Validate all built registry JSON files exist and have content
+for name in core accordion alert-dialog button carousel checkbox collapsible \
+  command context-menu dialog drawer dropdown-menu menubar navigation-menu \
+  pagination popover radio-group select sheet sidebar slider switch tabs \
+  toggle toggle-group; do
+  file="public/r/sensory-ui-${name}.json"
+  if [ -f "$file" ]; then
+    files=$(python3 -c "import json; print(len(json.load(open('$file')).get('files',[])))")
+    echo "✓ sensory-ui-${name} (${files} files)"
+  else
+    echo "✗ MISSING: $file"
+  fi
+done
+
+# Validate meta-block
+file="public/r/sensory-ui.json"
+deps=$(python3 -c "import json; print(len(json.load(open('$file')).get('registryDependencies',[])))")
+echo "✓ sensory-ui meta-block (${deps} dependencies)"
+```
+
+### Individual component file checks
+
+```bash
+# Check that each component's built JSON has inline file content
+python3 -c "
+import json, glob
+for f in sorted(glob.glob('public/r/sensory-ui-*.json')):
+    d = json.load(open(f))
+    name = d.get('name','?')
+    files = d.get('files',[])
+    empty = [x['path'] for x in files if not x.get('content')]
+    if empty:
+        print(f'✗ {name}: files missing content: {empty}')
+    else:
+        print(f'✓ {name}: {len(files)} file(s) with content')
+"
+```
