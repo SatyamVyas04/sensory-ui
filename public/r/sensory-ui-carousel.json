@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sensory-ui-carousel",
+  "title": "Sensory Carousel",
+  "description": "Carousel with navigation sounds on prev/next buttons.",
+  "registryDependencies": [
+    "sensory-ui-core",
+    "carousel"
+  ],
+  "files": [
+    {
+      "path": "components/ui/sensory-ui/carousel.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport {\n  type CarouselApi,\n  Carousel,\n  CarouselContent,\n  CarouselItem,\n  CarouselPrevious as BaseCarouselPrevious,\n  CarouselNext as BaseCarouselNext,\n  useCarousel,\n} from \"@/components/ui/carousel\";\nimport { useSensoryUI } from \"@/components/ui/sensory-ui/config/provider\";\nimport type { SoundRole } from \"@/components/ui/sensory-ui/config/sound-roles\";\n\nconst DEFAULT_CAROUSEL_PREV_SOUND = \"navigation.backward\" as const;\nconst DEFAULT_CAROUSEL_NEXT_SOUND = \"navigation.forward\" as const;\n\nfunction CarouselPrevious({\n  sound,\n  volume,\n  onClick,\n  ...props\n}: React.ComponentProps<typeof BaseCarouselPrevious> & {\n  /** Sound to play when scrolling to the previous slide. Defaults to \"navigation.backward\". Set to false to disable. */\n  sound?: SoundRole | false;\n  /** Per-component volume multiplier (0–1). Stacks with master volume. */\n  volume?: number;\n}) {\n  const { playSound } = useSensoryUI();\n  const { scrollPrev } = useCarousel();\n\n  const handleClick = React.useCallback(\n    (e: React.MouseEvent<HTMLButtonElement>) => {\n      if (sound !== false) void playSound(sound ?? DEFAULT_CAROUSEL_PREV_SOUND, { volume });\n      scrollPrev();\n      onClick?.(e);\n    },\n    [sound, volume, playSound, scrollPrev, onClick]\n  );\n\n  return <BaseCarouselPrevious onClick={handleClick} {...props} />;\n}\n\nfunction CarouselNext({\n  sound,\n  volume,\n  onClick,\n  ...props\n}: React.ComponentProps<typeof BaseCarouselNext> & {\n  /** Sound to play when scrolling to the next slide. Defaults to \"navigation.forward\". Set to false to disable. */\n  sound?: SoundRole | false;\n  /** Per-component volume multiplier (0–1). Stacks with master volume. */\n  volume?: number;\n}) {\n  const { playSound } = useSensoryUI();\n  const { scrollNext } = useCarousel();\n\n  const handleClick = React.useCallback(\n    (e: React.MouseEvent<HTMLButtonElement>) => {\n      if (sound !== false) void playSound(sound ?? DEFAULT_CAROUSEL_NEXT_SOUND, { volume });\n      scrollNext();\n      onClick?.(e);\n    },\n    [sound, volume, playSound, scrollNext, onClick]\n  );\n\n  return <BaseCarouselNext onClick={handleClick} {...props} />;\n}\n\nexport {\n  type CarouselApi,\n  Carousel,\n  CarouselContent,\n  CarouselItem,\n  CarouselPrevious,\n  CarouselNext,\n  useCarousel,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

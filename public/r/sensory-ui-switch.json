@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sensory-ui-switch",
+  "title": "Sensory Switch",
+  "description": "Switch with toggle sound.",
+  "registryDependencies": [
+    "sensory-ui-core",
+    "switch"
+  ],
+  "files": [
+    {
+      "path": "components/ui/sensory-ui/switch.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Switch as BaseSwitch } from \"@/components/ui/switch\";\nimport { useSensoryUI } from \"@/components/ui/sensory-ui/config/provider\";\nimport type { SoundRole } from \"@/components/ui/sensory-ui/config/sound-roles\";\n\nconst DEFAULT_SWITCH_SOUND = \"interaction.toggle\" as const;\n\nfunction Switch({\n  sound,\n  volume,\n  onCheckedChange,\n  ...props\n}: React.ComponentProps<typeof BaseSwitch> & {\n  /** Sound to play when the switch is toggled. Defaults to \"interaction.toggle\". Set to false to disable. */\n  sound?: SoundRole | false;\n  /** Per-component volume multiplier (0–1). Stacks with master volume. */\n  volume?: number;\n}) {\n  const { playSound } = useSensoryUI();\n\n  const handleCheckedChange = React.useCallback(\n    (checked: boolean) => {\n      if (sound !== false) void playSound(sound ?? DEFAULT_SWITCH_SOUND, { volume });\n      onCheckedChange?.(checked);\n    },\n    [sound, volume, playSound, onCheckedChange]\n  );\n\n  return <BaseSwitch onCheckedChange={handleCheckedChange} {...props} />;\n}\n\nexport { Switch };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

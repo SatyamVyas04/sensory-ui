@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sensory-ui-collapsible",
+  "title": "Sensory Collapsible",
+  "description": "Collapsible with open/close sounds.",
+  "registryDependencies": [
+    "sensory-ui-core",
+    "collapsible"
+  ],
+  "files": [
+    {
+      "path": "components/ui/sensory-ui/collapsible.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport {\n  Collapsible as BaseCollapsible,\n  CollapsibleContent,\n  CollapsibleTrigger,\n} from \"@/components/ui/collapsible\";\nimport { useSensoryUI } from \"@/components/ui/sensory-ui/config/provider\";\nimport type { SoundRole } from \"@/components/ui/sensory-ui/config/sound-roles\";\n\nconst DEFAULT_COLLAPSIBLE_OPEN_SOUND = \"overlay.expand\" as const;\nconst DEFAULT_COLLAPSIBLE_CLOSE_SOUND = \"overlay.collapse\" as const;\n\nfunction Collapsible({\n  openSound,\n  closeSound,\n  volume,\n  onOpenChange,\n  ...props\n}: React.ComponentProps<typeof BaseCollapsible> & {\n  /** Sound to play when the collapsible expands. Defaults to \"overlay.expand\". Set to false to disable. */\n  openSound?: SoundRole | false;\n  /** Sound to play when the collapsible collapses. Defaults to \"overlay.collapse\". Set to false to disable. */\n  closeSound?: SoundRole | false;\n  /** Per-component volume multiplier (0–1). Stacks with master volume. */\n  volume?: number;\n}) {\n  const { playSound } = useSensoryUI();\n\n  const handleOpenChange = React.useCallback(\n    (open: boolean) => {\n      if (open && openSound !== false) {\n        void playSound(openSound ?? DEFAULT_COLLAPSIBLE_OPEN_SOUND, { volume });\n      } else if (!open && closeSound !== false) {\n        void playSound(closeSound ?? DEFAULT_COLLAPSIBLE_CLOSE_SOUND, { volume });\n      }\n      onOpenChange?.(open);\n    },\n    [openSound, closeSound, volume, playSound, onOpenChange]\n  );\n\n  return <BaseCollapsible onOpenChange={handleOpenChange} {...props} />;\n}\n\nexport { Collapsible, CollapsibleContent, CollapsibleTrigger };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sensory-ui-accordion",
+  "title": "Sensory Accordion",
+  "description": "Accordion with expand/collapse sounds.",
+  "registryDependencies": [
+    "sensory-ui-core",
+    "accordion"
+  ],
+  "files": [
+    {
+      "path": "components/ui/sensory-ui/accordion.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport {\n  Accordion as BaseAccordion,\n  AccordionItem,\n  AccordionTrigger,\n  AccordionContent,\n} from \"@/components/ui/accordion\";\nimport { useSensoryUI } from \"@/components/ui/sensory-ui/config/provider\";\nimport type { SoundRole } from \"@/components/ui/sensory-ui/config/sound-roles\";\n\nconst DEFAULT_ACCORDION_EXPAND_SOUND = \"overlay.expand\" as const;\nconst DEFAULT_ACCORDION_COLLAPSE_SOUND = \"overlay.collapse\" as const;\n\nfunction Accordion({\n  expandSound,\n  collapseSound,\n  volume,\n  onValueChange,\n  ...props\n}: React.ComponentProps<typeof BaseAccordion> & {\n  /**\n   * Sound to play when an accordion item expands.\n   * Defaults to \"overlay.expand\". Set to false to disable.\n   */\n  expandSound?: SoundRole | false;\n  /**\n   * Sound to play when an accordion item collapses.\n   * Defaults to \"overlay.collapse\". Set to false to disable.\n   */\n  collapseSound?: SoundRole | false;\n  /** Per-component volume multiplier (0–1). Stacks with master volume. */\n  volume?: number;\n}) {\n  const { playSound } = useSensoryUI();\n  const prevValueRef = React.useRef<string | string[] | undefined>(undefined);\n\n  // Unified handler that works for both type=\"single\" and type=\"multiple\"\n  const handleValueChange = React.useCallback(\n    (value: string & string[]) => {\n      const prev = prevValueRef.current;\n\n      if (expandSound !== false || collapseSound !== false) {\n        const isExpanding = (() => {\n          if (Array.isArray(value)) {\n            // type=\"multiple\"\n            const prevLen = Array.isArray(prev) ? prev.length : 0;\n            return value.length > prevLen;\n          }\n          // type=\"single\": non-empty string = opening, empty string = closing\n          return value !== \"\";\n        })();\n\n        if (isExpanding && expandSound !== false) {\n          void playSound(expandSound ?? DEFAULT_ACCORDION_EXPAND_SOUND, { volume });\n        } else if (!isExpanding && collapseSound !== false) {\n          void playSound(collapseSound ?? DEFAULT_ACCORDION_COLLAPSE_SOUND, { volume });\n        }\n      }\n\n      prevValueRef.current = value;\n      // Cast needed because Radix overloads onValueChange per type\n      (onValueChange as ((v: string & string[]) => void) | undefined)?.(value);\n    },\n    [expandSound, collapseSound, volume, playSound, onValueChange]\n  );\n\n  return <BaseAccordion onValueChange={handleValueChange} {...props} />;\n}\n\nexport { Accordion, AccordionItem, AccordionTrigger, AccordionContent };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

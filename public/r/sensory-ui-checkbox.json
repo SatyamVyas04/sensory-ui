@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sensory-ui-checkbox",
+  "title": "Sensory Checkbox",
+  "description": "Checkbox with check sound.",
+  "registryDependencies": [
+    "sensory-ui-core",
+    "checkbox"
+  ],
+  "files": [
+    {
+      "path": "components/ui/sensory-ui/checkbox.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Checkbox as BaseCheckbox } from \"@/components/ui/checkbox\";\nimport { useSensoryUI } from \"@/components/ui/sensory-ui/config/provider\";\nimport type { SoundRole } from \"@/components/ui/sensory-ui/config/sound-roles\";\n\nconst DEFAULT_CHECKBOX_SOUND = \"interaction.toggle\" as const;\n\nfunction Checkbox({\n  sound,\n  volume,\n  onCheckedChange,\n  ...props\n}: React.ComponentProps<typeof BaseCheckbox> & {\n  /** Sound to play when the checked state changes. Defaults to \"interaction.toggle\". Set to false to disable. */\n  sound?: SoundRole | false;\n  /** Per-component volume multiplier (0–1). Stacks with master volume. */\n  volume?: number;\n}) {\n  const { playSound } = useSensoryUI();\n\n  const handleCheckedChange = React.useCallback(\n    (checked: boolean | \"indeterminate\") => {\n      if (sound !== false && checked !== \"indeterminate\") {\n        void playSound(sound ?? DEFAULT_CHECKBOX_SOUND, { volume });\n      }\n      onCheckedChange?.(checked);\n    },\n    [sound, volume, playSound, onCheckedChange]\n  );\n\n  return <BaseCheckbox onCheckedChange={handleCheckedChange} {...props} />;\n}\n\nexport { Checkbox };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

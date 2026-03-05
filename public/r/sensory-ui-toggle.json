@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sensory-ui-toggle",
+  "title": "Sensory Toggle",
+  "description": "Toggle with pressed state change sound.",
+  "registryDependencies": [
+    "sensory-ui-core",
+    "toggle"
+  ],
+  "files": [
+    {
+      "path": "components/ui/sensory-ui/toggle.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport {\n  Toggle as BaseToggle,\n  toggleVariants,\n} from \"@/components/ui/toggle\";\nimport { useSensoryUI } from \"@/components/ui/sensory-ui/config/provider\";\nimport type { SoundRole } from \"@/components/ui/sensory-ui/config/sound-roles\";\n\nconst DEFAULT_TOGGLE_SOUND = \"interaction.toggle\" as const;\n\nfunction Toggle({\n  sound,\n  volume,\n  onPressedChange,\n  ...props\n}: React.ComponentProps<typeof BaseToggle> & {\n  /** Sound to play whenever the pressed state changes. Defaults to \"interaction.toggle\". Set to false to disable. */\n  sound?: SoundRole | false;\n  /** Per-component volume multiplier (0–1). Stacks with master volume. */\n  volume?: number;\n}) {\n  const { playSound } = useSensoryUI();\n\n  const handlePressedChange = React.useCallback(\n    (pressed: boolean) => {\n      if (sound !== false) void playSound(sound ?? DEFAULT_TOGGLE_SOUND, { volume });\n      onPressedChange?.(pressed);\n    },\n    [sound, volume, playSound, onPressedChange]\n  );\n\n  return <BaseToggle onPressedChange={handlePressedChange} {...props} />;\n}\n\nexport { Toggle, toggleVariants };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

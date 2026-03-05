@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sensory-ui-dialog",
+  "title": "Sensory Dialog",
+  "description": "Dialog with open/close sounds.",
+  "registryDependencies": [
+    "sensory-ui-core",
+    "dialog"
+  ],
+  "files": [
+    {
+      "path": "components/ui/sensory-ui/dialog.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport {\n  Dialog as BaseDialog,\n  DialogClose,\n  DialogContent,\n  DialogDescription,\n  DialogFooter,\n  DialogHeader,\n  DialogOverlay,\n  DialogPortal,\n  DialogTitle,\n  DialogTrigger,\n} from \"@/components/ui/dialog\";\nimport { useSensoryUI } from \"@/components/ui/sensory-ui/config/provider\";\nimport type { SoundRole } from \"@/components/ui/sensory-ui/config/sound-roles\";\n\nfunction Dialog({\n  sound,\n  closeSound,\n  volume,\n  onOpenChange,\n  ...props\n}: React.ComponentProps<typeof BaseDialog> & {\n  /** Sound to play when the dialog opens. Defaults to \"overlay.open\". Set to false to disable. */\n  sound?: SoundRole | false;\n  /** Sound to play when the dialog closes. Defaults to \"overlay.close\". Set to false to disable. */\n  closeSound?: SoundRole | false;\n  /** Per-component volume multiplier (0–1). Stacks with master volume. */\n  volume?: number;\n}) {\n  const { playSound } = useSensoryUI();\n\n  const handleOpenChange = React.useCallback(\n    (open: boolean) => {\n      if (open && sound !== false) {\n        void playSound(sound ?? \"overlay.open\", { volume });\n      } else if (!open && closeSound !== false) {\n        void playSound(closeSound ?? \"overlay.close\", { volume });\n      }\n      onOpenChange?.(open);\n    },\n    [sound, closeSound, volume, playSound, onOpenChange]\n  );\n\n  return <BaseDialog onOpenChange={handleOpenChange} {...props} />;\n}\n\nexport {\n  Dialog,\n  DialogClose,\n  DialogContent,\n  DialogDescription,\n  DialogFooter,\n  DialogHeader,\n  DialogOverlay,\n  DialogPortal,\n  DialogTitle,\n  DialogTrigger,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}
