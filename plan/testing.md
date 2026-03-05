@@ -69,21 +69,17 @@ Validates:
 
 ## 4. Linting
 
-### Biome (primary linter, sensory-ui files only)
-
 ```bash
 npm run check
 ```
 
 Runs `ultracite check` (Biome-based). Scopes to `components/ui/sensory-ui/**/*` via `biome.jsonc`.
 
-### ESLint (Next.js rules, full project)
+Auto-fix issues:
 
 ```bash
-npm run lint
+npm run fix
 ```
-
-Runs ESLint with `eslint-config-next` for React hooks, accessibility, and import rules.
 
 ---
 
@@ -305,7 +301,7 @@ This is handled by `activePlayback` tracking in `engine.ts`, which stops the pre
 | `npm run dev` | Start dev server for interactive testing |
 | `npm run build` | Full production build |
 | `npm run check` | Biome/Ultracite lint (sensory-ui files only) |
-| `npm run lint` | ESLint check (full project, Next.js rules) |
+| `npm run fix` | Biome/Ultracite auto-fix |
 | `npx tsc --noEmit` | TypeScript compilation check |
 | `npm run registry:build` | Generate registry JSON files |
 
