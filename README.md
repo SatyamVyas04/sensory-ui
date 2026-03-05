@@ -128,7 +128,7 @@ sensory-ui/
 
 **9 sound packs:** `soft`, `aero` (default), `arcade`, `organic`, `glass`, `industrial`, `minimal`, `retro`, `crisp`
 
-All sounds are synthesized at runtime via the Web Audio API — no audio files, no base64 blobs, no network requests.
+All built-in sound packs are synthesized at runtime via the Web Audio API — no audio files, no base64 blobs, no network requests for built-in audio. Custom role overrides may instead load audio from URLs or base64 data URIs at runtime.
 
 ## Configuration
 

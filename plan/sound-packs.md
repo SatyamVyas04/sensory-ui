@@ -5,8 +5,9 @@
 Sound packs are sets of `SoundSynthesizer` functions that cover all 17 sound roles. Each pack has a
 distinct character - swap between them by changing `theme` in `sensory.config.js`.
 
-All packs generate audio **programmatically via the Web Audio API** - no audio files,
-no base64 blobs, no network requests.
+All built-in packs generate audio **programmatically via the Web Audio API** - no audio files,
+no base64 blobs, no network requests for built-in audio. Custom role overrides (`config.overrides`)
+may instead load audio from URLs or base64 data URIs at runtime.
 
 > Credit: synthesis patterns adapted from
 > [Generating Sounds with AI - userinterface.wiki](https://www.userinterface.wiki/generating-sounds-with-ai)

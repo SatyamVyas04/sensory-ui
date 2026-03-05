@@ -12,7 +12,7 @@ The core idea is simple: UI interactions have meaning, and sound can reinforce t
 
 **Target platform:** Next.js (App Router and Pages Router) + React  
 **Distribution:** shadcn/ui registry (CLI installable)  
-**Runtime footprint:** Minimal - audio is synthesized programmatically via the Web Audio API (no public/ assets, no base64 blobs), no global side effects, no forced re-renders
+**Runtime footprint:** Minimal - built-in audio is synthesized programmatically via the Web Audio API (no public/ assets, no base64 blobs for built-in packs). Custom role overrides may load audio from URLs or base64 data URIs. No global side effects, no forced re-renders
 
 ---
 
@@ -127,9 +127,10 @@ components/
       toggle-group.tsx
       toggle.tsx
 
-> Sounds are **synthesized programmatically** via the Web Audio API.
-> `SoundSynthesizer` functions in `sensory-ui/sounds/` generate audio at runtime via the Web Audio API -
-> no files in `public/sounds/`, no base64 blobs, no network requests.
+> Built-in sounds are **synthesized programmatically** via the Web Audio API.
+> `SoundSynthesizer` functions in `sensory-ui/sounds/` generate audio at runtime -
+> no files in `public/sounds/`, no base64 blobs, no network requests for built-in packs.
+> Custom role overrides (`config.overrides`) may load audio from URLs or base64 data URIs.
 
 sensory.config.js             ← optional project-root config file
 registry.json                 ← shadcn registry manifest (for `shadcn build`)

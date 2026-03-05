@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/sensory-ui/button";
 const ease = [0.32, 0.72, 0, 1] as const;
 
 interface HeroProps {
-  stars: number;
+  stars: number | null;
 }
 
 export function Hero({ stars }: HeroProps) {
@@ -123,7 +123,7 @@ export function Hero({ stars }: HeroProps) {
                 target="_blank"
               >
                 <IconBrandGithub aria-hidden="true" className="size-3.5" />
-                {stars > 0 && (
+                {stars != null && (
                   <span className="hidden text-muted-foreground tabular-nums sm:inline">
                     {stars} &#9733;
                   </span>

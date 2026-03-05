@@ -12,19 +12,19 @@ export const metadata: Metadata = {
   },
 };
 
-async function getStars(): Promise<number> {
+async function getStars(): Promise<number | null> {
   try {
     const res = await fetch(
       "https://api.github.com/repos/SatyamVyas04/sensory-ui",
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) {
-      return 0;
+      return null;
     }
     const data = await res.json();
     return (data.stargazers_count as number) ?? 0;
   } catch {
-    return 0;
+    return null;
   }
 }
 
