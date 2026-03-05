@@ -11,7 +11,7 @@
 npm install
 
 # Ensure TypeScript compiles without errors
-npx -p typescript tsc --noEmit
+npx tsc --noEmit
 ```
 
 ---
@@ -21,7 +21,7 @@ npx -p typescript tsc --noEmit
 The fastest way to validate all sensory-ui modules:
 
 ```bash
-npx -p typescript tsc --noEmit
+npx tsc --noEmit
 ```
 
 This checks:
@@ -70,7 +70,15 @@ Validates:
 ## 4. Linting
 
 ```bash
-npm run lint
+npm run check
+```
+
+Runs `ultracite check` (Biome-based). Scopes to `components/ui/sensory-ui/**/*` via `biome.jsonc`.
+
+Auto-fix issues:
+
+```bash
+npm run fix
 ```
 
 ---
@@ -292,6 +300,95 @@ This is handled by `activePlayback` tracking in `engine.ts`, which stops the pre
 |---------|---------|
 | `npm run dev` | Start dev server for interactive testing |
 | `npm run build` | Full production build |
-| `npm run lint` | ESLint check |
-| `npx -p typescript tsc --noEmit` | TypeScript compilation check |
+| `npm run check` | Biome/Ultracite lint (sensory-ui files only) |
+| `npm run fix` | Biome/Ultracite auto-fix |
+| `npx tsc --noEmit` | TypeScript compilation check |
 | `npm run registry:build` | Generate registry JSON files |
+
+---
+
+## Component-by-Component Registry Validation
+
+After running `npm run registry:build`, validate each component's registry JSON individually:
+
+```bash
+# Validate all built registry JSON files exist and have content
+fail=0
+for name in core accordion alert-dialog button carousel checkbox collapsible \
+  command context-menu dialog drawer dropdown-menu menubar navigation-menu \
+  pagination popover radio-group select sheet sidebar slider switch tabs \
+  toggle toggle-group; do
+  file="public/r/sensory-ui-${name}.json"
+  if [ -f "$file" ]; then
+    files=$(python3 -c "
+import json, sys
+try:
+    print(len(json.load(open('$file')).get('files',[])))
+except Exception as e:
+    print(f'ERROR: {e}', file=sys.stderr); sys.exit(1)
+"); status=$?
+    if [ $status -ne 0 ] || [ "$files" = "0" ]; then
+      echo "✗ sensory-ui-${name}: parse error or 0 files"
+      fail=1
+    else
+      echo "✓ sensory-ui-${name} (${files} files)"
+    fi
+  else
+    echo "✗ MISSING: $file"
+    fail=1
+  fi
+done
+
+# Validate meta-block
+file="public/r/sensory-ui.json"
+if [ -f "$file" ]; then
+  deps=$(python3 -c "
+import json, sys
+try:
+    print(len(json.load(open('$file')).get('registryDependencies',[])))
+except Exception as e:
+    print(f'ERROR: {e}', file=sys.stderr); sys.exit(1)
+"); status=$?
+  if [ $status -ne 0 ] || [ "$deps" = "0" ]; then
+    echo "✗ sensory-ui meta-block: parse error or 0 dependencies"
+    fail=1
+  else
+    echo "✓ sensory-ui meta-block (${deps} dependencies)"
+  fi
+else
+  echo "✗ MISSING: $file"
+  fail=1
+fi
+
+if [ "$fail" -ne 0 ]; then
+  echo "Registry validation failed"
+  exit 1
+fi
+echo "All registry validations passed"
+```
+
+### Individual component file checks
+
+```bash
+# Check that each component's built JSON has inline file content
+python3 -c "
+import json, glob, sys
+fail = False
+for f in sorted(glob.glob('public/r/sensory-ui-*.json')):
+    try:
+        d = json.load(open(f))
+        name = d.get('name','?')
+        files = d.get('files',[])
+        empty = [x['path'] for x in files if not x.get('content')]
+        if empty:
+            print(f'✗ {name}: files missing content: {empty}')
+            fail = True
+        else:
+            print(f'✓ {name}: {len(files)} file(s) with content')
+    except Exception as e:
+        print(f'✗ {f}: failed to parse — {e}', file=sys.stderr)
+        fail = True
+if fail:
+    sys.exit(1)
+"
+```
