@@ -99,8 +99,8 @@ For anything not covered by a patched component, use the `usePlaySound` hook:
 import { usePlaySound } from "@/components/ui/sensory-ui/config/use-play-sound";
 
 function MyComponent() {
-	const play = usePlaySound();
-	return <div onMouseEnter={() => play("interaction.subtle")}>Hover me</div>;
+	const { play } = usePlaySound({ sound: "interaction.subtle" });
+	return <div onMouseEnter={play}>Hover me</div>;
 }
 ```
 

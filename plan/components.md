@@ -294,22 +294,41 @@ Rules for patched components:
 
 ---
 
-## Using the `usePlaySound` Hook (v1.5+)
+## Using the `usePlaySound` Hook
 
 For components not yet wrapped, or for custom interaction points, the `usePlaySound` hook lets any client component trigger a sound:
 
 ```ts
 // components/ui/sensory-ui/config/use-play-sound.ts
 
+"use client";
+
+import * as React from "react";
 import { useSensoryUI } from "./provider";
 import type { SoundRole } from "./sound-roles";
-import type { PlaySoundOptions } from "./engine";
 
-export function usePlaySound() {
-	const { playSound } = useSensoryUI();
-	return (role: SoundRole, options?: PlaySoundOptions) => {
-		void playSound(role, options);
-	};
+export interface UsePlaySoundOptions {
+	/** SoundRole (e.g. "interaction.tap") or an absolute URL to a custom audio file. */
+	sound: SoundRole | (string & {});
+	/** Volume multiplier for this specific sound (0–1). Stacks with master volume. */
+	volume?: number;
+}
+
+export interface UsePlaySoundReturn {
+	/** Imperatively trigger the sound. No-ops if the provider is disabled or muted. */
+	play: () => void;
+	/** Whether audio is currently enabled. */
+	enabled: boolean;
+}
+
+export function usePlaySound({ sound, volume }: UsePlaySoundOptions): UsePlaySoundReturn {
+	const { playSound, enabled } = useSensoryUI();
+
+	const play = React.useCallback(() => {
+		void playSound(sound as SoundRole, { volume });
+	}, [playSound, sound, volume]);
+
+	return { play, enabled };
 }
 ```
 
