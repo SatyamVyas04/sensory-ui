@@ -113,7 +113,7 @@ export interface SensoryUIConfig {
 export const defaultConfig: SensoryUIConfig = {
 	enabled: true,
 	volume: 0.35,
-	theme: "default",
+	theme: "aero",
 	categories: {
 		interaction: true,
 		navigation: true,
@@ -146,7 +146,7 @@ export function mergeConfig(user: Partial<SensoryUIConfig>): SensoryUIConfig {
  * Resolution priority:
  *   1. config.overrides[role]    - user-defined string override (URL or base64)
  *   2. packRegistry[theme][role] - SoundSynthesizer from the active pack
- *   3. packRegistry.default[role]- fallback if theme is unknown
+ *   3. packRegistry.aero[role]   - fallback to "aero" if theme is unknown
  *   4. null                       - category disabled or role not found
  */
 export function resolveRole(

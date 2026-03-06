@@ -7,7 +7,7 @@ import type { SoundRole } from "./sound-roles";
 
 export interface UsePlaySoundOptions {
   /**
-   * SoundRole (e.g. "activation.primary") or an absolute URL to a custom
+   * SoundRole (e.g. "interaction.tap") or an absolute URL to a custom
    * audio file (e.g. "/sounds/custom/beep.mp3").
    */
   sound: SoundRole | (string & {});
@@ -35,7 +35,7 @@ export interface UsePlaySoundReturn {
  *
  * @example
  * ```tsx
- * const { play } = usePlaySound({ sound: "notifications.success" });
+ * const { play } = usePlaySound({ sound: "notification.success" });
  * // ...
  * <button onClick={play}>Save</button>
  * ```
