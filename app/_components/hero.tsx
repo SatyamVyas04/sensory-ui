@@ -122,7 +122,7 @@ export function Hero({ stars }: HeroProps) {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative flex h-screen max-h-225 items-center overflow-hidden"
+      className="relative flex max-h-225 min-h-screen items-center overflow-hidden sm:h-screen sm:min-h-auto"
     >
       {/* Skip to main content */}
       <a
@@ -274,7 +274,7 @@ export function Hero({ stars }: HeroProps) {
               sound="interaction.toggle"
             >
               <Link
-                href="/docs"
+                href="https://github.com/SatyamVyas04/sensory-ui#readme"
                 onClick={() =>
                   posthog.capture("hero_cta_clicked", {
                     button: "get_started",

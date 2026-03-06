@@ -110,6 +110,11 @@ export function Inspiration() {
                   <a
                     className="underline underline-offset-2 hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     href="https://www.userinterface.wiki/sounds-on-the-web"
+                    onClick={() =>
+                      posthog.capture("inspiration_reference_clicked", {
+                        reference: "sounds_on_the_web",
+                      })
+                    }
                     rel="noopener noreferrer"
                     target="_blank"
                   >
@@ -135,6 +140,11 @@ export function Inspiration() {
                   <a
                     className="underline underline-offset-2 hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     href="https://m2.material.io/design/sound/about-sound.html"
+                    onClick={() =>
+                      posthog.capture("inspiration_reference_clicked", {
+                        reference: "material_design_about_sound",
+                      })
+                    }
                     rel="noopener noreferrer"
                     target="_blank"
                   >

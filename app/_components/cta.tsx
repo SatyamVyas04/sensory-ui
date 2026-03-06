@@ -32,6 +32,9 @@ export function CTA() {
         <motion.div
           className="relative z-10 p-12 text-center sm:p-16"
           initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
+          onViewportEnter={() =>
+            posthog.capture("section_viewed", { section: "cta" })
+          }
           transition={{ duration: 0.25, ease }}
           viewport={{ once: true, margin: "-80px" }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -78,7 +81,7 @@ export function CTA() {
               variant="outline"
             >
               <Link
-                href="/docs"
+                href="https://github.com/SatyamVyas04/sensory-ui#readme"
                 onClick={() =>
                   posthog.capture("cta_clicked", { button: "docs" })
                 }

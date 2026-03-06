@@ -39,7 +39,7 @@ export function Footer() {
               <li>
                 <Link
                   className="transition-colors hover:text-foreground"
-                  href="/docs"
+                  href="https://github.com/SatyamVyas04/sensory-ui#readme"
                   onClick={() =>
                     posthog.capture("footer_link_clicked", { link: "docs" })
                   }
@@ -115,6 +115,11 @@ export function Footer() {
               <a
                 className="underline underline-offset-2 transition-colors hover:text-foreground"
                 href="https://github.com/SatyamVyas04"
+                onClick={() =>
+                  posthog.capture("footer_brand_clicked", {
+                    link: "author_github",
+                  })
+                }
                 rel="noopener noreferrer"
                 target="_blank"
               >

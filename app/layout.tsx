@@ -4,7 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
-
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
@@ -128,6 +129,8 @@ export default function RootLayout({
             <div className="mx-auto min-w-0 max-w-400 border-border border-x bg-background shadow-xl">
               {children}
             </div>
+            <Analytics />
+            <SpeedInsights />
             <Toaster position="bottom-right" />
           </SensoryUIProvider>
         </ThemeProvider>
