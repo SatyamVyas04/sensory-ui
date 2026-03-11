@@ -25,19 +25,20 @@ export function MotionStatusDot({ reducedMotion }: MotionStatusDotProps) {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>
+        <TooltipTrigger
+          aria-label={
+            reducedMotion
+              ? "Reduced motion is on — sounds are silenced"
+              : "Motion enabled — sounds are active"
+          }
+          className="inline-flex cursor-default items-center rounded-full focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1"
+        >
           <span
-            aria-label={
-              reducedMotion
-                ? "Reduced motion is on — sounds are silenced"
-                : "Motion enabled — sounds are active"
-            }
-            className={`inline-block size-2 cursor-default rounded-full ${
+            className={`inline-block size-2 rounded-full ${
               reducedMotion
                 ? "bg-gradient-to-br from-red-400 to-red-600"
                 : "bg-gradient-to-br from-green-400 to-green-600"
             }`}
-            role="img"
           />
         </TooltipTrigger>
         <TooltipContent side="top" sideOffset={6}>

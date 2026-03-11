@@ -192,5 +192,9 @@ export async function closeAudioContext(): Promise<void> {
   if (audioContext) {
     await audioContext.close();
     audioContext = null;
+    // Buffers decoded on the closed context are no longer usable; clear them so
+    // the next getAudioContext() starts with a clean cache.
+    bufferCache.clear();
+    activePlayback = null;
   }
 }
