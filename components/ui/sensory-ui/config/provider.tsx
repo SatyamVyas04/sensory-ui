@@ -36,6 +36,22 @@ export interface SensoryUIContextValue {
   muted: boolean;
   /** Toggle the mute state programmatically. */
   setMuted: (muted: boolean) => void;
+  /**
+   * Whether the sound engine is currently suppressing audio due to
+   * motion-reduction settings. This is `true` in two cases:
+   *
+   * - The OS/browser `prefers-reduced-motion: reduce` media query is active
+   *   **and** `config.reducedMotion` is `"inherit"` (the default).
+   * - `config.reducedMotion` is `"force-off"`, meaning sounds are always
+   *   suppressed regardless of the OS preference (treat as if motion is reduced).
+   *
+   * It is `false` when `config.reducedMotion` is `"force-on"`, even if the
+   * OS preference is active.
+   *
+   * Use this to decide whether to surface a hint to users who report not
+   * hearing sounds.
+   */
+  reducedMotion: boolean;
 }
 
 const SensoryUIContext = React.createContext<SensoryUIContextValue | null>(
@@ -162,8 +178,9 @@ export function SensoryUIProvider({
       volume: config.volume,
       muted,
       setMuted,
+      reducedMotion,
     }),
-    [playSound, shouldPlay, config.volume, muted]
+    [playSound, shouldPlay, config.volume, muted, reducedMotion]
   );
 
   return (

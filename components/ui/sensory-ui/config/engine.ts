@@ -16,6 +16,13 @@ const bufferCache = new Map<string, AudioBuffer>();
 let activePlayback: SoundPlayback | null = null;
 
 export function getAudioContext(): AudioContext {
+  // If the cached context was closed (e.g. after `closeAudioContext()` or a
+  // browser-initiated close), recreate it so playback can recover.
+  if (audioContext?.state === "closed") {
+    audioContext = null;
+    // Buffers decoded on the old context are no longer usable.
+    bufferCache.clear();
+  }
   if (!audioContext) {
     audioContext = new AudioContext();
   }
@@ -117,7 +124,10 @@ export async function playSound(
 
   const ctx = getAudioContext();
 
-  if (ctx.state === "suspended") {
+  // Resume if suspended (autoplay policy) or interrupted (Safari phone-call/tab-switch).
+  // getAudioContext() guarantees the context is never "closed", so checking
+  // for "running" is sufficient.
+  if (ctx.state !== "running") {
     await ctx.resume();
   }
 
@@ -182,5 +192,9 @@ export async function closeAudioContext(): Promise<void> {
   if (audioContext) {
     await audioContext.close();
     audioContext = null;
+    // Buffers decoded on the closed context are no longer usable; clear them so
+    // the next getAudioContext() starts with a clean cache.
+    bufferCache.clear();
+    activePlayback = null;
   }
 }
