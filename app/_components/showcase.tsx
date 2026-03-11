@@ -13,7 +13,7 @@ import {
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundPackName } from "@/components/ui/sensory-ui/config/registry";
 import { ShowcaseGrid } from "./showcase/index";
-import { SoundSuppressedBanner } from "./showcase/sound-suppressed-banner";
+import { MotionStatusDot } from "./showcase/motion-status-dot";
 
 const ease = [0.32, 0.72, 0, 1] as const;
 
@@ -134,12 +134,15 @@ export function Showcase() {
               viewport={{ once: true, margin: "-80px" }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-              <label
-                className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest"
-                htmlFor="sound-pack-selector"
-              >
-                Sound Pack
-              </label>
+              <div className="flex items-center gap-1.5">
+                <label
+                  className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest"
+                  htmlFor="sound-pack-selector"
+                >
+                  Sound Pack
+                </label>
+                <MotionStatusDot reducedMotion={prefersReduced ?? false} />
+              </div>
               <Select
                 onValueChange={(value) => {
                   setSelectedPack(value as SoundPackName);
@@ -204,7 +207,6 @@ export function Showcase() {
               },
             }}
           >
-            <SoundSuppressedBanner />
             <ShowcaseGrid />
           </SensoryUIProvider>
         </div>

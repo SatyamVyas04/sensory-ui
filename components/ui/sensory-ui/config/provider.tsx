@@ -37,12 +37,19 @@ export interface SensoryUIContextValue {
   /** Toggle the mute state programmatically. */
   setMuted: (muted: boolean) => void;
   /**
-   * Whether sounds are currently suppressed because the OS/browser
-   * `prefers-reduced-motion: reduce` media query is active **and** the
-   * `reducedMotion` config option is set to `"inherit"` (the default).
+   * Whether the sound engine is currently suppressing audio due to
+   * motion-reduction settings. This is `true` in two cases:
    *
-   * Use this to surface an in-app hint or debug banner when users report
-   * not hearing any sounds.
+   * - The OS/browser `prefers-reduced-motion: reduce` media query is active
+   *   **and** `config.reducedMotion` is `"inherit"` (the default).
+   * - `config.reducedMotion` is `"force-off"`, meaning sounds are always
+   *   suppressed regardless of the OS preference (treat as if motion is reduced).
+   *
+   * It is `false` when `config.reducedMotion` is `"force-on"`, even if the
+   * OS preference is active.
+   *
+   * Use this to decide whether to surface a hint to users who report not
+   * hearing sounds.
    */
   reducedMotion: boolean;
 }
