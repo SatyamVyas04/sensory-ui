@@ -36,6 +36,15 @@ export interface SensoryUIContextValue {
   muted: boolean;
   /** Toggle the mute state programmatically. */
   setMuted: (muted: boolean) => void;
+  /**
+   * Whether sounds are currently suppressed because the OS/browser
+   * `prefers-reduced-motion: reduce` media query is active **and** the
+   * `reducedMotion` config option is set to `"inherit"` (the default).
+   *
+   * Use this to surface an in-app hint or debug banner when users report
+   * not hearing any sounds.
+   */
+  reducedMotion: boolean;
 }
 
 const SensoryUIContext = React.createContext<SensoryUIContextValue | null>(
@@ -162,8 +171,9 @@ export function SensoryUIProvider({
       volume: config.volume,
       muted,
       setMuted,
+      reducedMotion,
     }),
-    [playSound, shouldPlay, config.volume, muted]
+    [playSound, shouldPlay, config.volume, muted, reducedMotion]
   );
 
   return (

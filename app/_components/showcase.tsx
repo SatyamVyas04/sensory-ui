@@ -13,6 +13,7 @@ import {
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundPackName } from "@/components/ui/sensory-ui/config/registry";
 import { ShowcaseGrid } from "./showcase/index";
+import { SoundSuppressedBanner } from "./showcase/sound-suppressed-banner";
 
 const ease = [0.32, 0.72, 0, 1] as const;
 
@@ -203,6 +204,7 @@ export function Showcase() {
               },
             }}
           >
+            <SoundSuppressedBanner />
             <ShowcaseGrid />
           </SensoryUIProvider>
         </div>

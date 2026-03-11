@@ -117,7 +117,8 @@ export async function playSound(
 
   const ctx = getAudioContext();
 
-  if (ctx.state === "suspended") {
+  // Resume if suspended (autoplay policy) or interrupted (Safari phone-call/tab-switch)
+  if (ctx.state !== "running" && ctx.state !== "closed") {
     await ctx.resume();
   }
 
