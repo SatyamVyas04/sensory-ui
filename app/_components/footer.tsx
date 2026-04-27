@@ -30,6 +30,21 @@ export function Footer() {
             <p className="mt-3 text-muted-foreground text-sm leading-relaxed">
               Semantic audio feedback for shadcn/ui using a single prop.
             </p>
+            <a
+              className="mt-2"
+              href="https://www.scrolllaunch.com/products/sensory-ui?utm_source=badge&utm_medium=embed&utm_campaign=sensory-ui&ref=scrolllaunch"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {/** biome-ignore lint/performance/noImgElement: Component */}
+              <img
+                alt="Featured on ScrollLaunch"
+                height="48"
+                loading="lazy"
+                src="https://www.scrolllaunch.com/api/badge/sensory-ui"
+                width="220"
+              />
+            </a>
           </div>
 
           {/* Nav links */}
