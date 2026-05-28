@@ -15,6 +15,7 @@ import posthog from "posthog-js";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/sensory-ui/button";
+import WritingLogo from "@/public/try-me";
 
 const INSTALL_TARGETS = [
   "sensory-ui",
@@ -137,13 +138,17 @@ export function Hero({ stars }: HeroProps) {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 w-full select-none"
       >
-        <Image
-          alt="hero background"
-          className="h-full w-full object-cover dark:invert"
-          fill
-          priority
-          src="/hero-background.jpg"
-        />
+        <video
+          autoPlay
+          className="hidden h-full w-full object-cover md:block dark:invert"
+          loop
+          muted
+          playsInline
+          preload="auto"
+          src="/hero-background.mp4"
+        >
+          <source src="/hero-background.mp4" type="video/mp4" />
+        </video>
         {/* Gradient fade from left to blend with content */}
         <div className="absolute inset-0 bg-linear-to-r from-background via-background/90 to-transparent" />
         {/* Subtle bottom fade */}
@@ -257,9 +262,48 @@ export function Hero({ stars }: HeroProps) {
           {/* Installation command — isolated to avoid re-rendering the whole hero */}
           <motion.div
             {...fadeUp(0.15)}
-            className="mt-5 flex min-w-0 flex-col items-stretch gap-0 overflow-hidden border border-primary/30 bg-card/40 backdrop-blur-sm sm:flex-row"
+            className="mt-5 flex min-w-0 flex-col items-stretch gap-0 border border-primary/30 bg-card/40 backdrop-blur-sm sm:flex-row"
           >
             <InstallCommand />
+            <WritingLogo
+              className="pointer-events-none absolute -right-14 -bottom-14 opacity-0 lg:block lg:opacity-100"
+              stroke="var(--foreground)"
+              width={120}
+            />
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div
+            {...fadeUp(0.25)}
+            className="mt-6 inline-block w-full border border-border bg-card/20 px-4 py-3 backdrop-blur-sm sm:px-3 sm:py-2 lg:w-auto"
+          >
+            <dl className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap sm:gap-x-3 sm:gap-y-2 lg:justify-start">
+              {[
+                { value: "24", label: "components" },
+                { value: "17", label: "roles" },
+                { value: "9", label: "sound packs" },
+                { value: "~26kb", label: "gzipped size" },
+              ].map(({ value, label }, index, array) => (
+                <div
+                  className="flex flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-baseline"
+                  key={label}
+                >
+                  <dt className="sr-only">{label}</dt>
+                  <dd className="font-mono font-semibold text-foreground text-sm tabular-nums">
+                    {value}
+                  </dd>
+                  <span className="text-muted-foreground text-xs">{label}</span>
+                  {index < array.length - 1 && (
+                    <span
+                      aria-hidden="true"
+                      className="mx-2 hidden text-border sm:inline"
+                    >
+                      •
+                    </span>
+                  )}
+                </div>
+              ))}
+            </dl>
           </motion.div>
 
           {/* CTAs */}
@@ -306,40 +350,6 @@ export function Hero({ stars }: HeroProps) {
                 See It in Action
               </Link>
             </Button>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div
-            {...fadeUp(0.25)}
-            className="mt-6 inline-block w-full border border-border bg-card/20 px-4 py-3 backdrop-blur-sm sm:px-3 sm:py-2 lg:w-auto"
-          >
-            <dl className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap sm:gap-x-3 sm:gap-y-2 lg:justify-start">
-              {[
-                { value: "24", label: "components" },
-                { value: "17", label: "roles" },
-                { value: "9", label: "sound packs" },
-                { value: "~26kb", label: "gzipped size" },
-              ].map(({ value, label }, index, array) => (
-                <div
-                  className="flex flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-baseline"
-                  key={label}
-                >
-                  <dt className="sr-only">{label}</dt>
-                  <dd className="font-mono font-semibold text-foreground text-sm tabular-nums">
-                    {value}
-                  </dd>
-                  <span className="text-muted-foreground text-xs">{label}</span>
-                  {index < array.length - 1 && (
-                    <span
-                      aria-hidden="true"
-                      className="mx-2 hidden text-border sm:inline"
-                    >
-                      •
-                    </span>
-                  )}
-                </div>
-              ))}
-            </dl>
           </motion.div>
         </div>
       </div>

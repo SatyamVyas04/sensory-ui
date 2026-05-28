@@ -1,13 +1,13 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GeistPixelCircle } from "geist/font/pixel";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import { Toaster } from "@/components/ui/sonner";
-import "./globals.css";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { ThemeProvider } from "@/components/theme-provider";
 import { PosthogInit } from "@/posthog";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -106,7 +106,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${GeistPixelCircle.variable} bg-secondary font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${GeistPixelCircle.variable} bg-size-[10px_10px] bg-fixed font-sans antialiased`}
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(45deg,var(--secondary) 0, var(--background) 1px,transparent 0,transparent 50%)",
+        }}
       >
         <ThemeProvider
           attribute="class"
@@ -127,7 +131,7 @@ export default function RootLayout({
               },
             }}
           >
-            <div className="mx-auto min-w-0 max-w-400 border-border border-x bg-background shadow-xl">
+            <div className="mx-auto min-w-0 max-w-500 border-border border-x bg-background shadow-xl">
               {children}
             </div>
             <Analytics />
