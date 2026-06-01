@@ -15,6 +15,7 @@ import posthog from "posthog-js";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/sensory-ui/button";
+import { GITHUB_REGISTRY } from "@/lib/github-registry";
 import WritingLogo from "@/public/try-me";
 
 const INSTALL_TARGETS = [
@@ -27,7 +28,6 @@ const INSTALL_TARGETS = [
   "sensory-ui-checkbox",
   "sensory-ui-switch",
 ] as const;
-const GITHUB_REGISTRY = "SatyamVyas04/sensory-ui";
 
 const ease = [0.32, 0.72, 0, 1] as const;
 

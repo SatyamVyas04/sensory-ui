@@ -19,13 +19,11 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { NextResponse } from "next/server";
+import { GITHUB_REGISTRY } from "@/lib/github-registry";
 
 export const dynamic = "force-static";
 
 // ---------------------------------------------------------------------------
-// GitHub registry owner/repo used in registryDependencies.
-const GITHUB_REGISTRY = "SatyamVyas04/sensory-ui";
-
 const SENSORY_UI_DIR = join(process.cwd(), "components", "ui", "sensory-ui");
 const ALLOWED_EXTENSIONS = new Set([".ts", ".tsx"]);
 

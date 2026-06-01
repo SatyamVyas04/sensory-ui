@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "registry:build": "shadcn build",
+    "registry:build": "npx shadcn@latest build",
     "check": "ultracite check",
     "fix": "ultracite fix"
   },

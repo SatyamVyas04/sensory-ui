@@ -2,7 +2,5 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "sensory-ui",
   "homepage": "https://github.com/SatyamVyas04/sensory-ui",
-  "include": [
-    "components/ui/sensory-ui/registry.json"
-  ]
+  "include": ["components/ui/sensory-ui/registry.json"]
 }
