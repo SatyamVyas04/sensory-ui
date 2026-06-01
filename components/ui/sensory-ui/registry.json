@@ -1,0 +1,486 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "sensory-ui-core",
+      "type": "registry:block",
+      "title": "sensory-ui-core",
+      "description": "Core sound engine, provider, config, and sound packs for sensory-ui. Required by all sensory-ui components.",
+      "dependencies": [],
+      "devDependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "config/engine.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "config/provider.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "config/config.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "config/sound-roles.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "config/registry.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "config/use-play-sound.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "sounds/index.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "sounds/packs.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "sounds/core/index.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "sounds/core/tunes.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "sounds/core/instruments.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "sounds/core/factory.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "sounds/core/pack-generator.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-accordion",
+      "type": "registry:ui",
+      "title": "Sensory Accordion",
+      "description": "Accordion with expand/collapse sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "accordion"
+      ],
+      "files": [
+        {
+          "path": "accordion.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-alert-dialog",
+      "type": "registry:ui",
+      "title": "Sensory Alert Dialog",
+      "description": "Alert dialog with open/close sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "alert-dialog"
+      ],
+      "files": [
+        {
+          "path": "alert-dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-button",
+      "type": "registry:ui",
+      "title": "Sensory Button",
+      "description": "Button with click sound.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-carousel",
+      "type": "registry:ui",
+      "title": "Sensory Carousel",
+      "description": "Carousel with navigation sounds on prev/next buttons.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "carousel"
+      ],
+      "files": [
+        {
+          "path": "carousel.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-checkbox",
+      "type": "registry:ui",
+      "title": "Sensory Checkbox",
+      "description": "Checkbox with check sound.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "checkbox"
+      ],
+      "files": [
+        {
+          "path": "checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-collapsible",
+      "type": "registry:ui",
+      "title": "Sensory Collapsible",
+      "description": "Collapsible with open/close sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "collapsible"
+      ],
+      "files": [
+        {
+          "path": "collapsible.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-command",
+      "type": "registry:ui",
+      "title": "Sensory Command",
+      "description": "Command palette with item selection sound.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "command"
+      ],
+      "files": [
+        {
+          "path": "command.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-context-menu",
+      "type": "registry:ui",
+      "title": "Sensory Context Menu",
+      "description": "Context menu with open/close and item selection sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "context-menu"
+      ],
+      "files": [
+        {
+          "path": "context-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-dialog",
+      "type": "registry:ui",
+      "title": "Sensory Dialog",
+      "description": "Dialog with open/close sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "dialog"
+      ],
+      "files": [
+        {
+          "path": "dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-drawer",
+      "type": "registry:ui",
+      "title": "Sensory Drawer",
+      "description": "Drawer with open/close sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "drawer"
+      ],
+      "files": [
+        {
+          "path": "drawer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-dropdown-menu",
+      "type": "registry:ui",
+      "title": "Sensory Dropdown Menu",
+      "description": "Dropdown menu with open/close and item selection sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "dropdown-menu"
+      ],
+      "files": [
+        {
+          "path": "dropdown-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-menubar",
+      "type": "registry:ui",
+      "title": "Sensory Menubar",
+      "description": "Menubar with trigger and item selection sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "menubar"
+      ],
+      "files": [
+        {
+          "path": "menubar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-navigation-menu",
+      "type": "registry:ui",
+      "title": "Sensory Navigation Menu",
+      "description": "Navigation menu with trigger and link click sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "navigation-menu"
+      ],
+      "files": [
+        {
+          "path": "navigation-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-pagination",
+      "type": "registry:ui",
+      "title": "Sensory Pagination",
+      "description": "Pagination with page link click sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "pagination"
+      ],
+      "files": [
+        {
+          "path": "pagination.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-popover",
+      "type": "registry:ui",
+      "title": "Sensory Popover",
+      "description": "Popover with open/close sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "popover"
+      ],
+      "files": [
+        {
+          "path": "popover.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-radio-group",
+      "type": "registry:ui",
+      "title": "Sensory Radio Group",
+      "description": "Radio group with value change sound.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "radio-group"
+      ],
+      "files": [
+        {
+          "path": "radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-select",
+      "type": "registry:ui",
+      "title": "Sensory Select",
+      "description": "Select with open/close sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "select"
+      ],
+      "files": [
+        {
+          "path": "select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-sheet",
+      "type": "registry:ui",
+      "title": "Sensory Sheet",
+      "description": "Sheet with open/close sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "sheet"
+      ],
+      "files": [
+        {
+          "path": "sheet.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-sidebar",
+      "type": "registry:ui",
+      "title": "Sensory Sidebar",
+      "description": "Sidebar with open/close sounds.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "sidebar"
+      ],
+      "files": [
+        {
+          "path": "sidebar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-slider",
+      "type": "registry:ui",
+      "title": "Sensory Slider",
+      "description": "Slider with value commit sound.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "slider"
+      ],
+      "files": [
+        {
+          "path": "slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-switch",
+      "type": "registry:ui",
+      "title": "Sensory Switch",
+      "description": "Switch with toggle sound.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "switch"
+      ],
+      "files": [
+        {
+          "path": "switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-tabs",
+      "type": "registry:ui",
+      "title": "Sensory Tabs",
+      "description": "Tabs with tab change sound.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "tabs"
+      ],
+      "files": [
+        {
+          "path": "tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-toggle",
+      "type": "registry:ui",
+      "title": "Sensory Toggle",
+      "description": "Toggle with pressed state change sound.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "toggle"
+      ],
+      "files": [
+        {
+          "path": "toggle.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui-toggle-group",
+      "type": "registry:ui",
+      "title": "Sensory Toggle Group",
+      "description": "Toggle group with value change sound.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "toggle-group"
+      ],
+      "files": [
+        {
+          "path": "toggle-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sensory-ui",
+      "type": "registry:block",
+      "title": "sensory-ui",
+      "description": "Install all sensory-ui components at once. Semantic, opt-in sound layer for shadcn/ui.",
+      "registryDependencies": [
+        "SatyamVyas04/sensory-ui/sensory-ui-core",
+        "SatyamVyas04/sensory-ui/sensory-ui-accordion",
+        "SatyamVyas04/sensory-ui/sensory-ui-alert-dialog",
+        "SatyamVyas04/sensory-ui/sensory-ui-button",
+        "SatyamVyas04/sensory-ui/sensory-ui-carousel",
+        "SatyamVyas04/sensory-ui/sensory-ui-checkbox",
+        "SatyamVyas04/sensory-ui/sensory-ui-collapsible",
+        "SatyamVyas04/sensory-ui/sensory-ui-command",
+        "SatyamVyas04/sensory-ui/sensory-ui-context-menu",
+        "SatyamVyas04/sensory-ui/sensory-ui-dialog",
+        "SatyamVyas04/sensory-ui/sensory-ui-drawer",
+        "SatyamVyas04/sensory-ui/sensory-ui-dropdown-menu",
+        "SatyamVyas04/sensory-ui/sensory-ui-menubar",
+        "SatyamVyas04/sensory-ui/sensory-ui-navigation-menu",
+        "SatyamVyas04/sensory-ui/sensory-ui-pagination",
+        "SatyamVyas04/sensory-ui/sensory-ui-popover",
+        "SatyamVyas04/sensory-ui/sensory-ui-radio-group",
+        "SatyamVyas04/sensory-ui/sensory-ui-select",
+        "SatyamVyas04/sensory-ui/sensory-ui-sheet",
+        "SatyamVyas04/sensory-ui/sensory-ui-sidebar",
+        "SatyamVyas04/sensory-ui/sensory-ui-slider",
+        "SatyamVyas04/sensory-ui/sensory-ui-switch",
+        "SatyamVyas04/sensory-ui/sensory-ui-tabs",
+        "SatyamVyas04/sensory-ui/sensory-ui-toggle",
+        "SatyamVyas04/sensory-ui/sensory-ui-toggle-group"
+      ],
+      "files": []
+    }
+  ]
+}

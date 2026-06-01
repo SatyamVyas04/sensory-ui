@@ -27,6 +27,7 @@ const INSTALL_TARGETS = [
   "sensory-ui-checkbox",
   "sensory-ui-switch",
 ] as const;
+const GITHUB_REGISTRY = "SatyamVyas04/sensory-ui";
 
 const ease = [0.32, 0.72, 0, 1] as const;
 
@@ -48,7 +49,7 @@ const InstallCommand = memo(function InstallCommand() {
   const currentTarget = INSTALL_TARGETS[targetIndex];
 
   const copyInstallCommand = useCallback(async () => {
-    const text = `npx shadcn@latest add https://sensory-ui.com/r/${INSTALL_TARGETS[targetIndex]}`;
+    const text = `npx shadcn@latest add ${GITHUB_REGISTRY}/${INSTALL_TARGETS[targetIndex]}`;
     await navigator.clipboard.writeText(text);
     posthog.capture("install_command_copied", {
       target: INSTALL_TARGETS[targetIndex],
@@ -62,7 +63,7 @@ const InstallCommand = memo(function InstallCommand() {
       <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap px-3 py-2 font-mono text-[11px] text-primary sm:px-4 sm:py-2 sm:text-xs">
         <span className="text-foreground">$</span> npx shadcn@latest add{" "}
         <br className="sm:hidden" />
-        https://sensory-ui.com/r/
+        {GITHUB_REGISTRY}/
         <AnimatePresence initial={false} mode="popLayout">
           <motion.span
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}

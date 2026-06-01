@@ -33,18 +33,20 @@
 Install the full library with a single command via the shadcn CLI:
 
 ```bash
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui
 ```
+
+This registry is now served directly from this public GitHub repository via `registry.json` (no custom `/r/*` base registry URL required).
 
 Or pick only what you need:
 
 ```bash
 # Core engine only (no components)
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-core
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-core
 
 # A single component
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-button
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-dialog
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-dialog
 ```
 
 > **Prerequisites:** Next.js 13.4+, shadcn/ui initialised (`components.json` present), Node.js 18+.
@@ -244,9 +246,9 @@ module.exports = { theme: "glass" };
 Install any component individually:
 
 ```bash
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-<name>
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-<name>
 # e.g.
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-tabs
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-tabs
 ```
 
 ---
@@ -268,9 +270,12 @@ npm run fix
 
 # Build registry
 npm run registry:build
+
+# Validate GitHub registry payload
+npx shadcn@latest registry validate SatyamVyas04/sensory-ui
 ```
 
-The dev server runs the landing page at `http://localhost:3000`, including the interactive component showcase. Registry manifests are served from `app/r/[name]/route.ts`.
+The dev server runs the landing page at `http://localhost:3000`, including the interactive component showcase. Registry definitions are sourced from the repository root `registry.json` and `components/ui/sensory-ui/registry.json`.
 
 ---
 

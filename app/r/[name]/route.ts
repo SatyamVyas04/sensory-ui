@@ -11,9 +11,9 @@
  *   ... etc for all 24 components
  *
  * Install via:
- *   npx shadcn@latest add https://sensory-ui.com/r/sensory-ui          # everything
- *   npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-core     # core only
- *   npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-button   # single component
+ *   npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui          # everything
+ *   npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-core     # core only
+ *   npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button   # single component
  */
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
@@ -23,26 +23,8 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-static";
 
 // ---------------------------------------------------------------------------
-// Registry base URL — used to build full URLs for registryDependencies so the
-// shadcn CLI fetches custom items from *this* registry instead of ui.shadcn.com.
-// ---------------------------------------------------------------------------
-
-const TRAILING_SLASH = /\/$/;
-
-function getRegistryBaseUrl(): string {
-  if (process.env.NEXT_PUBLIC_APP_URL) {
-    return process.env.NEXT_PUBLIC_APP_URL.replace(TRAILING_SLASH, "");
-  }
-  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  return "http://localhost:3000";
-}
-
-const REGISTRY_BASE = getRegistryBaseUrl();
+// GitHub registry owner/repo used in registryDependencies.
+const GITHUB_REGISTRY = "SatyamVyas04/sensory-ui";
 
 const SENSORY_UI_DIR = join(process.cwd(), "components", "ui", "sensory-ui");
 const ALLOWED_EXTENSIONS = new Set([".ts", ".tsx"]);
@@ -147,7 +129,7 @@ function buildComponentItem(componentName: string) {
     title: `Sensory ${componentName.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}`,
     description: `${componentName.replace(/-/g, " ")} with sound support.`,
     files: [fileData],
-    registryDependencies: [`${REGISTRY_BASE}/r/sensory-ui-core`, componentName],
+    registryDependencies: [`${GITHUB_REGISTRY}/sensory-ui-core`, componentName],
   };
 }
 
@@ -163,8 +145,8 @@ function buildMetaItem() {
     dependencies: [],
     devDependencies: [],
     registryDependencies: [
-      `${REGISTRY_BASE}/r/sensory-ui-core`,
-      ...componentNames.map((n) => `${REGISTRY_BASE}/r/sensory-ui-${n}`),
+      `${GITHUB_REGISTRY}/sensory-ui-core`,
+      ...componentNames.map((n) => `${GITHUB_REGISTRY}/sensory-ui-${n}`),
     ],
   };
 }
