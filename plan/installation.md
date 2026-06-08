@@ -15,17 +15,17 @@ This document describes the full installation flow, what files are created, how 
 ## Step 1: Install via shadcn CLI
 
 ```bash
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui
 ```
 
 The CLI will:
 
-1. Download the registry manifest from the sensory-ui registry
+1. Download the registry manifest from the GitHub repository
 2. Present a prompt to choose a **sound pack** (see below)
 3. Copy all files into the project
 4. Print a short post-install message with the next steps
 
-> Registry URL is a placeholder until the publishing step is complete. See [registry.md](./registry.md) for the publishing plan.
+The registry is served directly from the public GitHub repository via `registry.json` — no custom registry server or URL required. See [registry.md](./registry.md) for details.
 
 ---
 
@@ -175,23 +175,20 @@ The `sound` prop is the **only required change** from the standard shadcn/ui usa
 
 Open the browser devtools console and look for any sensory-ui warnings. In development mode, the engine logs a warning if a sound file cannot be fetched.
 
-### Local registry test
+### Registry validation
 
-To test the registry manifest locally before deploying:
+Validate the GitHub registry payload from the CLI:
 
 ```bash
-pnpm registry:build          # generates public/r/sensory-ui.json
-pnpm dev                     # start dev server
-npx shadcn@latest add http://localhost:3000/r/sensory-ui  # test install
+npx shadcn@latest registry validate SatyamVyas04/sensory-ui
+npx shadcn@latest list SatyamVyas04/sensory-ui
 ```
 
-> **Full-URL registryDependencies:** The route handler resolves the registry base
-> URL via `getRegistryBaseUrl()` so that `registryDependencies` contain full URLs
-> (e.g. `http://localhost:3000/r/sensory-ui-core` locally, or
-> `https://sensory-ui.com/r/sensory-ui-core` in production). This ensures the
-> shadcn CLI fetches custom items from _this_ registry instead of `ui.shadcn.com`.
-> Set `NEXT_PUBLIC_APP_URL` for explicit control, or rely on Vercel's auto-set
-> `VERCEL_PROJECT_PRODUCTION_URL` / `VERCEL_URL` env vars.
+Or build locally to validate:
+
+```bash
+npm run registry:build      # npx shadcn@latest build — validates schema
+```
 
 ### Quick test
 
@@ -214,7 +211,7 @@ If you hear nothing:
 To update the engine and primitives to a newer version:
 
 ```bash
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui --overwrite
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui --overwrite
 ```
 
 The `--overwrite` flag replaces the engine, config loader, primitive files, and the embedded sound modules in `sounds/*.ts`.
