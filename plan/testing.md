@@ -85,45 +85,42 @@ npm run fix
 
 ---
 
-## 5. Registry Build
+## 5. Registry Validation
 
-Test the shadcn registry output:
+Validate the GitHub registry payload directly from the CLI:
 
 ```bash
-npm run registry:build
+npx shadcn@latest registry validate SatyamVyas04/sensory-ui
+npx shadcn@latest list SatyamVyas04/sensory-ui
 ```
 
-This generates static JSON files in `public/r/` from `registry.json`. Verify:
+Or validate locally:
 
-- `public/r/sensory-ui-core.json` contains all config and sounds files
-- `public/r/sensory-ui-button.json` (and other components) contain the correct `.tsx` file
-- `public/r/sensory-ui.json` meta-block references all entries via `registryDependencies`
+```bash
+npm run registry:build    # npx shadcn@latest build
+```
 
 ---
 
 ## 6. Registry Install Test
 
-Test installing from the local dev server in a separate Next.js project:
+Test installing from the GitHub registry in a separate Next.js project:
 
 ```bash
 # In a separate test project directory
-npx shadcn@latest add http://localhost:3000/r/sensory-ui
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui
 ```
 
 Or install individual components:
 
 ```bash
-npx shadcn@latest add http://localhost:3000/r/sensory-ui-core
-npx shadcn@latest add http://localhost:3000/r/sensory-ui-button
-npx shadcn@latest add http://localhost:3000/r/sensory-ui-slider
-npx shadcn@latest add http://localhost:3000/r/sensory-ui-checkbox
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-core
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-slider
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-checkbox
 ```
 
-> **Note:** The route handler uses `getRegistryBaseUrl()` to build full URLs for
-> `registryDependencies` (so the shadcn CLI resolves custom items from _this_
-> registry, not `ui.shadcn.com`). For local testing it defaults to
-> `http://localhost:3000`. In production, set `NEXT_PUBLIC_APP_URL` or rely on
-> Vercel's auto-set `VERCEL_PROJECT_PRODUCTION_URL` / `VERCEL_URL` env vars.
+The CLI reads `registry.json` and referenced files directly from the public GitHub repository. No server or build step needed for installation.
 
 After install, verify:
 
@@ -321,92 +318,26 @@ This is handled by `activePlayback` tracking in `engine.ts`, which stops the pre
 | `npm run check`          | Biome/Ultracite lint (sensory-ui files only) |
 | `npm run fix`            | Biome/Ultracite auto-fix                     |
 | `npx tsc --noEmit`       | TypeScript compilation check                 |
-| `npm run registry:build` | Generate registry JSON files                 |
+| `npm run registry:build` | Validate registry via `shadcn build`         |
+| `npx shadcn@latest registry validate SatyamVyas04/sensory-ui` | Validate GitHub registry           |
 
 ---
 
-## Component-by-Component Registry Validation
+## Registry Validation (GitHub CLI)
 
-After running `npm run registry:build`, validate each component's registry JSON individually:
-
-```bash
-# Validate all built registry JSON files exist and have content
-fail=0
-for name in core accordion alert-dialog button carousel checkbox collapsible \
-  command context-menu dialog drawer dropdown-menu menubar navigation-menu \
-  pagination popover radio-group select sheet sidebar slider switch tabs \
-  toggle toggle-group; do
-  file="public/r/sensory-ui-${name}.json"
-  if [ -f "$file" ]; then
-    files=$(python3 -c "
-import json, sys
-try:
-    print(len(json.load(open('$file')).get('files',[])))
-except Exception as e:
-    print(f'ERROR: {e}', file=sys.stderr); sys.exit(1)
-"); status=$?
-    if [ $status -ne 0 ] || [ "$files" = "0" ]; then
-      echo "✗ sensory-ui-${name}: parse error or 0 files"
-      fail=1
-    else
-      echo "✓ sensory-ui-${name} (${files} files)"
-    fi
-  else
-    echo "✗ MISSING: $file"
-    fail=1
-  fi
-done
-
-# Validate meta-block
-file="public/r/sensory-ui.json"
-if [ -f "$file" ]; then
-  deps=$(python3 -c "
-import json, sys
-try:
-    print(len(json.load(open('$file')).get('registryDependencies',[])))
-except Exception as e:
-    print(f'ERROR: {e}', file=sys.stderr); sys.exit(1)
-"); status=$?
-  if [ $status -ne 0 ] || [ "$deps" = "0" ]; then
-    echo "✗ sensory-ui meta-block: parse error or 0 dependencies"
-    fail=1
-  else
-    echo "✓ sensory-ui meta-block (${deps} dependencies)"
-  fi
-else
-  echo "✗ MISSING: $file"
-  fail=1
-fi
-
-if [ "$fail" -ne 0 ]; then
-  echo "Registry validation failed"
-  exit 1
-fi
-echo "All registry validations passed"
-```
-
-### Individual component file checks
+Use the shadcn CLI for comprehensive validation:
 
 ```bash
-# Check that each component's built JSON has inline file content
-python3 -c "
-import json, glob, sys
-fail = False
-for f in sorted(glob.glob('public/r/sensory-ui-*.json')):
-    try:
-        d = json.load(open(f))
-        name = d.get('name','?')
-        files = d.get('files',[])
-        empty = [x['path'] for x in files if not x.get('content')]
-        if empty:
-            print(f'✗ {name}: files missing content: {empty}')
-            fail = True
-        else:
-            print(f'✓ {name}: {len(files)} file(s) with content')
-    except Exception as e:
-        print(f'✗ {f}: failed to parse — {e}', file=sys.stderr)
-        fail = True
-if fail:
-    sys.exit(1)
-"
+# Validate registry schema and file references
+npx shadcn@latest registry validate SatyamVyas04/sensory-ui
+
+# List all items
+npx shadcn@latest list SatyamVyas04/sensory-ui
+
+# View a specific item
+npx shadcn@latest view SatyamVyas04/sensory-ui/sensory-ui-core
+npx shadcn@latest view SatyamVyas04/sensory-ui/sensory-ui-button
+
+# Search items
+npx shadcn@latest search SatyamVyas04/sensory-ui --query button
 ```

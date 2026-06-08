@@ -2,52 +2,60 @@
 
 > Status: **Implemented (v0.6)**
 
-sensory-ui is published as a shadcn/ui registry served from the project itself via a parameterized Next.js route handler at `app/r/[name]/route.ts`. A `registry.json` at the project root also supports the `shadcn build` CLI workflow.
+sensory-ui is published as a **GitHub registry** — a `registry.json` at the repository root tells the shadcn CLI how to install items. The legacy Next.js route handler at `app/r/[name]/route.ts` remains for the landing page website.
+
+## GitHub Registry (Primary)
+
+The root `registry.json` uses `include` to reference item definitions in `components/ui/sensory-ui/registry.json`. Users install via:
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui          # everything
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-core     # core only
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button   # single component
+```
+
+No registry server needed — the CLI reads files directly from the public GitHub repository.
 
 The registry is structured into three tiers:
 
-| Entry               | URL                         | Purpose                                                          |
-| ------------------- | --------------------------- | ---------------------------------------------------------------- |
-| `sensory-ui`        | `/r/sensory-ui`             | Meta-block; lists all component items via `registryDependencies` |
-| `sensory-ui-core`   | `/r/sensory-ui-core`        | Core sound engine, provider, config, and sound packs             |
-| `sensory-ui-<name>` | `/r/sensory-ui-button` etc. | Individual component wrappers (24 total)                         |
+| Entry               | CLI Address                                      | Purpose                                                          |
+| ------------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
+| `sensory-ui`        | `SatyamVyas04/sensory-ui/sensory-ui`             | Meta-block; lists all component items via `registryDependencies` |
+| `sensory-ui-core`   | `SatyamVyas04/sensory-ui/sensory-ui-core`        | Core sound engine, provider, config, and sound packs             |
+| `sensory-ui-<name>` | `SatyamVyas04/sensory-ui/sensory-ui-button` etc. | Individual component wrappers (24 total)                         |
+
+The constant `GITHUB_REGISTRY = "SatyamVyas04/sensory-ui"` is exported from `lib/github-registry.ts` and used across the codebase.
 
 ---
 
 ## What the shadcn Registry Is
 
-The shadcn CLI (`npx shadcn@latest add <url>`) can install components from any URL that serves a valid registry manifest. The manifest describes:
+The shadcn CLI (`npx shadcn@latest add <address>`) can install components from any public GitHub repository with a `registry.json` at the root. The manifest describes:
 
 - What files to copy and where
 - Any npm package dependencies to install
 - Any tailwind config patches to apply
 
-sensory-ui will be published as a single registry entry that installs the entire `components/ui/sensory-ui/` folder in one step. Audio is **synthesized programmatically** via the Web Audio API - no audio files, no base64 blobs, no `public/` directory entry needed.
+sensory-ui is published as a GitHub registry that installs the entire `components/ui/sensory-ui/` folder in one step. Audio is **synthesized programmatically** via the Web Audio API - no audio files, no base64 blobs, no `public/` directory entry needed.
 
 ---
 
-## Two Distribution Methods
+## Distribution
 
-### Method 1: Route Handler (current, production)
-
-The parameterized route handler at `app/r/[name]/route.ts` reads all source files at build time (`export const dynamic = "force-static"`) and serves a registry-item manifest for each named entry. This is the primary distribution method.
+The root `registry.json` delegates to `components/ui/sensory-ui/registry.json` via `include`. The CLI reads files directly from GitHub — no build step, no server needed.
 
 ```bash
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui          # everything
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-core     # core only
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-button   # single component
+# Install everything
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui
+
+# Core only
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-core
+
+# Single component
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button
 ```
 
-### Method 2: `registry.json` + `shadcn build` (standard CLI workflow)
-
-A `registry.json` at the project root follows the official shadcn registry specification. File paths in `registry.json` reference sources under `components/ui/sensory-ui/`. Running `pnpm registry:build` generates static JSON files in `public/r/`.
-
-```bash
-pnpm registry:build
-# Generates public/r/sensory-ui.json, public/r/sensory-ui-core.json, etc.
-```
-
-Both methods serve the same registry manifests. Method 1 is used in production; Method 2 provides the standard `shadcn build` workflow for development and testing.
+The legacy route handler at `app/r/[name]/route.ts` still serves registry-item manifests for the landing page website.
 
 ---
 
@@ -99,53 +107,49 @@ Each file in the manifest has a `type` that tells the CLI where to place it:
 
 ### `registry.json` (project root)
 
-The `registry.json` file follows the official schema for the `shadcn build` workflow. File paths reference sources under `components/ui/sensory-ui/` (not `registry/`):
+The root `registry.json` uses `include` to reference items defined in `components/ui/sensory-ui/registry.json`. File paths in the included file are relative to that file:
 
+**Root `registry.json`:**
 ```json
 {
 	"$schema": "https://ui.shadcn.com/schema/registry.json",
 	"name": "sensory-ui",
+	"homepage": "https://github.com/SatyamVyas04/sensory-ui",
+	"include": ["components/ui/sensory-ui/registry.json"]
+}
+```
+
+**`components/ui/sensory-ui/registry.json`** (abbreviated):
+```json
+{
+	"$schema": "https://ui.shadcn.com/schema/registry.json",
 	"items": [
 		{
 			"name": "sensory-ui-core",
 			"type": "registry:block",
 			"files": [
-				{
-					"path": "components/ui/sensory-ui/config/engine.ts",
-					"type": "registry:lib"
-				}
-				/* ... remaining config and sounds files ... */
+				{ "path": "config/engine.ts", "type": "registry:lib" },
+				{ "path": "config/provider.tsx", "type": "registry:lib" }
 			]
 		},
 		{
 			"name": "sensory-ui-button",
 			"type": "registry:ui",
 			"registryDependencies": [
-				"https://sensory-ui.com/r/sensory-ui-core",
+				"SatyamVyas04/sensory-ui/sensory-ui-core",
 				"button"
 			],
-			"files": [
-				{
-					"path": "components/ui/sensory-ui/button.tsx",
-					"type": "registry:ui"
-				}
-			]
-		},
-		/* ... remaining 23 component entries ... */
-		{
-			"name": "sensory-ui",
-			"type": "registry:block",
-			"registryDependencies": [
-				"https://sensory-ui.com/r/sensory-ui-core",
-				"https://sensory-ui.com/r/sensory-ui-button" /* ... */
-			],
-			"files": []
+			"files": [{ "path": "button.tsx", "type": "registry:ui" }]
 		}
 	]
 }
 ```
 
-### Route Handler (`app/r/[name]/route.ts`)
+Registry dependencies use the full GitHub address format (`SatyamVyas04/sensory-ui/sensory-ui-core`) instead of the old URL-based approach (`https://sensory-ui.com/r/sensory-ui-core`).
+
+### Route Handler (`app/r/[name]/route.ts`) — Legacy / Website Only
+
+The route handler is kept for the landing page website. It is NOT used by the CLI for installation — the CLI reads `registry.json` directly from GitHub.
 
 ```ts
 // Key features:
@@ -153,20 +157,10 @@ The `registry.json` file follows the official schema for the `shadcn build` work
 // - Serves per-name manifests: sensory-ui, sensory-ui-core, sensory-ui-<component>
 // - Recursively collects all .ts/.tsx files from components/ui/sensory-ui/
 // - Embeds file content directly in the JSON response for core and component items
-// - sensory-ui meta-block uses registryDependencies (empty files) to reference all items
+// - Uses GITHUB_REGISTRY constant from lib/github-registry.ts for registryDependencies
 // - Normalises Windows backslashes to forward slashes in paths
 // - Classifies files into registry:ui, registry:lib, or registry:hook
 // - GET handler is async and awaits params (Next.js 15+ async params API)
-//
-// Registry base URL resolution (getRegistryBaseUrl):
-// - All sensory-ui registryDependencies use FULL URLs so the shadcn CLI
-//   fetches custom items from this registry instead of ui.shadcn.com.
-// - Standard shadcn items (e.g. "button", "accordion") remain bare names.
-// - Base URL resolution priority:
-//   1. NEXT_PUBLIC_APP_URL env var (explicit, recommended)
-//   2. VERCEL_PROJECT_PRODUCTION_URL (auto-set by Vercel)
-//   3. VERCEL_URL (auto-set by Vercel, preview deploys)
-//   4. http://localhost:3000 (fallback for local dev)
 ```
 
 The route handler serves manifests when the CLI fetches the URL. Core item contains 13 files (6 config + 7 sounds); each component item contains 1 `.tsx` file; the meta `sensory-ui` item has empty `files` and lists all 25 entries in `registryDependencies`.
@@ -213,19 +207,20 @@ The `config/registry.ts` file imports from `sounds/packs.ts` and builds the `pac
 
 ## Registry Hosting
 
-The registry is served directly from the sensory-ui website via a parameterized Next.js route handler (`app/r/[name]/route.ts`). Example install commands:
+The registry is hosted directly on **GitHub**. No server required — the CLI reads `registry.json` and referenced files from the public repository.
 
 ```bash
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui          # everything
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-core     # core only
-npx shadcn@latest add https://sensory-ui.com/r/sensory-ui-button   # single component
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui          # everything
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-core     # core only
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button   # single component
 ```
 
-| Hosting | URL pattern                       | Notes                                   |
-| ------- | --------------------------------- | --------------------------------------- |
-| Vercel  | `https://sensory-ui.com/r/<name>` | Custom domain pointing to Vercel deploy |
+| Hosting   | Address format                          | Notes                                  |
+| --------- | --------------------------------------- | -------------------------------------- |
+| GitHub    | `SatyamVyas04/sensory-ui/<item>`        | Primary — CLI reads from GitHub        |
+| Vercel    | `https://sensory-ui.com/r/<name>`       | Website only (legacy route handler)    |
 
-The route handler at `app/r/[name]/route.ts` reads all source files from `components/ui/sensory-ui/` at build time using `export const dynamic = "force-static"` and returns the per-name registry manifest with embedded file contents.
+The legacy route handler at `app/r/[name]/route.ts` still exists for the landing page website.
 
 ---
 
@@ -240,24 +235,21 @@ The route handler at `app/r/[name]/route.ts` reads all source files from `compon
 
 ---
 
-## Registry Build Process
+## Registry Build & Validation
 
-Two complementary build paths exist:
+With the GitHub registry approach, no build step is needed — the CLI reads files directly from the repo. However, `shadcn build` can still be run for local validation.
 
-### Route Handler (automatic)
-
-The parameterized route handler at `app/r/[name]/route.ts` uses `export const dynamic = "force-static"` to read all source files at build time. Every `next build` produces fresh manifests for all entries. No manual step required.
-
-### `shadcn build` (standard CLI)
-
-Run `pnpm registry:build` to invoke `shadcn build`, which reads `registry.json` at the project root and generates static JSON files in `public/r/`. Useful for local testing and validation.
+```bash
+npm run registry:build    # npx shadcn@latest build — validates registry schema locally
+```
 
 ### Pre-publish checklist
 
 1. Run TypeScript compilation checks on all files in `components/ui/sensory-ui/`
-2. Verify the manifest JSON includes all 37 files (6 config + 7 sounds + 24 components)
-3. Run `npx shadcn@latest add http://localhost:3000/r/sensory-ui` in a test project to confirm install
-4. Tag the GitHub release with the version
+2. Validate the registry: `npx shadcn@latest registry validate SatyamVyas04/sensory-ui`
+3. Verify all 26 items are listed: `npx shadcn@latest list SatyamVyas04/sensory-ui`
+4. Run `npm run build` to confirm the website builds without errors
+5. Ship to production — no build step needed; GitHub is the source of truth
 
 > **Role taxonomy:** 17 roles across 5 categories: `interaction` (4), `overlay` (4), `navigation` (3), `notification` (4), `hero` (2).
 
@@ -270,10 +262,8 @@ Run `pnpm registry:build` to invoke `shadcn build`, which reads `registry.json` 
 | Runtime (engine + provider + primitives) | Complete           |
 | Sound file production (17 roles)         | Complete (9 packs) |
 | Registry manifest structure              | Complete           |
-| Route handler with $schema + types       | Complete           |
-| `registry.json` + build script           | Complete           |
-| Hosting setup                            | Complete (Vercel)  |
-| CLI install testing                      | Pending            |
+| GitHub registry (`registry.json`)        | Complete           |
+| CLI install testing                      | Complete           |
 | Public launch                            | Pending            |
 
 ---
