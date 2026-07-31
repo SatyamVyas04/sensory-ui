@@ -8,8 +8,34 @@ import { Showcase } from "./_components/showcase";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "sensory-ui - Semantic Sound for React & Next.js",
+    absolute:
+      "sensory-ui - Semantic Sound for shadcn/ui | React Audio Feedback",
   },
+  description:
+    "Add semantic audio feedback to your shadcn/ui components with a single prop. 17 sound roles, 24 React components, Web Audio API powered. No audio files needed.",
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "sensory-ui",
+  description:
+    "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions with 17 sound roles across 24 components - built for shadcn/ui.",
+  url: "https://sensory-ui.com",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Web",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  author: {
+    "@type": "Person",
+    name: "Satyam Vyas",
+    url: "https://x.com/SatyamVyas04",
+  },
+  keywords:
+    "sensory-ui, shadcn sounds, shadcn audio, sound react, react audio, ui sound, sound ui, web audio api, semantic sound, audio feedback",
 };
 
 async function getStars(): Promise<number | null> {
@@ -33,6 +59,11 @@ export default async function Page() {
 
   return (
     <>
+      <script
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data for SEO
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        type="application/ld+json"
+      />
       <main id="main-content">
         <Hero stars={stars} />
         <Showcase />

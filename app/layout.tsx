@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 const siteUrl = "https://sensory-ui.com";
 const siteTitle = "sensory-ui";
 const siteDescription =
-  "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions with 17 sound roles across 24 components - built for shadcn/ui.";
+  "Add semantic sound to your shadcn/ui components with a single prop. 17 audio roles across 24 React components. Web Audio API powered, zero audio files, ~26kb gzipped. Built for Next.js.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -33,18 +33,26 @@ export const metadata: Metadata = {
   description: siteDescription,
   keywords: [
     "sensory-ui",
-    "shadcn",
-    "shadcn/ui",
-    "sound",
+    "sensory ui",
+    "shadcn sounds",
+    "shadcn audio",
+    "shadcn/ui sound",
+    "sound react",
+    "react sound",
+    "sound ui",
+    "ui sound",
     "audio feedback",
-    "web audio",
-    "react",
-    "next.js",
-    "ui components",
-    "accessibility",
+    "web audio api",
+    "ui audio",
+    "react audio components",
+    "next.js sound",
     "sound design",
     "interaction design",
     "semantic sound",
+    "accessibility",
+    "coresensory",
+    "sensory ux",
+    "sensory audio",
   ],
   authors: [{ name: "Satyam Vyas", url: "https://x.com/SatyamVyas04" }],
   creator: "Satyam Vyas",
@@ -57,6 +65,7 @@ export const metadata: Metadata = {
       follow: true,
       "max-image-preview": "large",
       "max-snippet": -1,
+      "max-video-preview": -1,
     },
   },
   icons: {
@@ -70,7 +79,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteUrl,
-    title: siteTitle,
+    title: "sensory-ui - Semantic Sound for shadcn/ui Components",
     description: siteDescription,
     siteName: siteTitle,
     locale: "en_US",
@@ -79,7 +88,7 @@ export const metadata: Metadata = {
         url: "/hero-background.jpg",
         width: 1200,
         height: 630,
-        alt: "sensory-ui - semantic sound for React & Next.js",
+        alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
       },
     ],
   },
@@ -87,14 +96,17 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@SatyamVyas04",
     creator: "@SatyamVyas04",
-    title: siteTitle,
+    title: "sensory-ui - Semantic Sound for shadcn/ui Components",
     description: siteDescription,
     images: [
       {
         url: "/hero-background.jpg",
-        alt: "sensory-ui - semantic sound for React & Next.js",
+        alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
       },
     ],
+  },
+  alternates: {
+    canonical: siteUrl,
   },
 };
 
