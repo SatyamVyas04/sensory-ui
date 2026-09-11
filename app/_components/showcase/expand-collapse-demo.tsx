@@ -44,7 +44,7 @@ export function ExpandCollapseDemo() {
             <AccordionItem value="how">
               <AccordionTrigger>How does it work?</AccordionTrigger>
               <AccordionContent>
-                Add a <code>sound</code> prop — the Web Audio engine handles the
+                Add a <code>sound</code> prop - the Web Audio engine handles the
                 rest.
               </AccordionContent>
             </AccordionItem>

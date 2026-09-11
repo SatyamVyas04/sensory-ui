@@ -1,6 +1,6 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GeistPixelCircle } from "geist/font/pixel";
+import { GeistPixelLine } from "geist/font/pixel";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 const siteUrl = "https://sensory-ui.com";
 const siteTitle = "sensory-ui";
 const siteDescription =
-  "Add semantic sound to your shadcn/ui components with a single prop. 17 audio roles across 24 React components. Web Audio API powered, zero audio files, ~26kb gzipped. Built for Next.js.";
+  "Add semantic sound to your shadcn/ui components with a single prop. 17 sound cues, 24 React components. Web Audio API powered, zero audio files.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteUrl,
-    title: "sensory-ui - Semantic Sound for shadcn/ui Components",
+    title: "sensory-ui - Semantic Sound for shadcn/ui",
     description: siteDescription,
     siteName: siteTitle,
     locale: "en_US",
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@SatyamVyas04",
     creator: "@SatyamVyas04",
-    title: "sensory-ui - Semantic Sound for shadcn/ui Components",
+    title: "sensory-ui - Semantic Sound for shadcn/ui",
     description: siteDescription,
     images: [
       {
@@ -118,7 +118,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${GeistPixelCircle.variable} bg-size-[10px_10px] bg-fixed font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${GeistPixelLine.variable} bg-size-[10px_10px] bg-fixed font-sans antialiased`}
         style={{
           backgroundImage:
             "repeating-linear-gradient(45deg,var(--secondary) 0, var(--background) 1px,transparent 0,transparent 50%)",

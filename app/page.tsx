@@ -5,14 +5,14 @@ import { Hero } from "./_components/hero";
 import { Ideology } from "./_components/ideology";
 import { Inspiration } from "./_components/inspiration";
 import { Showcase } from "./_components/showcase";
+import { WhySound } from "./_components/why-sound";
 
 export const metadata: Metadata = {
   title: {
-    absolute:
-      "sensory-ui - Semantic Sound for shadcn/ui | React Audio Feedback",
+    absolute: "sensory-ui - Semantic Sound for shadcn/ui",
   },
   description:
-    "Add semantic audio feedback to your shadcn/ui components with a single prop. 17 sound roles, 24 React components, Web Audio API powered. No audio files needed.",
+    "Sound-enabled shadcn/ui components. Add meaningful audio feedback with a single prop - no audio files required.",
 };
 
 const jsonLd = {
@@ -20,7 +20,7 @@ const jsonLd = {
   "@type": "SoftwareApplication",
   name: "sensory-ui",
   description:
-    "A semantic, opt-in sound layer for React and Next.js apps. Add meaningful audio feedback to UI interactions with 17 sound roles across 24 components - built for shadcn/ui.",
+    "Sound-enabled shadcn/ui components for React and Next.js. Add meaningful audio feedback with a single prop - no audio files required. Web Audio API powered.",
   url: "https://sensory-ui.com",
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Web",
@@ -68,6 +68,7 @@ export default async function Page() {
         <Hero stars={stars} />
         <Showcase />
         <Ideology />
+        <WhySound />
         <Inspiration />
         <CTA />
       </main>

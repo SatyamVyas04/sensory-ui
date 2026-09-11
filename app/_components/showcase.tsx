@@ -106,19 +106,18 @@ export function Showcase() {
                 className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
                 id="showcase-heading"
               >
-                Feel the <span className="text-primary">difference.</span>
+                Hear your <span className="text-primary">components.</span>
               </h2>
               <p className="mt-4 max-w-2xl text-pretty text-muted-foreground text-sm/relaxed">
-                Every component listens for the{" "}
+                Drop-in replacements for{" "}
+                <strong className="font-semibold text-foreground">
+                  shadcn/ui
+                </strong>
+                . Add a{" "}
                 <code className="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-xs">
                   sound
                 </code>{" "}
-                prop. 17 semantic roles.{" "}
-                <strong className="font-semibold text-foreground">
-                  24 components
-                </strong>
-                . <br />
-                Instant feedback that feels right.
+                prop. Hear the difference.
               </p>
             </div>
 
@@ -134,7 +133,7 @@ export function Showcase() {
               viewport={{ once: true, margin: "-80px" }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-              <div className="flex items-center gap-1.5">
+              <div className="ml-auto flex items-center gap-1.5">
                 <label
                   className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest"
                   htmlFor="sound-pack-selector"
@@ -152,7 +151,7 @@ export function Showcase() {
               >
                 <SelectTrigger
                   aria-label="Select sound pack theme"
-                  className="w-60 border-primary/30 bg-card/50 backdrop-blur-sm hover:border-primary/50 focus:border-primary"
+                  className="ml-auto w-60 border-primary/30 bg-card/50 backdrop-blur-sm hover:border-primary/50 focus:border-primary"
                   id="sound-pack-selector"
                 >
                   <SelectValue>

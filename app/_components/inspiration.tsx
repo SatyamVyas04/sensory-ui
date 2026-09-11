@@ -87,17 +87,18 @@ export function Inspiration() {
             whileInView={{ opacity: 1, y: 0 }}
           >
             <span className="font-mono text-muted-foreground text-xs uppercase tracking-widest">
-              Inspiration
+              Why sound?
             </span>
             <h2
               className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
               id="inspiration-heading"
             >
-              The forgotten <span className="text-primary">dimension.</span>
+              The forgotten dimension{" "}
+              <span className="text-primary">of UI.</span>
             </h2>
 
             <blockquote className="mt-6 border-primary border-l-2 pl-4">
-              <p className="text-muted-foreground text-sm/relaxed italic">
+              <p className="text-balance text-muted-foreground text-sm/relaxed italic">
                 "Your ears are faster than your eyes. The auditory cortex
                 processes sound in about 25ms, while visual processing takes
                 nearly ten times longer. A button that clicks feels faster than
@@ -129,7 +130,7 @@ export function Inspiration() {
             </blockquote>
 
             <blockquote className="mt-4 border-primary/50 border-l-2 pl-4">
-              <p className="text-muted-foreground text-sm/relaxed italic">
+              <p className="text-balance text-muted-foreground text-sm/relaxed italic">
                 "Sound should create a sense of comfort and security – only
                 calling for action when needed. Informative, honest, and
                 reassuring."
@@ -158,16 +159,14 @@ export function Inspiration() {
               </footer>
             </blockquote>
 
-            <div className="mt-6 space-y-3 text-muted-foreground text-sm/relaxed">
+            <div className="mt-6 space-y-3 text-balance text-muted-foreground text-sm/relaxed">
               <p>
-                Google understood this in 2014. The soft tap of a Material
-                button, the chime of a notification, the sweep of a page
-                transition. Deliberate. Crafted. Meaningful.
+                We design interfaces for the eyes. But interaction happens
+                through more than vision. A subtle click can confirm an action.
+                A sweep can signal movement. A chime can mark completion.
               </p>
               <p>
-                Web developers largely ignored this dimension. No clean,
-                framework-native way to add audio feedback to a React component
-                tree. sensory-ui fills that gap - zero audio files, zero side
+                sensory-ui adds this dimension - zero audio files, zero side
                 effects, procedural synthesis powered by the Web Audio API.
               </p>
             </div>
@@ -182,13 +181,13 @@ export function Inspiration() {
               viewport={{ once: true, margin: "-80px" }}
               whileInView={{ opacity: 1 }}
             >
-              17 semantic roles across 5 categories
+              17 sound cues across 5 categories
             </motion.p>
 
             <div className="space-y-3">
               {CATEGORIES.map(({ name, roles, description, ms }, i) => (
                 <motion.div
-                  className="border border-border p-5"
+                  className="group/category relative border border-border p-3.5"
                   initial={{
                     opacity: 0,
                     y: prefersReduced ? 0 : 12,
@@ -199,7 +198,7 @@ export function Inspiration() {
                   whileInView={{ opacity: 1, y: 0 }}
                 >
                   <div className="mb-3 flex items-center justify-between gap-2">
-                    <span className="font-mono font-semibold text-foreground text-sm">
+                    <span className="absolute top-3 right-3 translate-y-3 font-mono font-semibold text-primary text-sm opacity-0 transition-all group-hover/category:translate-y-0 group-hover/category:opacity-100">
                       {name}
                     </span>
                     <div className="flex items-center gap-4 text-muted-foreground text-xs">

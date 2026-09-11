@@ -49,8 +49,7 @@ export function CTA() {
             Give your UI a <span className="text-primary">voice.</span>
           </h2>
           <p className="mx-auto mt-4 max-w-md text-muted-foreground text-sm/relaxed">
-            Add sensory-ui to your Next.js project in under 5 minutes. <br />
-            Configure. Wire. Ship.
+            Install through the shadcn CLI. Add a prop. Ship.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

@@ -28,8 +28,8 @@ export function MotionStatusDot({ reducedMotion }: MotionStatusDotProps) {
         <TooltipTrigger
           aria-label={
             reducedMotion
-              ? "Reduced motion is on — sounds are silenced"
-              : "Motion enabled — sounds are active"
+              ? "Reduced motion is on - sounds are silenced"
+              : "Motion enabled - sounds are active"
           }
           className="inline-flex cursor-default items-center rounded-full focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1"
         >
@@ -46,7 +46,7 @@ export function MotionStatusDot({ reducedMotion }: MotionStatusDotProps) {
             <span>
               Your system has{" "}
               <strong className="font-semibold">prefers-reduced-motion</strong>{" "}
-              on — sounds are silenced.{" "}
+              on - sounds are silenced.{" "}
               <a
                 className="underline underline-offset-2 hover:opacity-80"
                 href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion"
@@ -57,7 +57,7 @@ export function MotionStatusDot({ reducedMotion }: MotionStatusDotProps) {
               </a>
             </span>
           ) : (
-            <span>Your system has motion enabled — sounds will play.</span>
+            <span>Your system has motion enabled - sounds will play.</span>
           )}
         </TooltipContent>
       </Tooltip>

@@ -46,7 +46,7 @@ function StaggerColumn({
 export function ShowcaseGrid() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-      {/* Column 1 — Interaction */}
+      {/* Column 1 - Interaction */}
       <StaggerColumn index={0}>
         <ButtonDemo />
         <ToggleControlsDemo />
@@ -54,7 +54,7 @@ export function ShowcaseGrid() {
         <CommandDemo />
       </StaggerColumn>
 
-      {/* Column 2 — Navigation */}
+      {/* Column 2 - Navigation */}
       <StaggerColumn index={1}>
         <TabsDemo />
         <NotificationsDemo />
@@ -62,7 +62,7 @@ export function ShowcaseGrid() {
         <NavigationControlsDemo />
       </StaggerColumn>
 
-      {/* Column 3 — Surfaces & Feedback */}
+      {/* Column 3 - Surfaces & Feedback */}
       <StaggerColumn index={2}>
         <HeroDemo />
         <DialogDemo />

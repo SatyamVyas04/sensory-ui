@@ -17,25 +17,25 @@ const PRINCIPLES = [
     icon: IconBulb,
     title: "Informative, not decorative",
     description:
-      "Sound confirms actions, signals errors, and reinforces state changes. If it doesn't communicate something useful, it doesn't play.",
+      "Sound should tell the user something. Every cue maps to an interaction, state, or moment. If it doesn't communicate, it doesn't play.",
   },
   {
     icon: IconScale,
-    title: "Weight matches action",
+    title: "Small actions, small sounds",
     description:
-      "A subtle tick for a checkbox. A short sweep for navigation. A richer chime for a milestone. Sound weight scales with interaction significance.",
+      "A checkbox gets a tick. Navigation gets a sweep. A milestone gets a chime. Sound weight scales with the interaction.",
   },
   {
     icon: IconAccessible,
     title: "Accessible by default",
     description:
-      "Respects prefers-reduced-motion. Global kill-switch. Per-category toggles. Every audio cue has a visual equivalent - sound enhances, never replaces.",
+      "Sound never gets in the way. Respects reduced motion. Disable globally, by category, or per interaction. Every cue has a visual counterpart.",
   },
   {
     icon: IconHeartHandshake,
     title: "Reassuring, never punishing",
     description:
-      "Sounds create comfort and confirm intent. Errors are gentle nudges, not harsh buzzers. Under 30 KB. No bundled files. No side effects.",
+      "Errors shouldn't punish. Success shouldn't scream. Every sound is designed to reinforce the interaction and feel good.",
   },
 ] as const;
 
@@ -71,8 +71,8 @@ export function Ideology() {
             Sound with <span className="text-primary">intention.</span>
           </h2>
           <p className="mt-4 max-w-lg text-muted-foreground text-sm/relaxed">
-            UI sound is a craft, not a gimmick. These principles keep sensory-ui
-            from becoming noise.
+            Sound should communicate, not compete. These principles keep
+            sensory-ui from becoming noise.
           </p>
         </motion.div>
 

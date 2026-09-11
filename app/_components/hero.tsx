@@ -33,7 +33,7 @@ const ease = [0.32, 0.72, 0, 1] as const;
 
 /**
  * Isolated component for the cycling install command.
- * Only this component re-renders every 2.5s — not the entire Hero.
+ * Only this component re-renders every 2.5s - not the entire Hero.
  */
 const InstallCommand = memo(function InstallCommand() {
   const [copied, setCopied] = useState(false);
@@ -139,21 +139,24 @@ export function Hero({ stars }: HeroProps) {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 w-full select-none"
       >
-        <video
-          autoPlay
-          className="hidden h-full w-full object-cover md:block dark:invert"
-          loop
-          muted
-          playsInline
-          preload="auto"
-          src="/hero-background.mp4"
-        >
-          <source src="/hero-background.mp4" type="video/mp4" />
-        </video>
+        <Image
+          alt=""
+          className="block h-full w-full object-cover md:block dark:hidden"
+          fill
+          src="/hero-background-light.jpg"
+        />
+        <Image
+          alt=""
+          className="hidden h-full w-full object-cover dark:block"
+          fill
+          src="/hero-background-dark.jpg"
+        />
         {/* Gradient fade from left to blend with content */}
-        <div className="absolute inset-0 bg-linear-to-r from-background via-background/90 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-r from-background via-background/50 to-transparent" />
         {/* Subtle bottom fade */}
         <div className="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-background to-transparent" />
+        {/* Subtle top fade */}
+        <div className="absolute inset-x-0 top-0 h-40 bg-linear-to-b from-background to-transparent" />
       </div>
 
       {/* Mobile: softer overlay */}
@@ -175,11 +178,14 @@ export function Hero({ stars }: HeroProps) {
             href="/"
           >
             <Image
-              alt=""
+              alt="sensory-ui"
               aria-hidden="true"
-              className="size-6 rounded-sm border border-border"
+              className="size-6 rounded-full"
               height={256}
-              src="/icon-256.png"
+              src="/sensory-ui-logo-small.png"
+              style={{
+                filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.15))",
+              }}
               width={256}
             />
             <span>sensory-ui</span>
@@ -236,7 +242,7 @@ export function Hero({ stars }: HeroProps) {
           >
             <span className="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/5 px-2.5 py-1 font-mono text-primary text-xs">
               <IconWaveSine aria-hidden="true" className="size-3" />
-              v1&nbsp;·&nbsp;Early Preview
+              made for the web
             </span>
           </motion.div>
 
@@ -255,12 +261,10 @@ export function Hero({ stars }: HeroProps) {
             {...fadeUp(0.1)}
             className="mt-4 text-muted-foreground text-sm/relaxed sm:text-base/relaxed"
           >
-            Semantic audio feedback for{" "}
-            <strong className="font-medium text-foreground">shadcn/ui</strong>.
-            Using a single prop.
+            Sound-enabled components for React and Next.js.
           </motion.p>
 
-          {/* Installation command — isolated to avoid re-rendering the whole hero */}
+          {/* Installation command - isolated to avoid re-rendering the whole hero */}
           <motion.div
             {...fadeUp(0.15)}
             className="mt-5 flex min-w-0 flex-col items-stretch gap-0 border border-primary/30 bg-card/40 backdrop-blur-sm sm:flex-row"
@@ -276,14 +280,14 @@ export function Hero({ stars }: HeroProps) {
           {/* Stats */}
           <motion.div
             {...fadeUp(0.25)}
-            className="mt-6 inline-block w-full border border-border bg-card/20 px-4 py-3 backdrop-blur-sm sm:px-3 sm:py-2 lg:w-auto"
+            className="mt-6 hidden w-full border border-border bg-card/20 px-4 py-3 backdrop-blur-sm sm:inline-block sm:px-3 sm:py-2 lg:w-auto"
           >
             <dl className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap sm:gap-x-3 sm:gap-y-2 lg:justify-start">
               {[
                 { value: "24", label: "components" },
-                { value: "17", label: "roles" },
+                { value: "17", label: "sound cues" },
                 { value: "9", label: "sound packs" },
-                { value: "~26kb", label: "gzipped size" },
+                { value: "~26kb", label: "gzipped" },
               ].map(({ value, label }, index, array) => (
                 <div
                   className="flex flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-baseline"
@@ -348,7 +352,7 @@ export function Hero({ stars }: HeroProps) {
                   })
                 }
               >
-                See It in Action
+                Explore Components
               </Link>
             </Button>
           </motion.div>
