@@ -9,6 +9,7 @@
 import type { SoundRole } from "../../config/sound-roles";
 import type { SoundSynthesizer } from "../../config/engine";
 import type { InstrumentConfig } from "./instruments";
+import type { BaseTune } from "./tunes";
 import {
   INTERACTION_TUNES,
   NAVIGATION_TUNES,
@@ -58,25 +59,37 @@ export function generateSoundPack(
 }
 
 /**
- * Create a custom sound pack with instrument modifications for specific roles.
+ * Create a custom sound pack with instrument and/or tune modifications for specific roles.
  *
  * This allows fine-tuning individual sounds while keeping the base instrument
  * character consistent across the pack.
  *
  * @param baseInstrument - The base instrument for the pack
- * @param overrides - Partial instrument configs keyed by sound role
+ * @param instrumentOverrides - Partial instrument configs keyed by sound role
+ * @param tuneOverrides - Partial tune overrides keyed by sound role (replaces the base tune)
  */
 export function generateCustomSoundPack(
   baseInstrument: InstrumentConfig,
-  overrides?: Partial<Record<SoundRole, Partial<InstrumentConfig>>>
+  instrumentOverrides?: Partial<Record<SoundRole, Partial<InstrumentConfig>>>,
+  tuneOverrides?: Partial<Record<SoundRole, Partial<BaseTune>>>
 ): Record<SoundRole, SoundSynthesizer> {
   const basePack = generateSoundPack(baseInstrument);
 
-  if (!overrides) return basePack;
+  // Collect all roles that need regeneration
+  const rolesToRegenerate = new Set<string>();
+  if (instrumentOverrides) {
+    for (const role of Object.keys(instrumentOverrides)) rolesToRegenerate.add(role);
+  }
+  if (tuneOverrides) {
+    for (const role of Object.keys(tuneOverrides)) rolesToRegenerate.add(role);
+  }
+
+  if (rolesToRegenerate.size === 0) return basePack;
 
   // Apply overrides
-  for (const [role, instrumentOverride] of Object.entries(overrides)) {
+  for (const role of rolesToRegenerate) {
     const soundRole = role as SoundRole;
+    const instrumentOverride = instrumentOverrides?.[soundRole] ?? {};
     const mergedInstrument = { ...baseInstrument, ...instrumentOverride };
 
     // Determine which tune category this role belongs to
@@ -104,7 +117,11 @@ export function generateCustomSoundPack(
     }
 
     if (tune) {
-      basePack[soundRole] = createSoundFromTune(tune, mergedInstrument);
+      // Merge tune overrides if provided
+      const mergedTune = tuneOverrides?.[soundRole]
+        ? { ...tune, ...tuneOverrides[soundRole] }
+        : tune;
+      basePack[soundRole] = createSoundFromTune(mergedTune, mergedInstrument);
     }
   }
 

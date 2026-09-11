@@ -11,6 +11,67 @@ import type { SoundSynthesizer, PlaySoundOptions, SoundPlayback } from "../../co
 import type { BaseTune } from "./tunes";
 import type { InstrumentConfig } from "./instruments";
 import { createNoiseBuffer, applyDecayToBuffer } from "./instruments";
+import { buildEffectsChain, type EffectNodes } from "./effects";
+
+// ---------------------------------------------------------------------------
+// Effects helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * If the instrument has an effects chain, create it and return the input node
+ * (so the caller connects its final gain to `chain.input`). The chain's output
+ * connects to `ctx.destination` and the chain nodes are added to `extraNodes`
+ * for cleanup.
+ *
+ * If no effects, returns `ctx.destination` directly (no extra nodes).
+ */
+function applyEffects(
+  ctx: AudioContext,
+  instrument: InstrumentConfig,
+  extraNodes: AudioNode[]
+): { dest: AudioNode; chain: EffectNodes | null } {
+  if (!instrument.effects || instrument.effects.length === 0) {
+    return { dest: ctx.destination, chain: null };
+  }
+  const chain = buildEffectsChain(ctx, instrument.effects);
+  chain.output.connect(ctx.destination);
+  extraNodes.push(chain.input, chain.output);
+  return { dest: chain.input, chain };
+}
+
+// ---------------------------------------------------------------------------
+// FM Synthesis helper
+// ---------------------------------------------------------------------------
+
+/**
+ * Create an FM modulator oscillator connected to a carrier's frequency.
+ * Returns the modulator node (for cleanup) and the gain node.
+ * The modulator is started immediately.
+ */
+function createFMModulator(
+  ctx: AudioContext,
+  carrier: OscillatorNode,
+  freq: number,
+  fmRatio: number,
+  fmDepth: number,
+  startTime: number,
+  endTime: number
+): { mod: OscillatorNode; modGain: GainNode } {
+  const mod = ctx.createOscillator();
+  mod.type = "sine";
+  mod.frequency.value = freq * fmRatio;
+
+  const modGain = ctx.createGain();
+  modGain.gain.value = fmDepth;
+
+  mod.connect(modGain);
+  modGain.connect(carrier.frequency);
+
+  mod.start(startTime);
+  mod.stop(endTime + 0.02);
+
+  return { mod, modGain };
+}
 
 // ---------------------------------------------------------------------------
 // Factory Functions for Each Tune Type
@@ -19,6 +80,7 @@ import { createNoiseBuffer, applyDecayToBuffer } from "./instruments";
 /**
  * Create a click sound (short percussive transient)
  * Reference: playConcept("click") — noise with exponential decay, bandpass filter.
+ * Raphael-inspired: layers instrument oscType with noise for pack-distinct character.
  */
 function createClickSound(
   tune: BaseTune,
@@ -28,12 +90,13 @@ function createClickSound(
     const t = ctx.currentTime;
     const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
     const duration = Math.max(0.004, tune.duration) * instrument.decayMult;
-    const meta = tune.meta as { decayConstant?: number } | undefined;
+    const meta = tune.meta as { decayConstant?: number; tonalGain?: number } | undefined;
     const decayConstant = meta?.decayConstant ?? 50;
+    const extraNodes: AudioNode[] = [];
+    const nodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
 
-    // Generate noise buffer with time-normalised exponential decay.
-    // Using (i / sampleRate) ensures the decay shape is independent of
-    // the AudioContext's sample rate across devices.
+    // Noise layer — the transient click
     const bufLen = Math.floor(ctx.sampleRate * duration);
     const buffer = ctx.createBuffer(1, bufLen, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -51,17 +114,36 @@ function createClickSound(
     filter.frequency.value = (tune.filterFreq ?? 4000) * instrument.pitchMult;
     filter.Q.value = (tune.filterQ ?? 3) * instrument.q;
 
-    const gain = ctx.createGain();
-    gain.gain.value = vol;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.value = vol;
 
     src.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
+    filter.connect(noiseGain);
+    noiseGain.connect(dest);
+    nodes.push(src, filter, noiseGain);
+
+    // Tonal layer — gives each pack its distinct character
+    const tonalGain = meta?.tonalGain ?? 0.3;
+    if (tonalGain > 0) {
+      const tonalOsc = ctx.createOscillator();
+      tonalOsc.type = instrument.oscType;
+      tonalOsc.frequency.value = (tune.filterFreq ?? 4000) * instrument.pitchMult;
+
+      const tonalEnv = ctx.createGain();
+      tonalEnv.gain.setValueAtTime(0.001, t);
+      tonalEnv.gain.linearRampToValueAtTime(vol * tonalGain, t + 0.001);
+      tonalEnv.gain.exponentialRampToValueAtTime(0.001, t + duration * 1.5);
+
+      tonalOsc.connect(tonalEnv);
+      tonalEnv.connect(dest);
+      tonalOsc.start(t);
+      tonalOsc.stop(t + duration * 1.5 + 0.01);
+      nodes.push(tonalOsc, tonalEnv);
+    }
 
     src.onended = () => {
-      src.disconnect();
-      filter.disconnect();
-      gain.disconnect();
+      nodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
 
@@ -86,11 +168,23 @@ function createPopSound(
     const duration = tune.duration * instrument.decayMult;
     const freq = (tune.frequency ?? 800) * instrument.pitchMult;
     const endFreq = (tune.endFrequency ?? freq * 1.2);
+    const extraNodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
 
     const osc = ctx.createOscillator();
     osc.type = instrument.oscType;
     osc.frequency.setValueAtTime(freq, t);
     osc.frequency.exponentialRampToValueAtTime(endFreq, t + duration * 0.3);
+
+    // FM synthesis — adds metallic/bell-like richness
+    let fmMod: OscillatorNode | null = null;
+    let fmModGain: GainNode | null = null;
+    if (tune.fmRatio && tune.fmDepth) {
+      const fm = createFMModulator(ctx, osc, freq, tune.fmRatio, tune.fmDepth, t, t + duration);
+      fmMod = fm.mod;
+      fmModGain = fm.modGain;
+      extraNodes.push(fmMod, fmModGain);
+    }
 
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.001, t);
@@ -98,11 +192,12 @@ function createPopSound(
     gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
 
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(dest);
 
     osc.onended = () => {
       osc.disconnect();
       gain.disconnect();
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
 
@@ -134,8 +229,9 @@ function createToggleSound(
 
     const nodes: AudioNode[] = [];
     const sources: AudioScheduledSourceNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, nodes);
 
-    // Noise click transient (reference: 12ms, exp decay -i/80)
+    // Noise click transient
     const noiseDur = (meta?.noiseDuration ?? 0.012) * instrument.decayMult;
     const decayConstant = meta?.decayConstant ?? 80;
     const bufLen = Math.floor(ctx.sampleRate * noiseDur);
@@ -160,13 +256,13 @@ function createToggleSound(
 
     src.connect(filter);
     filter.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
+    noiseGain.connect(dest);
 
     nodes.push(filter, noiseGain);
     sources.push(src);
     src.start(t);
 
-    // Tonal tail (reference: sine 800→400Hz, gain 0.15→0.001 over 40ms)
+    // Tonal tail
     if (tune.frequency) {
       const osc = ctx.createOscillator();
       osc.type = instrument.oscType;
@@ -184,7 +280,7 @@ function createToggleSound(
       oscGain.gain.exponentialRampToValueAtTime(0.001, t + duration);
 
       osc.connect(oscGain);
-      oscGain.connect(ctx.destination);
+      oscGain.connect(dest);
 
       nodes.push(oscGain);
       sources.push(osc);
@@ -226,10 +322,12 @@ function createTickSound(
     const t = ctx.currentTime;
     const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
     const duration = Math.max(0.004, tune.duration) * instrument.decayMult;
-    const meta = tune.meta as { decayConstant?: number } | undefined;
+    const meta = tune.meta as { decayConstant?: number; tonalGain?: number } | undefined;
     const decayConstant = meta?.decayConstant ?? 20;
+    const extraNodes: AudioNode[] = [];
+    const nodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
 
-    // Generate noise buffer with time-normalised exponential decay.
     const bufLen = Math.floor(ctx.sampleRate * duration);
     const buffer = ctx.createBuffer(1, bufLen, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -246,17 +344,36 @@ function createTickSound(
     filter.type = "highpass";
     filter.frequency.value = (tune.filterFreq ?? 3000) * instrument.pitchMult;
 
-    const gain = ctx.createGain();
-    gain.gain.value = vol;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.value = vol;
 
     src.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
+    filter.connect(noiseGain);
+    noiseGain.connect(dest);
+    nodes.push(src, filter, noiseGain);
+
+    // Tonal micro-layer — gives each pack its distinct character
+    const tonalGain = meta?.tonalGain ?? 0.2;
+    if (tonalGain > 0) {
+      const tonalOsc = ctx.createOscillator();
+      tonalOsc.type = instrument.oscType;
+      tonalOsc.frequency.value = (tune.filterFreq ?? 3000) * instrument.pitchMult;
+
+      const tonalEnv = ctx.createGain();
+      tonalEnv.gain.setValueAtTime(0.001, t);
+      tonalEnv.gain.linearRampToValueAtTime(vol * tonalGain, t + 0.001);
+      tonalEnv.gain.exponentialRampToValueAtTime(0.001, t + duration);
+
+      tonalOsc.connect(tonalEnv);
+      tonalEnv.connect(dest);
+      tonalOsc.start(t);
+      tonalOsc.stop(t + duration + 0.01);
+      nodes.push(tonalOsc, tonalEnv);
+    }
 
     src.onended = () => {
-      src.disconnect();
-      filter.disconnect();
-      gain.disconnect();
+      nodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
 
@@ -285,6 +402,7 @@ function createSweepSound(
     const oscs: OscillatorNode[] = [];
     const gainNodes: GainNode[] = [];
     const extraNodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
 
     const osc = ctx.createOscillator();
     osc.type = instrument.oscType;
@@ -296,7 +414,7 @@ function createSweepSound(
     gain.gain.exponentialRampToValueAtTime(0.001, t + duration + 0.04);
 
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(dest);
     oscs.push(osc);
     gainNodes.push(gain);
 
@@ -318,12 +436,12 @@ function createSweepSound(
       harmGain.gain.setValueAtTime(harmVol, t);
       harmGain.gain.exponentialRampToValueAtTime(0.001, t + duration + 0.03);
       harmOsc.connect(harmGain);
-      harmGain.connect(ctx.destination);
+      harmGain.connect(dest);
       oscs.push(harmOsc);
       gainNodes.push(harmGain);
     }
 
-    // Third partial for richer timbre (adds bell-like quality to overlay sounds)
+    // Third partial for richer timbre
     if (meta?.thirdPartial) {
       const thirdRatio = meta.thirdRatio ?? 3;
       const thirdVol = vol * (meta.thirdVolume ?? 0.06);
@@ -335,12 +453,12 @@ function createSweepSound(
       thirdGain.gain.setValueAtTime(thirdVol, t);
       thirdGain.gain.exponentialRampToValueAtTime(0.001, t + duration * 0.6);
       thirdOsc.connect(thirdGain);
-      thirdGain.connect(ctx.destination);
+      thirdGain.connect(dest);
       oscs.push(thirdOsc);
       gainNodes.push(thirdGain);
     }
 
-    // Click transient layer for overlay sounds (subtle tactile click at the start)
+    // Click transient layer for overlay sounds
     if (meta?.clickLayer) {
       const clickDur = 0.005;
       const clickBufLen = Math.floor(ctx.sampleRate * clickDur);
@@ -359,7 +477,7 @@ function createSweepSound(
       clickGainNode.gain.value = vol * (meta.clickGain ?? 0.25);
       clickSrc.connect(clickFilter);
       clickFilter.connect(clickGainNode);
-      clickGainNode.connect(ctx.destination);
+      clickGainNode.connect(dest);
       extraNodes.push(clickSrc, clickFilter, clickGainNode);
       clickSrc.start(t);
     }
@@ -412,9 +530,13 @@ function createChimeSound(
     const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
     const duration = tune.duration * instrument.decayMult;
     const freq = (tune.frequency ?? 520) * instrument.pitchMult;
+    const sustainLevel = tune.sustain ?? 0;
+    const releaseTime = tune.release ?? 0;
 
     const oscillators: OscillatorNode[] = [];
     const gains: GainNode[] = [];
+    const extraNodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
 
     // Main tone
     const osc = ctx.createOscillator();
@@ -427,13 +549,35 @@ function createChimeSound(
       );
     }
 
+    // FM synthesis
+    let fmMod: OscillatorNode | null = null;
+    let fmModGain: GainNode | null = null;
+    if (tune.fmRatio && tune.fmDepth) {
+      const fm = createFMModulator(ctx, osc, freq, tune.fmRatio, tune.fmDepth, t, t + duration);
+      fmMod = fm.mod;
+      fmModGain = fm.modGain;
+      extraNodes.push(fmMod, fmModGain);
+    }
+
+    // ADSR envelope
+    const attackTime = tune.attack ?? 0.01;
+    const decayTime = duration * 0.4;
+    const sustainEnd = t + attackTime + decayTime + (duration - attackTime - decayTime) * sustainLevel;
+    const releaseEnd = sustainEnd + releaseTime;
+
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.001, t);
-    gain.gain.linearRampToValueAtTime(vol, t + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+    gain.gain.linearRampToValueAtTime(vol, t + attackTime);
+    if (sustainLevel > 0) {
+      gain.gain.exponentialRampToValueAtTime(vol * sustainLevel, t + attackTime + decayTime);
+      gain.gain.linearRampToValueAtTime(vol * sustainLevel, sustainEnd);
+      gain.gain.exponentialRampToValueAtTime(0.001, releaseEnd);
+    } else {
+      gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+    }
 
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(dest);
     oscillators.push(osc);
     gains.push(gain);
 
@@ -446,11 +590,11 @@ function createChimeSound(
       const harmonicGain = ctx.createGain();
       const harmonicVol = vol * (tune.harmonicVolume ?? 0.2);
       harmonicGain.gain.setValueAtTime(0.001, t);
-      harmonicGain.gain.linearRampToValueAtTime(harmonicVol, t + 0.01);
+      harmonicGain.gain.linearRampToValueAtTime(harmonicVol, t + attackTime);
       harmonicGain.gain.exponentialRampToValueAtTime(0.001, t + duration * 0.8);
 
       harmonic.connect(harmonicGain);
-      harmonicGain.connect(ctx.destination);
+      harmonicGain.connect(dest);
       oscillators.push(harmonic);
       gains.push(harmonicGain);
     }
@@ -458,6 +602,7 @@ function createChimeSound(
     const cleanup = () => {
       oscillators.forEach(o => { try { o.disconnect(); } catch { /* ok */ } });
       gains.forEach(g => { try { g.disconnect(); } catch { /* ok */ } });
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
 
@@ -497,6 +642,8 @@ function createArpeggioSound(
 
     const oscillators: OscillatorNode[] = [];
     const gains: GainNode[] = [];
+    const extraNodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
 
     notes.forEach((noteFreq, i) => {
       const freq = noteFreq * instrument.pitchMult;
@@ -509,13 +656,20 @@ function createArpeggioSound(
       osc.type = instrument.oscType;
       osc.frequency.value = freq;
 
+      // FM synthesis per-note — adds bell-like richness to each note
+      if (tune.fmRatio && tune.fmDepth) {
+        const fm = createFMModulator(ctx, osc, freq, tune.fmRatio, tune.fmDepth, noteStart, decay);
+        oscillators.push(fm.mod);
+        gains.push(fm.modGain);
+      }
+
       const g = ctx.createGain();
       g.gain.setValueAtTime(0.001, noteStart);
       g.gain.linearRampToValueAtTime(vol, noteStart + 0.012);
       g.gain.exponentialRampToValueAtTime(0.001, decay);
 
       osc.connect(g);
-      g.connect(ctx.destination);
+      g.connect(dest);
 
       oscillators.push(osc);
       gains.push(g);
@@ -523,7 +677,7 @@ function createArpeggioSound(
       osc.start(noteStart);
       osc.stop(decay + 0.05);
 
-      // Shimmer: detuned copy on the final note (hero sounds only)
+      // Shimmer: detuned copy on the final note
       if (isLast && shimmerCents) {
         const shimOsc = ctx.createOscillator();
         shimOsc.type = instrument.oscType;
@@ -534,7 +688,7 @@ function createArpeggioSound(
         shimGain.gain.linearRampToValueAtTime(vol * 0.35, noteStart + 0.015);
         shimGain.gain.exponentialRampToValueAtTime(0.001, decay);
         shimOsc.connect(shimGain);
-        shimGain.connect(ctx.destination);
+        shimGain.connect(dest);
         oscillators.push(shimOsc);
         gains.push(shimGain);
         shimOsc.start(noteStart);
@@ -545,6 +699,7 @@ function createArpeggioSound(
         osc.onended = () => {
           oscillators.forEach(o => { try { o.disconnect(); } catch { /* ok */ } });
           gains.forEach(g => { try { g.disconnect(); } catch { /* ok */ } });
+          extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
           opts.onEnd?.();
         };
       }
@@ -573,6 +728,8 @@ function createChordSound(
 
     const oscillators: OscillatorNode[] = [];
     const gains: GainNode[] = [];
+    const extraNodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
 
     const noteVol = vol / Math.sqrt(notes.length);
 
@@ -588,7 +745,7 @@ function createChordSound(
       gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
 
       osc.connect(gain);
-      gain.connect(ctx.destination);
+      gain.connect(dest);
       oscillators.push(osc);
       gains.push(gain);
     });
@@ -596,6 +753,7 @@ function createChordSound(
     const cleanup = () => {
       oscillators.forEach(o => { try { o.disconnect(); } catch { /* ok */ } });
       gains.forEach(g => { try { g.disconnect(); } catch { /* ok */ } });
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
 
@@ -628,7 +786,10 @@ function createBurstSound(
     const t = ctx.currentTime;
     const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
     const duration = tune.duration * instrument.decayMult;
-    const meta = tune.meta as { endFilterFreq?: number; sineEnvelope?: boolean } | undefined;
+    const meta = tune.meta as { endFilterFreq?: number; sineEnvelope?: boolean; tonalGain?: number } | undefined;
+    const extraNodes: AudioNode[] = [];
+    const nodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
 
     // Generate noise buffer
     const bufLen = Math.floor(ctx.sampleRate * duration);
@@ -636,13 +797,11 @@ function createBurstSound(
     const data = buffer.getChannelData(0);
 
     if (meta?.sineEnvelope) {
-      // Whoosh: sine-envelope noise (reference pattern)
       for (let i = 0; i < bufLen; i++) {
         const env = Math.sin((i / bufLen) * Math.PI);
         data[i] = (Math.random() * 2 - 1) * env;
       }
     } else {
-      // Standard burst: noise with decay
       for (let i = 0; i < bufLen; i++) {
         data[i] = Math.random() * 2 - 1;
       }
@@ -656,7 +815,6 @@ function createBurstSound(
     filter.type = "bandpass";
     const startFilterFreq = (tune.filterFreq ?? instrument.filterFreq) * instrument.pitchMult;
     filter.frequency.setValueAtTime(startFilterFreq, t);
-    // Sweep filter frequency for whoosh effect
     if (meta?.endFilterFreq) {
       filter.frequency.exponentialRampToValueAtTime(
         meta.endFilterFreq * instrument.pitchMult, t + duration
@@ -664,17 +822,40 @@ function createBurstSound(
     }
     filter.Q.value = (tune.filterQ ?? instrument.q);
 
-    const gain = ctx.createGain();
-    gain.gain.value = vol;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.value = vol;
 
     src.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
+    filter.connect(noiseGain);
+    noiseGain.connect(dest);
+    nodes.push(src, filter, noiseGain);
+
+    // Tonal layer — gives each pack its distinct character
+    const tonalGain = meta?.tonalGain ?? 0.35;
+    if (tonalGain > 0) {
+      const freq = (tune.frequency ?? 300) * instrument.pitchMult;
+      const endFreq = (tune.endFrequency ?? freq * 0.7) * instrument.pitchMult;
+
+      const tonalOsc = ctx.createOscillator();
+      tonalOsc.type = instrument.oscType;
+      tonalOsc.frequency.setValueAtTime(freq, t);
+      tonalOsc.frequency.exponentialRampToValueAtTime(endFreq, t + duration);
+
+      const tonalEnv = ctx.createGain();
+      tonalEnv.gain.setValueAtTime(0.001, t);
+      tonalEnv.gain.linearRampToValueAtTime(vol * tonalGain, t + 0.005);
+      tonalEnv.gain.exponentialRampToValueAtTime(0.001, t + duration);
+
+      tonalOsc.connect(tonalEnv);
+      tonalEnv.connect(dest);
+      tonalOsc.start(t);
+      tonalOsc.stop(t + duration + 0.01);
+      nodes.push(tonalOsc, tonalEnv);
+    }
 
     src.onended = () => {
-      src.disconnect();
-      filter.disconnect();
-      gain.disconnect();
+      nodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
 
@@ -703,6 +884,8 @@ function createPulseSound(
 
     const oscillators: OscillatorNode[] = [];
     const gains: GainNode[] = [];
+    const extraNodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
 
     for (let i = 0; i < pulseCount; i++) {
       const pulseStart = t + i * (pulseDur + gap);
@@ -716,7 +899,7 @@ function createPulseSound(
       gain.gain.exponentialRampToValueAtTime(0.001, pulseStart + pulseDur);
 
       osc.connect(gain);
-      gain.connect(ctx.destination);
+      gain.connect(dest);
       oscillators.push(osc);
       gains.push(gain);
 
@@ -727,6 +910,7 @@ function createPulseSound(
     const cleanup = () => {
       oscillators.forEach(o => { try { o.disconnect(); } catch { /* ok */ } });
       gains.forEach(g => { try { g.disconnect(); } catch { /* ok */ } });
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
 
@@ -754,6 +938,8 @@ function createWobbleSound(
     const freq = (tune.frequency ?? 500) * instrument.pitchMult;
     const modFreq = tune.modFreq ?? 6;
     const modDepth = tune.modDepth ?? 30;
+    const extraNodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
 
     const osc = ctx.createOscillator();
     osc.type = instrument.oscType;
@@ -774,13 +960,14 @@ function createWobbleSound(
     gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
 
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(dest);
 
     osc.onended = () => {
       osc.disconnect();
       lfo.disconnect();
       lfoGain.disconnect();
       gain.disconnect();
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
       opts.onEnd?.();
     };
 
@@ -793,6 +980,160 @@ function createWobbleSound(
       stop: () => {
         try { osc.stop(); lfo.stop(); } catch { /* ok */ }
       }
+    };
+  };
+}
+
+/**
+ * Create a boop sound (soft rounded tone with FM — gentle notification).
+ * Like a soft "bloop" — sine with pitch glide and optional FM for warmth.
+ */
+function createBoopSound(
+  tune: BaseTune,
+  instrument: InstrumentConfig
+): SoundSynthesizer {
+  return (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+    const t = ctx.currentTime;
+    const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
+    const duration = tune.duration * instrument.decayMult;
+    const freq = (tune.frequency ?? 400) * instrument.pitchMult;
+    const endFreq = (tune.endFrequency ?? freq * 0.6);
+    const extraNodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
+
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, t);
+    osc.frequency.exponentialRampToValueAtTime(endFreq, t + duration * 0.8);
+
+    // FM for warmth
+    if (tune.fmRatio && tune.fmDepth) {
+      const fm = createFMModulator(ctx, osc, freq, tune.fmRatio, tune.fmDepth, t, t + duration);
+      extraNodes.push(fm.mod, fm.modGain);
+    }
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.001, t);
+    gain.gain.linearRampToValueAtTime(vol, t + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+
+    osc.connect(gain);
+    gain.connect(dest);
+
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
+      opts.onEnd?.();
+    };
+
+    osc.start(t);
+    osc.stop(t + duration + 0.02);
+
+    return {
+      stop: () => { try { osc.stop(); } catch { /* ok */ } }
+    };
+  };
+}
+
+/**
+ * Create a bounce sound (descending pitch with弹性 feel).
+ * A soft tone that drops in pitch, like something landing gently.
+ */
+function createBounceSound(
+  tune: BaseTune,
+  instrument: InstrumentConfig
+): SoundSynthesizer {
+  return (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+    const t = ctx.currentTime;
+    const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
+    const duration = tune.duration * instrument.decayMult;
+    const freq = (tune.frequency ?? 350) * instrument.pitchMult;
+    const endFreq = (tune.endFrequency ?? freq * 0.5);
+    const extraNodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
+
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, t);
+    osc.frequency.exponentialRampToValueAtTime(endFreq, t + duration);
+
+    if (tune.fmRatio && tune.fmDepth) {
+      const fm = createFMModulator(ctx, osc, freq, tune.fmRatio, tune.fmDepth, t, t + duration);
+      extraNodes.push(fm.mod, fm.modGain);
+    }
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.001, t);
+    gain.gain.linearRampToValueAtTime(vol, t + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+
+    osc.connect(gain);
+    gain.connect(dest);
+
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
+      opts.onEnd?.();
+    };
+
+    osc.start(t);
+    osc.stop(t + duration + 0.02);
+
+    return {
+      stop: () => { try { osc.stop(); } catch { /* ok */ } }
+    };
+  };
+}
+
+/**
+ * Create a spring sound (rising pitch with FM shimmer).
+ * Like a spring coiling up — pitch ascends with metallic FM overtones.
+ */
+function createSpringSound(
+  tune: BaseTune,
+  instrument: InstrumentConfig
+): SoundSynthesizer {
+  return (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+    const t = ctx.currentTime;
+    const vol = (opts.volume ?? 1) * (tune.volume ?? 1) * instrument.gainMult;
+    const duration = tune.duration * instrument.decayMult;
+    const freq = (tune.frequency ?? 400) * instrument.pitchMult;
+    const endFreq = (tune.endFrequency ?? freq * 2.25);
+    const extraNodes: AudioNode[] = [];
+    const { dest } = applyEffects(ctx, instrument, extraNodes);
+
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, t);
+    osc.frequency.exponentialRampToValueAtTime(endFreq, t + duration);
+
+    if (tune.fmRatio && tune.fmDepth) {
+      const fm = createFMModulator(ctx, osc, freq, tune.fmRatio, tune.fmDepth, t, t + duration);
+      extraNodes.push(fm.mod, fm.modGain);
+    }
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.001, t);
+    gain.gain.linearRampToValueAtTime(vol, t + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+
+    osc.connect(gain);
+    gain.connect(dest);
+
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+      extraNodes.forEach(n => { try { n.disconnect(); } catch { /* ok */ } });
+      opts.onEnd?.();
+    };
+
+    osc.start(t);
+    osc.stop(t + duration + 0.02);
+
+    return {
+      stop: () => { try { osc.stop(); } catch { /* ok */ } }
     };
   };
 }
@@ -835,6 +1176,12 @@ export function createSoundFromTune(
       return createPulseSound(tune, instrument);
     case "wobble":
       return createWobbleSound(tune, instrument);
+    case "boop":
+      return createBoopSound(tune, instrument);
+    case "bounce":
+      return createBounceSound(tune, instrument);
+    case "spring":
+      return createSpringSound(tune, instrument);
     default:
       return createChimeSound(tune, instrument);
   }

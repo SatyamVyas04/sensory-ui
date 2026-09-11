@@ -250,7 +250,7 @@ export function Hero({ stars }: HeroProps) {
           <motion.h1
             id="hero-heading"
             {...fadeUp(0.05)}
-            className="text-balance font-pixel text-4xl tracking-tight sm:text-5xl lg:text-6xl"
+            className="text-balance font-serif text-4xl tracking-tight sm:text-5xl lg:text-6xl"
           >
             Your website speaks. Give it a{" "}
             <span className="text-primary">voice.</span>
@@ -271,9 +271,9 @@ export function Hero({ stars }: HeroProps) {
           >
             <InstallCommand />
             <WritingLogo
-              className="pointer-events-none absolute -right-14 -bottom-14 opacity-0 lg:block lg:opacity-100"
+              className="pointer-events-none absolute -right-15 -bottom-15 -rotate-15 opacity-0 lg:block lg:opacity-100"
               stroke="var(--foreground)"
-              width={120}
+              width={100}
             />
           </motion.div>
 

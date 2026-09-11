@@ -11,10 +11,13 @@ may instead load audio from URLs or base64 data URIs at runtime.
 
 > Credit: synthesis patterns adapted from
 > [Generating Sounds with AI - userinterface.wiki](https://www.userinterface.wiki/generating-sounds-with-ai)
+>
+> Effects system inspired by
+> [@web-kits/audio](https://audio.raphaelsalaja.com) by Raphael Salaja
 
 ---
 
-## Architecture: Tunes + Instruments
+## Architecture: Tunes + Instruments + Effects
 
 sensory-ui uses an **instrument-based architecture** that separates:
 
@@ -30,13 +33,72 @@ sensory-ui uses an **instrument-based architecture** that separates:
     - Filter settings and resonance
     - Envelope shapes (attack/decay curves)
     - Harmonic content and detuning
+    - **Effects chain** (reverb, delay, chorus, distortion)
 
-3. **Factory** (`sounds/core/factory.ts`) - Combines tunes with instruments:
+3. **Effects** (`sounds/core/effects.ts`) - Spatial/timbral processing:
+    - Reverb via generated impulse responses (no external files)
+    - Feedback delay with filter
+    - Chorus via modulated delay
+    - Waveshaper distortion
+    - Chains of effects daisy-chained automatically
+
+4. **Factory** (`sounds/core/factory.ts`) - Combines tunes with instruments:
     - Takes a tune definition and an instrument config
+    - If the instrument has effects, routes output through the chain
     - Produces a `SoundSynthesizer` function
 
 This separation allows the **same tunes to be played by different instruments**,
 creating distinct soundpack characters with minimal code duplication.
+
+---
+
+## Effects System
+
+Each `InstrumentConfig` can include an optional `effects` array. When present, the factory
+routes every sound through the effects chain before reaching `ctx.destination`.
+
+```ts
+interface InstrumentConfig {
+  filterFreq: number;
+  q: number;
+  oscType: OscillatorWaveform;
+  decayMult: number;
+  gainMult: number;
+  pitchMult: number;
+  effects?: EffectDefinition[];  // <-- new
+}
+```
+
+### Available Effects
+
+| Effect      | Options                                                                 | Description |
+| ----------- | ----------------------------------------------------------------------- | ----------- |
+| `reverb`    | `{ duration, decay, mix }`                                              | Algorithmic reverb via noise-buffer impulse response |
+| `delay`     | `{ time, feedback, filterFreq, mix }`                                   | Feedback delay with low-pass filter in loop |
+| `chorus`    | `{ rate, depth, detune, mix }`                                          | Delay-based chorus with LFO modulation |
+| `distortion`| `{ amount, filterFreq, mix }`                                           | Waveshaper saturation with post-filter |
+
+All effects support a `mix` parameter (0–1) for wet/dry balance.
+
+### Pack Effects Mapping
+
+| Pack       | Effects                                              | Character rationale |
+| ---------- | ---------------------------------------------------- | ------------------- |
+| aero       | reverb (long tail, 2s)                               | Airy, ethereal — needs space |
+| glass      | reverb (1.5s) + chorus                               | Crystalline shimmer — chorus adds sparkle |
+| retro      | chorus + delay                                       | Analog warmth — chorus widens, delay echoes |
+| industrial | distortion                                           | Metallic grit — distortion adds bite |
+| organic    | reverb (short room, 0.4s)                            | Natural warmth — subtle room ambience |
+| soft       | reverb (medium warm, 0.8s)                           | Gentle presence — warm reverb body |
+| arcade     | (dry)                                                | Chiptune — dry is authentic |
+| minimal    | (dry)                                                | Pure — no processing |
+| crisp      | (dry)                                                | Precise — dry keeps transients sharp |
+
+### Hero Sounds with Effects
+
+Hero sounds (`hero.complete`, `hero.milestone`) are hand-crafted per pack. Packs with effects
+route their hero synthesizers through the same effects chain via the `heroWithEffects()` helper,
+which creates the chain per-playback and cleans up on stop.
 
 ---
 
@@ -86,22 +148,23 @@ interface InstrumentConfig {
 	decayMult: number; // Decay time multiplier (0.5-1.5)
 	gainMult: number; // Volume multiplier (0.4-1.2)
 	pitchMult: number; // Pitch multiplier (0.7-1.8)
+	effects?: EffectDefinition[]; // Optional effects chain
 }
 ```
 
 ### Example Instrument Settings
 
-| Pack       | filterFreq | q   | oscType  | decayMult | gainMult | pitchMult |
-| ---------- | ---------- | --- | -------- | --------- | -------- | --------- |
-| soft       | 2000       | 1   | sine     | 1.5       | 0.7      | 0.8       |
-| aero       | 3500       | 2   | sine     | 1.0       | 0.9      | 1.0       |
-| arcade     | 4000       | 8   | square   | 0.5       | 1.0      | 1.5       |
-| organic    | 2500       | 3   | triangle | 1.3       | 0.85     | 0.9       |
-| glass      | 6000       | 10  | sine     | 1.2       | 0.75     | 1.8       |
-| industrial | 3000       | 12  | sawtooth | 0.6       | 1.2      | 0.7       |
-| minimal    | 2000       | 1   | sine     | 0.8       | 0.4      | 1.0       |
-| retro      | 1500       | 2   | square   | 1.1       | 0.8      | 0.85      |
-| crisp      | 5500       | 4   | triangle | 0.6       | 1.0      | 1.1       |
+| Pack       | filterFreq | q   | oscType  | decayMult | gainMult | pitchMult | effects                  |
+| ---------- | ---------- | --- | -------- | --------- | -------- | --------- | ------------------------ |
+| soft       | 2000       | 1   | sine     | 1.5       | 0.7      | 0.8       | reverb (warm)            |
+| aero       | 3500       | 2   | sine     | 1.0       | 0.9      | 1.0       | reverb (long)            |
+| arcade     | 4000       | 8   | square   | 0.5       | 1.0      | 1.5       | (none)                   |
+| organic    | 2500       | 3   | triangle | 1.3       | 0.85     | 0.9       | reverb (room)            |
+| glass      | 6000       | 10  | sine     | 1.2       | 0.75     | 1.8       | reverb + chorus          |
+| industrial | 3000       | 12  | sawtooth | 0.6       | 1.2      | 0.7       | distortion               |
+| minimal    | 2000       | 1   | sine     | 0.8       | 0.4      | 1.0       | (none)                   |
+| retro      | 1500       | 2   | square   | 1.1       | 0.8      | 0.85      | chorus + delay           |
+| crisp      | 5500       | 4   | triangle | 0.6       | 1.0      | 1.1       | (none)                   |
 
 ---
 
@@ -111,7 +174,7 @@ All packs comply with the rules in the `generating-sounds-with-ai` skill:
 
 - **`context-reuse-single`** - all packs use the shared `getAudioContext()` singleton
 - **`context-resume-suspended`** - engine checks `ctx.state` before each play
-- **`context-cleanup-nodes`** - `onended` disconnects every node
+- **`context-cleanup-nodes`** - `onended` disconnects every node, including effects chain nodes
 - **`envelope-exponential-decay`** - `exponentialRampToValueAtTime` throughout
 - **`envelope-no-zero-target`** - all ramps target `0.001`, never `0`
 - **`envelope-set-initial-value`** - `setValueAtTime` before every ramp
@@ -158,6 +221,9 @@ const MY_CUSTOM_INSTRUMENT: InstrumentConfig = {
 	decayMult: 1.0,
 	gainMult: 0.85,
 	pitchMult: 1.1,
+	effects: [
+		{ type: "reverb", options: { duration: 1.0, decay: 2.0, mix: 0.2 } },
+	],
 };
 ```
 
@@ -184,6 +250,9 @@ const myInstrument = {
 	...INSTRUMENTS.glass,
 	gainMult: 0.6, // Quieter
 	pitchMult: 2.0, // Higher pitched
+	effects: [
+		{ type: "reverb", options: { duration: 2.0, mix: 0.4 } },
+	],
 };
 
 export const myPack = generateSoundPack(myInstrument);

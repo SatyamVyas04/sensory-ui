@@ -6,6 +6,9 @@
  *
  * This separation allows the same tune to be played by different instruments
  * (sine, square, noise, sawtooth, etc.) creating distinct soundpack characters.
+ *
+ * Sound design inspired by @web-kits/audio by Raphael Salaja — FM synthesis,
+ * layered tones, and subtle gain levels for a polished, non-harsh feel.
  */
 
 // ---------------------------------------------------------------------------
@@ -42,6 +45,9 @@ export type TuneType =
   | "drop"         // Pitch descends
   | "rise"         // Pitch ascends
   | "wobble"       // Modulated sound
+  | "boop"         // Soft rounded tone with FM (like a gentle notification)
+  | "bounce"       // Descending pitch with弹性 feel
+  | "spring"       // Rising pitch with FM shimmer
 
 export interface BaseTune {
   type: TuneType;
@@ -67,12 +73,20 @@ export interface BaseTune {
   attack?: number;
   /** Decay time in seconds */
   decay?: number;
+  /** Sustain level (0-1). How much volume is held after decay. */
+  sustain?: number;
+  /** Release time in seconds */
+  release?: number;
   /** Whether to add harmonics */
   harmonics?: boolean;
   /** Harmonic ratio (e.g., 2 for octave) */
   harmonicRatio?: number;
   /** Harmonic volume relative to fundamental */
   harmonicVolume?: number;
+  /** FM modulation ratio (carrier:modulator frequency ratio) */
+  fmRatio?: number;
+  /** FM modulation depth (how much the modulator affects the carrier frequency in Hz) */
+  fmDepth?: number;
   /** Modulation frequency for wobbles */
   modFreq?: number;
   /** Modulation depth */
@@ -85,6 +99,8 @@ export interface BaseTune {
 
 // ---------------------------------------------------------------------------
 // Interaction Tunes (Primary UX sounds — frequent, subtle, understated)
+// Volumes follow a tiered hierarchy: subtle (0.15) → standard (0.25-0.30) → noticeable (0.35) → celebratory (0.45)
+// FM added to tonal sounds for richness without complexity.
 // ---------------------------------------------------------------------------
 
 export const INTERACTION_TUNES: Record<string, BaseTune> = {
@@ -95,7 +111,7 @@ export const INTERACTION_TUNES: Record<string, BaseTune> = {
     duration: 0.008,
     filterFreq: 3800,
     filterQ: 2.5,
-    volume: 1.0,
+    volume: 0.28,
     meta: { decayConstant: 35 }
   },
 
@@ -106,21 +122,22 @@ export const INTERACTION_TUNES: Record<string, BaseTune> = {
     duration: 0.008,
     filterFreq: 3600,
     filterQ: 3.5,
-    volume: 0.8,
+    volume: 0.25,
     meta: { decayConstant: 25 }
   },
 
-  /** Toggle - smooth state-change click. Soft noise layer + tonal glide.
-   *  Emphasises the tonal tail over the noise transient for a silky feel. */
+  /** Toggle - smooth state-change. FM sine with pitch glide for silky feel.
+   *  Raphael-style: low gain, FM warmth, smooth envelope. */
   toggle: {
-    type: "toggle",
+    type: "pop",
     duration: 0.035,
     frequency: 700,
     endFrequency: 480,
-    filterFreq: 2200,
-    filterQ: 2,
-    volume: 0.64,
-    meta: { noiseGain: 0.20, toneGain: 0.22, noiseDuration: 0.008, decayConstant: 60 }
+    volume: 0.28,
+    fmRatio: 0.5,
+    fmDepth: 60,
+    attack: 0.001,
+    decay: 0.03,
   },
 
   /** Confirm - crispy affirmative click. Brighter, more resonant, snappier.
@@ -130,7 +147,7 @@ export const INTERACTION_TUNES: Record<string, BaseTune> = {
     duration: 0.012,
     filterFreq: 5500,
     filterQ: 4,
-    volume: 0.8,
+    volume: 0.30,
     meta: { decayConstant: 55 }
   },
 };
@@ -143,88 +160,102 @@ export const NAVIGATION_TUNES: Record<string, BaseTune> = {
   /** Forward - rightward/upward motion (ascending pitch = positive direction) */
   forward: {
     type: "sweep",
-    duration: 0.16,
+    duration: 0.14,
     frequency: 280,
     endFrequency: 440,
-    volume: 0.50,
+    volume: 0.28,
     harmonics: true,
     harmonicRatio: 4,
-    harmonicVolume: 0.12
+    harmonicVolume: 0.08
   },
 
   /** Backward - mirror of forward (descending pitch = reverse direction) */
   backward: {
     type: "sweep",
-    duration: 0.16,
+    duration: 0.14,
     frequency: 440,
     endFrequency: 280,
-    volume: 0.50,
+    volume: 0.28,
     harmonics: true,
     harmonicRatio: 4,
-    harmonicVolume: 0.12
+    harmonicVolume: 0.08
   },
 
   /** Tab - quick tonal pop for tab/segment switching.
-   *  A short pitched burst that gives a clean positional "step" feel. */
+   *  FM sine with pitch rise — clean, defined, Raphael-style. */
   tab: {
     type: "pop",
     duration: 0.04,
-    frequency: 680,
-    endFrequency: 880,
-    volume: 0.35,
-    attack: 0.002,
+    frequency: 1100,
+    endFrequency: 1500,
+    volume: 0.28,
+    fmRatio: 0.5,
+    fmDepth: 50,
+    attack: 0.001,
     decay: 0.035
   },
 };
 
 // ---------------------------------------------------------------------------
 // Notification Tunes
+// Noticeable tier (0.35–0.40) — should stand out from interaction/nav sounds.
+// FM adds bell-like richness. Sustain on chimes for longer ring.
 // ---------------------------------------------------------------------------
 
 export const NOTIFICATION_TUNES: Record<string, BaseTune> = {
-  /** Info - neutral chime, calm single tone (was "passive") */
+  /** Info - neutral chime, calm single tone with FM richness.
+   *  Raphael-style: FM ratio 2 for bell partial, moderate sustain. */
   info: {
     type: "chime",
     duration: 0.22,
-    frequency: 587.33,  // D5
-    volume: 0.45,
-    decay: 0.18,
+    frequency: 880,
+    volume: 0.35,
+    sustain: 0.04,
+    release: 0.12,
+    fmRatio: 2,
+    fmDepth: 120,
     harmonics: true,
     harmonicRatio: 2,
-    harmonicVolume: 0.15
+    harmonicVolume: 0.08
   },
 
-  /** Success - positive, two ascending notes (upward = positivity per Material) */
+  /** Success - positive, three ascending notes (like Raphael's success).
+   *  C5 → E5 → G5 (major chord arpeggio = happy). */
   success: {
     type: "arpeggio",
-    duration: 0.4,
-    notes: [523.25, 659.25],  // C5 → E5 (major third up = happy)
-    noteDuration: 0.1,
-    noteGap: 0.12,
-    volume: 0.55,
-    meta: { finalRing: 0.25 }
+    duration: 0.45,
+    notes: [523.25, 659.25, 783.99],
+    noteDuration: 0.08,
+    noteGap: 0.07,
+    volume: 0.35,
+    fmRatio: 0.5,
+    fmDepth: 60,
+    meta: { finalRing: 0.3 }
   },
 
-  /** Warning - semitone descent = tense/unsettled, draws attention without alarm */
+  /** Warning - semitone descent = tense/unsettled.
+   *  Raphael-style: triangle wave, tight timing, low gain. */
   warning: {
     type: "arpeggio",
-    duration: 0.4,
-    notes: [440, 440],  // A4 → Ab4 (semitone down = caution/tension)
-    noteDuration: 0.08,
-    noteGap: 0.1,
-    volume: 0.60,
-    meta: { finalRing: 0.18 }
+    duration: 0.35,
+    notes: [440, 466],
+    noteDuration: 0.06,
+    noteGap: 0.01,
+    volume: 0.35,
+    meta: { finalRing: 0.12 }
   },
 
-  /** Error - tritone descent = maximum tension, unmistakably negative */
+  /** Error - dark descending sweep with filter (like Raphael's error).
+   *  Lowpass-filtered sawtooth + square for dark, mechanical feel. */
   error: {
-    type: "arpeggio",
-    duration: 0.4,
-    notes: [493.88, 349.23],  // B4 → F4 (tritone = alarm)
-    noteDuration: 0.1,
-    noteGap: 0.12,
-    volume: 0.62,
-    meta: { finalRing: 0.22 }
+    type: "burst",
+    duration: 0.2,
+    frequency: 320,
+    endFrequency: 140,
+    filterFreq: 1200,
+    filterQ: 1.5,
+    volume: 0.40,
+    meta: { endFilterFreq: 400 }
   },
 };
 
@@ -235,59 +266,55 @@ export const NOTIFICATION_TUNES: Record<string, BaseTune> = {
 
 export const OVERLAY_TUNES: Record<string, BaseTune> = {
   /** Open - dialog/sheet/dropdown/popover opens (rise = openness)
-   *  Three partials (fundamental + octave + 3×) with a click transient at the start. */
+   *  FM sine sweep with subtle click transient for tactility. */
   open: {
     type: "rise",
-    duration: 0.20,
-    frequency: 320,
-    endFrequency: 480,
-    volume: 0.50,
-    harmonics: true,
-    harmonicRatio: 2,
-    harmonicVolume: 0.15,
-    meta: { thirdPartial: true, thirdRatio: 3, thirdVolume: 0.06, clickLayer: true, clickGain: 0.25 }
+    duration: 0.18,
+    frequency: 350,
+    endFrequency: 1000,
+    volume: 0.28,
+    fmRatio: 0.5,
+    fmDepth: 40,
+    meta: { clickLayer: true, clickGain: 0.20 }
   },
 
   /** Close - tonal inverse of open (drop = closedness)
-   *  Three partials with a click transient at the start. */
+   *  Descending FM sine sweep with click transient. */
   close: {
     type: "drop",
-    duration: 0.20,
-    frequency: 480,
-    endFrequency: 320,
-    volume: 0.50,
-    harmonics: true,
-    harmonicRatio: 2,
-    harmonicVolume: 0.15,
-    meta: { thirdPartial: true, thirdRatio: 3, thirdVolume: 0.06, clickLayer: true, clickGain: 0.25 }
+    duration: 0.18,
+    frequency: 800,
+    endFrequency: 350,
+    volume: 0.28,
+    fmRatio: 0.5,
+    fmDepth: 40,
+    meta: { clickLayer: true, clickGain: 0.20 }
   },
 
-  /** Expand - lighter than open, for accordion/collapsible content reveal
-   *  Two partials with a click transient. */
+  /** Expand - lighter than open, for accordion/collapsible content reveal.
+   *  Short FM sine rise. */
   expand: {
     type: "rise",
-    duration: 0.13,
-    frequency: 380,
-    endFrequency: 500,
-    volume: 0.45,
-    harmonics: true,
-    harmonicRatio: 1.5,
-    harmonicVolume: 0.12,
-    meta: { clickLayer: true, clickGain: 0.20 }
+    duration: 0.12,
+    frequency: 500,
+    endFrequency: 700,
+    volume: 0.25,
+    fmRatio: 0.5,
+    fmDepth: 30,
+    meta: { clickLayer: true, clickGain: 0.15 }
   },
 
-  /** Collapse - paired with expand (mirrors expand direction)
-   *  Two partials with a click transient. */
+  /** Collapse - paired with expand (mirrors expand direction).
+   *  Short FM sine drop. */
   collapse: {
     type: "drop",
-    duration: 0.13,
-    frequency: 500,
-    endFrequency: 380,
-    volume: 0.45,
-    harmonics: true,
-    harmonicRatio: 1.5,
-    harmonicVolume: 0.12,
-    meta: { clickLayer: true, clickGain: 0.20 }
+    duration: 0.12,
+    frequency: 700,
+    endFrequency: 500,
+    volume: 0.25,
+    fmRatio: 0.5,
+    fmDepth: 30,
+    meta: { clickLayer: true, clickGain: 0.15 }
   },
 };
 
@@ -296,58 +323,92 @@ export const OVERLAY_TUNES: Record<string, BaseTune> = {
 // ---------------------------------------------------------------------------
 
 export const HERO_TUNES: Record<string, BaseTune> = {
-  /** Complete - task completion fanfare */
+  /** Complete - task completion fanfare.
+   *  Raphael-style: 4-note ascending arpeggio with FM + shimmer. */
   complete: {
     type: "arpeggio",
-    duration: 1.1,
-    notes: [NOTES.C4, NOTES.E4, NOTES.G4, NOTES.C5, NOTES.E5],
-    noteDuration: 0.18,
-    noteGap: 0.145,
-    volume: 0.88,
-    harmonics: true,
-    harmonicRatio: 2,
-    harmonicVolume: 0.28,
-    meta: { finalRing: 0.55, shimmerCents: 3 }
+    duration: 0.9,
+    notes: [523.25, 659.25, 783.99, 1046.5],
+    noteDuration: 0.06,
+    noteGap: 0.015,
+    volume: 0.45,
+    fmRatio: 0.5,
+    fmDepth: 80,
+    meta: { finalRing: 0.4, shimmerCents: 7 }
   },
 
-  /** Milestone - lighter celebration */
+  /** Milestone - lighter celebration.
+   *  3-note ascending with FM. */
   milestone: {
     type: "arpeggio",
-    duration: 0.65,
-    notes: [NOTES.C4, NOTES.E4, NOTES.G4],
-    noteDuration: 0.16,
-    noteGap: 0.132,
-    volume: 0.78,
-    harmonics: true,
-    harmonicRatio: 2,
-    harmonicVolume: 0.22,
-    meta: { finalRing: 0.3, shimmerCents: 3 }
+    duration: 0.5,
+    notes: [523.25, 659.25, 783.99],
+    noteDuration: 0.06,
+    noteGap: 0.07,
+    volume: 0.40,
+    fmRatio: 0.5,
+    fmDepth: 60,
+    meta: { finalRing: 0.25, shimmerCents: 7 }
   }
 };
 
 // ---------------------------------------------------------------------------
 // Extended Sound Tunes (Additional UI sounds)
+// Raphael-inspired: FM on tonal sounds, lower gains, new types.
 // ---------------------------------------------------------------------------
 
 export const EXTENDED_TUNES: Record<string, BaseTune> = {
-  /** Pop - brief attention-getter */
+  /** Pop - brief attention-getter with FM */
   pop: {
     type: "pop",
-    duration: 0.05,
-    frequency: 800,
-    endFrequency: 1200,
-    volume: 0.6,
-    attack: 0.002,
-    decay: 0.04
+    duration: 0.06,
+    frequency: 400,
+    endFrequency: 150,
+    volume: 0.25,
+    fmRatio: 0.5,
+    fmDepth: 40,
+    attack: 0.001,
+    decay: 0.05
   },
 
-  /** Tick - micro-confirmation */
+  /** Boop - soft rounded notification with FM */
+  boop: {
+    type: "boop",
+    duration: 0.1,
+    frequency: 600,
+    endFrequency: 250,
+    volume: 0.22,
+    fmRatio: 0.5,
+    fmDepth: 40,
+  },
+
+  /** Bounce - elastic descending tone */
+  bounce: {
+    type: "bounce",
+    duration: 0.12,
+    frequency: 350,
+    endFrequency: 180,
+    volume: 0.25,
+  },
+
+  /** Spring - rising pitch with FM shimmer */
+  spring: {
+    type: "spring",
+    duration: 0.15,
+    frequency: 400,
+    endFrequency: 900,
+    volume: 0.22,
+    fmRatio: 0.5,
+    fmDepth: 50,
+  },
+
+  /** Tick - micro-confirmation (noise transient) */
   tick: {
     type: "tick",
     duration: 0.025,
     filterFreq: 3500,
     filterQ: 5,
-    volume: 0.4
+    volume: 0.20
   },
 
   /** Drop - item dropped/placed */
@@ -356,10 +417,10 @@ export const EXTENDED_TUNES: Record<string, BaseTune> = {
     duration: 0.1,
     frequency: 600,
     endFrequency: 300,
-    volume: 0.55,
+    volume: 0.25,
     harmonics: true,
     harmonicRatio: 0.5,
-    harmonicVolume: 0.3
+    harmonicVolume: 0.2
   },
 
   /** Hover - subtle hover feedback (optional) */
@@ -371,95 +432,133 @@ export const EXTENDED_TUNES: Record<string, BaseTune> = {
     volume: 0.15
   },
 
-  /** Select - item selection */
+  /** Select - item selection with FM */
   select: {
     type: "pop",
-    duration: 0.035,
-    frequency: 900,
-    volume: 0.45,
-    attack: 0.003,
+    duration: 0.05,
+    frequency: 1400,
+    volume: 0.25,
+    fmRatio: 0.5,
+    fmDepth: 60,
+    attack: 0.002,
+    decay: 0.04
+  },
+
+  /** Deselect - item deselection with FM */
+  deselect: {
+    type: "pop",
+    duration: 0.04,
+    frequency: 1200,
+    volume: 0.22,
+    fmRatio: 0.5,
+    fmDepth: 60,
+    attack: 0.001,
     decay: 0.03
   },
 
-  /** Deselect - item deselection */
-  deselect: {
-    type: "pop",
-    duration: 0.03,
-    frequency: 700,
-    volume: 0.35,
-    attack: 0.002,
-    decay: 0.025
-  },
-
-  /** Lock - security feedback */
+  /** Lock - security feedback (descending) */
   lock: {
     type: "drop",
     duration: 0.08,
     frequency: 500,
     endFrequency: 350,
-    volume: 0.5,
+    volume: 0.25,
     harmonics: true,
     harmonicRatio: 2,
-    harmonicVolume: 0.15
+    harmonicVolume: 0.10
   },
 
-  /** Unlock - security feedback */
+  /** Unlock - security feedback (ascending) */
   unlock: {
     type: "rise",
     duration: 0.08,
     frequency: 350,
     endFrequency: 500,
-    volume: 0.5,
+    volume: 0.25,
     harmonics: true,
     harmonicRatio: 2,
-    harmonicVolume: 0.15
+    harmonicVolume: 0.10
   },
 
-  /** Copy - clipboard copy */
+  /** Copy - clipboard copy (two-tone click) */
   copy: {
-    type: "toggle",
+    type: "pop",
     duration: 0.04,
-    frequency: 1000,
-    endFrequency: 800,
-    volume: 0.4
+    frequency: 1200,
+    endFrequency: 1400,
+    volume: 0.25,
+    fmRatio: 0.5,
+    fmDepth: 50,
   },
 
-  /** Undo - revert action */
+  /** Undo - revert action (descending sweep) */
   undo: {
     type: "sweep",
     duration: 0.12,
-    frequency: 500,
-    endFrequency: 350,
-    volume: 0.45
+    frequency: 900,
+    endFrequency: 600,
+    volume: 0.25,
   },
 
-  /** Redo - re-apply action */
+  /** Redo - re-apply action (ascending sweep) */
   redo: {
     type: "sweep",
     duration: 0.12,
-    frequency: 350,
-    endFrequency: 500,
-    volume: 0.45
+    frequency: 600,
+    endFrequency: 900,
+    volume: 0.25,
   },
 
-  /** Delete - destructive action */
+  /** Delete - destructive action (dark descending) */
   delete: {
     type: "burst",
-    duration: 0.08,
-    filterFreq: 1500,
+    duration: 0.15,
+    frequency: 300,
+    endFrequency: 100,
+    filterFreq: 800,
     filterQ: 1.5,
-    volume: 0.5
+    volume: 0.30,
+    meta: { endFilterFreq: 300 }
   },
 
-  /** Refresh - reload/update */
+  /** Refresh - reload/update (wobble) */
   refresh: {
     type: "wobble",
-    duration: 0.2,
-    frequency: 600,
+    duration: 0.15,
+    frequency: 523,
     modFreq: 8,
-    modDepth: 50,
-    volume: 0.4
-  }
+    modDepth: 40,
+    volume: 0.25
+  },
+
+  /** Sparkle - shimmer effect with FM */
+  sparkle: {
+    type: "chime",
+    duration: 0.3,
+    frequency: 1047,
+    volume: 0.22,
+    sustain: 0.04,
+    release: 0.15,
+    fmRatio: 3.5,
+    fmDepth: 200,
+    harmonics: true,
+    harmonicRatio: 2,
+    harmonicVolume: 0.10,
+    meta: { shimmerCents: 7 }
+  },
+
+  /** Heart - warm two-tone with FM */
+  heart: {
+    type: "arpeggio",
+    duration: 0.25,
+    notes: [500, 523],
+    noteDuration: 0.06,
+    noteGap: 0.08,
+    volume: 0.25,
+    fmRatio: 2.5,
+    fmDepth: 100,
+    meta: { finalRing: 0.15 }
+  },
 };
 
 // ---------------------------------------------------------------------------

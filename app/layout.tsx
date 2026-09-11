@@ -1,18 +1,12 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GeistPixelLine } from "geist/font/pixel";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import { Toaster } from "@/components/ui/sonner";
 import { PosthogInit } from "@/posthog";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -22,7 +16,7 @@ const geistMono = Geist_Mono({
 const siteUrl = "https://sensory-ui.com";
 const siteTitle = "sensory-ui";
 const siteDescription =
-  "Add semantic sound to your shadcn/ui components with a single prop. 17 sound cues, 24 React components. Web Audio API powered, zero audio files.";
+  "Add semantic sound to your shadcn/ui components with a single prop. 17 sound cues, 25 React components. Web Audio API powered, zero audio files.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -70,11 +64,25 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon-64.png", sizes: "64x64", type: "image/png" },
-      { url: "/icon-256.png", sizes: "256x256", type: "image/png" },
+      {
+        url: "/sensory-ui-logo-small.png",
+        sizes: "128x128",
+        type: "image/png",
+      },
+      {
+        url: "/sensory-ui-logo-large.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
     ],
-    apple: [{ url: "/icon-256.png", sizes: "256x256", type: "image/png" }],
-    shortcut: "/icon-64.png",
+    apple: [
+      {
+        url: "/sensory-ui-logo-large.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
+    ],
+    shortcut: "/sensory-ui-logo-small.png",
   },
   openGraph: {
     type: "website",
@@ -85,7 +93,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/hero-background.jpg",
+        url: "/hero-background-dark.jpg",
         width: 1200,
         height: 630,
         alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
@@ -100,7 +108,7 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: "/hero-background.jpg",
+        url: "/hero-background-dark.jpg",
         alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
       },
     ],
@@ -118,7 +126,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${GeistPixelLine.variable} bg-size-[10px_10px] bg-fixed font-sans antialiased`}
+        className={`${geistMono.variable} bg-size-[10px_10px] bg-fixed font-sans antialiased`}
         style={{
           backgroundImage:
             "repeating-linear-gradient(45deg,var(--secondary) 0, var(--background) 1px,transparent 0,transparent 50%)",
@@ -143,7 +151,7 @@ export default function RootLayout({
               },
             }}
           >
-            <div className="mx-auto min-w-0 max-w-500 border-border border-x bg-background shadow-xl">
+            <div className="mx-auto min-w-0 max-w-500 bg-background shadow-xl">
               {children}
             </div>
             <Analytics />

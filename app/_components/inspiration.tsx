@@ -90,7 +90,7 @@ export function Inspiration() {
               Why sound?
             </span>
             <h2
-              className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
+              className="mt-3 text-balance font-serif text-3xl sm:text-4xl"
               id="inspiration-heading"
             >
               The forgotten dimension{" "}

@@ -6,10 +6,14 @@
  * unique sonic characters from the same base tunes.
  *
  * Hero sounds are custom-crafted for each pack to match their character.
+ * Packs that benefit from spatial/timbral processing include effects chains
+ * (reverb, delay, chorus, distortion) inspired by @web-kits/audio.
  */
 
 import type { SoundRole } from "../config/sound-roles";
 import type { SoundSynthesizer, PlaySoundOptions, SoundPlayback } from "../config/engine";
+import type { InstrumentConfig } from "./core/instruments";
+import type { BaseTune } from "./core/tunes";
 import {
   SOFT_INSTRUMENT,
   AERO_INSTRUMENT,
@@ -21,7 +25,9 @@ import {
   RETRO_INSTRUMENT,
   CRISP_INSTRUMENT,
 } from "./core/instruments";
-import { generateSoundPack } from "./core/pack-generator";
+import { generateCustomSoundPack } from "./core/pack-generator";
+import { buildEffectsChain } from "./core/effects";
+import type { EffectDefinition } from "./core/effects";
 
 // ---------------------------------------------------------------------------
 // Sound Pack Type
@@ -40,13 +46,45 @@ const NOTES = {
 };
 
 // ---------------------------------------------------------------------------
-// Soft Pack - Warm, gentle hero sounds
+// Helper — apply effects chain to a hero synthesizer's output
 // ---------------------------------------------------------------------------
 
-const softHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+/**
+ * Create a hero synthesizer that routes through an effects chain.
+ * The inner function draws to a GainNode; the outer wrapper chains effects.
+ */
+function heroWithEffects(
+  inner: (ctx: AudioContext, opts: PlaySoundOptions, dest: AudioNode) => SoundPlayback,
+  effects: EffectDefinition[]
+): SoundSynthesizer {
+  return (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+    const chain = buildEffectsChain(ctx, effects);
+    chain.output.connect(ctx.destination);
+
+    const playback = inner(ctx, opts, chain.input);
+
+    const origStop = playback.stop;
+    return {
+      stop: () => {
+        origStop();
+        try { chain.input.disconnect(); } catch { /* ok */ }
+        try { chain.output.disconnect(); } catch { /* ok */ }
+      },
+    };
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Soft Pack — Warm, gentle hero sounds with warm reverb
+// ---------------------------------------------------------------------------
+
+const softEffects: EffectDefinition[] = [
+  { type: "reverb", options: { duration: 0.8, decay: 2.5, mix: 0.2 } },
+];
+
+const softHeroComplete: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.65;
-  // Lullaby resolution: descend from E→C then rise to G→C5
+  const vol = (opts.volume ?? 1) * 0.45;
   const notes = [NOTES.E4, NOTES.C4, NOTES.G4, NOTES.C5];
   const oscs: OscillatorNode[] = [];
   const gains: GainNode[] = [];
@@ -61,13 +99,26 @@ const softHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOp
     osc.type = "sine";
     osc.frequency.value = freq * 0.8;
 
+    // FM modulator for warmth
+    const fmMod = ctx.createOscillator();
+    fmMod.type = "sine";
+    fmMod.frequency.value = freq * 0.8 * 0.5;
+    const fmGain = ctx.createGain();
+    fmGain.gain.value = 60;
+    fmMod.connect(fmGain);
+    fmGain.connect(osc.frequency);
+    fmMod.start(noteStart);
+    fmMod.stop(decay + 0.05);
+    oscs.push(fmMod);
+    gains.push(fmGain);
+
     const g = ctx.createGain();
     g.gain.setValueAtTime(0.001, noteStart);
     g.gain.linearRampToValueAtTime(vol, noteStart + 0.05);
     g.gain.exponentialRampToValueAtTime(0.001, decay);
 
     osc.connect(g);
-    g.connect(ctx.destination);
+    g.connect(dest);
     oscs.push(osc);
     gains.push(g);
 
@@ -84,14 +135,14 @@ const softHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOp
   });
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, softEffects);
 
-const softHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+const softHeroMilestone: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.55;
-  // Gentle descending major 3rd
+  const vol = (opts.volume ?? 1) * 0.40;
   const notes = [NOTES.E4, NOTES.C4];
   const oscs: OscillatorNode[] = [];
+  const gains: GainNode[] = [];
 
   notes.forEach((freq, i) => {
     const noteStart = t + i * 0.25;
@@ -102,14 +153,28 @@ const softHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
     osc.type = "sine";
     osc.frequency.value = freq * 0.8;
 
+    // FM modulator
+    const fmMod = ctx.createOscillator();
+    fmMod.type = "sine";
+    fmMod.frequency.value = freq * 0.8 * 0.5;
+    const fmGain = ctx.createGain();
+    fmGain.gain.value = 50;
+    fmMod.connect(fmGain);
+    fmGain.connect(osc.frequency);
+    fmMod.start(noteStart);
+    fmMod.stop(decay + 0.05);
+    oscs.push(fmMod);
+    gains.push(fmGain);
+
     const g = ctx.createGain();
     g.gain.setValueAtTime(0.001, noteStart);
     g.gain.linearRampToValueAtTime(vol, noteStart + 0.04);
     g.gain.exponentialRampToValueAtTime(0.001, decay);
 
     osc.connect(g);
-    g.connect(ctx.destination);
+    g.connect(dest);
     oscs.push(osc);
+    gains.push(g);
 
     osc.start(noteStart);
     osc.stop(decay + 0.05);
@@ -117,28 +182,36 @@ const softHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
     if (isLast) {
       osc.onended = () => {
         oscs.forEach(o => { try { o.disconnect(); } catch {} });
+        gains.forEach(g => { try { g.disconnect(); } catch {} });
         opts.onEnd?.();
       };
     }
   });
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, softEffects);
 
 export const softPack: GeneratedSoundPack = {
-  ...generateSoundPack(SOFT_INSTRUMENT),
+  ...generateCustomSoundPack(
+    { ...SOFT_INSTRUMENT, effects: softEffects },
+    {},
+    { "notification.error": { frequency: 200, endFrequency: 80, filterFreq: 600, filterQ: 1, duration: 0.25, meta: { endFilterFreq: 200, tonalGain: 0.5 } } }
+  ),
   "hero.complete": softHeroComplete,
   "hero.milestone": softHeroMilestone,
 };
 
 // ---------------------------------------------------------------------------
-// Aero Pack - Ethereal, breathy hero sounds with shimmer
+// Aero Pack — Ethereal, breathy hero sounds with shimmer + long reverb
 // ---------------------------------------------------------------------------
 
-const aeroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+const aeroEffects: EffectDefinition[] = [
+  { type: "reverb", options: { duration: 2.0, decay: 1.8, mix: 0.3 } },
+];
+
+const aeroHeroComplete: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.7;
-  // Open-sky ascending 4ths and 5ths
+  const vol = (opts.volume ?? 1) * 0.45;
   const notes = [NOTES.D4, NOTES.G4, NOTES.A4, NOTES.D5, NOTES.G5];
   const oscs: OscillatorNode[] = [];
 
@@ -147,12 +220,22 @@ const aeroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOp
     const isLast = i === notes.length - 1;
     const decay = noteStart + 0.15 + (isLast ? 0.5 : 0.08);
 
-    // Main tone
     const osc = ctx.createOscillator();
     osc.type = "sine";
     osc.frequency.value = freq;
 
-    // Shimmer octave
+    // FM modulator for bell-like richness
+    const fmMod = ctx.createOscillator();
+    fmMod.type = "sine";
+    fmMod.frequency.value = freq * 0.5;
+    const fmGain = ctx.createGain();
+    fmGain.gain.value = 80;
+    fmMod.connect(fmGain);
+    fmGain.connect(osc.frequency);
+    fmMod.start(noteStart);
+    fmMod.stop(decay + 0.05);
+    oscs.push(fmMod);
+
     const osc2 = ctx.createOscillator();
     osc2.type = "sine";
     osc2.frequency.value = freq * 2.003;
@@ -167,8 +250,8 @@ const aeroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOp
     g2.gain.linearRampToValueAtTime(vol * 0.25, noteStart + 0.015);
     g2.gain.exponentialRampToValueAtTime(0.001, decay);
 
-    osc.connect(g); g.connect(ctx.destination);
-    osc2.connect(g2); g2.connect(ctx.destination);
+    osc.connect(g); g.connect(dest);
+    osc2.connect(g2); g2.connect(dest);
     oscs.push(osc, osc2);
 
     osc.start(noteStart); osc.stop(decay + 0.05);
@@ -183,12 +266,11 @@ const aeroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOp
   });
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, aeroEffects);
 
-const aeroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+const aeroHeroMilestone: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.6;
-  // Open ascending 5ths
+  const vol = (opts.volume ?? 1) * 0.40;
   const notes = [NOTES.D4, NOTES.A4, NOTES.D5];
   const oscs: OscillatorNode[] = [];
 
@@ -200,6 +282,18 @@ const aeroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
     const osc = ctx.createOscillator();
     osc.type = "sine";
     osc.frequency.value = freq;
+
+    // FM modulator
+    const fmMod = ctx.createOscillator();
+    fmMod.type = "sine";
+    fmMod.frequency.value = freq * 0.5;
+    const fmGain = ctx.createGain();
+    fmGain.gain.value = 70;
+    fmMod.connect(fmGain);
+    fmGain.connect(osc.frequency);
+    fmMod.start(noteStart);
+    fmMod.stop(decay + 0.05);
+    oscs.push(fmMod);
 
     const osc2 = ctx.createOscillator();
     osc2.type = "sine";
@@ -215,8 +309,8 @@ const aeroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
     g2.gain.linearRampToValueAtTime(vol * 0.2, noteStart + 0.012);
     g2.gain.exponentialRampToValueAtTime(0.001, decay);
 
-    osc.connect(g); g.connect(ctx.destination);
-    osc2.connect(g2); g2.connect(ctx.destination);
+    osc.connect(g); g.connect(dest);
+    osc2.connect(g2); g2.connect(dest);
     oscs.push(osc, osc2);
 
     osc.start(noteStart); osc.stop(decay + 0.05);
@@ -231,22 +325,25 @@ const aeroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
   });
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, aeroEffects);
 
 export const aeroPack: GeneratedSoundPack = {
-  ...generateSoundPack(AERO_INSTRUMENT),
+  ...generateCustomSoundPack(
+    { ...AERO_INSTRUMENT, effects: aeroEffects },
+    {},
+    { "notification.error": { frequency: 350, endFrequency: 120, filterFreq: 1000, filterQ: 1.2, duration: 0.3, meta: { endFilterFreq: 300, tonalGain: 0.4 } } }
+  ),
   "hero.complete": aeroHeroComplete,
   "hero.milestone": aeroHeroMilestone,
 };
 
 // ---------------------------------------------------------------------------
-// Arcade Pack - 8-bit chiptune fanfares
+// Arcade Pack — 8-bit chiptune fanfares (dry, authentic)
 // ---------------------------------------------------------------------------
 
 const arcadeHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.6;
-  // G major ascending fanfare
+  const vol = (opts.volume ?? 1) * 0.45;
   const notes = [NOTES.G4, NOTES.B4, NOTES.D5, NOTES.G5, NOTES.B5, NOTES.D6, NOTES.G6];
   const oscs: OscillatorNode[] = [];
 
@@ -283,8 +380,7 @@ const arcadeHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
 
 const arcadeHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.5;
-  // G major ascending arpeggio
+  const vol = (opts.volume ?? 1) * 0.40;
   const notes = [NOTES.G4, NOTES.B4, NOTES.D5, NOTES.G5];
   const oscs: OscillatorNode[] = [];
 
@@ -319,23 +415,27 @@ const arcadeHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoun
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
 };
 
-// ---------------------------------------------------------------------------
-// Arcade Pack export
-// ---------------------------------------------------------------------------
 export const arcadePack: GeneratedSoundPack = {
-  ...generateSoundPack(ARCADE_INSTRUMENT),
+  ...generateCustomSoundPack(
+    ARCADE_INSTRUMENT,
+    {},
+    { "notification.error": { frequency: 400, endFrequency: 80, filterFreq: 2000, filterQ: 4, duration: 0.15, meta: { endFilterFreq: 600, tonalGain: 0.6 } } }
+  ),
   "hero.complete": arcadeHeroComplete,
   "hero.milestone": arcadeHeroMilestone,
 };
 
 // ---------------------------------------------------------------------------
-// Organic Pack - Marimba-like wooden tones
+// Organic Pack — Marimba-like wooden tones with short room reverb
 // ---------------------------------------------------------------------------
 
-const organicHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+const organicEffects: EffectDefinition[] = [
+  { type: "reverb", options: { duration: 0.4, decay: 3.0, mix: 0.15 } },
+];
+
+const organicHeroComplete: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.7;
-  // Bouncing pattern: up-down-up for organic/xylophone feel
+  const vol = (opts.volume ?? 1) * 0.45;
   const notes = [NOTES.C4, NOTES.G4, NOTES.E4, NOTES.A4, NOTES.C5];
   const oscs: OscillatorNode[] = [];
 
@@ -344,12 +444,10 @@ const organicHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoun
     const isLast = i === notes.length - 1;
     const decay = noteStart + 0.15 + (isLast ? 0.45 : 0.1);
 
-    // Triangle wave for wooden character
     const osc = ctx.createOscillator();
     osc.type = "triangle";
     osc.frequency.value = freq * 0.9;
 
-    // Add subtle harmonic for body
     const osc2 = ctx.createOscillator();
     osc2.type = "sine";
     osc2.frequency.value = freq * 2.8;
@@ -364,8 +462,8 @@ const organicHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoun
     g2.gain.linearRampToValueAtTime(vol * 0.15, noteStart + 0.005);
     g2.gain.exponentialRampToValueAtTime(0.001, noteStart + 0.08);
 
-    osc.connect(g); g.connect(ctx.destination);
-    osc2.connect(g2); g2.connect(ctx.destination);
+    osc.connect(g); g.connect(dest);
+    osc2.connect(g2); g2.connect(dest);
     oscs.push(osc, osc2);
 
     osc.start(noteStart); osc.stop(decay + 0.05);
@@ -380,12 +478,11 @@ const organicHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoun
   });
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, organicEffects);
 
-const organicHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+const organicHeroMilestone: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.6;
-  // Ascending 5ths bounce
+  const vol = (opts.volume ?? 1) * 0.40;
   const notes = [NOTES.C4, NOTES.G4, NOTES.C5];
   const oscs: OscillatorNode[] = [];
 
@@ -404,7 +501,7 @@ const organicHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySou
     g.gain.exponentialRampToValueAtTime(0.001, decay);
 
     osc.connect(g);
-    g.connect(ctx.destination);
+    g.connect(dest);
     oscs.push(osc);
 
     osc.start(noteStart);
@@ -419,22 +516,30 @@ const organicHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySou
   });
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, organicEffects);
 
 export const organicPack: GeneratedSoundPack = {
-  ...generateSoundPack(ORGANIC_INSTRUMENT),
+  ...generateCustomSoundPack(
+    { ...ORGANIC_INSTRUMENT, effects: organicEffects },
+    {},
+    { "notification.error": { frequency: 250, endFrequency: 100, filterFreq: 800, filterQ: 2, duration: 0.22, meta: { endFilterFreq: 250, tonalGain: 0.45 } } }
+  ),
   "hero.complete": organicHeroComplete,
   "hero.milestone": organicHeroMilestone,
 };
 
 // ---------------------------------------------------------------------------
-// Glass Pack - Crystalline bell-like tones
+// Glass Pack — Crystalline bell-like tones with reverb + chorus shimmer
 // ---------------------------------------------------------------------------
 
-const glassHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+const glassEffects: EffectDefinition[] = [
+  { type: "reverb", options: { duration: 1.5, decay: 2.0, mix: 0.25 } },
+  { type: "chorus", options: { rate: 1.2, depth: 1.5, detune: 12, mix: 0.2 } },
+];
+
+const glassHeroComplete: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.45;
-  // Ascending run with major-7th shimmer
+  const vol = (opts.volume ?? 1) * 0.40;
   const notes = [NOTES.E5, NOTES.G5, NOTES.B5, NOTES.C6, NOTES.E6];
   const oscs: OscillatorNode[] = [];
 
@@ -443,22 +548,18 @@ const glassHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
     const isLast = i === notes.length - 1;
     const ringTime = isLast ? 1.2 : 0.4;
 
-    // Fundamental - pure sine
     const osc1 = ctx.createOscillator();
     osc1.type = "sine";
     osc1.frequency.value = freq;
 
-    // Octave harmonic - soft shimmer
     const osc2 = ctx.createOscillator();
     osc2.type = "sine";
     osc2.frequency.value = freq * 2;
 
-    // Bell partial at 2.4x for glassy character (not harsh 3.2x)
     const osc3 = ctx.createOscillator();
     osc3.type = "sine";
     osc3.frequency.value = freq * 2.4;
 
-    // Gentle attack, long decay for glass resonance
     const g1 = ctx.createGain();
     g1.gain.setValueAtTime(0.001, noteStart);
     g1.gain.linearRampToValueAtTime(vol, noteStart + 0.015);
@@ -474,9 +575,9 @@ const glassHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
     g3.gain.linearRampToValueAtTime(vol * 0.12, noteStart + 0.008);
     g3.gain.exponentialRampToValueAtTime(0.001, noteStart + ringTime * 0.5);
 
-    osc1.connect(g1); g1.connect(ctx.destination);
-    osc2.connect(g2); g2.connect(ctx.destination);
-    osc3.connect(g3); g3.connect(ctx.destination);
+    osc1.connect(g1); g1.connect(dest);
+    osc2.connect(g2); g2.connect(dest);
+    osc3.connect(g3); g3.connect(dest);
     oscs.push(osc1, osc2, osc3);
 
     osc1.start(noteStart); osc1.stop(noteStart + ringTime + 0.1);
@@ -492,12 +593,11 @@ const glassHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
   });
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, glassEffects);
 
-const glassHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+const glassHeroMilestone: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.4;
-  // Ascending with open voicing
+  const vol = (opts.volume ?? 1) * 0.35;
   const notes = [NOTES.G4, NOTES.B4, NOTES.E5];
   const oscs: OscillatorNode[] = [];
 
@@ -506,12 +606,10 @@ const glassHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
     const isLast = i === notes.length - 1;
     const ringTime = isLast ? 0.8 : 0.35;
 
-    // Fundamental
     const osc1 = ctx.createOscillator();
     osc1.type = "sine";
     osc1.frequency.value = freq;
 
-    // Octave shimmer
     const osc2 = ctx.createOscillator();
     osc2.type = "sine";
     osc2.frequency.value = freq * 2;
@@ -526,8 +624,8 @@ const glassHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
     g2.gain.linearRampToValueAtTime(vol * 0.25, noteStart + 0.01);
     g2.gain.exponentialRampToValueAtTime(0.001, noteStart + ringTime * 0.7);
 
-    osc1.connect(g1); g1.connect(ctx.destination);
-    osc2.connect(g2); g2.connect(ctx.destination);
+    osc1.connect(g1); g1.connect(dest);
+    osc2.connect(g2); g2.connect(dest);
     oscs.push(osc1, osc2);
 
     osc1.start(noteStart); osc1.stop(noteStart + ringTime + 0.1);
@@ -542,21 +640,29 @@ const glassHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
   });
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, glassEffects);
 
 export const glassPack: GeneratedSoundPack = {
-  ...generateSoundPack(GLASS_INSTRUMENT),
+  ...generateCustomSoundPack(
+    { ...GLASS_INSTRUMENT, effects: glassEffects },
+    {},
+    { "notification.error": { frequency: 600, endFrequency: 200, filterFreq: 2500, filterQ: 6, duration: 0.28, meta: { endFilterFreq: 500, tonalGain: 0.3 } } }
+  ),
   "hero.complete": glassHeroComplete,
   "hero.milestone": glassHeroMilestone,
 };
 
 // ---------------------------------------------------------------------------
-// Industrial Pack - Metallic, powerful stabs
+// Industrial Pack — Metallic, powerful stabs with distortion
 // ---------------------------------------------------------------------------
 
-const industrialHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+const industrialEffects: EffectDefinition[] = [
+  { type: "distortion", options: { amount: 0.35, filterFreq: 2500, mix: 0.4 } },
+];
+
+const industrialHeroComplete: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.7;
+  const vol = (opts.volume ?? 1) * 0.45;
   const oscs: OscillatorNode[] = [];
 
   // E power chord hit
@@ -571,7 +677,7 @@ const industrialHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlayS
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
 
     osc.connect(g);
-    g.connect(ctx.destination);
+    g.connect(dest);
     oscs.push(osc);
 
     osc.start(t);
@@ -593,7 +699,7 @@ const industrialHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlayS
     g.gain.exponentialRampToValueAtTime(0.001, noteStart + (isLast ? 0.35 : 0.08));
 
     osc.connect(g);
-    g.connect(ctx.destination);
+    g.connect(dest);
     oscs.push(osc);
 
     osc.start(noteStart);
@@ -608,15 +714,15 @@ const industrialHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlayS
   });
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, industrialEffects);
 
-const industrialHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+const industrialHeroMilestone: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.6;
+  const vol = (opts.volume ?? 1) * 0.40;
   const oscs: OscillatorNode[] = [];
 
   // E power fifth hit
-  [NOTES.E3, NOTES.B3].forEach((freq, i) => {
+  [NOTES.E3, NOTES.B3].forEach((freq) => {
     const osc = ctx.createOscillator();
     osc.type = "sawtooth";
     osc.frequency.value = freq * 0.7;
@@ -626,7 +732,7 @@ const industrialHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: Play
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
 
     osc.connect(g);
-    g.connect(ctx.destination);
+    g.connect(dest);
     oscs.push(osc);
 
     osc.start(t);
@@ -643,7 +749,7 @@ const industrialHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: Play
   g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
 
   osc.connect(g);
-  g.connect(ctx.destination);
+  g.connect(dest);
   oscs.push(osc);
 
   osc.start(t + 0.25);
@@ -655,21 +761,25 @@ const industrialHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: Play
   };
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, industrialEffects);
 
 export const industrialPack: GeneratedSoundPack = {
-  ...generateSoundPack(INDUSTRIAL_INSTRUMENT),
+  ...generateCustomSoundPack(
+    { ...INDUSTRIAL_INSTRUMENT, effects: industrialEffects },
+    {},
+    { "notification.error": { frequency: 180, endFrequency: 60, filterFreq: 1500, filterQ: 8, duration: 0.18, meta: { endFilterFreq: 350, tonalGain: 0.5 } } }
+  ),
   "hero.complete": industrialHeroComplete,
   "hero.milestone": industrialHeroMilestone,
 };
 
 // ---------------------------------------------------------------------------
-// Minimal Pack - Clean, understated resolution
+// Minimal Pack — Clean, understated resolution (dry)
 // ---------------------------------------------------------------------------
 
 const minimalHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.4;
+  const vol = (opts.volume ?? 1) * 0.35;
   const notes = [NOTES.C4, NOTES.G4, NOTES.C5];
   const oscs: OscillatorNode[] = [];
 
@@ -707,7 +817,7 @@ const minimalHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoun
 
 const minimalHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.35;
+  const vol = (opts.volume ?? 1) * 0.30;
   const notes = [NOTES.G3, NOTES.C4];
   const oscs: OscillatorNode[] = [];
 
@@ -744,18 +854,27 @@ const minimalHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySou
 };
 
 export const minimalPack: GeneratedSoundPack = {
-  ...generateSoundPack(MINIMAL_INSTRUMENT),
+  ...generateCustomSoundPack(
+    MINIMAL_INSTRUMENT,
+    {},
+    { "notification.error": { frequency: 440, endFrequency: 220, filterFreq: 1000, filterQ: 1, duration: 0.2, meta: { endFilterFreq: 400, tonalGain: 0.2 } } }
+  ),
   "hero.complete": minimalHeroComplete,
   "hero.milestone": minimalHeroMilestone,
 };
 
 // ---------------------------------------------------------------------------
-// Retro Pack - Synthwave chord stabs with arpeggios
+// Retro Pack — Synthwave chord stabs with chorus + delay
 // ---------------------------------------------------------------------------
 
-const retroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+const retroEffects: EffectDefinition[] = [
+  { type: "chorus", options: { rate: 1.8, depth: 2.5, detune: 18, mix: 0.25 } },
+  { type: "delay", options: { time: 0.15, feedback: 0.2, filterFreq: 2500, mix: 0.2 } },
+];
+
+const retroHeroComplete: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.55;
+  const vol = (opts.volume ?? 1) * 0.45;
   const oscs: OscillatorNode[] = [];
 
   // Opening A minor chord with detuned saws
@@ -772,7 +891,7 @@ const retroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
       g.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
 
       osc.connect(g);
-      g.connect(ctx.destination);
+      g.connect(dest);
       oscs.push(osc);
 
       osc.start(t);
@@ -796,7 +915,7 @@ const retroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
     g.gain.exponentialRampToValueAtTime(0.001, noteStart + (isLast ? 0.3 : 0.08));
 
     osc.connect(g);
-    g.connect(ctx.destination);
+    g.connect(dest);
     oscs.push(osc);
 
     osc.start(noteStart);
@@ -811,11 +930,11 @@ const retroHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
   });
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, retroEffects);
 
-const retroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
+const retroHeroMilestone: SoundSynthesizer = heroWithEffects((ctx, opts, dest) => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.5;
+  const vol = (opts.volume ?? 1) * 0.40;
   const oscs: OscillatorNode[] = [];
 
   // A minor chord stab
@@ -831,7 +950,7 @@ const retroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
       g.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
 
       osc.connect(g);
-      g.connect(ctx.destination);
+      g.connect(dest);
       oscs.push(osc);
 
       osc.start(t);
@@ -850,7 +969,7 @@ const retroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
   g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
 
   osc.connect(g);
-  g.connect(ctx.destination);
+  g.connect(dest);
   oscs.push(osc);
 
   osc.start(t + 0.25);
@@ -862,22 +981,25 @@ const retroHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
   };
 
   return { stop: () => oscs.forEach(o => { try { o.stop(); } catch {} }) };
-};
+}, retroEffects);
 
 export const retroPack: GeneratedSoundPack = {
-  ...generateSoundPack(RETRO_INSTRUMENT),
+  ...generateCustomSoundPack(
+    { ...RETRO_INSTRUMENT, effects: retroEffects },
+    {},
+    { "notification.error": { frequency: 300, endFrequency: 100, filterFreq: 800, filterQ: 3, duration: 0.25, meta: { endFilterFreq: 300, tonalGain: 0.45 } } }
+  ),
   "hero.complete": retroHeroComplete,
   "hero.milestone": retroHeroMilestone,
 };
 
 // ---------------------------------------------------------------------------
-// Crisp Pack - Sharp, articulated rapid arpeggios
+// Crisp Pack — Sharp, articulated rapid arpeggios (dry)
 // ---------------------------------------------------------------------------
 
 const crispHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.6;
-  // Pentatonic scale run with crisp attack
+  const vol = (opts.volume ?? 1) * 0.45;
   const notes = [NOTES.C5, NOTES.D5, NOTES.E5, NOTES.G5, NOTES.A5, NOTES.C6];
   const oscs: OscillatorNode[] = [];
 
@@ -915,8 +1037,7 @@ const crispHeroComplete: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundO
 
 const crispHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySoundOptions): SoundPlayback => {
   const t = ctx.currentTime;
-  const vol = (opts.volume ?? 1) * 0.55;
-  // Pentatonic skip pattern
+  const vol = (opts.volume ?? 1) * 0.40;
   const notes = [NOTES.C5, NOTES.D5, NOTES.G5, NOTES.C6];
   const oscs: OscillatorNode[] = [];
 
@@ -953,7 +1074,11 @@ const crispHeroMilestone: SoundSynthesizer = (ctx: AudioContext, opts: PlaySound
 };
 
 export const crispPack: GeneratedSoundPack = {
-  ...generateSoundPack(CRISP_INSTRUMENT),
+  ...generateCustomSoundPack(
+    CRISP_INSTRUMENT,
+    {},
+    { "notification.error": { frequency: 500, endFrequency: 150, filterFreq: 2000, filterQ: 3, duration: 0.18, meta: { endFilterFreq: 500, tonalGain: 0.35 } } }
+  ),
   "hero.complete": crispHeroComplete,
   "hero.milestone": crispHeroMilestone,
 };

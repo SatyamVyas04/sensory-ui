@@ -43,7 +43,7 @@ export function CTA() {
             Get started
           </span>
           <h2
-            className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
+            className="mt-3 text-balance font-serif text-3xl sm:text-4xl"
             id="cta-heading"
           >
             Give your UI a <span className="text-primary">voice.</span>

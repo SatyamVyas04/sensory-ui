@@ -1,61 +1,39 @@
 <div align="center">
-  <img width="1897" height="1125" alt="readme-banner" src="https://github.com/user-attachments/assets/389899c0-6ef9-4791-9624-d198c799ba85" />
+  <img src="./public/readme-banner.png" alt="sensory-ui" width="100%" />
 
-  <h1>sensory-ui</h1>
-  <p>A semantic, opt-in sound layer for React and Next.js apps.<br/>17 sound roles · 9 sound packs · 24 components — built for <a href="https://ui.shadcn.com">shadcn/ui</a>.</p>
+**A semantic sound layer for React and Next.js.**
 
-  <p>
-    <a href="https://sensory-ui.com">Website</a> ·
-    <a href="#quick-installation">Install</a> ·
-    <a href="#sound-packs">Sound Packs</a> ·
-    <a href="#sound-roles">Sound Roles</a> ·
-    <a href="#available-components">Components</a>
-  </p>
+17 sound roles · 9 sound packs · 24 components - built for [shadcn/ui](https://ui.shadcn.com).
+
+[Installation](#installation) · [Usage](#usage) · [Sound Packs](#sound-packs) · [Configuration](#configuration)
+
 </div>
 
 ---
 
-## Table of Contents
-
-- [Quick Installation](#quick-installation)
-- [Setup](#setup)
-- [Configuration](#configuration)
-- [Sound Packs](#sound-packs)
-- [Sound Roles](#sound-roles)
-- [Available Components](#available-components)
-- [Development](#development)
-- [License](#license)
-
----
-
-## Quick Installation
-
-Install the full library with a single command via the shadcn CLI:
+## Installation
 
 ```bash
 npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui
 ```
 
-This registry is now served directly from this public GitHub repository via `registry.json` (no custom `/r/*` base registry URL required).
-
-Or pick only what you need:
+Or install individual pieces:
 
 ```bash
 # Core engine only (no components)
 npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-core
 
-# A single component
+# Single component
 npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button
-npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-dialog
 ```
 
-> **Prerequisites:** Next.js 13.4+, shadcn/ui initialised (`components.json` present), Node.js 18+.
+**Requirements:** Next.js 13.4+, shadcn/ui initialised, Node.js 18+.
 
 ---
 
-## Setup
+## Usage
 
-### 1. Wrap your app with the provider
+### 1. Wrap your app
 
 ```tsx
 // app/layout.tsx
@@ -76,26 +54,22 @@ export default function RootLayout({
 }
 ```
 
-### 2. Use sound-enabled components
-
-Drop in any sensory-ui component the same way you'd use its shadcn counterpart — just add a `sound` prop:
+### 2. Add the `sound` prop
 
 ```tsx
 import { Button } from "@/components/ui/sensory-ui/button";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/sensory-ui/dialog";
 
-// Single sound role
+// Single role
 <Button sound="interaction.tap">Save</Button>
 
-// Object form with open/close sounds
+// Object form with open/close
 <Dialog sound={{ open: "overlay.open", close: "overlay.close" }}>
   ...
 </Dialog>
 ```
 
-### 3. Use the hook directly (optional)
-
-For anything not covered by a patched component, use the `usePlaySound` hook:
+### 3. Use the hook
 
 ```tsx
 import { usePlaySound } from "@/components/ui/sensory-ui/config/use-play-sound";
@@ -110,14 +84,6 @@ function MyComponent() {
 
 ## Configuration
 
-After installation, a `sensory.config.js` file is created at your project root. Pass it to the provider at runtime:
-
-```tsx
-import config from "@/sensory.config.js";
-
-<SensoryUIProvider config={config}>{children}</SensoryUIProvider>;
-```
-
 ```js
 // sensory.config.js
 module.exports = {
@@ -130,161 +96,89 @@ module.exports = {
 		navigation: true,
 		notification: true,
 		overlay: true,
-		hero: false, // disabled by default — must opt in
+		hero: false, // disabled by default - opt in
 	},
 
 	overrides: {
-		// Map any role to a custom audio file or base64 URI
+		// Map any role to a custom audio file
 		// "interaction.tap": "/sounds/my-click.mp3",
 	},
 
-	reducedMotion: "inherit", // "inherit" | "force-off" | "force-on"
+	reducedMotion: "inherit",
 };
-```
-
-You can also pass config inline to the provider without a config file:
-
-```tsx
-<SensoryUIProvider config={{ theme: "arcade", volume: 0.5 }}>
-	{children}
-</SensoryUIProvider>
 ```
 
 ---
 
 ## Sound Packs
 
-Nine built-in packs — all synthesized via the Web Audio API at runtime. No audio files, no network requests.
+All sounds are synthesized at runtime via the Web Audio API. No audio files, no network requests.
 
-| Pack         | Character                                                 |
-| ------------ | --------------------------------------------------------- |
-| `soft`       | Warm, rounded, gentle — felt mallets on soft pads         |
-| `aero`       | Airy, breathy, ethereal — wind through chimes _(default)_ |
-| `arcade`     | 8-bit chiptune — square waves, punchy NES vibe            |
-| `organic`    | Natural, warm, wooden — marimba and wood blocks           |
-| `glass`      | Crystalline, bright — struck glass or bells               |
-| `industrial` | Metallic, harsh, mechanical — machines and metal          |
-| `minimal`    | Clean, sparse, understated — pure tones only              |
-| `retro`      | Analog synth — vintage dual-detuned sawtooth              |
-| `crisp`      | Sharp, defined, precise — tight envelopes                 |
+| Pack         | Character                  |
+| ------------ | -------------------------- |
+| `soft`       | Warm, rounded, gentle      |
+| `aero`       | Airy, ethereal _(default)_ |
+| `arcade`     | 8-bit chiptune             |
+| `organic`    | Natural, wooden            |
+| `glass`      | Crystalline, bright        |
+| `industrial` | Metallic, mechanical       |
+| `minimal`    | Clean, sparse              |
+| `retro`      | Analog synth               |
+| `crisp`      | Sharp, precise             |
 
-Switch packs with a one-line change:
+Packs with effects chains (reverb, delay, chorus, distortion) for spatial/timbral depth:
 
-```js
-// sensory.config.js
-module.exports = { theme: "glass" };
-```
+| Pack         | Effects             |
+| ------------ | ------------------- |
+| `aero`       | Reverb (long tail)  |
+| `glass`      | Reverb + Chorus     |
+| `retro`      | Chorus + Delay      |
+| `industrial` | Distortion          |
+| `organic`    | Reverb (short room) |
+| `soft`       | Reverb (warm)       |
 
 ---
 
 ## Sound Roles
 
-17 semantic roles across 5 categories. Every sound maps to a meaningful interaction type — nothing is decorative.
+17 semantic roles across 5 categories. Every sound maps to a meaningful interaction.
 
-### `interaction` — Direct user actions (40–90 ms)
+**`interaction`** - `tap` · `subtle` · `toggle` · `confirm`
 
-| Role                  | Trigger                         |
-| --------------------- | ------------------------------- |
-| `interaction.tap`     | Primary button click            |
-| `interaction.subtle`  | Slider drag, command keypress   |
-| `interaction.toggle`  | Checkbox, switch, radio, toggle |
-| `interaction.confirm` | Form submit, save confirm       |
+**`overlay`** - `open` · `close` · `expand` · `collapse`
 
-### `overlay` — Surface open / close (120–300 ms)
+**`navigation`** - `forward` · `backward` · `tab`
 
-| Role               | Trigger                               |
-| ------------------ | ------------------------------------- |
-| `overlay.open`     | Dialog, sheet, dropdown open          |
-| `overlay.close`    | Dialog, sheet, dropdown close         |
-| `overlay.expand`   | Accordion expand, collapsible open    |
-| `overlay.collapse` | Accordion collapse, collapsible close |
+**`notification`** - `info` · `success` · `warning` · `error`
 
-### `navigation` — Moving through space (100–250 ms)
-
-| Role                  | Trigger                              |
-| --------------------- | ------------------------------------ |
-| `navigation.forward`  | Next step, next page, carousel next  |
-| `navigation.backward` | Back button, previous, carousel prev |
-| `navigation.tab`      | Tab switch, segment switch           |
-
-### `notification` — System feedback (200–600 ms)
-
-| Role                   | Trigger                          |
-| ---------------------- | -------------------------------- |
-| `notification.info`    | Info toast, passive alert        |
-| `notification.success` | Success toast, form saved        |
-| `notification.warning` | Quota alert, confirmation needed |
-| `notification.error`   | Error toast, connection failed   |
-
-### `hero` — Celebratory moments (800–1800 ms) _(disabled by default)_
-
-| Role             | Trigger                           |
-| ---------------- | --------------------------------- |
-| `hero.complete`  | Checklist complete, upload done   |
-| `hero.milestone` | Onboarding finished, first action |
-
-> Hero sounds must be explicitly enabled in `sensory.config.js` via `categories: { hero: true }`.
+**`hero`** - `complete` · `milestone` _(disabled by default)_
 
 ---
 
-## Available Components
+## Components
 
-25 installable components. Each is a drop-in replacement for its shadcn/ui counterpart with an added `sound` prop.
+25 installable components - each a drop-in shadcn/ui replacement with a `sound` prop.
 
-|                   |                 |                |
-| ----------------- | --------------- | -------------- |
-| `accordion`       | `alert-dialog`  | `button`       |
-| `carousel`        | `checkbox`      | `collapsible`  |
-| `command`         | `context-menu`  | `dialog`       |
-| `drawer`          | `dropdown-menu` | `menubar`      |
-| `navigation-menu` | `pagination`    | `popover`      |
-| `radio-group`     | `select`        | `sheet`        |
-| `sidebar`         | `slider`        | `switch`       |
-| `tabs`            | `toggle`        | `toggle-group` |
-| `core`            |                 |                |
-
-Install any component individually:
-
-```bash
-npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-<name>
-# e.g.
-npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-tabs
-```
+`accordion` · `alert-dialog` · `button` · `carousel` · `checkbox` · `collapsible` · `command` · `context-menu` · `dialog` · `drawer` · `dropdown-menu` · `menubar` · `navigation-menu` · `pagination` · `popover` · `radio-group` · `select` · `sheet` · `sidebar` · `slider` · `switch` · `tabs` · `toggle` · `toggle-group` · `core`
 
 ---
 
 ## Development
 
 ```bash
-# Clone and install
 git clone https://github.com/SatyamVyas04/sensory-ui.git
-cd sensory-ui
-npm install
-
-# Start dev server
+cd sensory-ui && npm install
 npm run dev
-
-# Lint & format
-npm run check
-npm run fix
-
-# Build registry
-npm run registry:build
-
-# Validate GitHub registry payload
-npx shadcn@latest registry validate SatyamVyas04/sensory-ui
 ```
 
-The dev server runs the landing page at `http://localhost:3000`, including the interactive component showcase. Registry definitions are sourced from the repository root `registry.json` and `components/ui/sensory-ui/registry.json`.
+The dev server runs the landing page at `localhost:3000` with an interactive component showcase.
 
 ---
 
 ## License
 
-[MIT](./LICENSE) — free to use in personal and commercial projects.
-
----
+[MIT](./LICENSE) - free for personal and commercial use.
 
 <div align="center">
-  <p>Built by <a href="https://twitter.com/SatyamVyas04">@SatyamVyas04</a></p>
+  <sub>Built by <a href="https://X.com/SatyamVyas04">@SatyamVyas04</a></sub>
 </div>

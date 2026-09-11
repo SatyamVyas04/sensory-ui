@@ -47,7 +47,7 @@ export function WhySound() {
             How it works
           </span>
           <h2
-            className="mt-3 text-balance font-pixel text-3xl sm:text-4xl"
+            className="mt-3 text-balance font-serif text-3xl sm:text-4xl"
             id="why-sound-heading"
           >
             No audio files. Just <span className="text-primary">sound.</span>
@@ -69,7 +69,7 @@ export function WhySound() {
               whileInView={{ opacity: 1, y: 0 }}
             >
               <div>
-                <span className="font-pixel text-4xl text-primary sm:text-5xl">
+                <span className="font-serif text-4xl text-primary sm:text-5xl">
                   {reason.stat}
                 </span>
                 <p className="mt-1 font-mono text-muted-foreground text-xs uppercase tracking-widest">
