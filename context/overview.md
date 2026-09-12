@@ -169,7 +169,7 @@ registry.json                 ← shadcn registry manifest (for `shadcn build`)
 - 17 base sounds across 5 categories
 - 9 distinct sound packs: soft, aero, arcade, organic, glass, industrial, minimal, retro, crisp
 - `SensoryUIProvider` wrapping the whole app
-- `sound` prop on Button and 8 common Radix components
+- `sound` prop on 24 components (Button, Dialog, Tabs, Checkbox, Switch, Slider, and 18 more)
 - `usePlaySound(role)` hook for arbitrary trigger points
 - `sensory.config.js` with volume, enable/disable, overrides
 - Full SSR safety and reduced-motion compliance

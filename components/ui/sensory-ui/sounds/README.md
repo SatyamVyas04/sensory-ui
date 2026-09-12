@@ -180,7 +180,7 @@ You can point individual roles to a traditional file URL or base64 string via
 ```js
 // sensory.config.js
 overrides: {
-  "activation.primary": "/sounds/custom/my-click.mp3",
+  "interaction.tap": "/sounds/custom/my-click.mp3",
 }
 ```
 

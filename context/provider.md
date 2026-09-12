@@ -70,15 +70,22 @@ export interface SensoryUIContextValue {
 	 * Whether the user has activated the mute toggle.
 	 */
 	muted: boolean;
+
+	/**
+	 * Whether the sound engine is currently suppressing audio due to
+	 * motion-reduction settings. Reflects both the OS/browser
+	 * `prefers-reduced-motion` media query and the `reducedMotion`
+	 * config option.
+	 */
+	reducedMotion: boolean;
 }
 
 export const SensoryUIContext = createContext<SensoryUIContextValue | null>(
 	null,
 );
 
-> **Note:** `SensoryUIContext` is intentionally **not exported** from the actual implementation.
-> Consumers must use the `useSensoryUI()` hook, which provides a proper error message
-> if called outside the provider.
+> **Note:** Consumers must use the `useSensoryUI()` hook, which provides a proper error message
+> if called outside the provider. Do not access `SensoryUIContext` directly.
 
 export function useSensoryUI(): SensoryUIContextValue {
 	const ctx = useContext(SensoryUIContext);
@@ -186,8 +193,9 @@ export function SensoryUIProvider({
 			volume: config.volume,
 			muted,
 			setMuted,
+			reducedMotion,
 		}),
-		[playSound, shouldPlay, config.volume, muted],
+		[playSound, shouldPlay, config.volume, muted, reducedMotion],
 	);
 
 	return (

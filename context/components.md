@@ -8,19 +8,39 @@ This document describes the component API - how the `sound` prop works, what eve
 
 ## The `sound` Prop
 
-Every sensory-ui primitive component accepts one optional prop on top of its usual API:
+Every sensory-ui primitive component accepts optional sound-related props on top of its usual API. The exact prop names vary by component pattern:
+
+**Standard pattern** (Button, Checkbox, Switch, Slider, Tabs, RadioGroup, Toggle, ToggleGroup, Command, Menubar, NavigationMenu, Pagination):
 
 ```ts
 sound?: SoundRole | false
+volume?: number
+```
+
+**Overlay pattern** (Dialog, AlertDialog, Sheet, Drawer, Popover, Select, ContextMenu, DropdownMenu):
+
+```ts
+sound?: SoundRole | false      // open sound (defaults to "overlay.open")
+closeSound?: SoundRole | false  // close sound (defaults to "overlay.close")
+volume?: number
+```
+
+**Expand/collapse pattern** (Accordion, Collapsible, Sidebar):
+
+```ts
+expandSound?: SoundRole | false  // or openSound (Accordion uses expandSound, Collapsible/Sidebar use openSound)
+collapseSound?: SoundRole | false
+volume?: number
 ```
 
 Where `SoundRole` is one of the 17 semantic role strings defined in [sound-roles.md](./sound-roles.md).
 
-- **When `sound` is absent:** the component uses its **baked-in default role** (e.g. `Button` defaults to `interaction.tap`).
-- **When `sound` is `false`:** the component is silenced — no audio is produced.
-- **When `sound` is a string:** the component plays that role, overriding the default.
+- **When the sound prop is absent:** the component uses its **baked-in default role** (e.g. `Button` defaults to `interaction.tap`).
+- **When the sound prop is `false`:** the component is silenced — no audio is produced.
+- **When the sound prop is a string:** the component plays that role, overriding the default.
+- **`volume`** is an optional per-component volume multiplier (0–1) that stacks multiplicatively with the master volume from config.
 
-This gives three modes: default (baked-in), silent (`false`), override (explicit string).
+This gives three modes for the sound prop: default (baked-in), silent (`false`), override (explicit string).
 
 ---
 
@@ -30,25 +50,36 @@ Different components fire sounds at different interaction points. The key rule i
 
 | Component        | Default Sound Trigger                                                          | Notes                                                                                       |
 | ---------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| `Button`         | `onClick` / `onKeyDown` (Enter, Space)                                         | Defaults to `interaction.tap`                                                               |
-| `Button` (hover) | `onMouseEnter`                                                                 | Only if `hoverSound` prop provided (v1.5+)                                                  |
+| `Button`         | `onClick`                                                                      | Defaults to `interaction.tap`                                                               |
 | `Dialog`         | `onOpenChange(true)` → `overlay.open`, `onOpenChange(false)` → `overlay.close` | Fires on open and close separately                                                          |
-| `DropdownMenu`   | `onOpenChange`                                                                 | Per-item `sound` on `DropdownMenuItem` too                                                  |
+| `AlertDialog`    | `onOpenChange`                                                                 | Same pattern as Dialog                                                                      |
+| `DropdownMenu`   | `onOpenChange` + `DropdownMenuItem` on `onSelect`                              | Root: open/close. Item: `interaction.tap`                                                   |
 | `Sheet`          | `onOpenChange`                                                                 | Same as Dialog                                                                              |
-| `Tabs`           | `onValueChange` → `navigation.tab`                                             | Fires when active tab changes                                                               |
+| `Drawer`         | `onOpenChange`                                                                 | Same as Dialog                                                                              |
+| `Popover`        | `onOpenChange`                                                                 | Same as Dialog                                                                              |
 | `Select`         | `onOpenChange`                                                                 | Open/close sounds                                                                           |
+| `ContextMenu`    | `onOpenChange` + `ContextMenuItem` on `onSelect`                               | Root: open/close. Item: `interaction.tap`                                                   |
+| `Tabs`           | `onValueChange` → `navigation.tab`                                             | Fires when active tab changes                                                               |
 | `Checkbox`       | `onCheckedChange`                                                              | Defaults to `interaction.toggle` on both check and uncheck                                  |
 | `Switch`         | `onCheckedChange`                                                              | Defaults to `interaction.toggle`                                                            |
 | `Slider`         | `onValueChange`                                                                | Defaults to `interaction.subtle` on every value change during drag                          |
-| `Command`        | `onSelect` / `onValueChange`                                                   | `CommandInput` plays `interaction.subtle` on every keystroke; items play `interaction.tap`   |
-| `Alert/Toast`    | On render / `onOpenChange`                                                     | `notification.*` roles                                                                      |
-| `Accordion`      | `onValueChange`                                                                | `overlay.expand` / `overlay.collapse`                                                       |
+| `Command`        | `CommandInput` on `onValueChange`; `CommandItem` on `onSelect`                 | Input: `interaction.subtle` per keystroke; Items: `interaction.tap`                         |
+| `Accordion`      | `onValueChange`                                                                | `expandSound` defaults to `overlay.expand`; `collapseSound` defaults to `overlay.collapse`  |
+| `Collapsible`    | `onOpenChange`                                                                 | `openSound` defaults to `overlay.expand`; `closeSound` defaults to `overlay.collapse`       |
+| `Sidebar`        | `SidebarProvider` `onOpenChange`                                               | `openSound` defaults to `overlay.open`; `closeSound` defaults to `overlay.close`            |
+| `RadioGroup`     | `onValueChange`                                                                | Defaults to `interaction.toggle`                                                           |
+| `ToggleGroup`    | `onValueChange`                                                                | Defaults to `interaction.toggle`                                                           |
+| `Toggle`         | `onPressedChange`                                                              | Defaults to `interaction.toggle`                                                           |
+| `Menubar`        | `MenubarTrigger` on `onClick`; `MenubarItem` on `onSelect`                    | Trigger: `overlay.open`. Item: `interaction.tap`                                           |
+| `NavigationMenu` | `NavigationMenuTrigger` on `onClick`; `NavigationMenuLink` on `onClick`        | Trigger: `overlay.open`. Link: `navigation.tab`                                            |
+| `Pagination`     | `PaginationLink`/`Previous`/`Next` on `onClick`                                | Link: `navigation.tab`. Prev: `navigation.backward`. Next: `navigation.forward`            |
+| `Carousel`       | `CarouselPrevious`/`Next` on `onClick`                                         | Prev: `navigation.backward`. Next: `navigation.forward`                                    |
 
 ---
 
 ## Button Primitive - Detailed Spec
 
-The Button primitive is the most commonly used sensory-ui component. It wraps the shadcn Button and adds sound playback on the primary interaction event.
+The Button primitive is the most commonly used sensory-ui component. It wraps the shadcn Button and adds sound playback on click.
 
 ```tsx
 // components/ui/sensory-ui/button.tsx
@@ -56,47 +87,33 @@ The Button primitive is the most commonly used sensory-ui component. It wraps th
 "use client";
 
 import * as React from "react";
-// Full shadcn Button source is copied here - not imported from @/components/ui/button.
-// Only the root Button function is patched; buttonVariants and sub-exports are verbatim.
-import { useSensoryUI } from "./config/provider";
-import type { SoundRole } from "./config/sound-roles";
-// ...full shadcn source...
+import { Button as BaseButton, buttonVariants } from "@/components/ui/button";
+import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
+import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
 const DEFAULT_BUTTON_SOUND = "interaction.tap" as const;
 
 function Button({
 	sound,
+	volume,
 	onClick,
-	onKeyDown,
 	...props
-}: ButtonProps & {
+}: React.ComponentProps<typeof BaseButton> & {
 	sound?: SoundRole | false;
+	volume?: number;
 }) {
 	const { playSound } = useSensoryUI();
 
 	const handleClick = React.useCallback(
 		(e: React.MouseEvent<HTMLButtonElement>) => {
-			const s = sound ?? DEFAULT_BUTTON_SOUND;
-			if (s !== false) void playSound(s);
+			if (sound !== false)
+				void playSound(sound ?? DEFAULT_BUTTON_SOUND, { volume });
 			onClick?.(e);
 		},
-		[sound, playSound, onClick],
+		[sound, volume, playSound, onClick],
 	);
 
-	const handleKeyDown = React.useCallback(
-		(e: React.KeyboardEvent<HTMLButtonElement>) => {
-			if (e.key === "Enter" || e.key === " ") {
-				const s = sound ?? DEFAULT_BUTTON_SOUND;
-				if (s !== false) void playSound(s);
-			}
-			onKeyDown?.(e);
-		},
-		[sound, playSound, onKeyDown],
-	);
-
-	return (
-		<button onClick={handleClick} onKeyDown={handleKeyDown} {...props} />
-	);
+	return <BaseButton onClick={handleClick} {...props} />;
 }
 
 export { Button, buttonVariants };
@@ -104,17 +121,17 @@ export { Button, buttonVariants };
 
 **Key implementation details:**
 
-- `void playSound(sound)` - never `await`. The click handler must return synchronously.
-- Both `onClick` and `onKeyDown` are intercepted so keyboard users get the same audio feedback as pointer users.
-- The original `onClick` and `onKeyDown` handlers (if provided) are always called, even if `playSound` throws.
+- Imports `BaseButton` from `@/components/ui/button` — does NOT copy the shadcn source. Only the root `Button` function is wrapped; `buttonVariants` is re-exported verbatim.
+- `void playSound(sound, { volume })` - never `await`. The click handler must return synchronously.
+- The original `onClick` handler (if provided) is always called, even if `playSound` throws.
 - There is no `disabledSound` prop — disabled buttons cannot be clicked, so no sound is needed.
-- React 19 style: no `forwardRef` needed - `ComponentProps<"button">` handles the ref natively.
+- No `forwardRef` — React 19 `ComponentProps` handles refs natively.
 
 ---
 
 ## Dialog Component - Detailed Spec
 
-Dialog is more complex than Button because it has two distinct sound moments: open and close. The `sound` prop on Dialog should be interpreted as the **open sound**. The close sound is automatically the tonal complement.
+Dialog is more complex than Button because it has two distinct sound moments: open and close. The `sound` prop on Dialog is the **open sound**. The `closeSound` prop is the close sound.
 
 ```tsx
 // components/ui/sensory-ui/dialog.tsx
@@ -122,37 +139,47 @@ Dialog is more complex than Button because it has two distinct sound moments: op
 "use client";
 
 import * as React from "react";
-// Full shadcn Dialog source is copied here. Only the Dialog root function is patched.
-import { Dialog as DialogPrimitive } from "radix-ui"; // unified radix-ui package
-import { useSensoryUI } from "./config/provider";
-import type { SoundRole } from "./config/sound-roles";
+import {
+	Dialog as BaseDialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+	DialogFooter,
+	DialogTrigger,
+	DialogClose,
+} from "@/components/ui/dialog";
+import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
+import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
 function Dialog({
 	sound,
 	closeSound,
+	volume,
 	onOpenChange,
 	...props
-}: React.ComponentProps<typeof DialogPrimitive.Root> & {
+}: React.ComponentProps<typeof BaseDialog> & {
 	sound?: SoundRole | false;
 	closeSound?: SoundRole | false;
+	volume?: number;
 }) {
 	const { playSound } = useSensoryUI();
 
 	const handleOpenChange = React.useCallback(
 		(open: boolean) => {
 			if (open && sound !== false) {
-				void playSound(sound ?? "overlay.open");
+				void playSound(sound ?? "overlay.open", { volume });
 			} else if (!open && closeSound !== false) {
-				void playSound(closeSound ?? "overlay.close");
+				void playSound(closeSound ?? "overlay.close", { volume });
 			}
 			onOpenChange?.(open);
 		},
-		[sound, closeSound, playSound, onOpenChange],
+		[sound, closeSound, volume, playSound, onOpenChange],
 	);
 
-	return <DialogPrimitive.Root onOpenChange={handleOpenChange} {...props} />;
+	return <BaseDialog onOpenChange={handleOpenChange} {...props} />;
 }
-// DialogContent, DialogHeader, DialogTitle, etc. are verbatim from shadcn.
+
 export {
 	Dialog,
 	DialogContent,
@@ -175,122 +202,134 @@ export {
 "use client";
 
 import * as React from "react";
-// Full shadcn Tabs source is copied here. Only the Tabs root function is patched.
-import { Tabs as TabsPrimitive } from "radix-ui"; // unified radix-ui package
-import { useSensoryUI } from "./config/provider";
-import type { SoundRole } from "./config/sound-roles";
+import {
+	Tabs as BaseTabs,
+	TabsList,
+	TabsTrigger,
+	TabsContent,
+	tabsListVariants,
+} from "@/components/ui/tabs";
+import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
+import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
+
+const DEFAULT_TABS_SOUND = "navigation.tab" as const;
 
 function Tabs({
 	sound,
+	volume,
 	onValueChange,
 	...props
-}: React.ComponentProps<typeof TabsPrimitive.Root> & {
+}: React.ComponentProps<typeof BaseTabs> & {
 	sound?: SoundRole | false;
+	volume?: number;
 }) {
 	const { playSound } = useSensoryUI();
 
 	const handleValueChange = React.useCallback(
 		(value: string) => {
-			if (sound !== false) void playSound(sound ?? "navigation.tab");
+			if (sound !== false) void playSound(sound ?? DEFAULT_TABS_SOUND, { volume });
 			onValueChange?.(value);
 		},
-		[sound, playSound, onValueChange],
+		[sound, volume, playSound, onValueChange],
 	);
 
-	return <TabsPrimitive.Root onValueChange={handleValueChange} {...props} />;
+	return <BaseTabs onValueChange={handleValueChange} {...props} />;
 }
 
-// TabsList, TabsTrigger, TabsContent are verbatim from shadcn source.
-export { Tabs, TabsList, TabsTrigger, TabsContent };
+export { Tabs, TabsList, TabsTrigger, TabsContent, tabsListVariants };
 ```
 
 ---
 
-## General Patched Component Template
+## General Component Pattern
 
-Every patched component follows this exact structure:
+Every sensory-ui component follows this structure:
 
 ```tsx
 "use client";
 
-// Full shadcn source is copied verbatim into this file.
-// ONLY the root component function is patched - all sub-components are untouched.
+// Imports from the shadcn component layer — NOT copied source.
+// Only the root component function is wrapped; sub-components are re-exported verbatim.
 
 import * as React from "react";
-import { SomeComponent as SomePrimitive } from "radix-ui"; // unified radix-ui package
-import { useSensoryUI } from "./config/provider";
-import type { SoundRole } from "./config/sound-roles";
-// ...rest of verbatim shadcn imports...
+import { SomeComponent as BaseSomeComponent, /* sub-components */ } from "@/components/ui/some-component";
+import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
+import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 
-// Patched root function - added sound prop + handler interception
+const DEFAULT_COMPONENT_SOUND = "some.default.role" as const;
+
+// Wrapped root function — added sound prop + handler interception
 function Component({
 	sound,
+	volume,
 	onInteractionEvent,
 	...props
-}: React.ComponentProps<typeof SomePrimitive.Root> & {
+}: React.ComponentProps<typeof BaseSomeComponent> & {
 	sound?: SoundRole | false;
+	volume?: number;
 }) {
 	const { playSound } = useSensoryUI();
 
 	const handleEvent = React.useCallback(
 		(eventArgs) => {
 			if (sound !== false)
-				void playSound(sound ?? DEFAULT_COMPONENT_SOUND);
+				void playSound(sound ?? DEFAULT_COMPONENT_SOUND, { volume });
 			onInteractionEvent?.(eventArgs);
 		},
-		[sound, playSound, onInteractionEvent],
+		[sound, volume, playSound, onInteractionEvent],
 	);
 
-	return <SomePrimitive.Root onInteractionEvent={handleEvent} {...props} />;
+	return <BaseSomeComponent onInteractionEvent={handleEvent} {...props} />;
 }
 
-// Verbatim sub-components from shadcn (ComponentContent, ComponentTrigger, etc.)
+// Re-exported sub-components from shadcn (ComponentContent, ComponentTrigger, etc.)
 // ...
 
 export { Component, ComponentContent, ComponentTrigger /* etc. */ };
 ```
 
-Rules for patched components:
+Rules for components:
 
 1. Always `"use client"` at the top
 2. Do **not** use `React.forwardRef` - React 19 `ComponentProps` handles refs natively
-3. Copy the **full** shadcn source, patch only the root function
-4. Always call the original event handler after triggering sound
-5. Never `await playSound` - fire and forget
-6. Each component has a **baked-in default role constant** (e.g. `DEFAULT_BUTTON_SOUND = "interaction.tap"`). Use `sound ?? DEFAULT_SOUND` in the handler.
-7. Pass `sound !== false` guard before calling `playSound` to allow silencing via `sound={false}`
-8. Imports use `radix-ui` (unified package), never `@radix-ui/react-*`
+3. Import from `@/components/ui/<name>` — do NOT copy the shadcn source
+4. Only wrap the root component function — sub-components are re-exported verbatim
+5. Always call the original event handler after triggering sound
+6. Never `await playSound` - fire and forget
+7. Each component has a **baked-in default role constant** (e.g. `DEFAULT_BUTTON_SOUND = "interaction.tap"`). Use `sound ?? DEFAULT_SOUND` in the handler.
+8. Pass `sound !== false` guard before calling `playSound` to allow silencing via `sound={false}`
+9. Accept a `volume?: number` prop for per-component volume control
 
 ---
 
 ## Available Components (v0.5)
 
-| Component        | File                  | Primary Event   | Notes                                  |
-| ---------------- | --------------------- | --------------- | -------------------------------------- |
-| `Accordion`      | `accordion.tsx`       | value change    | Expand / collapse distinction          |
-| `AlertDialog`    | `alert-dialog.tsx`    | open/close      | Same pattern as Dialog                 |
-| `Button`         | `button.tsx`          | click + keydown | Most used                              |
-| `Carousel`       | `carousel.tsx`        | slide change    | Navigation sounds                      |
-| `Checkbox`       | `checkbox.tsx`        | checked change  | Defaults to `interaction.toggle`       |
-| `Collapsible`    | `collapsible.tsx`     | open/close      | Close falls back to `overlay.collapse` |
-| `Command`        | `command.tsx`         | selection/input | `CommandInput` plays `interaction.subtle` per keystroke; items play `interaction.tap` |
-| `ContextMenu`    | `context-menu.tsx`    | open/close      | Same pattern as Dialog                 |
-| `Dialog`         | `dialog.tsx`          | open/close      | Pairs open + close sounds              |
-| `Drawer`         | `drawer.tsx`          | open/close      | Same pattern as Dialog                 |
-| `DropdownMenu`   | `dropdown-menu.tsx`   | open/close      | Per-item `sound` on `DropdownMenuItem` |
-| `Menubar`        | `menubar.tsx`         | open/close      | Same pattern as Dialog                 |
-| `NavigationMenu` | `navigation-menu.tsx` | value change    | Navigation sounds                      |
-| `Pagination`     | `pagination.tsx`      | page change     | Navigation sounds                      |
-| `Popover`        | `popover.tsx`         | open/close      | Same pattern as Dialog                 |
-| `RadioGroup`     | `radio-group.tsx`     | value change    | Defaults to `interaction.toggle`       |
-| `Select`         | `select.tsx`          | open/close      | Same pattern as Dialog                 |
-| `Sheet`          | `sheet.tsx`           | open/close      | Same pattern as Dialog                 |
-| `Sidebar`        | `sidebar.tsx`         | open/close      | Navigation sounds                      |
-| `Slider`         | `slider.tsx`          | value change    | Defaults to `interaction.subtle` on every value change |
-| `Switch`         | `switch.tsx`          | checked change  | Defaults to `interaction.toggle`       |
-| `Tabs`           | `tabs.tsx`            | value change    | Defaults to `navigation.tab`           |
-| `ToggleGroup`    | `toggle-group.tsx`    | value change    | Defaults to `interaction.toggle`       |
-| `Toggle`         | `toggle.tsx`          | pressed change  | Defaults to `interaction.toggle`       |
+| Component        | File                  | Primary Event   | Notes                                                                                      |
+| ---------------- | --------------------- | --------------- | ------------------------------------------------------------------------------------------ |
+| `Accordion`      | `accordion.tsx`       | value change    | `expandSound` / `collapseSound` props (not `sound`)                                       |
+| `AlertDialog`    | `alert-dialog.tsx`    | open/close      | `sound` + `closeSound` props. Same pattern as Dialog.                                     |
+| `Button`         | `button.tsx`          | click           | Defaults to `interaction.tap`. Also accepts `volume`.                                      |
+| `Carousel`       | `carousel.tsx`        | click           | `CarouselPrevious`: `navigation.backward`. `CarouselNext`: `navigation.forward`.           |
+| `Checkbox`       | `checkbox.tsx`        | checked change  | Defaults to `interaction.toggle`. Skips indeterminate state.                               |
+| `Collapsible`    | `collapsible.tsx`     | open/close      | `openSound` / `closeSound` props (not `sound`). Defaults to `overlay.expand` / `overlay.collapse`. |
+| `Command`        | `command.tsx`         | selection/input | `CommandInput`: `interaction.subtle` per keystroke. `CommandItem`: `interaction.tap`.      |
+| `ContextMenu`    | `context-menu.tsx`    | open/close      | Root: `sound` + `closeSound`. `ContextMenuItem`: `interaction.tap`.                        |
+| `Dialog`         | `dialog.tsx`          | open/close      | `sound` + `closeSound` props. Pairs open + close sounds.                                  |
+| `Drawer`         | `drawer.tsx`          | open/close      | `sound` + `closeSound` props. Same pattern as Dialog.                                     |
+| `DropdownMenu`   | `dropdown-menu.tsx`   | open/close      | Root: `sound` + `closeSound`. `DropdownMenuItem`: `interaction.tap`.                       |
+| `Menubar`        | `menubar.tsx`         | click/select    | `MenubarTrigger`: `overlay.open`. `MenubarItem`: `interaction.tap`.                       |
+| `NavigationMenu` | `navigation-menu.tsx` | click           | `NavigationMenuTrigger`: `overlay.open`. `NavigationMenuLink`: `navigation.tab`.           |
+| `Pagination`     | `pagination.tsx`      | click           | Link: `navigation.tab`. Previous: `navigation.backward`. Next: `navigation.forward`.       |
+| `Popover`        | `popover.tsx`         | open/close      | `sound` + `closeSound` props. Same pattern as Dialog.                                     |
+| `RadioGroup`     | `radio-group.tsx`     | value change    | Defaults to `interaction.toggle`.                                                         |
+| `Select`         | `select.tsx`          | open/close      | `sound` + `closeSound` props. Same pattern as Dialog.                                     |
+| `Sheet`          | `sheet.tsx`           | open/close      | `sound` + `closeSound` props. Same pattern as Dialog.                                     |
+| `Sidebar`        | `sidebar.tsx`         | open/close      | `SidebarProvider` wraps with `openSound` / `closeSound`. Defaults to `overlay.open` / `overlay.close`. |
+| `Slider`         | `slider.tsx`          | value change    | Defaults to `interaction.subtle` on every value change during drag.                        |
+| `Switch`         | `switch.tsx`          | checked change  | Defaults to `interaction.toggle`.                                                         |
+| `Tabs`           | `tabs.tsx`            | value change    | Defaults to `navigation.tab`.                                                             |
+| `Toggle`         | `toggle.tsx`          | pressed change  | Defaults to `interaction.toggle`.                                                         |
+| `ToggleGroup`    | `toggle-group.tsx`    | value change    | Defaults to `interaction.toggle`.                                                         |
 
 ---
 
@@ -384,7 +423,7 @@ export function CustomComponent() {
 ### Dialog with open/close sounds
 
 ```tsx
-<Dialog sound="overlay.open">
+<Dialog sound="overlay.open" closeSound="overlay.close">
 	<DialogTrigger asChild>
 		<Button>Open settings</Button>
 	</DialogTrigger>
@@ -427,8 +466,8 @@ toast({
 
 ## What Is NOT Supported
 
-- `sound` prop on components from `@/components/ui/` directly - must use `@/components/ui/sensory-ui/<component>`
+- `sound` prop on standard shadcn components from `@/components/ui/` — must import from `@/components/ui/sensory-ui/<component>`
 - Hover sounds in v1.0 (`hoverSound` is planned for v1.5)
-- Multiple sounds on the same interaction (one role per event)
+- Multiple sounds on the same interaction (one role per event, except components with separate sub-component sounds like ContextMenu)
 - Looping sounds (all sounds play once)
 - Sound chains or queues

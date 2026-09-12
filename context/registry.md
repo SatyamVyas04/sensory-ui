@@ -247,7 +247,7 @@ npm run registry:build    # npx shadcn@latest build — validates registry schem
 
 1. Run TypeScript compilation checks on all files in `components/ui/sensory-ui/`
 2. Validate the registry: `npx shadcn@latest registry validate SatyamVyas04/sensory-ui`
-3. Verify all 26 items are listed: `npx shadcn@latest list SatyamVyas04/sensory-ui`
+3. Verify all items are listed: `npx shadcn@latest list SatyamVyas04/sensory-ui` (expected: 1 core + 24 components + 1 meta = 26 items)
 4. Run `npm run build` to confirm the website builds without errors
 5. Ship to production — no build step needed; GitHub is the source of truth
 

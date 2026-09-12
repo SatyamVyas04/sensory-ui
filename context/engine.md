@@ -90,8 +90,14 @@ let activePlayback: SoundPlayback | null = null;
 /**
  * Lazy singleton AudioContext.
  * Never instantiated during SSR - caller must guard with typeof window check.
+ * If the cached context was closed (e.g. after closeAudioContext() or a
+ * browser-initiated close), recreate it so playback can recover.
  */
 export function getAudioContext(): AudioContext {
+	if (audioContext?.state === "closed") {
+		audioContext = null;
+		bufferCache.clear();
+	}
 	if (!audioContext) {
 		audioContext = new AudioContext();
 	}
@@ -138,6 +144,9 @@ export async function decodeAudioData(source: string): Promise<AudioBuffer> {
 
 	const ctx = getAudioContext();
 	const response = await fetch(source);
+	if (!response.ok) {
+		throw new Error(`[sensory-ui] Failed to fetch audio: ${response.status} ${response.statusText}`);
+	}
 	const arrayBuffer = await response.arrayBuffer();
 	const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
 
@@ -176,8 +185,8 @@ export async function playSound(
 
 	const ctx = getAudioContext();
 
-	// Resume in case the context was suspended by browser autoplay policy.
-	if (ctx.state === "suspended") {
+	// Resume if suspended (autoplay policy) or interrupted (Safari tab-switch).
+	if (ctx.state !== "running") {
 		await ctx.resume();
 	}
 
@@ -249,11 +258,15 @@ export function clearBufferCache(): void {
  * Soft-close the AudioContext.
  * Call only when you are certain no more sounds will be played
  * (e.g., during hot-module replacement in development).
+ * Also clears the buffer cache since buffers decoded on the closed
+ * context are no longer usable.
  */
 export async function closeAudioContext(): Promise<void> {
 	if (audioContext) {
 		await audioContext.close();
 		audioContext = null;
+		bufferCache.clear();
+		activePlayback = null;
 	}
 }
 ```

@@ -63,8 +63,8 @@ import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/sensory-ui
 // Single role
 <Button sound="interaction.tap">Save</Button>
 
-// Object form with open/close
-<Dialog sound={{ open: "overlay.open", close: "overlay.close" }}>
+// Open/close sounds
+<Dialog sound="overlay.open" closeSound="overlay.close">
   ...
 </Dialog>
 ```
@@ -157,9 +157,11 @@ Packs with effects chains (reverb, delay, chorus, distortion) for spatial/timbra
 
 ## Components
 
-25 installable components - each a drop-in shadcn/ui replacement with a `sound` prop.
+24 sound-enabled components — each a drop-in shadcn/ui replacement with a `sound` prop.
 
-`accordion` · `alert-dialog` · `button` · `carousel` · `checkbox` · `collapsible` · `command` · `context-menu` · `dialog` · `drawer` · `dropdown-menu` · `menubar` · `navigation-menu` · `pagination` · `popover` · `radio-group` · `select` · `sheet` · `sidebar` · `slider` · `switch` · `tabs` · `toggle` · `toggle-group` · `core`
+`accordion` · `alert-dialog` · `button` · `carousel` · `checkbox` · `collapsible` · `command` · `context-menu` · `dialog` · `drawer` · `dropdown-menu` · `menubar` · `navigation-menu` · `pagination` · `popover` · `radio-group` · `select` · `sheet` · `sidebar` · `slider` · `switch` · `tabs` · `toggle` · `toggle-group`
+
+Plus `core` (engine, provider, config, sounds) — installed automatically as a dependency of every component.
 
 ---
 
