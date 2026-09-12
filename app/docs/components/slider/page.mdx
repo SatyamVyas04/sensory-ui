@@ -1,0 +1,59 @@
+export const metadata = {
+  title: "Slider",
+  description:
+    "An input where the user selects a value from a given range. Plays a subtle sound during interaction.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { SliderDemo } from "@/app/_components/showcase/slider-demo";
+
+# Slider
+
+An input where the user selects a value from a given range. The sensory-ui Slider plays a subtle sound while the user drags.
+
+**Pattern:** Standard
+
+## Import
+
+```tsx
+import { Slider } from "@/components/ui/sensory-ui/slider";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.subtle"` | Sound played during drag. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.subtle`
+
+## Demo
+
+<DemoBlock>
+  <SliderDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Slider defaultValue={[50]} max={100} step={1} />
+```
+
+### Custom sounds
+
+```tsx
+<Slider sound="interaction.toggle" volume={0.5} />
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Drag | `interaction.subtle` |
+
+## shadcn/ui Reference
+
+View the original [Slider](/docs/components/base/slider) documentation.

@@ -1,0 +1,80 @@
+export const metadata = {
+  title: "Context Menu",
+  description:
+    "Displays a menu to the user triggered by a right-click. Plays open and close sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { OverlaySurfacesDemo } from "@/app/_components/showcase/overlay-surfaces-demo";
+
+# Context Menu
+
+Displays a menu to the user triggered by a right-click. The sensory-ui Context Menu plays sounds when opening and closing.
+
+**Pattern:** Overlay
+
+## Import
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuGroup,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/sensory-ui/context-menu";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the menu opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the menu closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Usage
+
+```tsx
+<ContextMenu>
+  <ContextMenuTrigger>Right click me</ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>Profile</ContextMenuItem>
+    <ContextMenuItem>Settings</ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem>Logout</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+### Custom sounds
+
+```tsx
+<ContextMenu sound="interaction.tap" closeSound="interaction.subtle">
+  {/* ... */}
+</ContextMenu>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Menu opens | `overlay.open` |
+| Menu closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Context Menu](/docs/components/base/context-menu) documentation.

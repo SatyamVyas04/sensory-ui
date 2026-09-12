@@ -1,0 +1,74 @@
+export const metadata = {
+  title: "Tabs",
+  description:
+    "A set of layered sections of content, known as tab panels. Plays a tab navigation sound.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { TabsDemo } from "@/app/_components/showcase/tabs-demo";
+
+# Tabs
+
+A set of layered sections of content, known as tab panels. The sensory-ui Tabs plays a tab sound when the active tab changes.
+
+**Pattern:** Standard
+
+## Import
+
+```tsx
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  tabsListVariants,
+} from "@/components/ui/sensory-ui/tabs";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"navigation.tab"` | Sound played when the active tab changes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`navigation.tab`
+
+## Demo
+
+<DemoBlock>
+  <TabsDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Tabs defaultValue="account">
+  <TabsList>
+    <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="password">Password</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account">Account content</TabsContent>
+  <TabsContent value="password">Password content</TabsContent>
+</Tabs>
+```
+
+### Custom sounds
+
+```tsx
+<Tabs sound="interaction.tap" volume={0.6}>
+  {/* ... */}
+</Tabs>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Tab changes | `navigation.tab` |
+
+## shadcn/ui Reference
+
+View the original [Tabs](/docs/components/base/tabs) documentation.

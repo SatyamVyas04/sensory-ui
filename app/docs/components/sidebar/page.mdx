@@ -1,0 +1,87 @@
+export const metadata = {
+  title: "Sidebar",
+  description:
+    "A collapsible sidebar for navigation. Plays open and close sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ExpandCollapseDemo } from "@/app/_components/showcase/expand-collapse-demo";
+
+# Sidebar
+
+A collapsible sidebar for navigation. The sensory-ui Sidebar plays sounds when expanding and collapsing.
+
+**Pattern:** Expand / Collapse
+
+## Import
+
+```tsx
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarSeparator,
+  SidebarTrigger,
+} from "@/components/ui/sensory-ui/sidebar";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the sidebar expands. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the sidebar collapses. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on expand, `overlay.close` on collapse.
+
+## Usage
+
+```tsx
+<SidebarProvider>
+  <Sidebar>
+    <SidebarHeader />
+    <SidebarContent>
+      <SidebarGroup>
+        <SidebarGroupLabel>Application</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>{/* ... */}</SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </SidebarContent>
+    <SidebarFooter />
+  </Sidebar>
+  <SidebarInset>{/* Main content */}</SidebarInset>
+</SidebarProvider>
+```
+
+### Custom sounds
+
+```tsx
+<Sidebar sound="interaction.confirm" closeSound="interaction.subtle">
+  {/* ... */}
+</Sidebar>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Sidebar expands | `overlay.open` |
+| Sidebar collapses | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Sidebar](/docs/components/base/sidebar) documentation.

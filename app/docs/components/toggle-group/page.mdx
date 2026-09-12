@@ -1,0 +1,75 @@
+export const metadata = {
+  title: "Toggle Group",
+  description:
+    "A set of two-state buttons that can be toggled on or off. Plays a toggle sound.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ToggleControlsDemo } from "@/app/_components/showcase/toggle-controls-demo";
+
+# Toggle Group
+
+A set of two-state buttons that can be toggled on or off. The sensory-ui Toggle Group plays a toggle sound when items are selected.
+
+**Pattern:** Standard
+
+## Import
+
+```tsx
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+  toggleGroupItemVariants,
+} from "@/components/ui/sensory-ui/toggle-group";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.toggle"` | Sound played on selection change. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.toggle`
+
+## Demo
+
+<DemoBlock>
+  <ToggleControlsDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<ToggleGroup type="multiple">
+  <ToggleGroupItem value="bold" aria-label="Toggle bold">
+    B
+  </ToggleGroupItem>
+  <ToggleGroupItem value="italic" aria-label="Toggle italic">
+    I
+  </ToggleGroupItem>
+  <ToggleGroupItem value="underline" aria-label="Toggle underline">
+    U
+  </ToggleGroupItem>
+</ToggleGroup>
+```
+
+### Custom sounds
+
+```tsx
+<ToggleGroup type="single" sound="interaction.confirm" volume={0.7}>
+  {/* ... */}
+</ToggleGroup>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Item selected/deselected | `interaction.toggle` |
+
+## shadcn/ui Reference
+
+View the original [Toggle Group](/docs/components/base/toggle-group) documentation.

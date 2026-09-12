@@ -1,0 +1,77 @@
+export const metadata = {
+  title: "Components",
+  description:
+    "Complete reference for all 24 sensory-ui components with sound prop patterns, API details, and live demos.",
+};
+
+# Components
+
+sensory-ui extends every shadcn/ui component with semantic sound props. Each component accepts sound-related props that let you customise or disable the audio feedback.
+
+## Sound Prop Patterns
+
+Components follow one of three prop patterns depending on their interaction model:
+
+### Standard
+
+For components with a single sound trigger (click, toggle, navigation).
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `sound` | `SoundRole \| false` | Sound role to play on interaction. |
+| `volume` | `number` | Per-component volume multiplier (0–1). |
+
+Used by: Button, Carousel, Checkbox, Command, Pagination, Radio Group, Slider, Switch, Tabs, Toggle, Toggle Group.
+
+### Overlay
+
+For components that open and close (dialogs, menus, drawers).
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `sound` | `SoundRole \| false` | Sound role to play when opening. |
+| `closeSound` | `SoundRole \| false` | Sound role to play when closing. |
+| `volume` | `number` | Per-component volume multiplier (0–1). |
+
+Used by: Alert Dialog, Context Menu, Dialog, Drawer, Dropdown Menu, Menubar, Navigation Menu, Popover, Select, Sheet.
+
+### Expand / Collapse
+
+For components that expand and collapse content in place.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `expandSound` | `SoundRole \| false` | Sound role to play when expanding. |
+| `collapseSound` | `SoundRole \| false` | Sound role to play when collapsing. |
+| `volume` | `number` | Per-component volume multiplier (0–1). |
+
+Used by: Accordion, Collapsible, Sidebar.
+
+## Component Reference
+
+| Component | Pattern | Default Sound Role | shadcn/ui Docs |
+| --- | --- | --- | --- |
+| [Accordion](/docs/components/accordion) | Expand / Collapse | `overlay.expand` / `overlay.collapse` | [Base](/docs/components/base/accordion) |
+| [Alert Dialog](/docs/components/alert-dialog) | Overlay | `overlay.open` / `overlay.close` | [Base](/docs/components/base/alert-dialog) |
+| [Button](/docs/components/button) | Standard | `interaction.tap` | [Base](/docs/components/base/button) |
+| [Carousel](/docs/components/carousel) | Standard | `navigation.backward` / `navigation.forward` | [Base](/docs/components/base/carousel) |
+| [Checkbox](/docs/components/checkbox) | Standard | `interaction.toggle` | [Base](/docs/components/base/checkbox) |
+| [Collapsible](/docs/components/collapsible) | Expand / Collapse | `overlay.expand` / `overlay.collapse` | [Base](/docs/components/base/collapsible) |
+| [Command](/docs/components/command) | Standard | `interaction.subtle` / `interaction.tap` | [Base](/docs/components/base/command) |
+| [Context Menu](/docs/components/context-menu) | Overlay | `overlay.open` / `overlay.close` | [Base](/docs/components/base/context-menu) |
+| [Dialog](/docs/components/dialog) | Overlay | `overlay.open` / `overlay.close` | [Base](/docs/components/base/dialog) |
+| [Drawer](/docs/components/drawer) | Overlay | `overlay.open` / `overlay.close` | [Base](/docs/components/base/drawer) |
+| [Dropdown Menu](/docs/components/dropdown-menu) | Overlay | `overlay.open` / `overlay.close` | [Base](/docs/components/base/dropdown-menu) |
+| [Menubar](/docs/components/menubar) | Overlay | `overlay.open` / `interaction.tap` | [Base](/docs/components/base/menubar) |
+| [Navigation Menu](/docs/components/navigation-menu) | Overlay | `overlay.open` / `navigation.tab` | [Base](/docs/components/base/navigation-menu) |
+| [Pagination](/docs/components/pagination) | Standard | `navigation.forward` / `navigation.backward` / `navigation.tab` | [Base](/docs/components/base/pagination) |
+| [Popover](/docs/components/popover) | Overlay | `overlay.open` / `overlay.close` | [Base](/docs/components/base/popover) |
+| [Radio Group](/docs/components/radio-group) | Standard | `interaction.toggle` | [Base](/docs/components/base/radio-group) |
+| [Select](/docs/components/select) | Overlay | `overlay.open` / `overlay.close` | [Base](/docs/components/base/select) |
+| [Sheet](/docs/components/sheet) | Overlay | `overlay.open` / `overlay.close` | [Base](/docs/components/base/sheet) |
+| [Sidebar](/docs/components/sidebar) | Expand / Collapse | `overlay.open` / `overlay.close` | [Base](/docs/components/base/sidebar) |
+| [Slider](/docs/components/slider) | Standard | `interaction.subtle` | [Base](/docs/components/base/slider) |
+| [Switch](/docs/components/switch) | Standard | `interaction.toggle` | [Base](/docs/components/base/switch) |
+| [Tabs](/docs/components/tabs) | Standard | `navigation.tab` | [Base](/docs/components/base/tabs) |
+| [Toggle](/docs/components/toggle) | Standard | `interaction.toggle` | [Base](/docs/components/base/toggle) |
+| [Toggle Group](/docs/components/toggle-group) | Standard | `interaction.toggle` | [Base](/docs/components/base/toggle-group) |

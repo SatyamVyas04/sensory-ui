@@ -1,0 +1,85 @@
+export const metadata = {
+  title: "Select",
+  description:
+    "Displays a list of options for the user to pick from. Plays open and close sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { OverlaySurfacesDemo } from "@/app/_components/showcase/overlay-surfaces-demo";
+
+# Select
+
+Displays a list of options for the user to pick from, triggered by a button. The sensory-ui Select plays sounds when the dropdown opens and closes.
+
+**Pattern:** Overlay
+
+## Import
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/sensory-ui/select";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the dropdown opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the dropdown closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Demo
+
+<DemoBlock>
+  <OverlaySurfacesDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Select>
+  <SelectTrigger>
+    <SelectValue placeholder="Select a fruit" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectGroup>
+      <SelectLabel>Fruits</SelectLabel>
+      <SelectItem value="apple">Apple</SelectItem>
+      <SelectItem value="banana">Banana</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
+```
+
+### Custom sounds
+
+```tsx
+<Select sound="interaction.tap" closeSound="interaction.subtle">
+  {/* ... */}
+</Select>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Dropdown opens | `overlay.open` |
+| Dropdown closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Select](/docs/components/base/select) documentation.

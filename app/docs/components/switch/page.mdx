@@ -1,0 +1,62 @@
+export const metadata = {
+  title: "Switch",
+  description:
+    "A control that allows the user to toggle between on and off. Plays a toggle sound.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ToggleControlsDemo } from "@/app/_components/showcase/toggle-controls-demo";
+
+# Switch
+
+A control that allows the user to toggle between on and off. The sensory-ui Switch plays a toggle sound on state change.
+
+**Pattern:** Standard
+
+## Import
+
+```tsx
+import { Switch } from "@/components/ui/sensory-ui/switch";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.toggle"` | Sound played on toggle. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.toggle`
+
+## Demo
+
+<DemoBlock>
+  <ToggleControlsDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<div className="flex items-center space-x-2">
+  <Switch id="airplane-mode" />
+  <Label htmlFor="airplane-mode">Airplane Mode</Label>
+</div>
+```
+
+### Custom sounds
+
+```tsx
+<Switch sound="interaction.confirm" volume={0.7} />
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Toggle on/off | `interaction.toggle` |
+
+## shadcn/ui Reference
+
+View the original [Switch](/docs/components/base/switch) documentation.

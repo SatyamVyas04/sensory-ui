@@ -1,0 +1,61 @@
+export const metadata = {
+  title: "Toggle",
+  description:
+    "A two-state button that can be either on or off. Plays a toggle sound.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ToggleControlsDemo } from "@/app/_components/showcase/toggle-controls-demo";
+
+# Toggle
+
+A two-state button that can be either on or off. The sensory-ui Toggle plays a toggle sound on state change.
+
+**Pattern:** Standard
+
+## Import
+
+```tsx
+import { Toggle, toggleVariants } from "@/components/ui/sensory-ui/toggle";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.toggle"` | Sound played on toggle. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.toggle`
+
+## Demo
+
+<DemoBlock>
+  <ToggleControlsDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Toggle aria-label="Toggle bold">B</Toggle>
+```
+
+### Custom sounds
+
+```tsx
+<Toggle sound="interaction.confirm" volume={0.8}>
+  B
+</Toggle>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Toggle on/off | `interaction.toggle` |
+
+## shadcn/ui Reference
+
+View the original [Toggle](/docs/components/base/toggle) documentation.

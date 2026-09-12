@@ -1,0 +1,76 @@
+export const metadata = {
+  title: "Carousel",
+  description:
+    "A carousel with motion and swipe support. Plays navigation sounds for forward and backward.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { CarouselDemo } from "@/app/_components/showcase/carousel-demo";
+
+# Carousel
+
+A carousel with motion and swipe support. The sensory-ui Carousel plays navigation sounds when moving between slides.
+
+**Pattern:** Standard
+
+## Import
+
+```tsx
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/sensory-ui/carousel";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"navigation.backward"` / `"navigation.forward"` | Sound played on slide change. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`navigation.backward` when going to the previous slide, `navigation.forward` when going to the next.
+
+## Demo
+
+<DemoBlock>
+  <CarouselDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Carousel>
+  <CarouselContent>
+    <CarouselItem>1</CarouselItem>
+    <CarouselItem>2</CarouselItem>
+    <CarouselItem>3</CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
+
+### Custom sounds
+
+```tsx
+<Carousel sound="interaction.tap" volume={0.5}>
+  {/* ... */}
+</Carousel>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Previous slide | `navigation.backward` |
+| Next slide | `navigation.forward` |
+
+## shadcn/ui Reference
+
+View the original [Carousel](/docs/components/base/carousel) documentation.

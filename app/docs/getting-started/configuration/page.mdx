@@ -1,0 +1,183 @@
+export const metadata = {
+  title: "Configuration",
+  description:
+    "Configure sensory-ui with sensory.config.js — sound packs, volume, categories, and overrides.",
+};
+
+# Configuration
+
+sensory-ui is configured through `sensory.config.js` at your project root. This file is generated during installation, is user-owned, and is never overwritten by updates.
+
+The runtime config is split into two parts:
+
+1. **`sensory.config.js`** — the user-facing config file at the project root (plain JavaScript, passed to `<SensoryUIProvider config={...}>`)
+2. **`config.ts`** — exports `defaultConfig`, `mergeConfig()`, and `resolveRole()` for internal use by the provider and engine
+
+---
+
+## sensory.config.js — Full Reference
+
+```js
+// sensory.config.js
+module.exports = {
+  // Global kill-switch.
+  // Set to false to silence ALL sounds throughout the app without
+  // removing any code. Useful for staging environments or QA reviews.
+  enabled: true,
+
+  // Master volume multiplier. Range: 0.0 – 1.0.
+  // Applied to every sound before playback. Individual sounds can be
+  // further controlled with the per-call volume option, but this is
+  // the global ceiling.
+  volume: 0.35,
+
+  // Sound pack / theme name.
+  // Switch between installed packs at runtime. Available packs:
+  // "soft", "aero", "arcade", "organic", "glass", "industrial",
+  // "minimal", "retro", "crisp"
+  theme: "aero",
+
+  // Per-category enable/disable toggles.
+  // All unspecified categories default to true.
+  // Setting a category to false silences every role in that category,
+  // even if a component has the sound prop set.
+  categories: {
+    interaction: true,
+    navigation: true,
+    notification: true,
+    overlay: true,
+    hero: false, // Hero is disabled by default - must be explicitly enabled
+  },
+
+  // Role-level overrides.
+  // Map any SoundRole to a custom audio source.
+  // Values can be:
+  //   - A URL path to a file in public/ (e.g. "/sounds/custom/my-click.mp3")
+  //   - A base64 data URI (e.g. "data:audio/mp3;base64,//uQx...")
+  // These take precedence over the built-in base64 modules in sounds/*.ts.
+  overrides: {
+    // Example overrides (all commented out by default):
+    // "interaction.tap":  "/sounds/custom/my-click.mp3",
+    // "navigation.forward":  "data:audio/mp3;base64,...",
+    // "hero.complete":        "/sounds/custom/fanfare.ogg",
+  },
+
+  // Reduced-motion handling.
+  // "inherit"   → respect the user's OS/browser prefers-reduced-motion setting
+  // "force-off" → always suppress sounds, regardless of user preference
+  // "force-on"  → always play sounds, ignore prefers-reduced-motion
+  //
+  // Default: "inherit"
+  // Only change this if you have a specific UX reason to override
+  // the user's accessibility preference.
+  reducedMotion: "inherit",
+};
+```
+
+---
+
+## Config Options — Quick Reference
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `enabled` | `boolean` | `true` | Global on/off. `false` silences everything. |
+| `volume` | `number` (0–1) | `0.35` | Master volume multiplier. |
+| `theme` | `SoundPackName` | `"aero"` | Active sound pack. |
+| `categories.interaction` | `boolean` | `true` | Enable/disable all interaction sounds. |
+| `categories.navigation` | `boolean` | `true` | Enable/disable all navigation sounds. |
+| `categories.notification` | `boolean` | `true` | Enable/disable all notification sounds. |
+| `categories.overlay` | `boolean` | `true` | Enable/disable all overlay sounds. |
+| `categories.hero` | `boolean` | `false` | Enable/disable hero sounds (off by default). |
+| `overrides["role.name"]` | `string` | — | Custom audio source for a role (URL or base64). |
+| `reducedMotion` | `"inherit" \| "force-off" \| "force-on"` | `"inherit"` | Reduced-motion behaviour. |
+
+### Theme values
+
+`"soft"`, `"aero"`, `"arcade"`, `"organic"`, `"glass"`, `"industrial"`, `"minimal"`, `"retro"`, `"crisp"`
+
+---
+
+## Volume Guidelines
+
+The default master volume is `0.35` (35%). This is intentionally low — UI sounds should be background-level, noticeable but not distracting.
+
+| Scenario | Recommended `volume` |
+| --- | --- |
+| Subtle background feedback | 0.15 – 0.25 |
+| Default / balanced | 0.30 – 0.40 |
+| Expressive / gaming-adjacent | 0.50 – 0.70 |
+| Accessibility demo (clear and audible) | 0.80 – 1.00 |
+
+<Callout type="tip">
+  The `volume` value is the global ceiling. Individual sounds can be further
+  reduced with the per-call volume option, but never raised above this value.
+</Callout>
+
+---
+
+## Category Toggles
+
+All unspecified categories default to `true`. Setting a category to `false` silences every role in that category, even if a component has the `sound` prop set.
+
+```js
+categories: {
+  overlay: false,
+}
+```
+
+All components with `sound="overlay.open"` or `sound="overlay.close"` will silently no-op. The `sound` prop is still valid — it just resolves to `null` in the engine when the category is off.
+
+<Callout type="info">
+  The `hero` category is disabled by default. If your app uses hero sounds,
+  explicitly enable it: `categories: { hero: true }`.
+</Callout>
+
+---
+
+## Override Resolution Order
+
+When `playSound` is called with a role, the audio source is resolved in this order:
+
+```
+1. config.overrides["role.name"]        → string override (URL or base64), if defined
+2. packRegistry[config.theme]["role"]   → SoundSynthesizer from the active pack
+3. packRegistry.aero["role"]            → fallback to "aero" pack if theme is unknown
+4. null                                 → category disabled or role not found → no-op
+```
+
+User overrides always take the highest priority. If the active theme is not found in the registry, the engine falls back to the `"aero"` pack automatically.
+
+<Callout type="warning">
+  Overrides must be a URL string or base64 data URI — not a synthesizer
+  function. The override system is designed for file-based audio replacement.
+</Callout>
+
+---
+
+## Environment-Specific Config
+
+For CI/testing environments, disable audio via an environment variable check:
+
+```js
+// sensory.config.js
+module.exports = {
+  enabled: process.env.NODE_ENV !== "test",
+  volume: 0.35,
+  // ...
+};
+```
+
+This is the recommended pattern for keeping audio out of automated test runs without needing to mock the provider.
+
+<Callout type="tip">
+  You can also use `reducedMotion: "force-off"` in test environments for
+  consistent behaviour across different CI runners.
+</Callout>
+
+---
+
+## Reference Links
+
+- [Web Audio API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [AudioContext — MDN](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)
+- [prefers-reduced-motion — MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)

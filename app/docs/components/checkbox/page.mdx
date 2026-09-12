@@ -1,0 +1,62 @@
+export const metadata = {
+  title: "Checkbox",
+  description:
+    "A control that allows the user to toggle between checked and not checked. Plays a toggle sound.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ToggleControlsDemo } from "@/app/_components/showcase/toggle-controls-demo";
+
+# Checkbox
+
+A control that allows the user to toggle between checked and not checked. The sensory-ui Checkbox plays a toggle sound on state change.
+
+**Pattern:** Standard
+
+## Import
+
+```tsx
+import { Checkbox } from "@/components/ui/sensory-ui/checkbox";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.toggle"` | Sound played on toggle. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.toggle`
+
+## Demo
+
+<DemoBlock>
+  <ToggleControlsDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<div className="flex items-center space-x-2">
+  <Checkbox id="terms" />
+  <label htmlFor="terms">Accept terms</label>
+</div>
+```
+
+### Custom sounds
+
+```tsx
+<Checkbox sound="interaction.confirm" volume={0.7} />
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Toggle checked/unchecked | `interaction.toggle` |
+
+## shadcn/ui Reference
+
+View the original [Checkbox](/docs/components/base/checkbox) documentation.

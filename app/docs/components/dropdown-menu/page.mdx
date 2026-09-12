@@ -1,0 +1,85 @@
+export const metadata = {
+  title: "Dropdown Menu",
+  description:
+    "Displays a menu to the user triggered by a button. Plays open and close sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { OverlaySurfacesDemo } from "@/app/_components/showcase/overlay-surfaces-demo";
+
+# Dropdown Menu
+
+Displays a menu to the user triggered by a button. The sensory-ui Dropdown Menu plays sounds when opening and closing.
+
+**Pattern:** Overlay
+
+## Import
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/sensory-ui/dropdown-menu";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the menu opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the menu closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Demo
+
+<DemoBlock>
+  <OverlaySurfacesDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>Profile</DropdownMenuItem>
+    <DropdownMenuItem>Settings</DropdownMenuItem>
+    <DropdownMenuItem>Logout</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+### Custom sounds
+
+```tsx
+<DropdownMenu sound="interaction.tap" closeSound="interaction.subtle">
+  {/* ... */}
+</DropdownMenu>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Menu opens | `overlay.open` |
+| Menu closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Dropdown Menu](/docs/components/base/dropdown-menu) documentation.

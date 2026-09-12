@@ -3,6 +3,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import { Toaster } from "@/components/ui/sonner";
 import { PosthogInit } from "@/posthog";
@@ -138,27 +139,29 @@ export default function RootLayout({
           disableTransitionOnChange
           enableSystem
         >
-          <SensoryUIProvider
-            config={{
-              theme: "arcade",
-              volume: 0.75,
-              categories: {
-                interaction: true,
-                navigation: true,
-                notification: true,
-                overlay: true,
-                hero: true,
-              },
-            }}
-          >
-            <div className="mx-auto min-w-0 max-w-500 bg-background shadow-xl">
-              {children}
-            </div>
-            <Analytics />
-            <SpeedInsights />
-            <Toaster position="bottom-right" />
-            <PosthogInit />
-          </SensoryUIProvider>
+          <TooltipProvider>
+            <SensoryUIProvider
+              config={{
+                theme: "arcade",
+                volume: 0.75,
+                categories: {
+                  interaction: true,
+                  navigation: true,
+                  notification: true,
+                  overlay: true,
+                  hero: true,
+                },
+              }}
+            >
+              <div className="mx-auto min-w-0 max-w-500 bg-background shadow-xl">
+                {children}
+              </div>
+              <Analytics />
+              <SpeedInsights />
+              <Toaster position="bottom-right" />
+              <PosthogInit />
+            </SensoryUIProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

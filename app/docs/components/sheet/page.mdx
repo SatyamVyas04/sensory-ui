@@ -1,0 +1,80 @@
+export const metadata = {
+  title: "Sheet",
+  description:
+    "A sliding panel that extends from the edge of the screen. Plays open and close sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { OverlaySurfacesDemo } from "@/app/_components/showcase/overlay-surfaces-demo";
+
+# Sheet
+
+A sliding panel that extends from the edge of the screen. The sensory-ui Sheet plays sounds when opening and closing.
+
+**Pattern:** Overlay
+
+## Import
+
+```tsx
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sensory-ui/sheet";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the sheet opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the sheet closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Demo
+
+<DemoBlock>
+  <OverlaySurfacesDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Sheet>
+  <SheetTrigger>Open</SheetTrigger>
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>Edit profile</SheetTitle>
+      <SheetDescription>Make changes to your profile here.</SheetDescription>
+    </SheetHeader>
+  </SheetContent>
+</Sheet>
+```
+
+### Custom sounds
+
+```tsx
+<Sheet sound="notification.info" closeSound="interaction.subtle">
+  {/* ... */}
+</Sheet>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Sheet opens | `overlay.open` |
+| Sheet closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Sheet](/docs/components/base/sheet) documentation.

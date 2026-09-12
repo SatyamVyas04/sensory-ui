@@ -1,0 +1,160 @@
+export const metadata = {
+  title: "Overview",
+  description:
+    "Project overview, philosophy, architecture layers, and non-goals of sensory-ui.",
+};
+
+# Overview
+
+sensory-ui is a semantic, modular, opt-in sound layer for React and Next.js apps, distributed as a [shadcn/ui](https://ui.shadcn.com/docs) registry package. It adds meaningful, non-intrusive sound feedback to UI interactions — not a sound effects library, not a music player, not a game audio engine.
+
+<Callout type="info">
+  **Target platform:** Next.js (App Router and Pages Router) + React
+  **Distribution:** [shadcn/ui registry](https://ui.shadcn.com/docs/cli) (CLI installable)
+  **Runtime footprint:** Minimal — built-in audio is synthesized programmatically via the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API). No public/ assets, no base64 blobs for built-in packs. No global side effects, no forced re-renders.
+</Callout>
+
+---
+
+## Core Philosophy
+
+| Principle | What It Means in Practice |
+| --- | --- |
+| **Semantic, not decorative** | Every sound maps to a meaningful interaction type (activation, navigation, system feedback). No random audio. |
+| **Explicit opt-in only** | No component ever makes a sound unless you pass a `sound` prop to it. Nothing is automatic. |
+| **Accessibility-first** | Respects [`prefers-reduced-motion`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion), provides a global kill-switch, and never forces audio on users. |
+| **Minimal runtime footprint** | Zero npm dependencies. The engine (~2 KB gzipped) and full library (~26 KB gzipped) use only native Web Audio API. |
+| **Registry-native** | Built specifically for the shadcn/ui distribution model. One install command, then it lives inside your project like any other component. |
+| **Composable** | Works with any combination of Radix primitives, any shadcn/ui component, or raw HTML elements via the [`usePlaySound`](/docs/concepts/provider) hook. |
+
+---
+
+## Architecture Layers
+
+sensory-ui is composed of four runtime layers:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Your Application                         │
+│                                                             │
+│   <SensoryUIProvider>                ← Layer 1: Provider    │
+│     <Button sound="interaction.tap">                        │
+│       Save                                                  │
+│     </Button>                        ← Layer 2: Component   │
+│   </SensoryUIProvider>                                      │
+└─────────────────────────────────────────────────────────────┘
+          │ triggers playSound(role)
+          ▼
+┌─────────────────────────────────────────────────────────────┐
+│              Sound Engine (engine.ts)                       │  ← Layer 3: Engine
+│  AudioContext → decode buffer → gain node → destination     │
+└─────────────────────────────────────────────────────────────┘
+          │ resolves path via
+          ▼
+┌─────────────────────────────────────────────────────────────┐
+│         Role Registry + Config (registry.ts / config.ts)    │  ← Layer 4: Config
+│  "interaction.tap" → SoundSynthesizer fn           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+| Layer | File | Responsibility |
+| --- | --- | --- |
+| **Provider** | `config/provider.tsx` | React context, `playSound` dispatch, reduced-motion check, AudioContext lifecycle |
+| **Component** | `button.tsx`, `dialog.tsx`, etc. | Accepts `sound` prop, calls `playSound` on interaction events |
+| **Engine** | `config/engine.ts` | Web Audio API singleton, buffer decode/cache, playback scheduling |
+| **Config** | `config/config.ts`, `config/registry.ts` | Role resolution, pack lookup, volume, enable/disable |
+
+<Callout type="info">
+  The distribution layer (shadcn registry) is separate from runtime and handles
+  how files are installed into your project.
+</Callout>
+
+---
+
+## File Structure After Installation
+
+Everything lives inside a single well-scoped folder:
+
+```
+components/ui/sensory-ui/
+  config/                 ← internal engine & config layer
+    engine.ts             ← Web Audio engine (core)
+    provider.tsx          ← SensoryUIProvider (React context)
+    config.ts             ← runtime config + mergeConfig + resolveRole
+    sound-roles.ts        ← TypeScript types for all SoundRole values
+    registry.ts           ← role → SoundPack mapping
+    use-play-sound.ts     ← usePlaySound(role) hook
+  sounds/                 ← audio synthesizers as TypeScript modules
+    core/                 ← instrument-based sound generation
+      tunes.ts            ← base tune definitions (frequencies, durations)
+      instruments.ts      ← 9 instrument configurations
+      factory.ts          ← tune + instrument → synthesizer function
+      pack-generator.ts   ← generates full packs from instruments
+      index.ts            ← re-exports core modules
+    packs.ts              ← all 9 sound packs
+    index.ts              ← main entry point for sounds
+  button.tsx              ← patched shadcn Button with sound prop
+  dialog.tsx
+  tabs.tsx
+  ...
+```
+
+<Callout type="tip">
+  Built-in sounds are synthesized programmatically via the Web Audio API — no
+  files in `public/sounds/`, no base64 blobs, no network requests for built-in
+  packs. Custom role overrides may load audio from URLs or base64 data URIs.
+</Callout>
+
+---
+
+## Quick Example
+
+```tsx
+// app/layout.tsx
+import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <SensoryUIProvider>{children}</SensoryUIProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+```tsx
+// Any component
+import { Button } from "@/components/ui/sensory-ui/button";
+
+export function SaveButton() {
+  return (
+    <Button sound="interaction.tap" onClick={handleSave}>
+      Save
+    </Button>
+  );
+}
+```
+
+---
+
+## Non-Goals (v1)
+
+These are explicitly out of scope for the initial version:
+
+- Auto-attaching sounds to components without a `sound` prop
+- Background music or ambient audio layers
+- Game-style soundscapes or layered audio
+- Heavy Web Audio DSP effects
+- Sound-triggered React re-renders
+- Audio preloading on mount
+
+---
+
+## Reference Links
+
+- [Web Audio API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [shadcn/ui Documentation](https://ui.shadcn.com/docs)
+- [React Context API](https://react.dev/learn/passing-data-deeply-with-context)
+- [prefers-reduced-motion — MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)

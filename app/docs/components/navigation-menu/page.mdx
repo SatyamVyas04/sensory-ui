@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "Navigation Menu",
+  description:
+    "A collection of links for navigating a website. Plays open and tab sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { NavigationControlsDemo } from "@/app/_components/showcase/navigation-controls-demo";
+
+# Navigation Menu
+
+A collection of links for navigating a website. The sensory-ui Navigation Menu plays sounds when menus open and when tabs change.
+
+**Pattern:** Overlay
+
+## Import
+
+```tsx
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/sensory-ui/navigation-menu";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when a dropdown opens. |
+| `closeSound` | `SoundRole \| false` | `"navigation.tab"` | Sound played on tab change. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `navigation.tab` on tab change.
+
+## Demo
+
+<DemoBlock>
+  <NavigationControlsDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>Getting Started</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <NavigationMenuLink>Introduction</NavigationMenuLink>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>
+```
+
+### Custom sounds
+
+```tsx
+<NavigationMenu sound="interaction.tap" closeSound="overlay.close">
+  {/* ... */}
+</NavigationMenu>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Dropdown opens | `overlay.open` |
+| Tab changes | `navigation.tab` |
+
+## shadcn/ui Reference
+
+View the original [Navigation Menu](/docs/components/base/navigation-menu) documentation.

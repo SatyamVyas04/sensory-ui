@@ -1,0 +1,81 @@
+export const metadata = {
+  title: "Command",
+  description:
+    "Fast, composable, unstyled command menu for React. Plays subtle interaction sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { CommandDemo } from "@/app/_components/showcase/command-demo";
+
+# Command
+
+Fast, composable, unstyled command menu for React. The sensory-ui Command plays subtle sounds for navigation and tap interactions.
+
+**Pattern:** Standard
+
+## Import
+
+```tsx
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/sensory-ui/command";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.subtle"` | Sound played on navigation. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.subtle` for navigation, `interaction.tap` for selection.
+
+## Demo
+
+<DemoBlock>
+  <CommandDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Command>
+  <CommandInput placeholder="Type a command..." />
+  <CommandList>
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandGroup heading="Suggestions">
+      <CommandItem>Calendar</CommandItem>
+      <CommandItem>Search Emoji</CommandItem>
+    </CommandGroup>
+  </CommandList>
+</Command>
+```
+
+### Custom sounds
+
+```tsx
+<Command sound="navigation.tab" volume={0.6}>
+  {/* ... */}
+</Command>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Navigate items | `interaction.subtle` |
+| Select item | `interaction.tap` |
+
+## shadcn/ui Reference
+
+View the original [Command](/docs/components/base/command) documentation.

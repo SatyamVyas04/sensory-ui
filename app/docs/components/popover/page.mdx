@@ -1,0 +1,70 @@
+export const metadata = {
+  title: "Popover",
+  description:
+    "A floating element that opens from a trigger. Plays open and close sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { OverlaySurfacesDemo } from "@/app/_components/showcase/overlay-surfaces-demo";
+
+# Popover
+
+A floating element that opens from a trigger. The sensory-ui Popover plays sounds when opening and closing.
+
+**Pattern:** Overlay
+
+## Import
+
+```tsx
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/sensory-ui/popover";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the popover opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the popover closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Demo
+
+<DemoBlock>
+  <OverlaySurfacesDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Popover>
+  <PopoverTrigger>Open</PopoverTrigger>
+  <PopoverContent>Place content for the popover here.</PopoverContent>
+</Popover>
+```
+
+### Custom sounds
+
+```tsx
+<Popover sound="interaction.tap" closeSound="interaction.subtle">
+  {/* ... */}
+</Popover>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Popover opens | `overlay.open` |
+| Popover closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Popover](/docs/components/base/popover) documentation.

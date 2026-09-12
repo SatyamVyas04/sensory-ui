@@ -1,0 +1,70 @@
+export const metadata = {
+  title: "Radio Group",
+  description:
+    "A set of checkable buttons where only one can be checked at a time. Plays a toggle sound.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ToggleControlsDemo } from "@/app/_components/showcase/toggle-controls-demo";
+
+# Radio Group
+
+A set of checkable buttons where only one can be checked at a time. The sensory-ui Radio Group plays a toggle sound on selection.
+
+**Pattern:** Standard
+
+## Import
+
+```tsx
+import { RadioGroup, RadioGroupItem } from "@/components/ui/sensory-ui/radio-group";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.toggle"` | Sound played on selection. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.toggle`
+
+## Demo
+
+<DemoBlock>
+  <ToggleControlsDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<RadioGroup defaultValue="comfortable">
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="default" id="r1" />
+    <Label htmlFor="r1">Default</Label>
+  </div>
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="comfortable" id="r2" />
+    <Label htmlFor="r2">Comfortable</Label>
+  </div>
+</RadioGroup>
+```
+
+### Custom sounds
+
+```tsx
+<RadioGroup sound="interaction.confirm" volume={0.8}>
+  {/* ... */}
+</RadioGroup>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Option selected | `interaction.toggle` |
+
+## shadcn/ui Reference
+
+View the original [Radio Group](/docs/components/base/radio-group) documentation.

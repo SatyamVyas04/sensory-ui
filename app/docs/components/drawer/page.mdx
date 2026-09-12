@@ -1,0 +1,83 @@
+export const metadata = {
+  title: "Drawer",
+  description:
+    "A drawer component that slides in from the edge of the screen. Plays open and close sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { OverlaySurfacesDemo } from "@/app/_components/showcase/overlay-surfaces-demo";
+
+# Drawer
+
+A drawer component that slides in from the edge of the screen. The sensory-ui Drawer plays sounds when opening and closing.
+
+**Pattern:** Overlay
+
+## Import
+
+```tsx
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/sensory-ui/drawer";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the drawer opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the drawer closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Demo
+
+<DemoBlock>
+  <OverlaySurfacesDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Drawer>
+  <DrawerTrigger>Open</DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Are you sure?</DrawerTitle>
+      <DrawerDescription>This action cannot be undone.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerFooter>
+      <DrawerClose>Cancel</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+### Custom sounds
+
+```tsx
+<Drawer sound="interaction.tap" closeSound="interaction.subtle">
+  {/* ... */}
+</Drawer>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Drawer opens | `overlay.open` |
+| Drawer closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Drawer](/docs/components/base/drawer) documentation.

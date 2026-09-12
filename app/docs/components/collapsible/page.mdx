@@ -1,0 +1,72 @@
+export const metadata = {
+  title: "Collapsible",
+  description:
+    "An interactive component which expands and collapses a panel. Plays expand and collapse sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ExpandCollapseDemo } from "@/app/_components/showcase/expand-collapse-demo";
+
+# Collapsible
+
+An interactive component which expands and collapses a panel. The sensory-ui Collapsible plays distinct sounds for expand and collapse actions.
+
+**Pattern:** Expand / Collapse
+
+## Import
+
+```tsx
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/sensory-ui/collapsible";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `expandSound` | `SoundRole \| false` | `"overlay.expand"` | Sound played when expanding. |
+| `collapseSound` | `SoundRole \| false` | `"overlay.collapse"` | Sound played when collapsing. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.expand` on expand, `overlay.collapse` on collapse.
+
+## Demo
+
+<DemoBlock>
+  <ExpandCollapseDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Collapsible>
+  <CollapsibleTrigger>Toggle</CollapsibleTrigger>
+  <CollapsibleContent>
+    Content goes here.
+  </CollapsibleContent>
+</Collapsible>
+```
+
+### Custom sounds
+
+```tsx
+<Collapsible expandSound="interaction.confirm" collapseSound="interaction.subtle">
+  {/* ... */}
+</Collapsible>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Panel expands | `overlay.expand` |
+| Panel collapses | `overlay.collapse` |
+
+## shadcn/ui Reference
+
+View the original [Collapsible](/docs/components/base/collapsible) documentation.

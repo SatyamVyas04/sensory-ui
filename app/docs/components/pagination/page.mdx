@@ -1,0 +1,83 @@
+export const metadata = {
+  title: "Pagination",
+  description:
+    "Pagination with navigation page numbers. Plays navigation sounds for forward, backward, and tab.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { NavigationControlsDemo } from "@/app/_components/showcase/navigation-controls-demo";
+
+# Pagination
+
+Pagination with navigation page numbers. The sensory-ui Pagination plays navigation sounds for forward, backward, and tab interactions.
+
+**Pattern:** Standard
+
+## Import
+
+```tsx
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/sensory-ui/pagination";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"navigation.forward"` | Sound played on page navigation. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`navigation.forward` for next, `navigation.backward` for previous, `navigation.tab` for page number.
+
+## Demo
+
+<DemoBlock>
+  <NavigationControlsDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious href="#" />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="#">1</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationNext href="#" />
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
+```
+
+### Custom sounds
+
+```tsx
+<Pagination sound="interaction.tap" volume={0.7}>
+  {/* ... */}
+</Pagination>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Next page | `navigation.forward` |
+| Previous page | `navigation.backward` |
+| Page number select | `navigation.tab` |
+
+## shadcn/ui Reference
+
+View the original [Pagination](/docs/components/base/pagination) documentation.

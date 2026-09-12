@@ -1,0 +1,80 @@
+export const metadata = {
+  title: "Menubar",
+  description:
+    "A visually persistent menu bar with nested dropdown menus. Plays open and tap sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { OverlaySurfacesDemo } from "@/app/_components/showcase/overlay-surfaces-demo";
+
+# Menubar
+
+A visually persistent menu bar with nested dropdown menus. The sensory-ui Menubar plays sounds when menus open and when items are selected.
+
+**Pattern:** Overlay
+
+## Import
+
+```tsx
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarLabel,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from "@/components/ui/sensory-ui/menubar";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when a menu opens. |
+| `closeSound` | `SoundRole \| false` | `"interaction.tap"` | Sound played when an item is selected. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `interaction.tap` on item select.
+
+## Usage
+
+```tsx
+<Menubar>
+  <MenubarMenu>
+    <MenubarTrigger>File</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem>New Tab</MenubarItem>
+      <MenubarItem>New Window</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>
+```
+
+### Custom sounds
+
+```tsx
+<Menubar sound="navigation.tab" closeSound="interaction.confirm">
+  {/* ... */}
+</Menubar>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Menu opens | `overlay.open` |
+| Item selected | `interaction.tap` |
+
+## shadcn/ui Reference
+
+View the original [Menubar](/docs/components/base/menubar) documentation.

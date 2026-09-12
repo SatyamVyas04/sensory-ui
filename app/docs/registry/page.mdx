@@ -1,0 +1,114 @@
+export const metadata = {
+  title: "Registry",
+  description:
+    "How sensory-ui is distributed as a shadcn/ui registry package.",
+};
+
+# Registry
+
+sensory-ui is published as a **GitHub registry** — a `registry.json` at the repository root tells the shadcn CLI how to install items.
+
+## Installation
+
+```bash
+# Install everything
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui
+
+# Core only (engine, provider, config, sounds)
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-core
+
+# Single component
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button
+```
+
+No registry server required — the CLI reads files directly from the public GitHub repository.
+
+## Registry Structure
+
+| Entry | CLI Address | Purpose |
+|-------|-------------|---------|
+| `sensory-ui` | `SatyamVyas04/sensory-ui/sensory-ui` | Meta-block; lists all items |
+| `sensory-ui-core` | `SatyamVyas04/sensory-ui/sensory-ui-core` | Core engine, provider, config, sounds |
+| `sensory-ui-<name>` | `SatyamVyas04/sensory-ui/sensory-ui-button` etc. | Individual components (24 total) |
+
+## What Gets Installed
+
+```
+components/ui/sensory-ui/
+  config/
+    engine.ts          ← Web Audio engine
+    provider.tsx       ← SensoryUIProvider
+    config.ts          ← Runtime config
+    sound-roles.ts     ← TypeScript types
+    registry.ts        ← Role → pack mapping
+    use-play-sound.ts  ← Hook
+  sounds/
+    core/
+      index.ts
+      tunes.ts
+      instruments.ts
+      factory.ts
+      pack-generator.ts
+    index.ts
+    packs.ts
+  accordion.tsx
+  alert-dialog.tsx
+  button.tsx
+  ... (24 components total)
+```
+
+## Registry Manifest
+
+The root `registry.json` delegates to `components/ui/sensory-ui/registry.json`:
+
+```json
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "sensory-ui",
+  "homepage": "https://github.com/SatyamVyas04/sensory-ui",
+  "include": ["components/ui/sensory-ui/registry.json"]
+}
+```
+
+## File Types
+
+| Path | Registry Type | Reasoning |
+|------|---------------|-----------|
+| `config/use-play-sound.ts` | `registry:hook` | It's a React hook |
+| `config/*.ts`, `config/*.tsx` | `registry:lib` | Internal infrastructure |
+| `sounds/**/*.ts` | `registry:lib` | Sound synthesis modules |
+| `*.tsx` (root level) | `registry:ui` | UI components with `sound` prop |
+
+## Validation
+
+```bash
+# Validate GitHub registry
+npx shadcn@latest registry validate SatyamVyas04/sensory-ui
+
+# List all items
+npx shadcn@latest list SatyamVyas04/sensory-ui
+
+# Build locally for validation
+npm run registry:build
+```
+
+## Updating
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui --overwrite
+```
+
+The `--overwrite` flag replaces engine, config, primitives, and sound modules. User-owned files (`sensory.config.js`) are never overwritten.
+
+## Uninstalling
+
+1. Delete `components/ui/sensory-ui/`
+2. Delete `sensory.config.js`
+3. Remove `<SensoryUIProvider>` from root layout
+4. Revert component imports to original shadcn imports
+
+<Callout type="reference">
+  The registry format is defined by the
+  [shadcn/ui schema](https://ui.shadcn.com/docs/registry). sensory-ui uses
+  GitHub as the hosting backend — no custom server needed.
+</Callout>

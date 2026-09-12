@@ -1,0 +1,257 @@
+export const metadata = {
+  title: "Sound Roles",
+  description:
+    "All 17 semantic sound roles across 5 categories with TypeScript types and role registry.",
+};
+
+# Sound Roles
+
+sensory-ui defines **17 semantic sound roles** organized into 5 categories. Each role maps to a specific UI interaction type — no random audio, every sound has meaning.
+
+---
+
+## Category Overview
+
+| Category | Count | Default Enabled | Duration Range | Character |
+| --- | --- | --- | --- | --- |
+| `interaction` | 4 | Yes | 40–90 ms | Short transients, soft attack |
+| `overlay` | 4 | Yes | 120–300 ms | Tonal pairs (open ↔ close) |
+| `navigation` | 3 | Yes | 100–250 ms | Low-volume sweeps, directional |
+| `notification` | 4 | Yes | 200–600 ms | Two-tier intensity |
+| `hero` | 2 | **No** | 800–1800 ms | Celebratory, longer form |
+
+---
+
+## Category: `interaction`
+
+Fired when the user performs a direct action — pressing a button, toggling a state, confirming a form, or providing subtle feedback during continuous interactions.
+
+| Role | Full Key | Duration | Description | Typical Trigger |
+| --- | --- | --- | --- | --- |
+| Tap | `interaction.tap` | ~8 ms | Default click/tap sound. Noise click, bandpass 4000 Hz. | Primary button click |
+| Subtle | `interaction.subtle` | ~8 ms | Keyboard click. Crisp bandpass ~3600 Hz, tighter Q. | Slider drag, command input keypress |
+| Toggle | `interaction.toggle` | ~52 ms | Noise click (12 ms) + tonal tail (40 ms). State change. | Checkbox, switch, radio, toggle |
+| Confirm | `interaction.confirm` | ~10 ms | Crisp noise click, bandpass 5000 Hz. Brighter than tap. | Form submit, save confirm |
+
+<Callout type="info">
+  There is no `interaction.disabled` role — disabled buttons cannot be clicked,
+  so no sound is needed.
+</Callout>
+
+---
+
+## Category: `overlay`
+
+Fired when UI surfaces open, close, expand, or collapse. These are structural changes to the visual layout.
+
+| Role | Full Key | Duration | Description | Typical Trigger |
+| --- | --- | --- | --- | --- |
+| Open | `overlay.open` | 150–250 ms | A gentle expansion sound. | Dialog open, sheet open, dropdown open |
+| Close | `overlay.close` | 150–250 ms | Tonal inverse of open. Collapse. | Dialog close, sheet close, dropdown close |
+| Expand | `overlay.expand` | 120–220 ms | Lighter than open. Content reveals. | Accordion expand, collapsible open |
+| Collapse | `overlay.collapse` | 120–220 ms | Paired with expand. Content hides. | Accordion collapse, collapsible close |
+
+<Callout type="tip">
+  `overlay.open` / `overlay.close` are a **tonal inversion pair** — if open
+  rises in pitch, close falls. The same applies to expand/collapse.
+</Callout>
+
+---
+
+## Category: `navigation`
+
+Fired when the user moves through space — between pages, tabs, or steps.
+
+| Role | Full Key | Duration | Description | Typical Trigger |
+| --- | --- | --- | --- | --- |
+| Forward | `navigation.forward` | 150–250 ms | A rightward / upward sweep. | Next step, next page, carousel next |
+| Backward | `navigation.backward` | 150–250 ms | A leftward / downward sweep. Tonal mirror of forward. | Back button, previous step, carousel prev |
+| Tab | `navigation.tab` | ~40 ms | Short tonal pop with upward pitch bend. | Tab switch, segment switch, pagination |
+
+<Callout type="info">
+  `navigation.forward` and `navigation.backward` should be **tonal inversions**
+  of each other — same harmonic content, opposite pitch arc.
+</Callout>
+
+---
+
+## Category: `notification`
+
+Fired when the system delivers feedback to the user — toasts, alerts, banners, inline validation messages.
+
+| Role | Full Key | Duration | Description | Typical Trigger |
+| --- | --- | --- | --- | --- |
+| Info | `notification.info` | 200–350 ms | Neutral information. Soft single chime. | Info toast, passive alert |
+| Success | `notification.success` | 250–400 ms | Two ascending notes (positive feeling). | Success toast, form saved |
+| Warning | `notification.warning` | 300–450 ms | Same note twice (attention-getting). | Quota alert, confirmation needed |
+| Error | `notification.error` | 300–450 ms | Two descending notes (negative connotation). | Error toast, connection failed |
+
+---
+
+## Category: `hero`
+
+Fired for significant completion moments — task completion, onboarding milestones, achievement unlocks. These are special-occasion sounds and are **disabled by default**.
+
+| Role | Full Key | Duration | Description | Typical Trigger |
+| --- | --- | --- | --- | --- |
+| Complete | `hero.complete` | 800–1200 ms | Task done. Clear resolve. | Checklist complete, upload done |
+| Milestone | `hero.milestone` | 1200–1800 ms | Major achievement. Richer, longer. | Onboarding finished, first action ever |
+
+<Callout type="warning">
+  Hero sounds are disabled by default. You must explicitly enable them in
+  `sensory.config.js` and then assign the `sound` prop — a double opt-in
+  prevents accidental hero sounds in production.
+</Callout>
+
+---
+
+## TypeScript Types
+
+```ts
+// components/ui/sensory-ui/config/sound-roles.ts
+
+export type SoundCategory =
+  | "interaction"
+  | "overlay"
+  | "navigation"
+  | "notification"
+  | "hero";
+
+export type InteractionRole =
+  | "interaction.tap"
+  | "interaction.subtle"
+  | "interaction.toggle"
+  | "interaction.confirm";
+
+export type OverlayRole =
+  | "overlay.open"
+  | "overlay.close"
+  | "overlay.expand"
+  | "overlay.collapse";
+
+export type NavigationRole =
+  | "navigation.forward"
+  | "navigation.backward"
+  | "navigation.tab";
+
+export type NotificationRole =
+  | "notification.info"
+  | "notification.success"
+  | "notification.warning"
+  | "notification.error";
+
+export type HeroRole = "hero.complete" | "hero.milestone";
+
+export type SoundRole =
+  | InteractionRole
+  | | OverlayRole
+  | NavigationRole
+  | NotificationRole
+  | HeroRole;
+```
+
+### Role Parser
+
+```ts
+export function parseRole(role: SoundRole): {
+  category: SoundCategory;
+  name: string;
+} {
+  const [category, name] = role.split(".") as [SoundCategory, string];
+  return { category, name };
+}
+```
+
+### All Valid Roles
+
+```ts
+export const ALL_SOUND_ROLES: SoundRole[] = [
+  "interaction.tap",
+  "interaction.subtle",
+  "interaction.toggle",
+  "interaction.confirm",
+  "overlay.open",
+  "overlay.close",
+  "overlay.expand",
+  "overlay.collapse",
+  "navigation.forward",
+  "navigation.backward",
+  "navigation.tab",
+  "notification.info",
+  "notification.success",
+  "notification.warning",
+  "notification.error",
+  "hero.complete",
+  "hero.milestone",
+];
+```
+
+---
+
+## Role Registry
+
+The role registry maps each `SoundRole` string to a `SoundSynthesizer` function within a sound pack:
+
+```ts
+// components/ui/sensory-ui/config/registry.ts
+
+import type { SoundRole } from "./sound-roles";
+import type { SoundPack } from "../sounds";
+
+export type SoundPackName =
+  | "soft"
+  | "aero"
+  | "arcade"
+  | "organic"
+  | "glass"
+  | "industrial"
+  | "minimal"
+  | "retro"
+  | "crisp";
+
+export const packRegistry: Record<SoundPackName, SoundPack> = {
+  soft: softPack,
+  aero: aeroPack,
+  arcade: arcadePack,
+  organic: organicPack,
+  glass: glassPack,
+  industrial: industrialPack,
+  minimal: minimalPack,
+  retro: retroPack,
+  crisp: crispPack,
+};
+
+export const DEFAULT_PACK: SoundPackName = "aero";
+```
+
+---
+
+## Audio Specifications for Custom Overrides
+
+When providing custom audio source overrides via `config.overrides`, files should meet these requirements:
+
+| Requirement | Spec |
+| --- | --- |
+| Format | `.mp3` (primary) — maximum browser compatibility |
+| Fallback format | `.ogg` (optional) |
+| Sample rate | 44.1 kHz or 48 kHz |
+| Bit depth | 16-bit |
+| Channels | Mono (L+R identical) preferred |
+| Peak normalization | −1.0 dBTP (true peak) |
+| Leading silence | None — trimmed to first transient |
+| Trailing silence | ≤ 20 ms tail, then trimmed |
+| Per-category size budget | ≤ 50 KB total per category |
+| Per-file size guideline | ≤ 15 KB per file |
+
+<Callout type="info">
+  MP3 is preferred because `decodeAudioData` supports it universally across
+  modern browsers. WAV files are larger with no Web Audio benefit.
+</Callout>
+
+---
+
+## Reference Links
+
+- [Web Audio API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [OscillatorNode — MDN](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode)
+- [AudioBufferSourceNode — MDN](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode)

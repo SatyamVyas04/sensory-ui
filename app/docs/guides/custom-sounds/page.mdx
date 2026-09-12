@@ -1,0 +1,143 @@
+export const metadata = {
+  title: "Custom Sounds",
+  description:
+    "Create custom sound packs and override individual sound roles in sensory-ui.",
+};
+
+# Custom Sounds
+
+sensory-ui ships with 9 built-in sound packs, but you can create your own or override individual roles with custom audio.
+
+## Override a Single Role
+
+The simplest way to use custom audio is via `config.overrides` in `sensory.config.js`:
+
+```js
+// sensory.config.js
+module.exports = {
+  overrides: {
+    "interaction.tap": "/sounds/custom/my-click.mp3",
+    "hero.complete": "/sounds/custom/fanfare.mp3",
+  },
+};
+```
+
+Overrides can point to:
+- **URL paths** — files in your `public/` directory (e.g., `/sounds/custom/click.mp3`)
+- **Base64 data URIs** — inline audio (e.g., `data:audio/mp3;base64,//uQx...`)
+
+<Callout type="tip">
+  Custom overrides bypass the synthesizer entirely. The engine fetches them by URL
+  and decodes them via `decodeAudioData`.
+</Callout>
+
+## Audio File Requirements
+
+When providing custom audio files:
+
+| Requirement | Spec |
+|-------------|------|
+| Format | `.mp3` (primary), `.ogg` (optional fallback) |
+| Sample rate | 44.1 kHz or 48 kHz |
+| Bit depth | 16-bit |
+| Channels | Mono preferred (stereo allowed) |
+| Peak normalization | −1.0 dBTP |
+| Leading silence | None — trimmed to first transient |
+| Trailing silence | ≤ 20 ms |
+| Per-file size | ≤ 15 KB recommended |
+
+## Create a Custom Instrument
+
+For deeper customization, you can create a new instrument and generate a full sound pack:
+
+```ts
+// sounds/core/instruments.ts
+import type { InstrumentConfig } from "./factory";
+
+const MY_INSTRUMENT: InstrumentConfig = {
+  filterFreq: 4000,
+  q: 5,
+  oscType: "triangle",
+  decayMult: 1.0,
+  gainMult: 0.85,
+  pitchMult: 1.1,
+  effects: [
+    { type: "reverb", options: { duration: 1.0, decay: 2.0, mix: 0.2 } },
+  ],
+};
+```
+
+Then generate the pack:
+
+```ts
+import { generateSoundPack } from "./core/factory";
+
+export const myPack = generateSoundPack(MY_INSTRUMENT);
+// myPack covers all 17 roles
+```
+
+## Modify an Existing Pack
+
+Create a variant by adjusting key parameters:
+
+```ts
+import { INSTRUMENTS } from "./core/instruments";
+import { generateSoundPack } from "./core/factory";
+
+const myInstrument = {
+  ...INSTRUMENTS.glass,
+  gainMult: 0.6, // Quieter
+  pitchMult: 2.0, // Higher pitched
+  effects: [
+    { type: "reverb", options: { duration: 2.0, mix: 0.4 } },
+  ],
+};
+
+export const myPack = generateSoundPack(myInstrument);
+```
+
+## Instrument Properties
+
+```ts
+interface InstrumentConfig {
+  filterFreq: number; // Filter cutoff frequency (1500-6000 Hz)
+  q: number; // Filter resonance (1-12)
+  oscType: OscillatorType; // "sine" | "square" | "sawtooth" | "triangle"
+  decayMult: number; // Decay time multiplier (0.5-1.5)
+  gainMult: number; // Volume multiplier (0.4-1.2)
+  pitchMult: number; // Pitch multiplier (0.7-1.8)
+  effects?: EffectDefinition[]; // Optional effects chain
+}
+```
+
+## Available Effects
+
+| Effect | Options | Description |
+|--------|---------|-------------|
+| `reverb` | `{ duration, decay, mix }` | Algorithmic reverb via noise-buffer impulse response |
+| `delay` | `{ time, feedback, filterFreq, mix }` | Feedback delay with low-pass filter |
+| `chorus` | `{ rate, depth, detune, mix }` | Delay-based chorus with LFO modulation |
+| `distortion` | `{ amount, filterFreq, mix }` | Waveshaper saturation with post-filter |
+
+All effects support a `mix` parameter (0–1) for wet/dry balance.
+
+## Pack Effects Mapping
+
+| Pack | Effects | Character |
+|------|---------|-----------|
+| aero | reverb (long tail, 2s) | Airy, ethereal — needs space |
+| glass | reverb (1.5s) + chorus | Crystalline shimmer |
+| retro | chorus + delay | Analog warmth |
+| industrial | distortion | Metallic grit |
+| organic | reverb (short room, 0.4s) | Natural warmth |
+| soft | reverb (medium warm, 0.8s) | Gentle presence |
+| arcade | (dry) | Authentic chiptune |
+| minimal | (dry) | Pure tones |
+| crisp | (dry) | Sharp transients |
+
+<Callout type="reference">
+  Sound synthesis patterns adapted from
+  [Generating Sounds with AI](https://www.userinterface.wiki/generating-sounds-with-ai).
+  Effects system inspired by [@web-kits/audio](https://audio.raphaelsalaja.com)
+  by Raphael Salaja.
+</Callout>

@@ -1,0 +1,67 @@
+export const metadata = {
+  title: "Button",
+  description:
+    "Displays a button or a component that looks like a button. Plays a tap sound on click.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ButtonDemo } from "@/app/_components/showcase/button-demo";
+
+# Button
+
+Displays a button or a component that looks like a button. The sensory-ui Button plays a subtle tap sound on click.
+
+**Pattern:** Standard
+
+## Import
+
+```tsx
+import { Button, buttonVariants } from "@/components/ui/sensory-ui/button";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.tap"` | Sound played on click. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.tap`
+
+## Demo
+
+<DemoBlock>
+  <ButtonDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Button>Click me</Button>
+```
+
+### Custom sounds
+
+```tsx
+<Button sound="interaction.confirm" volume={0.6}>
+  Confirm
+</Button>
+```
+
+### Disable sounds
+
+```tsx
+<Button sound={false}>Silent button</Button>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Click | `interaction.tap` |
+
+## shadcn/ui Reference
+
+View the original [Button](/docs/components/base/button) documentation.

@@ -1,0 +1,310 @@
+export const metadata = {
+  title: "Provider",
+  description:
+    "React provider architecture, context shape, reduced motion hook, and AudioContext lifecycle management.",
+};
+
+# Provider
+
+The `SensoryUIProvider` is a React context provider that wraps the entire application. It acts as the global configuration hub for the sound engine — managing whether sounds are enabled, what volume to use, and providing the `playSound` function to any sensory-ui component deep in the tree.
+
+**File:** `components/ui/sensory-ui/config/provider.tsx`
+
+---
+
+## Why a Provider?
+
+Without a provider, each sensory-ui component would need to independently read the config, check accessibility preferences, and call the engine. This creates several problems:
+
+1. **Navigation persistence**: In [Next.js App Router](https://nextjs.org/docs/app), layout components persist across navigations. A provider mounted at the root layout keeps the `AudioContext` alive across page transitions — no re-initialization cost or audio gap mid-navigation.
+2. **Global state**: Whether sounds are enabled, muted, or at a certain volume is a cross-cutting concern. It belongs in one place.
+3. **Single AudioContext**: The browser allows (and prefers) a single `AudioContext` per page. The provider ensures only one is ever created.
+4. **HMR safety**: In development, the provider can close and re-open the `AudioContext` on hot module replacement, preventing stale state.
+
+---
+
+## Context Shape
+
+```ts
+// components/ui/sensory-ui/config/provider.tsx
+
+import { createContext, useContext } from "react";
+import type { SoundRole } from "./sound-roles";
+import type { PlaySoundOptions, SoundPlayback } from "./engine";
+
+export interface SensoryUIContextValue {
+  /**
+   * Play a sound by its semantic role.
+   * Resolves the file path, applies master volume, checks accessibility flags.
+   * Returns a SoundPlayback handle (with .stop()) or null if sound is suppressed.
+   */
+  playSound: (
+    role: SoundRole,
+    options?: PlaySoundOptions,
+  ) => Promise<SoundPlayback | null>;
+
+  /**
+   * Whether the sound system is globally enabled.
+   * Reflects both sensory.config.js `enabled` flag and the reduced-motion preference.
+   */
+  enabled: boolean;
+
+  /**
+   * Master volume level (0–1). Sourced from sensory.config.js.
+   */
+  volume: number;
+
+  /**
+   * Programmatically mute/unmute all sounds without changing the config.
+   */
+  setMuted: (muted: boolean) => void;
+
+  /**
+   * Whether the user has activated the mute toggle.
+   */
+  muted: boolean;
+
+  /**
+   * Whether the sound engine is currently suppressing audio due to
+   * motion-reduction settings.
+   */
+  reducedMotion: boolean;
+}
+
+export const SensoryUIContext = createContext<SensoryUIContextValue | null>(
+  null,
+);
+```
+
+<Callout type="tip">
+  Always use the `useSensoryUI()` hook to access the context. It provides a
+  proper error message if called outside the provider.
+</Callout>
+
+### Hook
+
+```ts
+export function useSensoryUI(): SensoryUIContextValue {
+  const ctx = useContext(SensoryUIContext);
+  if (!ctx) {
+    throw new Error("useSensoryUI must be used inside <SensoryUIProvider>");
+  }
+  return ctx;
+}
+```
+
+---
+
+## Provider Implementation
+
+```tsx
+"use client"; // Required for Next.js App Router
+
+import * as React from "react";
+import {
+  closeAudioContext,
+  playSound as enginePlaySound,
+} from "./engine";
+import {
+  defaultConfig,
+  mergeConfig,
+  resolveRole,
+} from "./config";
+
+interface SensoryUIProviderProps {
+  children: React.ReactNode;
+  /** Override config programmatically (e.g., in Storybook or tests). */
+  config?: Partial<SensoryUIConfig>;
+}
+
+export function SensoryUIProvider({
+  children,
+  config: configOverride,
+}: SensoryUIProviderProps) {
+  const config = React.useMemo(
+    () => mergeConfig(configOverride ?? {}),
+    [JSON.stringify(configOverride)],
+  );
+
+  const [muted, setMuted] = React.useState(false);
+  const reducedMotion = useReducedMotion(config.reducedMotion);
+  const shouldPlay = config.enabled && !muted && !reducedMotion;
+
+  const playSound = React.useCallback(
+    async (role: SoundRole, options: PlaySoundOptions = {}) => {
+      if (typeof window === "undefined") return null;
+      if (!shouldPlay) return null;
+
+      const source = resolveRole(role, config);
+      if (!source) return null;
+
+      const finalVolume = (options.volume ?? 1) * config.volume;
+
+      try {
+        return await enginePlaySound(source, {
+          ...options,
+          volume: finalVolume,
+        });
+      } catch (err) {
+        if (process.env.NODE_ENV === "development") {
+          console.warn("[sensory-ui] Failed to play sound:", role, err);
+        }
+        return null;
+      }
+    },
+    [shouldPlay, config],
+  );
+
+  // Clean up AudioContext on unmount in development
+  React.useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
+    return () => { void closeAudioContext(); };
+  }, []);
+
+  const value = React.useMemo(
+    () => ({
+      playSound,
+      enabled: shouldPlay,
+      volume: config.volume,
+      muted,
+      setMuted,
+      reducedMotion,
+    }),
+    [playSound, shouldPlay, config.volume, muted, reducedMotion],
+  );
+
+  return (
+    <SensoryUIContext.Provider value={value}>
+      {children}
+    </SensoryUIContext.Provider>
+  );
+}
+```
+
+---
+
+## Reduced Motion Hook
+
+The provider reads [`prefers-reduced-motion`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion) as a media query. The behaviour is governed by the `reducedMotion` field in `sensory.config.js`:
+
+```ts
+function useReducedMotion(pref: SensoryUIConfig["reducedMotion"]): boolean {
+  const [matches, setMatches] = React.useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  });
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  if (pref === "force-off") return true;  // Always suppress
+  if (pref === "force-on") return false;  // Always play, ignore preference
+  return matches;                          // "inherit" — respect OS setting
+}
+```
+
+### Options
+
+| Value | Behaviour |
+| --- | --- |
+| `"inherit"` (default) | Respects the OS/browser `prefers-reduced-motion` setting |
+| `"force-on"` | Always plays sounds, ignores the user's motion preference |
+| `"force-off"` | Always suppresses sounds, regardless of user preference |
+
+---
+
+## Mounting
+
+### App Router (`app/layout.tsx`)
+
+```tsx
+import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
+import type { ReactNode } from "react";
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <SensoryUIProvider>{children}</SensoryUIProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+### Pages Router (`pages/_app.tsx`)
+
+```tsx
+import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
+import type { AppProps } from "next/app";
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <SensoryUIProvider>
+      <Component {...pageProps} />
+    </SensoryUIProvider>
+  );
+}
+```
+
+<Callout type="tip">
+  The provider is a client component. Your root layout can remain a server
+  component — [Next.js](https://nextjs.org/docs) allows client components to
+  receive and render server component children transparently.
+</Callout>
+
+---
+
+## Why `"use client"` Is Required
+
+The provider uses:
+
+- `useState` — to manage the muted state
+- `useEffect` — to watch `prefers-reduced-motion` changes and clean up on unmount
+- `useCallback` / `useMemo` — to stabilise context values
+
+All of these require a client boundary. The provider adds exactly **one** `"use client"` directive in the whole sensory-ui system. Every primitive component that imports `useSensoryUI` will also be a client component.
+
+---
+
+## Provider Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | — | Required. The entire application tree. |
+| `config` | `Partial<SensoryUIConfig>` | `undefined` | Optional runtime config overrides, merged on top of `sensory.config.js`. |
+
+---
+
+## Error Handling
+
+The provider catches audio errors internally and logs them in development. The UI is never affected by a failed audio playback. A failed `decodeAudioData` or `ctx.resume()` is swallowed with a `console.warn`.
+
+---
+
+## Testing and Storybook
+
+Pass a `config` override to disable sounds or mock them:
+
+```tsx
+// In a test or Storybook story
+<SensoryUIProvider config={{ enabled: false }}>
+  <YourComponent />
+</SensoryUIProvider>
+```
+
+---
+
+## Reference Links
+
+- [React Context API](https://react.dev/learn/passing-data-deeply-with-context)
+- [React useContext](https://react.dev/reference/react/useContext)
+- [Next.js App Router](https://nextjs.org/docs/app)
+- [Next.js Pages Router](https://nextjs.org/docs/pages)
+- [prefers-reduced-motion — MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
+- [Web Audio API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)

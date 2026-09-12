@@ -1,0 +1,143 @@
+export const metadata = {
+  title: "Accessibility",
+  description:
+    "Accessibility features in sensory-ui: reduced motion, keyboard support, and inclusive design.",
+};
+
+# Accessibility
+
+sensory-ui is designed with accessibility as a core principle. Sound enhances the experience but never replaces visual feedback.
+
+## Reduced Motion
+
+sensory-ui respects the user's `prefers-reduced-motion` setting. When enabled, all sounds are suppressed.
+
+### Configuration Options
+
+```js
+// sensory.config.js
+module.exports = {
+  reducedMotion: "inherit", // Default
+};
+```
+
+| Option | Behavior |
+|--------|----------|
+| `"inherit"` | Respect the OS/browser `prefers-reduced-motion` setting |
+| `"force-off"` | Always suppress sounds, regardless of user preference |
+| `"force-on"` | Always play sounds, ignore prefers-reduced-motion |
+
+### How It Works
+
+The provider reads `prefers-reduced-motion` as a media query on mount and updates on change:
+
+```ts
+function useReducedMotion(pref: SensoryUIConfig["reducedMotion"]): boolean {
+  const [matches, setMatches] = React.useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  });
+
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  if (pref === "force-off") return true;
+  if (pref === "force-on") return false;
+  return matches;
+}
+```
+
+<Callout type="tip">
+  Test reduced motion by enabling "Reduce motion" in your OS accessibility
+  settings. Chrome DevTools also has a "Emulate CSS media feature
+  prefers-reduced-motion" option.
+</Callout>
+
+## Global Kill-Switch
+
+Disable all sounds without removing any code:
+
+```js
+// sensory.config.js
+module.exports = {
+  enabled: false,
+};
+```
+
+Or programmatically:
+
+```tsx
+<SensoryUIProvider config={{ enabled: false }}>
+  {children}
+</SensoryUIProvider>
+```
+
+## Per-Category Toggles
+
+Disable specific categories without affecting others:
+
+```js
+module.exports = {
+  categories: {
+    interaction: true,
+    navigation: true,
+    notification: true,
+    overlay: false, // No dialog/sheet sounds
+    hero: false, // Disabled by default
+  },
+};
+```
+
+## Per-Component Silencing
+
+Silence individual components with the `sound={false}` prop:
+
+```tsx
+<Button sound={false}>No sound</Button>
+```
+
+## Keyboard Support
+
+All sensory-ui components maintain the same keyboard support as their shadcn/ui counterparts. Sounds trigger from:
+
+- **Click events** — mouse and touch
+- **Keyboard events** — Enter, Space, arrow keys
+- **Programmatic events** — only when triggered by user interaction
+
+<Callout type="info">
+  Sounds never fire from lifecycle methods, effects, or programmatic state
+  changes. They only fire from direct user interaction events (pointer events,
+  keyboard events).
+</Callout>
+
+## Visual Feedback
+
+Every audio cue has a visual equivalent:
+
+| Sound | Visual Feedback |
+|-------|----------------|
+| `interaction.tap` | Button press state |
+| `interaction.toggle` | Checkbox/switch state change |
+| `navigation.tab` | Tab active state |
+| `overlay.open` | Dialog/sheet appearing |
+| `notification.success` | Toast appearing |
+| `hero.complete` | Completion animation |
+
+Sound enhances, never replaces.
+
+## Testing Accessibility
+
+1. Enable `prefers-reduced-motion: reduce` in browser dev tools
+2. Verify sounds are suppressed
+3. Test keyboard navigation triggers same sounds as mouse
+4. Check that `sound={false}` silences individual components
+5. Verify global `enabled: false` suppresses all sounds
+
+<Callout type="reference">
+  See [MDN: prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
+  for browser support and usage details.
+</Callout>

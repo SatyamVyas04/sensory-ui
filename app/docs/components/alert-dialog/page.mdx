@@ -1,0 +1,81 @@
+export const metadata = {
+  title: "Alert Dialog",
+  description:
+    "A modal dialog that interrupts the user with important content and expects a response. Plays open and close sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { OverlaySurfacesDemo } from "@/app/_components/showcase/overlay-surfaces-demo";
+
+# Alert Dialog
+
+A modal dialog that interrupts the user with important content and expects a response. The sensory-ui AlertDialog plays sounds on open and close.
+
+**Pattern:** Overlay
+
+## Import
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/sensory-ui/alert-dialog";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the dialog opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the dialog closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Usage
+
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger>Open</AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action cannot be undone.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction>Continue</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+### Custom sounds
+
+```tsx
+<AlertDialog sound="notification.warning" closeSound="interaction.subtle">
+  {/* ... */}
+</AlertDialog>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Dialog opens | `overlay.open` |
+| Dialog closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Alert Dialog](/docs/components/base/alert-dialog) documentation.

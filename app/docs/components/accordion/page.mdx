@@ -1,0 +1,89 @@
+export const metadata = {
+  title: "Accordion",
+  description:
+    "A vertically stacked set of interactive headings that reveal content areas. Plays expand and collapse sounds.",
+};
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ExpandCollapseDemo } from "@/app/_components/showcase/expand-collapse-demo";
+
+# Accordion
+
+A vertically stacked set of interactive headings that reveal content areas. The sensory-ui Accordion plays distinct sounds when items expand and collapse.
+
+**Pattern:** Expand / Collapse
+
+## Import
+
+```tsx
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/sensory-ui/accordion";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `expandSound` | `SoundRole \| false` | `"overlay.expand"` | Sound played when an item expands. |
+| `collapseSound` | `SoundRole \| false` | `"overlay.collapse"` | Sound played when an item collapses. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.expand` on expand, `overlay.collapse` on collapse.
+
+## Demo
+
+<DemoBlock>
+  <ExpandCollapseDemo />
+</DemoBlock>
+
+## Usage
+
+```tsx
+<Accordion type="single" collapsible>
+  <AccordionItem value="item-1">
+    <AccordionTrigger>Is it accessible?</AccordionTrigger>
+    <AccordionContent>
+      Yes. It adheres to the WAI-ARIA design pattern.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+### Custom sounds
+
+```tsx
+<Accordion
+  type="single"
+  collapsible
+  expandSound="interaction.confirm"
+  collapseSound="interaction.subtle"
+  volume={0.8}
+>
+  {/* ... */}
+</Accordion>
+```
+
+### Disable sounds
+
+```tsx
+<Accordion type="single" collapsible expandSound={false} collapseSound={false}>
+  {/* ... */}
+</Accordion>
+```
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Item expands | `overlay.expand` |
+| Item collapses | `overlay.collapse` |
+
+## shadcn/ui Reference
+
+View the original [Accordion](/docs/components/base/accordion) documentation.
