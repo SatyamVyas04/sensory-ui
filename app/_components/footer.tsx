@@ -148,7 +148,7 @@ export function Footer() {
             </a>
           </div>
 
-          <p className="flex items-center gap-2 text-white/40 text-xs">
+          <div className="flex items-center gap-2 text-white/40 text-xs">
             &copy; {new Date().getFullYear()} sensory-ui. Built by{" "}
             <a
               className="-translate-x-1 underline underline-offset-2 transition-colors hover:text-white"
@@ -188,7 +188,7 @@ export function Footer() {
                 );
               })}
             </div>
-          </p>
+          </div>
         </div>
       </div>
     </footer>

@@ -17,6 +17,7 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/sensory-ui/button";
 import { GITHUB_REGISTRY } from "@/lib/github-registry";
 import WritingLogo from "@/public/try-me";
+import { HeroBackground } from "./hero-background";
 
 const INSTALL_TARGETS = [
   "sensory-ui",
@@ -124,7 +125,7 @@ export function Hero({ stars }: HeroProps) {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative flex max-h-225 min-h-screen items-center overflow-hidden sm:h-screen sm:min-h-auto"
+      className="relative flex min-h-svh items-center overflow-hidden"
     >
       {/* Skip to main content */}
       <a
@@ -134,36 +135,8 @@ export function Hero({ stars }: HeroProps) {
         Skip to main content
       </a>
 
-      {/* Hero background image - full-bleed */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 w-full select-none"
-      >
-        <Image
-          alt=""
-          className="block h-full w-full object-cover md:block dark:hidden"
-          fill
-          src="/hero-background-light.jpg"
-        />
-        <Image
-          alt=""
-          className="hidden h-full w-full object-cover dark:block"
-          fill
-          src="/hero-background-dark.jpg"
-        />
-        {/* Gradient fade from left to blend with content */}
-        <div className="absolute inset-0 bg-linear-to-r from-background via-background/50 to-transparent" />
-        {/* Subtle bottom fade */}
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-background to-transparent" />
-        {/* Subtle top fade */}
-        <div className="absolute inset-x-0 top-0 h-40 bg-linear-to-b from-background to-transparent" />
-      </div>
-
-      {/* Mobile: softer overlay */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-background/60 lg:hidden"
-      />
+      {/* Hero background - full-bleed dither veil (desktop) */}
+      <HeroBackground />
 
       {/* Navbar integrated into hero */}
       <motion.header
@@ -250,7 +223,7 @@ export function Hero({ stars }: HeroProps) {
           <motion.h1
             id="hero-heading"
             {...fadeUp(0.05)}
-            className="text-balance font-serif text-4xl tracking-tight sm:text-5xl lg:text-6xl"
+            className="text-balance font-serif text-[2.1rem] leading-tight tracking-tight sm:text-5xl sm:leading-[1.1] lg:text-6xl"
           >
             Your website speaks. Give it a{" "}
             <span className="text-primary">voice.</span>
@@ -271,7 +244,7 @@ export function Hero({ stars }: HeroProps) {
           >
             <InstallCommand />
             <WritingLogo
-              className="pointer-events-none absolute -right-15 -bottom-15 -rotate-15 opacity-0 lg:block lg:opacity-100"
+              className="pointer-events-none absolute -right-15 -bottom-15 -rotate-15 opacity-0 lg:block"
               stroke="var(--foreground)"
               width={100}
             />

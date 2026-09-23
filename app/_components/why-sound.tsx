@@ -17,9 +17,9 @@ const REASONS = [
     body: "Sounds are generated locally. Nothing to download, nothing to cache.",
   },
   {
-    stat: "~26kb",
-    label: "gzipped",
-    body: "Small enough to disappear into your bundle. Pure Web Audio API.",
+    stat: "0",
+    label: "latency",
+    body: "No waiting. Sounds render the instant you interact.",
   },
 ];
 
