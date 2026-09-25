@@ -1,0 +1,401 @@
+---
+title: "Timer + Confetti"
+description: "Countdown timers with milestone ticks, completion chimes, and confetti celebrations."
+---
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { CountdownBlockLive } from "@/app/docs/_components/demos/blocks/countdown-block-live";
+import { ConfettiBlockLive } from "@/app/docs/_components/demos/blocks/confetti-block-live";
+import { MultistepBlockLive } from "@/app/docs/_components/demos/blocks/multistep-block-live";
+
+
+
+Countdown timers with sound-enhanced milestones. Each second tick plays a subtle navigation sound, milestones get a special chime, and completion triggers a celebratory sound — optionally paired with confetti.
+
+---
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button
+```
+
+## Countdown Timer with Milestones
+
+A Pomodoro-style countdown timer that plays sounds at key moments: every tick, halfway milestone, and completion.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="10-second demo — a tick every second, milestone at half, fanfare at zero">
+  <CountdownBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Every second | `navigation.tab` | Counter-clock tick |
+| Halfway point | `hero.milestone` | Progress marker |
+| Completion | `hero.complete` | Celebration sound |
+| Reset | `interaction.tap` | Action initiation |
+
+### Code
+
+```tsx
+"use client";
+
+import { IconPlayerPlay, IconPlayerStop } from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/sensory-ui/button";
+import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
+
+const TOTAL = 10;
+
+export function CountdownTimerBlock() {
+  const [timeLeft, setTimeLeft] = useState(TOTAL);
+  const [isRunning, setIsRunning] = useState(false);
+  const { playSound } = useSensoryUI();
+  const playRef = useRef(playSound);
+  playRef.current = playSound;
+
+  const halfway = TOTAL / 2;
+
+  useEffect(() => {
+    if (!isRunning || timeLeft <= 0) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      const next = timeLeft - 1;
+      if (next === 0) {
+        playRef
+          .current("hero.complete", { volume: 0.8 })
+          .catch(() => undefined);
+        setIsRunning(false);
+      } else if (next === halfway) {
+        playRef
+          .current("hero.milestone", { volume: 0.6 })
+          .catch(() => undefined);
+      } else {
+        playRef
+          .current("navigation.tab", { volume: 0.25 })
+          .catch(() => undefined);
+      }
+      setTimeLeft(next);
+    }, 1000);
+    return () => window.clearTimeout(timer);
+  }, [isRunning, timeLeft, halfway]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
+
+  const progress = ((TOTAL - timeLeft) / TOTAL) * 100;
+
+  return (
+    <div className="flex flex-col items-center gap-5">
+      <div className="relative size-40">
+        <svg className="size-full -rotate-90" role="img" viewBox="0 0 100 100">
+          <title>Countdown progress</title>
+          <circle
+            className="text-muted"
+            cx="50"
+            cy="50"
+            fill="none"
+            r="45"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <circle
+            className="text-primary transition-all duration-1000"
+            cx="50"
+            cy="50"
+            fill="none"
+            r="45"
+            stroke="currentColor"
+            strokeDasharray={`${progress * 2.83} 283`}
+            strokeWidth="4"
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="font-bold font-mono text-2xl">
+            {formatTime(timeLeft)}
+          </span>
+        </div>
+      </div>
+      <div className="flex gap-3">
+        <Button
+          className="gap-2"
+          onClick={() => {
+            if (timeLeft === 0) {
+              setTimeLeft(TOTAL);
+            }
+            setIsRunning(!isRunning);
+          }}
+          sound={isRunning ? "interaction.tap" : "interaction.confirm"}
+        >
+          {isRunning ? (
+            <>
+              <IconPlayerStop className="size-4" />
+              Pause
+            </>
+          ) : (
+            <>
+              <IconPlayerPlay className="size-4" />
+              Start
+            </>
+          )}
+        </Button>
+        <Button
+          onClick={() => {
+            setTimeLeft(TOTAL);
+            setIsRunning(false);
+          }}
+          sound="interaction.tap"
+          variant="outline"
+        >
+          Reset
+        </Button>
+      </div>
+      <p className="text-muted-foreground text-xs">
+        10-second demo — a tick every second, milestone at half, fanfare at
+        zero.
+      </p>
+    </div>
+  );
+}
+```
+
+### When to Use
+
+- Pomodoro / focus timers
+- Quiz countdown timers
+- Exercise / workout timers
+- Any time-bound activity with milestone moments
+
+### shadcn/ui Reference
+
+- [Button](/docs/components/button)
+
+---
+
+## Confetti on Completion
+
+A button that fires real confetti alongside the `hero.complete` sound.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Fanfare plus a canvas-confetti cannon">
+  <ConfettiBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Completion | `hero.complete` | Celebration sound |
+| Confetti | — | Visual celebration (no sound, pairs with hero.complete) |
+
+### Code
+
+```tsx
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import confetti from "canvas-confetti";
+import { Button } from "@/components/ui/sensory-ui/button";
+
+const CONFETTI_COLORS = ["#fb7185", "#fbbf24", "#ffffff", "#e11d48"];
+
+export function ConfettiBlock() {
+  const [fired, setFired] = useState(false);
+  const timer = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (timer.current) {
+      window.clearTimeout(timer.current);
+    }
+  }, []);
+
+  const handleCelebrate = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const origin = {
+        x: (rect.left + rect.width / 2) / window.innerWidth,
+        y: (rect.top + rect.height / 2) / window.innerHeight,
+      };
+      confetti({
+        particleCount: 90,
+        spread: 75,
+        origin,
+        colors: CONFETTI_COLORS,
+      });
+      timer.current = window.setTimeout(() => {
+        confetti({
+          particleCount: 40,
+          angle: 60,
+          spread: 60,
+          origin: { x: 0, y: 0.7 },
+          colors: CONFETTI_COLORS,
+        });
+        confetti({
+          particleCount: 40,
+          angle: 120,
+          spread: 60,
+          origin: { x: 1, y: 0.7 },
+          colors: CONFETTI_COLORS,
+        });
+      }, 250);
+      setFired(true);
+    },
+    [],
+  );
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <Button sound="hero.complete" onClick={handleCelebrate} className="gap-2 text-lg">
+        Celebrate!
+      </Button>
+      <p className="text-xs text-muted-foreground">
+        {fired
+          ? "Fanfare plus a canvas-confetti cannon — fire away."
+          : "Real confetti via canvas-confetti, fired from the button."}
+      </p>
+    </div>
+  );
+}
+```
+
+### Installation
+
+```bash
+bun add canvas-confetti @types/canvas-confetti
+```
+
+The burst below uses [`canvas-confetti`](https://www.npmjs.com/package/canvas-confetti) (see [magicui Confetti](https://magicui.design/docs/components/confetti)) — one cannon from the button plus side cannons 250ms later. The fanfare comes from the button’s `sound="hero.complete"` prop.
+
+### When to Use
+
+- Form submission success
+- Achievement unlocked moments
+- Task completion celebrations
+- Any moment worth celebrating
+
+### shadcn/ui Reference
+
+- [Button](/docs/components/button)
+
+---
+
+## Multi-Step Progress with Sound
+
+A multi-step wizard where each step completion plays a sound, and the final step plays `hero.complete`.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Back, next, and a hero finish">
+  <MultistepBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Step completion | `notification.success` | Progress confirmation |
+| Step navigation | `navigation.forward` | Forward movement |
+| Final step | `hero.complete` | Completion celebration |
+| Back step | `navigation.backward` | Backward navigation |
+
+### Code
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/sensory-ui/button";
+import { IconCheck, IconArrowRight, IconArrowLeft } from "@tabler/icons-react";
+
+const steps = ["Account", "Profile", "Preferences", "Complete"];
+
+export function MultiStepBlock() {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const handleNext = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center gap-6">
+      {/* Progress dots */}
+      <div className="flex items-center gap-2">
+        {steps.map((step, i) => (
+          <div
+            key={step}
+            className={`flex size-8 items-center justify-center rounded-full text-xs font-medium ${
+              i < currentStep
+                ? "bg-primary text-primary-foreground"
+                : i === currentStep
+                  ? "border-2 border-primary text-primary"
+                  : "border border-muted-foreground/30 text-muted-foreground"
+            }`}
+          >
+            {i < currentStep ? <IconCheck className="size-4" /> : i + 1}
+          </div>
+        ))}
+      </div>
+
+      <p className="text-sm text-muted-foreground">
+        Step {currentStep + 1} of {steps.length}: {steps[currentStep]}
+      </p>
+
+      {/* Navigation */}
+      <div className="flex gap-3">
+        <Button
+          variant="outline"
+          sound="navigation.backward"
+          onClick={handlePrev}
+          disabled={currentStep === 0}
+          className="gap-2"
+        >
+          <IconArrowLeft className="size-4" />
+          Back
+        </Button>
+        <Button
+          sound={
+            currentStep === steps.length - 1
+              ? "hero.complete"
+              : "navigation.forward"
+          }
+          onClick={handleNext}
+          disabled={currentStep === steps.length - 1}
+          className="gap-2"
+        >
+          {currentStep === steps.length - 1 ? "Finish" : "Next"}
+          {currentStep < steps.length - 1 && (
+            <IconArrowRight className="size-4" />
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
+```
+
+### When to Use
+
+- Onboarding wizards
+- Multi-step forms (checkout, registration)
+- Setup guides
+- Any sequential flow with clear progression
+
+### shadcn/ui Reference
+
+- [Button](/docs/components/button)

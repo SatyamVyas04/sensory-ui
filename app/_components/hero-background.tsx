@@ -142,6 +142,47 @@ function useThemeColor(cssVar: string) {
   return color;
 }
 
+/**
+ * Tracks whether the veil images have finished loading (with a timeout
+ * fallback), so a theme-colored cover can fade away to reveal them instead
+ * of flashing half-loaded pixels on first paint.
+ */
+function useRevealReady() {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    let loaded = 0;
+    const done = () => {
+      loaded += 1;
+      if (loaded >= 2 && active) {
+        setReady(true);
+      }
+    };
+    for (const src of [
+      "/hero-background-light.webp",
+      "/hero-background-dark.webp",
+    ]) {
+      const img = new Image();
+      img.decoding = "async";
+      img.onload = done;
+      img.onerror = done;
+      img.src = src;
+    }
+    const fallback = window.setTimeout(() => {
+      if (active) {
+        setReady(true);
+      }
+    }, 2500);
+    return () => {
+      active = false;
+      window.clearTimeout(fallback);
+    };
+  }, []);
+
+  return ready;
+}
+
 const grain = (tone: 0 | 1, opacity: number) => {
   const svg =
     `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>` +
@@ -182,6 +223,7 @@ function Grain() {
 
 export function HeroBackground() {
   const bg = useThemeColor("--background");
+  const revealed = useRevealReady();
 
   return (
     <>
@@ -211,6 +253,13 @@ export function HeroBackground() {
             />
           </>
         )}
+
+        {/* Theme-colored cover: hides half-loaded pixels, then fades away */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-background transition-opacity duration-1000 ease-out"
+          style={{ opacity: revealed ? 0 : 1 }}
+        />
 
         {/* Left fade to blend with content */}
         <div

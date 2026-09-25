@@ -1,0 +1,143 @@
+---
+title: "Tabs"
+description: "A set of layered sections of content, known as tab panels. Plays a tab navigation sound."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { TabsDocsDemo } from "@/app/docs/_components/demos/tabs-demo";
+
+
+A set of layered sections of content, known as tab panels. The sensory-ui Tabs plays a tab sound when the active tab changes, reinforcing the content switch.
+
+**Pattern:** Single-sound
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <TabsDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-tabs
+```
+
+## Import
+
+```tsx
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  tabsListVariants,
+} from "@/components/ui/sensory-ui/tabs";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"navigation.tab"` | Sound played when the active tab changes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`navigation.tab`
+
+## Usage
+
+```tsx
+<Tabs defaultValue="account">
+  <TabsList>
+    <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="password">Password</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account">Account content</TabsContent>
+  <TabsContent value="password">Password content</TabsContent>
+</Tabs>
+```
+
+### Custom sounds
+
+```tsx
+<Tabs sound="interaction.tap" volume={0.6}>
+  {/* ... */}
+</Tabs>
+```
+
+### Disable sounds
+
+```tsx
+<Tabs sound={false}>
+  {/* ... */}
+</Tabs>
+```
+
+## Customizations
+
+### Settings tabs
+
+```tsx
+<Tabs defaultValue="general" sound="navigation.tab">
+  <TabsList>
+    <TabsTrigger value="general">General</TabsTrigger>
+    <TabsTrigger value="security">Security</TabsTrigger>
+    <TabsTrigger value="notifications">Notifications</TabsTrigger>
+  </TabsList>
+  {/* Tab content */}
+</Tabs>
+```
+
+### Profile tabs
+
+```tsx
+<Tabs defaultValue="posts" sound="interaction.tap" volume={0.5}>
+  <TabsList>
+    <TabsTrigger value="posts">Posts</TabsTrigger>
+    <TabsTrigger value="replies">Replies</TabsTrigger>
+    <TabsTrigger value="likes">Likes</TabsTrigger>
+  </TabsList>
+  {/* Tab content */}
+</Tabs>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"navigation.tab"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Settings tabs | `navigation.tab` | Default — tab switching |
+| Profile tabs | `navigation.tab` | Standard tab feel |
+| Content tabs | `interaction.tap` | Lighter content browsing |
+| Dashboard tabs | `navigation.tab` | Clear section switching |
+| Silent tabs | `false` | For rapid tab switching |
+
+## When to Use
+
+- **Settings** — General, Security, Notifications sections
+- **Profiles** — Posts, Replies, Likes sections
+- **Dashboards** — Overview, Analytics, Reports views
+- **Any content switching** — Where tabs organize related content
+
+### Avoid sound on
+
+- Tabs that switch very rapidly (sound would overlap)
+- Tabs with many items (sound on every switch)
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Tab changes | `navigation.tab` |
+
+## shadcn/ui Reference
+
+View the original [Tabs](https://ui.shadcn.com/docs/components/tabs) documentation.

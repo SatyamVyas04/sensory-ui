@@ -1,0 +1,109 @@
+---
+title: "Sound Usage & Choreography"
+description: "Hierarchy, pairing open/close sounds, directional navigation, and notification tiers — applied Material choreography for sensory-ui."
+---
+
+
+How to combine sounds across a flow so the interface feels coherent. Adapted from [Sound choreography](https://m2.material.io/design/sound/sound-choreography.html#hierarchy) and [Applying sound to UI](https://m2.material.io/design/sound/applying-sound-to-ui.html#sound-use-cases).
+
+## Hierarchy: one foreground sound at a time
+
+| Level | Roles | Character |
+| --- | --- | --- |
+| Foreground | `notification.*`, `hero.*` | Longer (200–1900ms), carry meaning alone |
+| Middleground | `overlay.*`, `navigation.*` | 40–270ms, structural |
+| Background | `interaction.*` | 8–50ms transients, felt more than heard |
+
+Rules:
+
+1. Never play two foreground sounds together — queue or pick the most important.
+2. A foreground sound suppresses background ticks (e.g. success toast after submit: play `notification.success`, skip the button `tap`).
+3. `hero.*` is disabled by default (double opt-in: enable category + set `sound` prop).
+
+## Pairing: open ↔ close, expand ↔ collapse
+
+From [Sound choreography](https://m2.material.io/design/sound/sound-choreography.html#hierarchy): paired actions should be tonal inversions — same voice, opposite arc.
+
+| Open | Close | Components |
+| --- | --- | --- |
+| `overlay.open` | `overlay.close` | [Dialog](/docs/components/dialog), [Sheet](/docs/components/sheet), [Popover](/docs/components/popover), [Select](/docs/components/select) |
+| `overlay.expand` | `overlay.collapse` | [Accordion](/docs/components/accordion), [Collapsible](/docs/components/collapsible) |
+| `navigation.forward` | `navigation.backward` | [Carousel](/docs/components/carousel), [Pagination](/docs/components/pagination) |
+
+```tsx
+// Overlay pattern: two props, one pair
+<Dialog sound="overlay.open" closeSound="overlay.close">
+  ...
+</Dialog>
+
+// Expand pattern
+<Accordion expandSound="overlay.expand" collapseSound="overlay.collapse">
+  ...
+</Accordion>
+```
+
+<Callout type="info">
+  Don't mix pairs (e.g. `overlay.open` with `overlay.collapse`). Keep the metaphor consistent.
+</Callout>
+
+## Directional navigation
+
+- Forward / next / right → `navigation.forward` (rising sweep)
+- Back / previous / left → `navigation.backward` (falling sweep, mirror of forward)
+- Lateral switch with no direction → `navigation.tab` (short pop)
+
+## Notification tiers
+
+[Material use cases](https://m2.material.io/design/sound/applying-sound-to-ui.html#sound-use-cases) distinguish info vs. success vs. warning vs. error by intensity:
+
+| Role | Shape | When |
+| --- | --- | --- |
+| `notification.info` | Single soft chime | Passive update, FYI toast |
+| `notification.success` | Three ascending notes (C5–E5–G5) | Saved, completed, validated |
+| `notification.warning` | Two-note semitone ascent (A4 → A♯4) | Quota, confirm-needed, destructive preview |
+| `notification.error` | Filtered descending sweep (320 → 140 Hz) | Failed, disconnected, invalid |
+
+Don't upgrade info to success for emphasis — frequency of success sounds dilutes them.
+
+## Attributes: pitch, timbre, loudness
+
+From [Sound attributes](https://m2.material.io/design/sound/sound-attributes.html#representing-sound):
+
+- **Pitch**: higher = lighter / smaller; lower = heavier / consequential. Destructive actions (`notification.warning`) sit lower than confirmations.
+- **Timbre**: pick one [pack](/docs/core/sound-packs) per app and stick with it. Timbre is brand.
+- **Loudness**: keep master `0.3–0.4`; use per-component `volume` to push secondary actions down, never to push primary actions above the ceiling.
+
+## Anti-patterns
+
+| Don't | Why | Do instead |
+| --- | --- | --- |
+| Sound on every hover | Fatigue, no user intent | Sound on click / commit only |
+| Different tap per button | Breaks consistency | One `interaction.tap` everywhere, `interaction.confirm` for submits |
+| Hero sound per session step | Celebration inflation | `hero.complete` once per milestone |
+| Auto-play on mount | Blocked by browsers, surprises users | Trigger from click / keyboard only |
+| Sound without visual change | Inaccessible | Pair every cue with visible state |
+
+## Worked example: checkout flow
+
+```tsx
+// 1. Shipping form — rewarded submit, not a plain tap
+<Button sound="interaction.confirm">Continue to payment</Button>
+
+// 2. Confirm dialog — paired open/close, no stacked button sound
+<Dialog sound="overlay.open" closeSound="overlay.close">...</Dialog>
+
+// 3. Payment success — foreground success suppresses the button tick
+playSound("notification.success"); // skip the tap underneath
+
+// 4. Order placed — the one moment worthy of a hero sound
+playSound("hero.complete"); // categories.hero must be enabled
+```
+
+Each step uses exactly one foreground sound. Compare with the [taste rules](/docs/guides/designing-with-sound) and see it composed in the [Timer + Confetti](/docs/blocks/timer-confetti) block.
+
+## Reference
+
+- [Applying sound to UI](https://m2.material.io/design/sound/applying-sound-to-ui.html#sound-use-cases)
+- [Sound attributes](https://m2.material.io/design/sound/sound-attributes.html#representing-sound)
+- [Sound choreography](https://m2.material.io/design/sound/sound-choreography.html#hierarchy)
+- [Sound roles](/docs/core/sound-roles) — durations and triggers for all 17 roles

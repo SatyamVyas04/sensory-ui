@@ -1,0 +1,125 @@
+---
+title: "Checkbox"
+description: "A control that allows the user to toggle between checked and not checked. Plays a toggle sound."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { CheckboxDocsDemo } from "@/app/docs/_components/demos/checkbox-demo";
+
+
+A control that allows the user to toggle between checked and not checked. The sensory-ui Checkbox plays a toggle sound on state change, confirming the binary state transition.
+
+**Pattern:** Single-sound
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <CheckboxDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-checkbox
+```
+
+## Import
+
+```tsx
+import { Checkbox } from "@/components/ui/sensory-ui/checkbox";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.toggle"` | Sound played on toggle. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.toggle`
+
+## Usage
+
+```tsx
+<div className="flex items-center space-x-2">
+  <Checkbox id="terms" />
+  <label htmlFor="terms">Accept terms</label>
+</div>
+```
+
+### Custom sounds
+
+```tsx
+<Checkbox sound="interaction.confirm" volume={0.7} />
+```
+
+### Disable sounds
+
+```tsx
+<Checkbox sound={false} />
+```
+
+## Customizations
+
+### Terms acceptance
+
+```tsx
+<Checkbox id="terms" sound="interaction.confirm" />
+{/* More rewarding sound for important agreements */}
+```
+
+### Filter options
+
+```tsx
+<Checkbox id="filter-1" sound="interaction.toggle" volume={0.5} />
+{/* Subtle sound for frequent filter toggling */}
+```
+
+### Task completion
+
+```tsx
+<Checkbox id="task-1" sound="interaction.confirm" />
+{/* Satisfying confirmation when completing a task */}
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"interaction.toggle"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Terms / agreements | `interaction.confirm` | More significant toggle |
+| Filter options | `interaction.toggle` | Standard state change |
+| Task completion | `interaction.confirm` | Rewarding completion |
+| Settings toggle | `interaction.toggle` | Standard toggle |
+| Bulk selection | `interaction.subtle` | Lighter for repeated use |
+
+## When to Use
+
+- **Form inputs** — Terms, newsletter signup, agreements
+- **Filters** — Category, tag, or option filters
+- **Task lists** — Todo items, checklist completion
+- **Settings** — Binary option toggles
+- **Selection lists** — Multi-select options
+
+### Avoid sound on
+
+- Checkboxes that auto-save on toggle (sound may feel redundant)
+- Checkboxes inside modals that already play open/close sounds
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Toggle checked/unchecked | `interaction.toggle` |
+
+## shadcn/ui Reference
+
+View the original [Checkbox](https://ui.shadcn.com/docs/components/checkbox) documentation.

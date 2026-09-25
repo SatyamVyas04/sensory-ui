@@ -1,0 +1,158 @@
+---
+title: "Button"
+description: "Displays a button or a component that looks like a button. Plays a tap sound on click."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ButtonDocsDemo } from "@/app/docs/_components/demos/button-demo";
+
+
+Displays a button or a component that looks like a button. The sensory-ui Button plays a subtle tap sound on click, giving users immediate audio feedback that their action was registered.
+
+**Pattern:** Single-sound
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <ButtonDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button
+```
+
+## Import
+
+```tsx
+import { Button, buttonVariants } from "@/components/ui/sensory-ui/button";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.tap"` | Sound played on click. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.tap`
+
+## Usage
+
+```tsx
+<Button>Click me</Button>
+```
+
+### With sound role
+
+```tsx
+<Button sound="interaction.tap">Click me</Button>
+```
+
+### Custom sounds
+
+```tsx
+<Button sound="interaction.confirm" volume={0.6}>
+  Confirm
+</Button>
+```
+
+### Disable sounds
+
+```tsx
+<Button sound={false}>Silent button</Button>
+```
+
+## Customizations
+
+### Different sounds for different contexts
+
+```tsx
+// Primary action — satisfying confirmation
+<Button sound="interaction.confirm">Submit form</Button>
+
+// Secondary action — lighter feedback
+<Button variant="secondary" sound="interaction.subtle">
+  Learn more
+</Button>
+
+// Destructive action — warning sound
+<Button variant="destructive" sound="notification.warning">
+  Delete account
+</Button>
+
+// Success moment — celebratory sound
+<Button sound="hero.complete">Finish setup</Button>
+
+// Navigation button
+<Button variant="outline" sound="navigation.forward">
+  Next step
+</Button>
+```
+
+### Volume control
+
+```tsx
+// Subtle background button
+<Button sound="interaction.tap" volume={0.3}>
+  Quiet
+</Button>
+
+// Prominent CTA
+<Button sound="interaction.confirm" volume={0.9}>
+  Get started
+</Button>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"interaction.tap"` |
+| `volume` | `1` |
+| `variant` | `"default"` |
+| `size` | `"default"` |
+
+## Tasteful Sound Choices
+
+The `interaction.tap` default works for most buttons. Consider these alternatives:
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Form submission | `interaction.confirm` | More rewarding than a simple tap |
+| Cancel / dismiss | `interaction.subtle` | Lighter, less prominent |
+| Delete / destructive | `notification.warning` | Warns the user of consequence |
+| Success action | `hero.complete` | Celebrates a positive moment |
+| Navigation | `navigation.forward` | Directional cue for forward movement |
+| Add / create | `interaction.confirm` | Positive reinforcement |
+| Toggle on/off | `interaction.toggle` | Clear state change feedback |
+| No sound needed | `false` | For repeated or low-value clicks |
+
+## When to Use
+
+- **Primary CTAs** — Sign up, submit, save, confirm
+- **Secondary actions** — Learn more, cancel, go back
+- **Icon buttons** — Toolbar actions, close buttons
+- **Link-styled buttons** — Navigation, inline actions
+- **Form buttons** — Submit, reset, add item
+
+### Avoid sound on
+
+- Buttons that will be clicked rapidly in succession
+- Buttons inside modals that already play open/close sounds
+- Inline text links (use `variant="link"` without sound)
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Click | `interaction.tap` |
+| Enter key | `interaction.tap` |
+| Space key | `interaction.tap` |
+
+## shadcn/ui Reference
+
+View the original [Button](https://ui.shadcn.com/docs/components/button) documentation.

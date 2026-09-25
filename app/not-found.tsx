@@ -23,19 +23,19 @@ export default function NotFound() {
 
         <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
           <Link
-            className="border border-white/30 px-4 py-2 font-mono text-white text-xs uppercase tracking-wide transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none"
+            className="border border-white/30 px-4 py-2 font-mono text-white text-xs uppercase tracking-wide transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
             href="/"
           >
             Home
           </Link>
           <Link
-            className="border border-white/30 px-4 py-2 font-mono text-white text-xs uppercase tracking-wide transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none"
+            className="border border-white/30 px-4 py-2 font-mono text-white text-xs uppercase tracking-wide transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
             href="/docs"
           >
             Docs
           </Link>
           <a
-            className="border border-white/30 px-4 py-2 font-mono text-white text-xs uppercase tracking-wide transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none"
+            className="border border-white/30 px-4 py-2 font-mono text-white text-xs uppercase tracking-wide transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
             href="https://github.com/SatyamVyas04/sensory-ui"
             rel="noopener noreferrer"
             target="_blank"
@@ -43,7 +43,7 @@ export default function NotFound() {
             GitHub
           </a>
           <a
-            className="border border-white/30 px-4 py-2 font-mono text-white text-xs uppercase tracking-wide transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none"
+            className="border border-white/30 px-4 py-2 font-mono text-white text-xs uppercase tracking-wide transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
             href="https://x.com/SatyamVyas04"
             rel="noopener noreferrer"
             target="_blank"

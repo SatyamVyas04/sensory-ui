@@ -1,0 +1,101 @@
+---
+title: "Designing with Sound"
+description: "Principles for tasteful UI sound — when to play, when to stay silent, and how sensory-ui maps to Material sound guidance."
+---
+
+
+Sound should confirm, orient, and reassure — never decorate. This guide distills [Material's sound principles](https://m2.material.io/design/sound/about-sound.html#principles) into practical rules for sensory-ui.
+
+## Principles
+
+| Principle | What it means | sensory-ui rule |
+| --- | --- | --- |
+| **Purposeful** | Every sound maps to a user action or system state | Only use the 17 defined [sound roles](/docs/core/sound-roles) — no one-off effects |
+| **Restrained** | Less is more; silence is the default | Opt-in `sound` prop only. Leave low-value clicks silent (`sound={false}`) |
+| **Consistent** | Same cause → same sound, everywhere | Reuse one role per interaction type (e.g. all primary submits use `interaction.confirm`) |
+| **Accessible** | Sound enhances, never replaces, visual feedback | Every cue needs a visual equivalent; respect `prefers-reduced-motion` (see [Accessibility](/docs/guides/accessibility)) |
+| **Brief** | UI sounds are milliseconds, not seconds | Interaction 8–50ms, navigation 40–250ms. Reserve `hero.*` (350–1900ms) for rare milestones |
+
+<Callout type="info">
+  Reference: [About sound — principles](https://m2.material.io/design/sound/about-sound.html#principles),
+  [Sound attributes](https://m2.material.io/design/sound/sound-attributes.html#representing-sound).
+</Callout>
+
+## When to play sound
+
+Based on [Applying sound to UI — use cases](https://m2.material.io/design/sound/applying-sound-to-ui.html#sound-use-cases):
+
+| Use case | Play | Role | Example |
+| --- | --- | --- | --- |
+| Confirm an action | Yes | `interaction.confirm` | Form submit, Save |
+| Toggle state | Yes | `interaction.toggle` | [Switch](/docs/components/switch), [Checkbox](/docs/components/checkbox) |
+| Open / close a surface | Yes | `overlay.open` / `overlay.close` | [Dialog](/docs/components/dialog), [Sheet](/docs/components/sheet) |
+| Move through space | Yes, quietly | `navigation.forward` / `navigation.backward` / `navigation.tab` | [Pagination](/docs/components/pagination), [Tabs](/docs/components/tabs) |
+| System feedback | Yes | `notification.info` / `success` / `warning` / `error` | Toasts, validation |
+| Major achievement | Rarely | `hero.complete` / `hero.milestone` | Onboarding done, upload finished |
+
+## When to stay silent
+
+- Rapid-fire clicks ( sliders dragging continuously — use `interaction.subtle` sparingly or silence)
+- Every keystroke in a text field
+- Sounds on mount / without a user gesture (browsers suspend `AudioContext` anyway)
+- Inside a modal that already played `overlay.open` — don't stack a button tap on top
+- Inline text links
+
+```tsx
+// Tasteful: one sound per user intent
+<Button sound="interaction.confirm">Submit form</Button>
+<Button sound={false} variant="link">Learn more</Button>
+```
+
+## Choosing a pack
+
+All 9 [sound packs](/docs/core/sound-packs) share the same roles — switching changes character, not meaning:
+
+| Context | Packs to try first |
+| --- | --- |
+| Clean SaaS | `aero` (default), `crisp`, `minimal` |
+| Warm / friendly | `soft`, `organic` |
+| Playful | `arcade`, `retro` |
+| Premium / delicate | `glass` |
+| Bold / industrial | `industrial` |
+
+Keep one pack per app. Preview packs with the pack switcher on any [component](/docs/components) demo.
+
+## Volume
+
+Master default is `0.35`. UI sound should sit in the background:
+
+- Subtle feedback: `0.15–0.25`
+- Default: `0.30–0.40`
+- Demo / accessibility testing: `0.80–1.00`
+
+Per-component `volume` can only lower the ceiling, never raise it. See [Configuration](/docs/getting-started/configuration).
+
+## Putting it together
+
+A settings dialog that follows every rule on this page:
+
+```tsx
+<Dialog sound="overlay.open" closeSound="overlay.close">
+  <DialogContent>
+    <Switch sound="interaction.toggle">Email alerts</Switch>
+    <Button sound="interaction.confirm" volume={0.8}>
+      Save changes
+    </Button>
+    <Button variant="link" sound={false}>
+      Reset to defaults
+    </Button>
+  </DialogContent>
+</Dialog>
+```
+
+One paired surface sound, one toggle, one rewarded submit, one silent escape hatch. For multi-step flows with milestones, see [Sound usage](/docs/guides/sound-usage) and the [Timer + Confetti](/docs/blocks/timer-confetti) block.
+
+## Further reading
+
+- [About sound](https://m2.material.io/design/sound/about-sound.html#principles)
+- [Applying sound to UI](https://m2.material.io/design/sound/applying-sound-to-ui.html#sound-use-cases)
+- [Sound attributes](https://m2.material.io/design/sound/sound-attributes.html#representing-sound)
+- [Sound choreography](https://m2.material.io/design/sound/sound-choreography.html#hierarchy)
+- [Sound usage](/docs/guides/sound-usage) — hierarchy, pairing, and anti-patterns

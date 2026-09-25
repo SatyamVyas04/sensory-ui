@@ -1,0 +1,16 @@
+stateDiagram-v2
+    direction TB
+    [*] --> Resolving
+    Resolving --> Synth : function
+    Resolving --> Decoding : string
+    Decoding --> Playing : cached / fetched
+    Synth --> Playing : direct call
+    Playing --> Playing : new sound stops previous
+    Playing --> [*] : stop()
+    class Resolving,Decoding step
+    class Synth go
+    class Playing accent
+    classDef actor fill:#881337,stroke:#fb7185,color:#fff1f2
+    classDef step fill:#292524,stroke:#78716c,color:#fafaf9
+    classDef accent fill:#fb7185,stroke:#881337,color:#1c1917
+    classDef go fill:#14532d,stroke:#4ade80,color:#f0fdf4

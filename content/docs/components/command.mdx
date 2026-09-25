@@ -1,0 +1,152 @@
+---
+title: "Command"
+description: "Fast, composable, unstyled command menu for React. Plays subtle interaction sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { CommandDocsDemo } from "@/app/docs/_components/demos/command-demo";
+
+
+Fast, composable, unstyled command menu for React. The sensory-ui Command plays subtle sounds for navigation and tap interactions, creating a responsive command palette experience.
+
+**Pattern:** Single-sound parts (`CommandInput` + `CommandItem`)
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <CommandDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-command
+```
+
+## Import
+
+```tsx
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/sensory-ui/command";
+```
+
+## Sound Props
+
+Each part carries its own `sound` prop. `CommandDialog` is re-exported unwrapped and takes no sound props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` (CommandInput) | `SoundRole \| false` | `"interaction.subtle"` | Sound played on every keystroke / value change. |
+| `sound` (CommandItem) | `SoundRole \| false` | `"interaction.tap"` | Sound played when the item is selected. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.subtle` on input keystrokes, `interaction.tap` on item selection.
+
+## Usage
+
+```tsx
+<Command>
+  <CommandInput placeholder="Type a command..." />
+  <CommandList>
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandGroup heading="Suggestions">
+      <CommandItem>Calendar</CommandItem>
+      <CommandItem>Search Emoji</CommandItem>
+    </CommandGroup>
+  </CommandList>
+</Command>
+```
+
+### Custom sounds
+
+```tsx
+<CommandInput sound="navigation.tab" volume={0.6} placeholder="Type a command..." />
+```
+
+```tsx
+<CommandItem sound="interaction.confirm">Save</CommandItem>
+```
+
+### Disable sounds
+
+```tsx
+<CommandInput sound={false} placeholder="Silent input" />
+</Command>
+```
+
+## Customizations
+
+### Spotlight-style search
+
+`CommandDialog` takes no sound props — put them on the input and items instead:
+
+```tsx
+<CommandDialog>
+  <CommandInput placeholder="Search..." />
+  <CommandList>
+    <CommandGroup heading="Recent">
+      <CommandItem>Dashboard</CommandItem>
+      <CommandItem>Settings</CommandItem>
+    </CommandGroup>
+  </CommandList>
+</CommandDialog>
+```
+
+### Quick actions
+
+```tsx
+<CommandItem sound="interaction.tap" volume={0.5}>
+  {/* Quieter for frequent use */}
+  Quick action
+</CommandItem>
+```
+
+## Default Props
+
+| Part | Prop | Value |
+|------|------|-------|
+| CommandInput | `sound` | `"interaction.subtle"` |
+| CommandItem | `sound` | `"interaction.tap"` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Spotlight search | `overlay.open` | Modal-like appearance |
+| Quick actions | `interaction.tap` | Selection confirmation |
+| Navigation palette | `navigation.tab` | Tab-like switching |
+| Silent browsing | `false` | When sounds distract |
+
+## When to Use
+
+- **Spotlight search** — Cmd+K style search modals
+- **Quick actions** — Keyboard-driven command palettes
+- **Navigation** — Site-wide navigation menus
+- **Settings** — Quick setting lookups
+
+### Avoid sound on
+
+- Commands triggered on every keystroke
+- Command menus that stay open for extended periods
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Keystroke / value change | `interaction.subtle` |
+| Select item | `interaction.tap` |
+
+## shadcn/ui Reference
+
+View the original [Command](https://ui.shadcn.com/docs/components/command) documentation.

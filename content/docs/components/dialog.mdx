@@ -1,0 +1,153 @@
+---
+title: "Dialog"
+description: "A window overlaid on the primary content. Plays open and close sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { DialogDocsDemo } from "@/app/docs/_components/demos/dialog-demo";
+
+
+A window overlaid on the primary content. The sensory-ui Dialog plays sounds when opening and closing, signaling the modal transition.
+
+**Pattern:** Open / close
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <DialogDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-dialog
+```
+
+## Import
+
+```tsx
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/sensory-ui/dialog";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the dialog opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the dialog closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Usage
+
+```tsx
+<Dialog>
+  <DialogTrigger>Open</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Edit profile</DialogTitle>
+      <DialogDescription>
+        Make changes to your profile here.
+      </DialogDescription>
+    </DialogHeader>
+  </DialogContent>
+</Dialog>
+```
+
+### Custom sounds
+
+```tsx
+<Dialog sound="notification.info" closeSound="interaction.subtle">
+  {/* ... */}
+</Dialog>
+```
+
+### Disable sounds
+
+```tsx
+<Dialog sound={false} closeSound={false}>
+  {/* ... */}
+</Dialog>
+```
+
+## Customizations
+
+### Form dialog
+
+```tsx
+<Dialog sound="overlay.open" closeSound="overlay.close">
+  <DialogTrigger>Edit profile</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Edit profile</DialogTitle>
+    </DialogHeader>
+    {/* Form fields */}
+  </DialogContent>
+</Dialog>
+```
+
+### Confirmation dialog
+
+```tsx
+<Dialog sound="notification.warning" closeSound="overlay.close">
+  <DialogTrigger>Delete item</DialogTrigger>
+  <DialogContent>
+    {/* Warning content */}
+  </DialogContent>
+</Dialog>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"overlay.open"` |
+| `closeSound` | `"overlay.close"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Form dialog | `overlay.open` / `overlay.close` | Default — clear modal cue |
+| Confirmation | `notification.warning` | Warns of important decision |
+| Info modal | `notification.info` | Neutral, informative |
+| Image lightbox | `overlay.open` / `overlay.close` | Content focus |
+| Silent modal | `false` | For auto-opening dialogs |
+
+## When to Use
+
+- **Form editing** — Profile, settings, create/edit forms
+- **Confirmations** — Destructive action confirmations
+- **Details** — Expanded item details
+- **Lightboxes** — Image or media viewers
+
+### Avoid sound on
+
+- Dialogs that open automatically on page load
+- Dialogs triggered by non-user actions
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Dialog opens | `overlay.open` |
+| Dialog closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Dialog](https://ui.shadcn.com/docs/components/dialog) documentation.

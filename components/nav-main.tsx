@@ -1,12 +1,13 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { IconChevronRight } from "@tabler/icons-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarMenu,
@@ -16,35 +17,36 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
-import { IconChevronRight } from "@tabler/icons-react"
+} from "@/components/ui/sidebar";
 
 interface NavItem {
-  title: string
-  url: string
-  icon?: React.ReactNode
-  isActive?: boolean
-  defaultOpen?: boolean
+  defaultOpen?: boolean;
+  icon?: React.ReactNode;
+  isActive?: boolean;
   items?: {
-    title: string
-    url: string
-  }[]
+    title: string;
+    url: string;
+  }[];
+  title: string;
+  url: string;
 }
 
-const ALWAYS_OPEN = ["Getting Started", "Concepts", "Guides"]
+const ALWAYS_OPEN = ["Getting Started", "Concepts", "Guides"];
 
 export function NavMain({ items }: { items: NavItem[] }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <SidebarGroup>
       <SidebarMenu>
         {items.map((item) => {
-          const isAlwaysOpen = ALWAYS_OPEN.includes(item.title)
-          const isExpanded = isAlwaysOpen || (item.items?.some((sub) => pathname === sub.url) ?? false)
+          const isAlwaysOpen = ALWAYS_OPEN.includes(item.title);
+          const isExpanded =
+            isAlwaysOpen ||
+            (item.items?.some((sub) => pathname === sub.url) ?? false);
 
           return (
-            <Collapsible key={item.title} asChild defaultOpen={isExpanded}>
+            <Collapsible asChild defaultOpen={isExpanded} key={item.title}>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip={item.title}>
                   <Link href={item.url}>
@@ -64,7 +66,10 @@ export function NavMain({ items }: { items: NavItem[] }) {
                       <SidebarMenuSub>
                         {item.items.map((subItem) => (
                           <SidebarMenuSubItem key={subItem.url}>
-                            <SidebarMenuSubButton asChild isActive={pathname === subItem.url}>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={pathname === subItem.url}
+                            >
                               <Link href={subItem.url}>
                                 <span>{subItem.title}</span>
                               </Link>
@@ -77,9 +82,9 @@ export function NavMain({ items }: { items: NavItem[] }) {
                 ) : null}
               </SidebarMenuItem>
             </Collapsible>
-          )
+          );
         })}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

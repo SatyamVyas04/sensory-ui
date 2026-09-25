@@ -1,0 +1,147 @@
+---
+title: "Pagination"
+description: "Pagination with navigation page numbers. Plays navigation sounds for forward, backward, and tab."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { PaginationDocsDemo } from "@/app/docs/_components/demos/pagination-demo";
+
+
+Pagination with navigation page numbers. The sensory-ui Pagination plays navigation sounds for forward, backward, and tab interactions, giving clear directional feedback.
+
+**Pattern:** Single-sound parts (`PaginationLink` + `PaginationPrevious` + `PaginationNext`)
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <PaginationDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-pagination
+```
+
+## Import
+
+```tsx
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/sensory-ui/pagination";
+```
+
+## Sound Props
+
+Each part carries its own `sound` prop.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` (PaginationLink) | `SoundRole \| false` | `"navigation.tab"` | Sound played when a page number is clicked. |
+| `sound` (PaginationPrevious) | `SoundRole \| false` | `"navigation.backward"` | Sound played when going to the previous page. |
+| `sound` (PaginationNext) | `SoundRole \| false` | `"navigation.forward"` | Sound played when going to the next page. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`navigation.forward` for next, `navigation.backward` for previous, `navigation.tab` for page number.
+
+## Usage
+
+```tsx
+<Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious href="#" />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="#">1</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationNext href="#" />
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
+```
+
+### Custom sounds
+
+```tsx
+<PaginationLink href="#" sound="interaction.tap" volume={0.7}>
+  1
+</PaginationLink>
+```
+
+### Disable sounds
+
+```tsx
+<PaginationPrevious href="#" sound={false} />
+<PaginationLink href="#" sound={false}>1</PaginationLink>
+<PaginationNext href="#" sound={false} />
+```
+
+## Customizations
+
+### Blog pagination
+
+```tsx
+<PaginationPrevious href="#" volume={0.6} />
+<PaginationNext href="#" volume={0.6} />
+{/* Quieter for content browsing */}
+```
+
+### Dashboard pagination
+
+```tsx
+<PaginationLink href="#" sound="navigation.tab" volume={0.5}>
+  1
+</PaginationLink>
+{/* Tab-like feel for data tables */}
+```
+
+## Default Props
+
+| Part | Prop | Value |
+|------|------|-------|
+| PaginationLink | `sound` | `"navigation.tab"` |
+| PaginationPrevious | `sound` | `"navigation.backward"` |
+| PaginationNext | `sound` | `"navigation.forward"` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Blog articles | `navigation.forward` / `navigation.backward` | Directional page turns |
+| Data tables | `navigation.tab` | Tab-like page switching |
+| Search results | `navigation.forward` | Forward progression |
+| Silent browsing | `false` | When sounds distract from content |
+
+## When to Use
+
+- **Blog pagination** — Article lists, blog archives
+- **Data tables** — Large dataset pagination
+- **Search results** — Multi-page result sets
+- **E-commerce** — Product listing pages
+
+### Avoid sound on
+
+- Pagination with very few pages
+- Infinite scroll (no discrete page changes)
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Next page | `navigation.forward` |
+| Previous page | `navigation.backward` |
+| Page number select | `navigation.tab` |
+
+## shadcn/ui Reference
+
+View the original [Pagination](https://ui.shadcn.com/docs/components/pagination) documentation.

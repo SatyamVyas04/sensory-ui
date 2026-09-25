@@ -1,0 +1,30 @@
+{
+  "title": "Components",
+  "defaultOpen": false,
+  "pages": [
+    "accordion",
+    "alert-dialog",
+    "button",
+    "carousel",
+    "checkbox",
+    "collapsible",
+    "command",
+    "context-menu",
+    "dialog",
+    "drawer",
+    "dropdown-menu",
+    "menubar",
+    "navigation-menu",
+    "pagination",
+    "popover",
+    "radio-group",
+    "select",
+    "sheet",
+    "sidebar",
+    "slider",
+    "switch",
+    "tabs",
+    "toggle",
+    "toggle-group"
+  ]
+}

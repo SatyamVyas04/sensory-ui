@@ -1,0 +1,150 @@
+---
+title: "Toggle Group"
+description: "A set of two-state buttons that can be toggled on or off. Plays a toggle sound."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ToggleGroupDocsDemo } from "@/app/docs/_components/demos/toggle-group-demo";
+
+
+A set of two-state buttons that can be toggled on or off. The sensory-ui Toggle Group plays a toggle sound when items are selected, confirming the selection change.
+
+**Pattern:** Single-sound
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <ToggleGroupDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-toggle-group
+```
+
+## Import
+
+```tsx
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+  toggleGroupItemVariants,
+} from "@/components/ui/sensory-ui/toggle-group";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.toggle"` | Sound played on selection change. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.toggle`
+
+## Usage
+
+```tsx
+<ToggleGroup type="multiple">
+  <ToggleGroupItem value="bold" aria-label="Toggle bold">
+    B
+  </ToggleGroupItem>
+  <ToggleGroupItem value="italic" aria-label="Toggle italic">
+    I
+  </ToggleGroupItem>
+  <ToggleGroupItem value="underline" aria-label="Toggle underline">
+    U
+  </ToggleGroupItem>
+</ToggleGroup>
+```
+
+### Custom sounds
+
+```tsx
+<ToggleGroup type="single" sound="interaction.confirm" volume={0.7}>
+  {/* ... */}
+</ToggleGroup>
+```
+
+### Disable sounds
+
+```tsx
+<ToggleGroup type="single" sound={false}>
+  {/* ... */}
+</ToggleGroup>
+```
+
+## Customizations
+
+### Text formatting
+
+```tsx
+<ToggleGroup type="multiple" sound="interaction.toggle">
+  <ToggleGroupItem value="bold">B</ToggleGroupItem>
+  <ToggleGroupItem value="italic">I</ToggleGroupItem>
+  <ToggleGroupItem value="underline">U</ToggleGroupItem>
+</ToggleGroup>
+```
+
+### View switcher
+
+```tsx
+<ToggleGroup type="single" defaultValue="list" sound="navigation.tab">
+  <ToggleGroupItem value="list">
+    <IconList className="size-4" />
+  </ToggleGroupItem>
+  <ToggleGroupItem value="grid">
+    <IconGrid className="size-4" />
+  </ToggleGroupItem>
+</ToggleGroup>
+```
+
+### Size selector
+
+```tsx
+<ToggleGroup type="single" defaultValue="md" sound="interaction.confirm">
+  <ToggleGroupItem value="sm">S</ToggleGroupItem>
+  <ToggleGroupItem value="md">M</ToggleGroupItem>
+  <ToggleGroupItem value="lg">L</ToggleGroupItem>
+</ToggleGroup>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"interaction.toggle"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Text formatting | `interaction.toggle` | Standard state change |
+| View switcher | `navigation.tab` | Tab-like switching |
+| Size selector | `interaction.confirm` | Confirms selection |
+| Silent multi-select | `false` | For rapid selection |
+
+## When to Use
+
+- **Formatting toolbars** — Bold, italic, underline groups
+- **View switchers** — List/grid/timeline views
+- **Size selectors** — S/M/L options
+- **Multi-select options** — Tag or category selection
+
+### Avoid sound on
+
+- Toggle groups with many items (sound on every selection)
+- Toggle groups that auto-apply (sound may feel premature)
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Item selected/deselected | `interaction.toggle` |
+
+## shadcn/ui Reference
+
+View the original [Toggle Group](https://ui.shadcn.com/docs/components/toggle-group) documentation.

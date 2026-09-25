@@ -1,11 +1,11 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { PosthogInit } from "@/posthog";
 import "./globals.css";
 
@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 const siteUrl = "https://sensory-ui.com";
 const siteTitle = "sensory-ui";
 const siteDescription =
-  "Add semantic sound to your shadcn/ui components with a single prop. 17 sound cues, 25 React components. Web Audio API powered, zero audio files.";
+  "Add semantic sound to your shadcn/ui components with a single prop. 17 sound cues, 24 React components. Web Audio API powered, zero audio files.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -126,6 +126,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <link
+        as="image"
+        fetchPriority="high"
+        href="/hero-background-light.webp"
+        media="(prefers-color-scheme: light)"
+        rel="preload"
+      />
+      <link
+        as="image"
+        fetchPriority="high"
+        href="/hero-background-dark.webp"
+        media="(prefers-color-scheme: dark)"
+        rel="preload"
+      />
       <body
         className={`${geistMono.variable} bg-size-[10px_10px] bg-fixed font-sans antialiased`}
         style={{
@@ -133,16 +147,17 @@ export default function RootLayout({
             "repeating-linear-gradient(45deg,var(--secondary) 0, var(--background) 1px,transparent 0,transparent 50%)",
         }}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          disableTransitionOnChange
-          enableSystem
+        <RootProvider
+          search={{
+            options: {
+              api: "/api/search",
+            },
+          }}
         >
           <TooltipProvider>
             <SensoryUIProvider
               config={{
-                theme: "arcade",
+                theme: "glass",
                 volume: 0.75,
                 categories: {
                   interaction: true,
@@ -162,7 +177,7 @@ export default function RootLayout({
               <PosthogInit />
             </SensoryUIProvider>
           </TooltipProvider>
-        </ThemeProvider>
+        </RootProvider>
       </body>
     </html>
   );

@@ -1,0 +1,257 @@
+---
+title: "Navigation Blocks"
+description: "Sound-enhanced navigation bars with link feedback, mobile menus, and breadcrumb trails."
+---
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { NavbarBlockLive } from "@/app/docs/_components/demos/blocks/navbar-block-live";
+import { BreadcrumbBlockLive } from "@/app/docs/_components/demos/blocks/breadcrumb-block-live";
+import { TabBarBlockLive } from "@/app/docs/_components/demos/blocks/tab-bar-block-live";
+
+
+
+Navigation elements with tasteful sound feedback. Each link click, menu toggle, and route change gets a subtle audio cue that confirms the interaction without being distracting.
+
+---
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button SatyamVyas04/sensory-ui/sensory-ui-sheet SatyamVyas04/sensory-ui/sensory-ui-tabs
+```
+
+## Navbar with Sound-Enhanced Links
+
+A responsive navigation bar where each link plays a soft tap on click, and the mobile menu toggle plays an open/close sound.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Desktop links, mobile sheet, dead-end demo links">
+  <NavbarBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Nav links | `navigation.forward` | Subtle forward navigation cue |
+| Mobile menu toggle | `overlay.open` / `overlay.close` | Overlay open/close feedback |
+| Active page indicator | — | No sound (visual only) |
+
+### Code
+
+```tsx
+"use client";
+
+import Link from "next/link";
+import { Button } from "@/components/ui/sensory-ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sensory-ui/sheet";
+import { IconMenu2, IconX } from "@tabler/icons-react";
+
+const links = [
+  { label: "Home", href: "/" },
+  { label: "Features", href: "/features" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Docs", href: "/docs" },
+];
+
+export function NavbarBlock() {
+  return (
+    <nav className="flex items-center justify-between border-b px-6 py-4">
+      <Link href="/" className="text-lg font-bold">
+        Acme
+      </Link>
+
+      {/* Desktop links */}
+      <div className="hidden items-center gap-6 md:flex">
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            {link.label}
+          </Link>
+        ))}
+      </div>
+
+      {/* Mobile menu */}
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" className="md:hidden">
+            <IconMenu2 className="size-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right">
+          <SheetTitle>Menu</SheetTitle>
+          <div className="flex flex-col gap-4 pt-8">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-lg font-medium"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </SheetContent>
+      </Sheet>
+    </nav>
+  );
+}
+```
+
+### Customization
+
+```tsx
+// Use a different sound for nav links
+<Link href={link.href} className="...">
+  {link.label}
+</Link>
+// Note: Links don't have a sound prop directly.
+// Use a Button or wrapping element for sound:
+
+<Button variant="ghost" asChild sound="navigation.tab">
+  <Link href={link.href}>Pricing</Link>
+</Button>
+```
+
+### When to Use
+
+- Marketing sites with 3–5 top-level links
+- Documentation sites with sidebar + top navbar
+- SaaS dashboards with primary navigation
+- Any site where you want subtle navigation feedback
+
+### shadcn/ui Reference
+
+- [Sheet](/docs/components/sheet)
+- [Button](/docs/components/button)
+
+---
+
+## Breadcrumb with Back Navigation
+
+A breadcrumb trail where the back arrow plays `navigation.backward` and each crumb plays `navigation.tab`.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Back button plus tab sounded crumbs">
+  <BreadcrumbBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Back arrow | `navigation.backward` | Clear backward navigation cue |
+| Breadcrumb links | `navigation.tab` | Subtle tab-like navigation |
+
+### Code
+
+```tsx
+"use client";
+
+import Link from "next/link";
+import { Button } from "@/components/ui/sensory-ui/button";
+import { IconChevronLeft } from "@tabler/icons-react";
+
+const crumbs = [
+  { label: "Home", href: "/" },
+  { label: "Components", href: "/docs/components" },
+  { label: "Button", href: "/docs/components/button" },
+];
+
+export function BreadcrumbBlock() {
+  return (
+    <nav className="flex items-center gap-2 text-sm text-muted-foreground">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="size-8"
+        sound="navigation.backward"
+      >
+        <IconChevronLeft className="size-4" />
+      </Button>
+
+      {crumbs.map((crumb, i) => (
+        <span key={crumb.href} className="flex items-center gap-2">
+          {i > 0 && <span className="text-muted-foreground/50">/</span>}
+          <Link
+            href={crumb.href}
+            className="hover:text-foreground"
+          >
+            {crumb.label}
+          </Link>
+        </span>
+      ))}
+    </nav>
+  );
+}
+```
+
+### When to Use
+
+- Documentation sites with deep hierarchies
+- E-commerce category browsing
+- Dashboard with nested routes
+- Any UI where users navigate back and forth
+
+### shadcn/ui Reference
+
+- [Button](/docs/components/button)
+
+---
+
+## Tabbed Navigation Bar
+
+A horizontal tab bar using `navigation.tab` for switching between sections.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Four tabs, one tab sound">
+  <TabBarBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Tab switches | `navigation.tab` | Consistent tab switching cue |
+
+### Code
+
+```tsx
+"use client";
+
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/sensory-ui/tabs";
+
+export function TabNavBarBlock() {
+  return (
+    <Tabs defaultValue="overview">
+      <TabsList>
+        <TabsTrigger value="overview">Overview</TabsTrigger>
+        <TabsTrigger value="features">Features</TabsTrigger>
+        <TabsTrigger value="pricing">Pricing</TabsTrigger>
+        <TabsTrigger value="reviews">Reviews</TabsTrigger>
+      </TabsList>
+    </Tabs>
+  );
+}
+```
+
+### When to Use
+
+- Product pages with multiple sections
+- Dashboard with switchable views
+- Settings pages with category tabs
+- Any horizontal navigation between content panels
+
+### shadcn/ui Reference
+
+- [Tabs](/docs/components/tabs)

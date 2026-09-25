@@ -1,0 +1,146 @@
+---
+title: "Accordion"
+description: "A vertically stacked set of interactive headings that reveal content areas. Plays expand and collapse sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { AccordionDocsDemo } from "@/app/docs/_components/demos/accordion-demo";
+
+
+A vertically stacked set of interactive headings that reveal content areas. The sensory-ui Accordion plays distinct sounds when items expand and collapse, reinforcing the spatial movement of content.
+
+**Pattern:** Expand / collapse
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <AccordionDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-accordion
+```
+
+## Import
+
+```tsx
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/sensory-ui/accordion";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `expandSound` | `SoundRole \| false` | `"overlay.expand"` | Sound played when an item expands. |
+| `collapseSound` | `SoundRole \| false` | `"overlay.collapse"` | Sound played when an item collapses. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.expand` on expand, `overlay.collapse` on collapse.
+
+## Usage
+
+```tsx
+<Accordion type="single" collapsible>
+  <AccordionItem value="item-1">
+    <AccordionTrigger>Is it accessible?</AccordionTrigger>
+    <AccordionContent>
+      Yes. It adheres to the WAI-ARIA design pattern.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+### Custom sounds
+
+```tsx
+<Accordion
+  type="single"
+  collapsible
+  expandSound="interaction.confirm"
+  collapseSound="interaction.subtle"
+  volume={0.8}
+>
+  {/* ... */}
+</Accordion>
+```
+
+### Disable sounds
+
+```tsx
+<Accordion type="single" collapsible expandSound={false} collapseSound={false}>
+  {/* ... */}
+</Accordion>
+```
+
+## Customizations
+
+### FAQ section
+
+```tsx
+<Accordion type="multiple" expandSound="interaction.tap" collapseSound="interaction.subtle">
+  <AccordionItem value="faq-1">
+    <AccordionTrigger>What is sensory-ui?</AccordionTrigger>
+    <AccordionContent>A sound layer for shadcn/ui components.</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+### Settings panel
+
+```tsx
+<Accordion type="single" expandSound="overlay.expand" collapseSound="overlay.collapse">
+  {/* Collapsible settings sections */}
+</Accordion>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `expandSound` | `"overlay.expand"` |
+| `collapseSound` | `"overlay.collapse"` |
+| `volume` | `1` |
+| `type` | `"single"` |
+| `collapsible` | `true` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| FAQ sections | `overlay.expand` / `overlay.collapse` | Default — clear spatial cue |
+| Settings panels | `interaction.tap` / `interaction.subtle` | Lighter, less prominent |
+| Navigation menus | `navigation.forward` / `navigation.backward` | Directional movement |
+| Feature reveals | `interaction.confirm` / `interaction.subtle` | Positive reveal, gentle close |
+
+## When to Use
+
+- **FAQ sections** — Frequently asked questions with expandable answers
+- **Settings panels** — Collapsible settings categories
+- **Content previews** — Show/hide detailed content
+- **Navigation menus** — Collapsible sidebar sections
+- **Product details** — Expandable specifications or descriptions
+
+### Avoid sound on
+
+- Accordions with many items open simultaneously (sound clutter)
+- Accordions used for critical navigation (use dedicated nav components)
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Item expands | `overlay.expand` |
+| Item collapses | `overlay.collapse` |
+
+## shadcn/ui Reference
+
+View the original [Accordion](https://ui.shadcn.com/docs/components/accordion) documentation.

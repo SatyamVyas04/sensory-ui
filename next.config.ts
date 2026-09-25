@@ -1,5 +1,5 @@
+import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
-import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
@@ -11,6 +11,23 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  redirects: async () => [
+    {
+      source: "/docs/concepts/:slug*",
+      destination: "/docs/core/:slug*",
+      permanent: true,
+    },
+    {
+      source: "/docs/registry",
+      destination: "/docs/core/registry",
+      permanent: true,
+    },
+    {
+      source: "/docs/testing",
+      destination: "/docs/core/testing",
+      permanent: true,
+    },
+  ],
   headers: async () => [
     {
       source: "/(.*)",
@@ -32,12 +49,6 @@ const nextConfig: NextConfig = {
   ],
 };
 
-const withMDX = createMDX({
-  extension: /\.mdx$/,
-  options: {
-    remarkPlugins: [["remark-gfm", { strict: true, throwOnError: true }]],
-    rehypePlugins: [],
-  },
-});
+const withMDX = createMDX();
 
 export default withMDX(nextConfig);

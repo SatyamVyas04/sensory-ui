@@ -1,0 +1,14 @@
+stateDiagram-v2
+    direction LR
+    [*] --> Tap : user event
+    Tap --> Command : playSound(role)
+    Command --> Policy : enabled? volume? motion?
+    Policy --> Resolved : theme + overrides
+    Resolved --> Playing : synthesizer / buffer
+    Playing --> [*] : stop()
+    class Tap,Command,Policy,Resolved step
+    class Playing accent
+    classDef actor fill:#fff1f2,stroke:#e11d48,color:#881337
+    classDef step fill:#ffffff,stroke:#d6d3d1,color:#44403c
+    classDef accent fill:#e11d48,stroke:#881337,color:#ffffff
+    classDef go fill:#dcfce7,stroke:#15803d,color:#14532d

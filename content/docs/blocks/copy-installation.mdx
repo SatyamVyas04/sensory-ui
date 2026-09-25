@@ -1,0 +1,346 @@
+---
+title: "Copy Installation"
+description: "Code blocks with copy-to-clipboard buttons that play a satisfying success sound on copy."
+---
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { CodeCopyBlockLive } from "@/app/docs/_components/demos/blocks/code-copy-block-live";
+import { MultilineCodeBlockLive } from "@/app/docs/_components/demos/blocks/multiline-code-block-live";
+import { InstallCommandBlockLive } from "@/app/docs/_components/demos/blocks/install-command-block-live";
+
+
+
+Code blocks with copy-to-clipboard functionality enhanced with audio feedback. A subtle tap on click and a success chime on copy confirm the action without visual clutter.
+
+---
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button
+```
+
+## Code Block with Copy Button
+
+A code snippet with a copy button that plays `notification.success` when the code is copied to the clipboard.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Copy this page's install command for real">
+  <CodeCopyBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Copy button click | `interaction.tap` | Action initiation |
+| Copy success | `notification.success` | Confirmation that code was copied |
+| Copy error | `notification.error` | Fallback if clipboard API fails |
+
+### Code
+
+```tsx
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/sensory-ui/button";
+import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
+import { IconCheck, IconCopy } from "@tabler/icons-react";
+
+export function CodeCopyBlock() {
+  const [copied, setCopied] = useState(false);
+  const { playSound } = useSensoryUI();
+  const timer = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (timer.current) {
+      window.clearTimeout(timer.current);
+    }
+  }, []);
+
+  const code = `npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button`;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      playSound("notification.success").catch(() => undefined);
+    } catch {
+      playSound("notification.error").catch(() => undefined);
+    }
+    if (timer.current) {
+      window.clearTimeout(timer.current);
+    }
+    timer.current = window.setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="w-full max-w-md overflow-hidden rounded-lg border bg-muted/30 font-mono text-sm">
+      <div className="flex items-center justify-between gap-3 px-4 py-3">
+        <code className="truncate text-foreground">{code}</code>
+        <Button
+          aria-label="Copy install command"
+          className="size-8 shrink-0"
+          onClick={handleCopy}
+          size="icon"
+          sound="interaction.tap"
+          variant="ghost"
+        >
+          {copied ? (
+            <IconCheck className="size-4 text-green-500" />
+          ) : (
+            <IconCopy className="size-4" />
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
+```
+
+### Customization
+
+```tsx
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/sensory-ui/button";
+import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
+import { IconCheck, IconCopy } from "@tabler/icons-react";
+
+export function MultiLineCodeBlock() {
+  const [copied, setCopied] = useState(false);
+  const { playSound } = useSensoryUI();
+  const timer = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (timer.current) {
+      window.clearTimeout(timer.current);
+    }
+  }, []);
+
+  const code = `import { Button } from "@/components/ui/sensory-ui/button";
+
+export function SaveButton() {
+  return (
+    <Button sound="interaction.confirm" onClick={handleSave}>
+      Save
+    </Button>
+  );
+}`;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      playSound("notification.success").catch(() => undefined);
+    } catch {
+      playSound("notification.error").catch(() => undefined);
+    }
+    if (timer.current) {
+      window.clearTimeout(timer.current);
+    }
+    timer.current = window.setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="w-full max-w-md overflow-hidden rounded-lg border">
+      <div className="flex items-center justify-between border-b bg-muted/30 px-4 py-2">
+        <span className="font-mono text-xs text-muted-foreground">button.tsx</span>
+        <Button
+          aria-label="Copy code"
+          className="size-7"
+          onClick={handleCopy}
+          size="icon"
+          sound="interaction.tap"
+          variant="ghost"
+        >
+          {copied ? (
+            <IconCheck className="size-3.5 text-green-500" />
+          ) : (
+            <IconCopy className="size-3.5" />
+          )}
+        </Button>
+      </div>
+      <pre className="overflow-x-auto p-4 font-mono text-xs leading-relaxed">
+        <code>{code}</code>
+      </pre>
+    </div>
+  );
+}
+```
+
+### When to Use
+
+- Documentation sites with installation commands
+- API reference pages with code samples
+- README-style pages with copy-paste snippets
+- Any code block users need to copy
+
+### shadcn/ui Reference
+
+- [Button](/docs/components/button)
+
+---
+
+## Multi-Line Code Block with Line Numbers
+
+A larger code block with syntax highlighting and a copy button.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="File header plus copy button">
+  <MultilineCodeBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Copy button | `interaction.tap` → `notification.success` | Click + confirm sequence |
+
+### Code
+
+```tsx
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/sensory-ui/button";
+import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
+import { IconCheck, IconTerminal } from "@tabler/icons-react";
+
+export function InstallCommandBlock() {
+  const [copied, setCopied] = useState(false);
+  const { playSound } = useSensoryUI();
+  const timer = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (timer.current) {
+      window.clearTimeout(timer.current);
+    }
+  }, []);
+
+  const command = "npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button";
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(command);
+      setCopied(true);
+      playSound("notification.success").catch(() => undefined);
+    } catch {
+      playSound("notification.error").catch(() => undefined);
+    }
+    if (timer.current) {
+      window.clearTimeout(timer.current);
+    }
+    timer.current = window.setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="flex w-full max-w-md items-center gap-3 rounded-lg border bg-muted/30 px-4 py-3 font-mono text-xs">
+      <IconTerminal className="size-4 shrink-0 text-muted-foreground" />
+      <span className="flex-1 truncate text-foreground">{command}</span>
+      <Button
+        className="shrink-0 gap-1.5"
+        onClick={handleCopy}
+        size="sm"
+        sound="interaction.tap"
+        variant="ghost"
+      >
+        {copied ? (
+          <>
+            <IconCheck className="size-3.5" />
+            Copied
+          </>
+        ) : (
+          "Copy"
+        )}
+      </Button>
+    </div>
+  );
+}
+```
+
+### When to Use
+
+- Component documentation with usage examples
+- Tutorial pages with multi-step code
+- Any code sample longer than 3–4 lines
+
+### shadcn/ui Reference
+
+- [Button](/docs/components/button)
+
+---
+
+## Installation Command Block
+
+A dedicated block for installation commands with a prominent copy button and satisfying feedback.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Terminal row with copy confirmation">
+  <InstallCommandBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Copy click | `interaction.tap` | Immediate feedback |
+| Copy confirmed | `notification.success` | Confirmation |
+
+### Code
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/sensory-ui/button";
+import { IconCheck, IconTerminal } from "@tabler/icons-react";
+
+export function InstallCommandBlock() {
+  const [copied, setCopied] = useState(false);
+
+  const command = "npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui";
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(command);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="flex items-center gap-3 rounded-lg border bg-muted/30 px-4 py-3 font-mono text-sm">
+      <IconTerminal className="size-4 shrink-0 text-muted-foreground" />
+      <span className="flex-1 text-foreground">{command}</span>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="shrink-0 gap-1.5"
+        sound={copied ? "notification.success" : "interaction.tap"}
+        onClick={handleCopy}
+      >
+        {copied ? (
+          <>
+            <IconCheck className="size-3.5" />
+            Copied
+          </>
+        ) : (
+          "Copy"
+        )}
+      </Button>
+    </div>
+  );
+}
+```
+
+### When to Use
+
+- Getting started guides
+- Quick reference sections
+- Anywhere a single command needs to be copied
+
+### shadcn/ui Reference
+
+- [Button](/docs/components/button)

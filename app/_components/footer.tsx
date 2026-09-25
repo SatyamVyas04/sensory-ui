@@ -106,18 +106,18 @@ export function Footer() {
         </div>
 
         {/* Giant branding text */}
-        <div className="mt-16 sm:mt-24">
-          <p className="select-none text-right font-serif text-7xl text-white leading-none tracking-tight sm:text-8xl md:text-9xl lg:text-[200px]">
+        <div className="mt-12 sm:mt-24">
+          <p className="select-none break-words text-right font-serif text-5xl text-white leading-none tracking-tight sm:text-8xl md:text-9xl lg:text-[200px] min-[400px]:text-7xl">
             sensory-ui
           </p>
         </div>
 
         {/* Bottom: links + theme toggle + copyright */}
-        <div className="flex flex-col items-start justify-between gap-4 border-white/15 border-t py-6 sm:flex-row sm:items-center">
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-white/60 text-xs">
+        <div className="flex flex-col items-start justify-between gap-3 border-white/15 border-t py-5 sm:flex-row sm:items-center sm:gap-4 sm:py-6">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-white/60 sm:gap-x-5 sm:text-xs">
             <Link
               className="transition-colors hover:text-white"
-              href="https://github.com/SatyamVyas04/sensory-ui#readme"
+              href="/docs"
               onClick={() =>
                 posthog.capture("footer_link_clicked", { link: "docs" })
               }
@@ -148,7 +148,7 @@ export function Footer() {
             </a>
           </div>
 
-          <div className="flex items-center gap-2 text-white/40 text-xs">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-white/40 sm:gap-2 sm:text-xs">
             &copy; {new Date().getFullYear()} sensory-ui. Built by{" "}
             <a
               className="-translate-x-1 underline underline-offset-2 transition-colors hover:text-white"

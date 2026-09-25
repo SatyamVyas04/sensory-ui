@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "fumadocs-ui/css/generated/glass.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -180,5 +183,23 @@
   ::selection,
   ::-moz-selection {
     @apply bg-primary text-white;
+  }
+  /* Docs typography — Serif for headings, Sans for body.
+     `.prose` is only rendered by Fumadocs docs pages. */
+  .prose {
+    font-family: var(--font-sans);
+  }
+  .prose :is(h1, h2, h3, h4, h5, h6),
+  h1.text-\[1\.75em\] {
+    font-family: var(--font-serif);
+  }
+}
+
+@layer utilities {
+  /* Quick-link cards: bigger, bolder headings */
+  [data-card] > h3 {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 700;
   }
 }

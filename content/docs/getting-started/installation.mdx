@@ -1,0 +1,227 @@
+---
+title: "Installation"
+description: "Install sensory-ui and add semantic sound to your shadcn/ui components."
+---
+
+Get sensory-ui running in your project in a few minutes. The entire process uses the [shadcn CLI](https://ui.shadcn.com/docs/cli) — no custom registry server required.
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+- **Next.js 13.4+** (App Router or Pages Router)
+- **shadcn/ui** already initialised in your project (`components.json` present)
+- **Node.js 18+**
+
+<Callout type="tip">
+  If you haven't set up shadcn/ui yet, run `npx shadcn@latest init` first and
+  follow the prompts.
+</Callout>
+
+## Setup
+
+<Steps>
+
+### Step 1: Install one component
+
+Start with just a button — no reason to install all 24 components before you need them:
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button
+```
+
+This pulls the core engine (provider, config, all 9 sound packs) plus the Button. The registry is served directly from the public GitHub repository via `registry.json` — no custom registry server or URL required.
+
+<Callout type="info">
+  Add more pieces as you need them (`sensory-ui-dialog`, `sensory-ui-tabs`,
+  …) or install everything at once with
+  `SatyamVyas04/sensory-ui/sensory-ui`. One component is the recommended
+  starting point.
+</Callout>
+
+### Step 2: Choose a sound pack
+
+sensory-ui ships with 9 sound packs. The default is `aero` (clean, modern SaaS — filtered tones, balanced):
+
+| Pack | Character |
+| --- | --- |
+| `soft` | Warm, minimal — gentle sine tones, smooth fades |
+| `aero` | Clean, modern SaaS — filtered tones, balanced _(default)_ |
+| `arcade` | 8-bit chiptune — square waves, stepped pitch, NES vibe |
+| `organic` | Natural, earthy — soft noise bursts, warm harmonics |
+| `glass` | Crystalline, delicate — bright resonant tones |
+| `industrial` | Mechanical, bold — raw waveforms, metallic edge |
+| `minimal` | Ultra-clean — pure tones, maximum restraint |
+| `retro` | Synthwave — dual detuned sawtooth, Moog vibe |
+| `crisp` | Precise, modern — clean attacks, tight envelopes |
+
+Pass it to the provider: `config={{ theme: "arcade" }}` (or keep a `theme` field in your own `sensory.config.js` and spread it into the provider — see [Configuration](/docs/getting-started/configuration)). All packs share the same roles, so switching is a one-line `theme` change.
+
+### Step 3: Check the files
+
+With the Button install, only `button.tsx` lands alongside the core — other components appear as you add them:
+
+<Files>
+  <Folder name="components/ui/sensory-ui" defaultOpen>
+    <Folder name="config" defaultOpen>
+      <File name="engine.ts" />
+      <File name="provider.tsx" />
+      <File name="config.ts" />
+      <File name="sound-roles.ts" />
+      <File name="registry.ts" />
+      <File name="use-play-sound.ts" />
+    </Folder>
+    <Folder name="sounds" defaultOpen>
+      <Folder name="core">
+        <File name="tunes.ts" />
+        <File name="instruments.ts" />
+        <File name="factory.ts" />
+        <File name="effects.ts" />
+        <File name="pack-generator.ts" />
+      </Folder>
+      <File name="packs.ts" />
+    </Folder>
+    <File name="button.tsx" />
+    <File name="dialog.tsx" />
+    <File name="tabs.tsx" />
+    <File name="… 21 more components" />
+  </Folder>
+</Files>
+
+Audio is generated **programmatically** via the Web Audio API inside `sensory-ui/sounds/` — no files in `public/`, no asset serving, no base64 blobs. `sensory.config.js` is an optional user-owned convention: if you create one at the project root, spread it into the provider (`<SensoryUIProvider config={config}>`); deleting it simply falls back to the built-in defaults.
+
+### Step 4: Wrap the app in SensoryUIProvider
+
+The provider must wrap the entire component tree so the `AudioContext` persists across navigations and all components have access to `playSound`.
+
+<Tabs items={["App Router", "Pages Router"]}>
+  <Tab value="App Router">
+    ```tsx
+    // app/layout.tsx
+    import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
+    import type { ReactNode } from "react";
+
+    export default function RootLayout({ children }: { children: ReactNode }) {
+      return (
+        <html lang="en">
+          <body>
+            <SensoryUIProvider>{children}</SensoryUIProvider>
+          </body>
+        </html>
+      );
+    }
+    ```
+  </Tab>
+  <Tab value="Pages Router">
+    ```tsx
+    // pages/_app.tsx
+    import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
+    import type { AppProps } from "next/app";
+
+    export default function App({ Component, pageProps }: AppProps) {
+      return (
+        <SensoryUIProvider>
+          <Component {...pageProps} />
+        </SensoryUIProvider>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<Callout type="tip">
+  The provider is a client component. Your root layout can remain a server
+  component — Next.js allows client components to receive and render server
+  component children transparently.
+</Callout>
+
+### Step 5: Use a sound-enabled component
+
+Import any component directly from `sensory-ui` and pass a `sound` prop:
+
+```tsx
+import { Button } from "@/components/ui/sensory-ui/button";
+
+export function SaveButton() {
+  return (
+    <Button sound="interaction.tap" onClick={handleSave}>
+      Save
+    </Button>
+  );
+}
+```
+
+The `sound` prop is the **only required change** from standard shadcn/ui usage. All other props, variants, and behaviour are identical.
+
+### Step 6: Verify installation
+
+Open the browser devtools console and look for any sensory-ui warnings. In development mode, the engine logs a warning if a sound cannot be resolved.
+
+Validate the GitHub registry payload from the CLI:
+
+```bash
+npx shadcn@latest registry validate SatyamVyas04/sensory-ui
+npx shadcn@latest list SatyamVyas04/sensory-ui
+```
+
+Or build locally to validate:
+
+```bash
+bun run registry:build
+```
+
+Temporarily set `volume: 1.0` in your provider config and click a Button with `sound="interaction.tap"`. You should hear the tap sound.
+
+If you hear nothing:
+
+1. Check that `SensoryUIProvider` wraps the component you are testing
+2. Check that the config has `enabled: true`
+3. Check that the sound modules were installed correctly (open `components/ui/sensory-ui/sounds/packs.ts` and verify it exports sound pack objects)
+4. Check that the click is a direct user gesture (not triggered on mount)
+5. Check that your browser has not blocked the `AudioContext` — Chrome suspends it until a user gesture. The engine resumes it automatically on the first `playSound()` call.
+
+<Callout type="warning">
+  Browsers suspend `AudioContext` until a user gesture. The engine resumes it
+  automatically on the first `playSound()` call, but sounds triggered on mount
+  (without a click/tap) will be silent.
+</Callout>
+
+</Steps>
+
+## Updating sensory-ui
+
+To update the engine and primitives to a newer version:
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui --overwrite
+```
+
+The `--overwrite` flag replaces the engine, config loader, primitive files, and the embedded sound modules in `sounds/*.ts`. No user-owned file is ever overwritten automatically.
+
+## Uninstalling
+
+There is no uninstall command. To remove sensory-ui:
+
+1. Delete `components/ui/sensory-ui/`
+2. Delete `sensory.config.js` (if you created one)
+3. Remove `<SensoryUIProvider>` from the root layout
+4. Revert any components that import from `@/components/ui/sensory-ui/*` back to their original shadcn imports
+
+## File Ownership Model
+
+| File/Directory | Owned by | Auto-updated |
+| --- | --- | --- |
+| `components/ui/sensory-ui/config/engine.ts` | sensory-ui | On `add --overwrite` |
+| `components/ui/sensory-ui/config/provider.tsx` | sensory-ui | On `add --overwrite` |
+| `components/ui/sensory-ui/*.tsx` | sensory-ui | On `add --overwrite` |
+| `components/ui/sensory-ui/config/registry.ts` | sensory-ui | On `add --overwrite` |
+| `components/ui/sensory-ui/sounds/*.ts` | sensory-ui (all packs) | On `add --overwrite` |
+| `sensory.config.js` | **User** | Never (user-owned) |
+
+## Reference Links
+
+- [shadcn/ui Documentation](https://ui.shadcn.com/docs)
+- [shadcn CLI Reference](https://ui.shadcn.com/docs/cli)
+- [Next.js App Router](https://nextjs.org/docs/app)
+- [Next.js Pages Router](https://nextjs.org/docs/pages)
+- [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)

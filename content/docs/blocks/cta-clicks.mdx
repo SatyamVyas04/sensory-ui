@@ -1,0 +1,248 @@
+---
+title: "CTA Clicks"
+description: "Call-to-action buttons with satisfying confirmation sounds, loading states, and success feedback."
+---
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { CtaBlockLive } from "@/app/docs/_components/demos/blocks/cta-block-live";
+import { LoadingCtaBlockLive } from "@/app/docs/_components/demos/blocks/loading-cta-block-live";
+import { IconButtonsBlockLive } from "@/app/docs/_components/demos/blocks/icon-buttons-block-live";
+
+
+
+Call-to-action buttons are the most impactful places for sound feedback. A well-placed click sound on a primary CTA reinforces the user's decision and creates a satisfying interaction moment.
+
+---
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button
+```
+
+## Primary CTA with Confirmation Sound
+
+A prominent call-to-action that plays `interaction.confirm` instead of the default `interaction.tap` — a more rewarding sound for important actions.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Confirm, subtle, and tap CTAs side by side">
+  <CtaBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Primary CTA | `interaction.confirm` | Rewarding confirmation for important actions |
+| Secondary CTA | `interaction.subtle` | Lighter feedback for less prominent actions |
+| Ghost button | `interaction.tap` | Standard lightweight feedback |
+
+### Code
+
+```tsx
+"use client";
+
+import { Button } from "@/components/ui/sensory-ui/button";
+import { IconArrowRight, IconDownload } from "@tabler/icons-react";
+
+export function CTABlock() {
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <div className="flex items-center gap-3">
+        <Button variant="outline" sound="interaction.subtle">
+          Learn more
+        </Button>
+        <Button sound="interaction.confirm" className="gap-2">
+          Get started
+          <IconArrowRight className="size-4" />
+        </Button>
+      </div>
+
+      <Button variant="ghost" sound="interaction.tap" className="gap-2">
+        <IconDownload className="size-4" />
+        Download
+      </Button>
+    </div>
+  );
+}
+```
+
+### Customization
+
+```tsx
+// Use hero sound for the most important CTA
+<Button sound="hero.complete" className="text-lg">
+  Start free trial
+</Button>
+
+// Lower volume for less prominent CTAs
+<Button variant="outline" sound="interaction.subtle" volume={0.5}>
+  Learn more
+</Button>
+
+// Disable sound on secondary actions
+<Button variant="ghost" sound={false}>
+  Cancel
+</Button>
+```
+
+### Sound Selection Guide
+
+| CTA Type | Recommended Sound | Volume |
+|----------|-------------------|--------|
+| Primary (signup, purchase) | `interaction.confirm` | 0.8–1.0 |
+| Secondary (learn more) | `interaction.subtle` | 0.5–0.7 |
+| Destructive (delete, remove) | `notification.warning` | 0.7–0.9 |
+| Success moment (completed) | `hero.complete` | 0.6–0.8 |
+| Ghost / text link | `interaction.tap` | 0.4–0.6 |
+
+### When to Use
+
+- Landing page hero sections
+- Pricing page signup buttons
+- Checkout flow confirmation buttons
+- Any button that triggers an important user action
+
+### shadcn/ui Reference
+
+- [Button](/docs/components/button)
+
+---
+
+## Loading State with Sound Sequence
+
+A CTA that plays a subtle tick while loading, then a success sound on completion.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Click, watch it save, hear success">
+  <LoadingCtaBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Click to start | `interaction.tap` | Action initiation |
+| Loading spinner | — | No sound (continuous state) |
+| Success | `notification.success` | Completion feedback |
+
+### Code
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/sensory-ui/button";
+import { IconCheck, IconLoader2 } from "@tabler/icons-react";
+
+export function LoadingCTABlock() {
+  const [state, setState] = useState<"idle" | "loading" | "success">("idle");
+
+  const handleClick = () => {
+    setState("loading");
+    setTimeout(() => {
+      setState("success");
+      setTimeout(() => setState("idle"), 2000);
+    }, 1500);
+  };
+
+  return (
+    <Button
+      sound={state === "success" ? "notification.success" : "interaction.tap"}
+      onClick={handleClick}
+      disabled={state === "loading"}
+      className="gap-2"
+    >
+      {state === "idle" && "Save changes"}
+      {state === "loading" && (
+        <>
+          <IconLoader2 className="size-4 animate-spin" />
+          Saving...
+        </>
+      )}
+      {state === "success" && (
+        <>
+          <IconCheck className="size-4" />
+          Saved!
+        </>
+      )}
+    </Button>
+  );
+}
+```
+
+### When to Use
+
+- Form submission buttons
+- Save/edit actions
+- Any action with a perceivable loading state
+
+### shadcn/ui Reference
+
+- [Button](/docs/components/button)
+
+---
+
+## Icon Buttons with Sound
+
+Small icon-only buttons with appropriate sound levels.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Arrows, add, and destructive icon buttons">
+  <IconButtonsBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Action icons | `interaction.tap` | Standard feedback |
+| Close/dismiss | `overlay.close` | Dismissal feedback |
+| Navigation arrows | `navigation.forward` / `navigation.backward` | Directional cue |
+
+### Code
+
+```tsx
+"use client";
+
+import { Button } from "@/components/ui/sensory-ui/button";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconPlus,
+  IconTrash,
+} from "@tabler/icons-react";
+
+export function IconButtonBlock() {
+  return (
+    <div className="flex items-center gap-2">
+      <Button variant="outline" size="icon" sound="navigation.backward">
+        <IconChevronLeft className="size-4" />
+      </Button>
+      <Button variant="outline" size="icon" sound="navigation.forward">
+        <IconChevronRight className="size-4" />
+      </Button>
+      <div className="mx-2 h-6 w-px bg-border" />
+      <Button size="icon" sound="interaction.confirm">
+        <IconPlus className="size-4" />
+      </Button>
+      <Button variant="destructive" size="icon" sound="notification.warning">
+        <IconTrash className="size-4" />
+      </Button>
+    </div>
+  );
+}
+```
+
+### When to Use
+
+- Toolbars with icon-only actions
+- Pagination controls
+- Media player controls
+- Any compact UI where text labels aren't feasible
+
+### shadcn/ui Reference
+
+- [Button](/docs/components/button)

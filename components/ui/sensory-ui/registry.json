@@ -59,6 +59,10 @@
           "type": "registry:lib"
         },
         {
+          "path": "sounds/core/effects.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "sounds/core/pack-generator.ts",
           "type": "registry:lib"
         }

@@ -1,0 +1,158 @@
+---
+title: "Navigation Menu"
+description: "A collection of links for navigating a website. Plays open and tab sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { NavigationMenuDocsDemo } from "@/app/docs/_components/demos/navigation-menu-demo";
+
+
+A collection of links for navigating a website. The sensory-ui Navigation Menu plays sounds when menus open and when tabs change, reinforcing the navigation hierarchy.
+
+**Pattern:** Single-sound parts (`NavigationMenuTrigger` + `NavigationMenuLink`)
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <NavigationMenuDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-navigation-menu
+```
+
+## Import
+
+```tsx
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/sensory-ui/navigation-menu";
+```
+
+## Sound Props
+
+Each part carries its own `sound` prop — there is no root-level `closeSound`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` (NavigationMenuTrigger) | `SoundRole \| false` | `"overlay.open"` | Sound played when the trigger is clicked. |
+| `sound` (NavigationMenuLink) | `SoundRole \| false` | `"navigation.tab"` | Sound played when the link is clicked. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on trigger click, `navigation.tab` on link click.
+
+## Usage
+
+```tsx
+<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>Getting Started</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <NavigationMenuLink>Introduction</NavigationMenuLink>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>
+```
+
+### Custom sounds
+
+```tsx
+<NavigationMenuItem>
+  <NavigationMenuTrigger sound="interaction.tap">Docs</NavigationMenuTrigger>
+  <NavigationMenuContent>
+    <NavigationMenuLink sound="overlay.close" href="/docs">
+      Close
+    </NavigationMenuLink>
+  </NavigationMenuContent>
+</NavigationMenuItem>
+```
+
+### Disable sounds
+
+```tsx
+<NavigationMenuItem>
+  <NavigationMenuTrigger sound={false}>Docs</NavigationMenuTrigger>
+  <NavigationMenuContent>
+    <NavigationMenuLink sound={false} href="/docs">
+      Docs
+    </NavigationMenuLink>
+  </NavigationMenuContent>
+</NavigationMenuItem>
+```
+
+## Customizations
+
+### Documentation site nav
+
+```tsx
+<NavigationMenuItem>
+  <NavigationMenuTrigger sound="overlay.open">Docs</NavigationMenuTrigger>
+  <NavigationMenuContent>
+    <NavigationMenuLink href="/docs/getting-started/installation">
+      Getting Started
+    </NavigationMenuLink>
+  </NavigationMenuContent>
+</NavigationMenuItem>
+```
+
+### SaaS product nav
+
+```tsx
+<NavigationMenuItem>
+  {/* Tab-like navigation between product sections */}
+  <NavigationMenuTrigger sound="navigation.tab">Product</NavigationMenuTrigger>
+</NavigationMenuItem>
+```
+
+## Default Props
+
+| Part | Prop | Value |
+|------|------|-------|
+| NavigationMenuTrigger | `sound` | `"overlay.open"` |
+| NavigationMenuLink | `sound` | `"navigation.tab"` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Documentation nav | `overlay.open` / `navigation.tab` | Default — dropdown + tab |
+| Marketing site | `overlay.open` / `navigation.tab` | Clear menu interaction |
+| SaaS dashboard | `navigation.tab` / `navigation.tab` | Tab-like switching |
+| Silent nav | `false` | For content-heavy sites |
+
+## When to Use
+
+- **Documentation sites** — Multi-level navigation
+- **Marketing sites** — Product, pricing, about menus
+- **SaaS dashboards** — Primary navigation
+- **Any site** with dropdown navigation menus
+
+### Avoid sound on
+
+- Navigation menus that are always visible
+- Sites where users navigate rapidly between pages
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Dropdown opens | `overlay.open` |
+| Tab changes | `navigation.tab` |
+
+## shadcn/ui Reference
+
+View the original [Navigation Menu](https://ui.shadcn.com/docs/components/navigation-menu) documentation.

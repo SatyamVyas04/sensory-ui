@@ -1,0 +1,152 @@
+---
+title: "Sheet"
+description: "A sliding panel that extends from the edge of the screen. Plays open and close sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { SheetDocsDemo } from "@/app/docs/_components/demos/sheet-demo";
+
+
+A sliding panel that extends from the edge of the screen. The sensory-ui Sheet plays sounds when opening and closing, reinforcing the sliding panel motion.
+
+**Pattern:** Open / close
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <SheetDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-sheet
+```
+
+## Import
+
+```tsx
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sensory-ui/sheet";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the sheet opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the sheet closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Usage
+
+```tsx
+<Sheet>
+  <SheetTrigger>Open</SheetTrigger>
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>Edit profile</SheetTitle>
+      <SheetDescription>Make changes to your profile here.</SheetDescription>
+    </SheetHeader>
+  </SheetContent>
+</Sheet>
+```
+
+### Custom sounds
+
+```tsx
+<Sheet sound="notification.info" closeSound="interaction.subtle">
+  {/* ... */}
+</Sheet>
+```
+
+### Disable sounds
+
+```tsx
+<Sheet sound={false} closeSound={false}>
+  {/* ... */}
+</Sheet>
+```
+
+## Customizations
+
+### Mobile navigation
+
+```tsx
+<Sheet sound="overlay.open" closeSound="overlay.close">
+  <SheetTrigger>
+    <Button variant="ghost" size="icon">
+      <IconMenu className="size-5" />
+    </Button>
+  </SheetTrigger>
+  <SheetContent side="left">
+    <NavLinks />
+  </SheetContent>
+</Sheet>
+```
+
+### Settings panel
+
+```tsx
+<Sheet sound="overlay.open" closeSound="overlay.close">
+  <SheetTrigger>Settings</SheetTrigger>
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>Settings</SheetTitle>
+    </SheetHeader>
+    {/* Settings form */}
+  </SheetContent>
+</Sheet>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"overlay.open"` |
+| `closeSound` | `"overlay.close"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Mobile nav | `overlay.open` / `overlay.close` | Default — slide cue |
+| Settings panel | `overlay.open` / `overlay.close` | Structural panel |
+| Cart sidebar | `notification.info` | Informational overlay |
+| Filter panel | `overlay.open` / `overlay.close` | Consistent overlay |
+
+## When to Use
+
+- **Mobile navigation** — Slide-in nav menus
+- **Settings panels** — Side settings panels
+- **Cart/basket** — Shopping cart sidebars
+- **Filter panels** — Mobile filter sheets
+
+### Avoid sound on
+
+- Sheets that auto-open on page load
+- Sheets on desktop where Dialog might be more appropriate
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Sheet opens | `overlay.open` |
+| Sheet closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Sheet](https://ui.shadcn.com/docs/components/sheet) documentation.

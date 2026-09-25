@@ -1,0 +1,128 @@
+---
+title: "Switch"
+description: "A control that allows the user to toggle between on and off. Plays a toggle sound."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { SwitchDocsDemo } from "@/app/docs/_components/demos/switch-demo";
+
+
+A control that allows the user to toggle between on and off. The sensory-ui Switch plays a toggle sound on state change, confirming the binary state transition.
+
+**Pattern:** Single-sound
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <SwitchDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-switch
+```
+
+## Import
+
+```tsx
+import { Switch } from "@/components/ui/sensory-ui/switch";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.toggle"` | Sound played on toggle. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.toggle`
+
+## Usage
+
+```tsx
+<div className="flex items-center space-x-2">
+  <Switch id="airplane-mode" />
+  <Label htmlFor="airplane-mode">Airplane Mode</Label>
+</div>
+```
+
+### Custom sounds
+
+```tsx
+<Switch sound="interaction.confirm" volume={0.7} />
+```
+
+### Disable sounds
+
+```tsx
+<Switch sound={false} />
+```
+
+## Customizations
+
+### Settings toggles
+
+```tsx
+<div className="flex items-center justify-between">
+  <Label htmlFor="notifications">Notifications</Label>
+  <Switch id="notifications" sound="interaction.toggle" />
+</div>
+```
+
+### Destructive toggle
+
+```tsx
+<div className="flex items-center justify-between">
+  <Label htmlFor="danger-zone">Danger zone</Label>
+  <Switch id="danger-zone" sound="notification.warning" />
+</div>
+```
+
+### Silent auto-save toggle
+
+```tsx
+<Switch id="auto-save" sound={false} />
+{/* No sound for auto-save — it happens frequently */}
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"interaction.toggle"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Settings toggle | `interaction.toggle` | Default — standard state change |
+| Feature enable | `interaction.confirm` | More significant toggle |
+| Destructive toggle | `notification.warning` | Warns of consequence |
+| Auto-save / frequent | `false` | Sound would be repetitive |
+
+## When to Use
+
+- **Settings** — Feature toggles, notification preferences
+- **Forms** — Binary option inputs
+- **Profile** — Public/private, active/inactive
+- **Any on/off control** — Where state change needs confirmation
+
+### Avoid sound on
+
+- Switches that auto-save (sound would be repetitive)
+- Switches inside modals that already play sounds
+- Switches that toggle frequently
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Toggle on/off | `interaction.toggle` |
+
+## shadcn/ui Reference
+
+View the original [Switch](https://ui.shadcn.com/docs/components/switch) documentation.

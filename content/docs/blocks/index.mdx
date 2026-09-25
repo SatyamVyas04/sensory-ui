@@ -1,0 +1,98 @@
+---
+title: "Blocks"
+description: "Ready-to-use showcase sections combining sensory-ui components with sound feedback."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { InstallCommandBlockLive } from "@/app/docs/_components/demos/blocks/install-command-block-live";
+
+Pre-built showcase sections that demonstrate real-world patterns for adding sound feedback to common UI patterns. Each block combines multiple sensory-ui components with tasteful sound roles.
+
+## Demo
+
+<DemoBlock title="Live demo" description="Every block below is interactive like this one">
+  <InstallCommandBlockLive />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui
+```
+
+The bundle covers every block on this page. Prefer installing only what a block needs? Each block page lists its own minimal commands.
+
+## Available Blocks
+
+<Cards>
+  <Card
+    href="/docs/blocks/navigation"
+    title="Navigation"
+    description="Navbars with sound-enhanced links and mobile menus."
+  />
+  <Card
+    href="/docs/blocks/menu-bars"
+    title="Menu Bars"
+    description="Menubars and dropdowns with audio feedback."
+  />
+  <Card
+    href="/docs/blocks/cta-clicks"
+    title="CTA Clicks"
+    description="Call-to-action buttons with confirmation sounds."
+  />
+  <Card
+    href="/docs/blocks/copy-installation"
+    title="Copy Installation"
+    description="Code blocks with copy-to-clipboard feedback."
+  />
+  <Card
+    href="/docs/blocks/timer-confetti"
+    title="Timer + Confetti"
+    description="Countdowns with milestones and celebrations."
+  />
+</Cards>
+
+---
+
+## How Blocks Work
+
+Each block is a self-contained MDX page with:
+
+1. **Title and description** — What the block demonstrates
+2. **Live demo** — Interactive preview with sound pack selector
+3. **Installation** — Copy-paste command to install the block
+4. **Code** — Full source code you can paste into your project
+5. **Sound roles** — Which roles are used and why
+6. **Customization** — How to swap sounds or disable them
+
+<Callout type="tip">
+  Blocks are designed to be copied directly into your project. They use the same
+  sensory-ui components you already have installed.
+</Callout>
+
+---
+
+## Using Blocks
+
+### Copy the code
+
+Each block provides the full source code. Paste it into your project and adjust as needed.
+
+### Customize sounds
+
+```tsx
+// Swap sounds for a different role
+<Button sound="interaction.confirm">CTA</Button>
+
+// Disable sounds on specific elements
+<Button sound={false}>Silent CTA</Button>
+```
+
+---
+
+## When to Use Blocks
+
+- **Showcasing sensory-ui** — Demonstrate the library's capabilities
+- **Starting points** — Use as a base for your own implementations
+- **Learning** — See how components compose with sound roles
+- **Prototyping** — Quickly add sound feedback to common patterns

@@ -80,7 +80,7 @@ export function CTA() {
               variant="outline"
             >
               <Link
-                href="https://github.com/SatyamVyas04/sensory-ui#readme"
+                href="/docs"
                 onClick={() =>
                   posthog.capture("cta_clicked", { button: "docs" })
                 }

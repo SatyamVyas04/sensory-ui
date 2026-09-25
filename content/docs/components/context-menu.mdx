@@ -1,0 +1,153 @@
+---
+title: "Context Menu"
+description: "Displays a menu to the user triggered by a right-click. Plays open and close sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ContextMenuDocsDemo } from "@/app/docs/_components/demos/context-menu-demo";
+
+
+Displays a menu to the user triggered by a right-click. The sensory-ui Context Menu plays sounds when opening and closing, confirming the contextual action menu.
+
+**Pattern:** Open / close
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <ContextMenuDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-context-menu
+```
+
+## Import
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuGroup,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/sensory-ui/context-menu";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the menu opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the menu closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Usage
+
+```tsx
+<ContextMenu>
+  <ContextMenuTrigger>Right click me</ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>Profile</ContextMenuItem>
+    <ContextMenuItem>Settings</ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem>Logout</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+### Custom sounds
+
+```tsx
+<ContextMenu sound="interaction.tap" closeSound="interaction.subtle">
+  {/* ... */}
+</ContextMenu>
+```
+
+### Disable sounds
+
+```tsx
+<ContextMenu sound={false} closeSound={false}>
+  {/* ... */}
+</ContextMenu>
+```
+
+## Customizations
+
+### File manager
+
+```tsx
+<ContextMenu sound="overlay.open" closeSound="overlay.close">
+  <ContextMenuTrigger>
+    <FileItem />
+  </ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>Open</ContextMenuItem>
+    <ContextMenuItem>Rename</ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem className="text-destructive">Delete</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+### Canvas editor
+
+```tsx
+<ContextMenu sound="interaction.tap" closeSound="interaction.subtle">
+  {/* Right-click on canvas elements */}
+</ContextMenu>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"overlay.open"` |
+| `closeSound` | `"overlay.close"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| File manager | `overlay.open` / `overlay.close` | Default — clear menu cue |
+| Canvas editor | `interaction.tap` / `interaction.subtle` | Lighter for creative tools |
+| List items | `overlay.open` / `overlay.close` | Consistent overlay pattern |
+| Destructive actions | `notification.warning` | For delete/remove items |
+
+## When to Use
+
+- **File managers** — Right-click on files/folders
+- **Canvas editors** — Right-click on elements
+- **List views** — Right-click on rows
+- **Desktop-like apps** — Any context-sensitive action
+
+### Avoid sound on
+
+- Context menus that appear frequently (right-click heavy workflows)
+- Mobile apps (no right-click equivalent)
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Menu opens | `overlay.open` |
+| Menu closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Context Menu](https://ui.shadcn.com/docs/components/context-menu) documentation.

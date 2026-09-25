@@ -1,0 +1,164 @@
+---
+title: "Sidebar"
+description: "A collapsible sidebar for navigation. Plays open and close sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { SidebarDocsDemo } from "@/app/docs/_components/demos/sidebar-demo";
+
+
+A collapsible sidebar for navigation. The sensory-ui Sidebar plays sounds when expanding and collapsing, reinforcing the structural movement.
+
+**Pattern:** Open sound / close sound (props live on `SidebarProvider`)
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <SidebarDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-sidebar
+```
+
+## Import
+
+```tsx
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarSeparator,
+  SidebarTrigger,
+} from "@/components/ui/sensory-ui/sidebar";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `openSound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the sidebar expands. Set on `SidebarProvider`. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the sidebar collapses. Set on `SidebarProvider`. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on expand, `overlay.close` on collapse.
+
+## Usage
+
+```tsx
+<SidebarProvider>
+  <Sidebar>
+    <SidebarHeader />
+    <SidebarContent>
+      <SidebarGroup>
+        <SidebarGroupLabel>Application</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>{/* ... */}</SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </SidebarContent>
+    <SidebarFooter />
+  </Sidebar>
+  <SidebarInset>{/* Main content */}</SidebarInset>
+</SidebarProvider>
+```
+
+### Custom sounds
+
+```tsx
+<SidebarProvider openSound="interaction.confirm" closeSound="interaction.subtle">
+  {/* ... */}
+</SidebarProvider>
+```
+
+### Disable sounds
+
+```tsx
+<SidebarProvider openSound={false} closeSound={false}>
+  {/* ... */}
+</SidebarProvider>
+```
+
+## Customizations
+
+### Dashboard sidebar
+
+```tsx
+<SidebarProvider openSound="overlay.open" closeSound="overlay.close">
+  <SidebarContent>
+    <SidebarGroup>
+      <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton>Overview</SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+          <SidebarMenuButton>Analytics</SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarGroup>
+  </SidebarContent>
+</SidebarProvider>
+```
+
+### Documentation sidebar
+
+```tsx
+<SidebarProvider openSound="overlay.expand" closeSound="overlay.collapse">
+  {/* Collapsible doc sections */}
+</SidebarProvider>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `openSound` | `"overlay.open"` |
+| `closeSound` | `"overlay.close"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Dashboard sidebar | `overlay.open` / `overlay.close` | Default — structural |
+| Documentation sidebar | `overlay.expand` / `overlay.collapse` | Content expansion |
+| Collapsible sidebar | `interaction.tap` / `interaction.subtle` | Lighter toggle |
+| Silent sidebar | `false` | For power users |
+
+## When to Use
+
+- **Dashboards** — Primary navigation sidebar
+- **Documentation** — Multi-level doc navigation
+- **Admin panels** — Settings and content navigation
+- **Any app** with persistent side navigation
+
+### Avoid sound on
+
+- Sidebars that auto-collapse/expand
+- Sidebars with frequent toggle interactions
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Sidebar expands | `overlay.open` |
+| Sidebar collapses | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Sidebar](https://ui.shadcn.com/docs/components/sidebar) documentation.

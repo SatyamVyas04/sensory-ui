@@ -1,0 +1,240 @@
+---
+title: "References"
+description: "API reference, TypeScript types, and external resources for sensory-ui."
+---
+
+
+Quick reference for sensory-ui's public API, TypeScript types, and external resources.
+
+---
+
+## SoundRole Type
+
+All 17 available sound roles grouped by category:
+
+```ts
+type SoundRole =
+  // Interaction (4)
+  | "interaction.tap"
+  | "interaction.subtle"
+  | "interaction.toggle"
+  | "interaction.confirm"
+  // Overlay (4)
+  | "overlay.open"
+  | "overlay.close"
+  | "overlay.expand"
+  | "overlay.collapse"
+  // Navigation (3)
+  | "navigation.forward"
+  | "navigation.backward"
+  | "navigation.tab"
+  // Notification (4)
+  | "notification.info"
+  | "notification.success"
+  | "notification.warning"
+  | "notification.error"
+  // Hero (2)
+  | "hero.complete"
+  | "hero.milestone";
+```
+
+---
+
+## Sound Pack Names
+
+`SoundPackName` is derived automatically in `sounds/packs.ts` as `keyof typeof soundPacks` (re-exported from `config/registry.ts`). The 9 valid values:
+
+```ts
+type SoundPackName =
+  | "soft"
+  | "aero"
+  | "arcade"
+  | "organic"
+  | "glass"
+  | "industrial"
+  | "minimal"
+  | "retro"
+  | "crisp";
+```
+
+---
+
+## SensoryUIProvider Props
+
+```ts
+interface SensoryUIProviderProps {
+  children: React.ReactNode;
+  config?: Partial<SensoryUIConfig>;
+}
+
+interface SensoryUIConfig {
+  enabled: boolean;          // Default: true
+  volume: number;            // Default: 0.35 (range: 0–1)
+  theme: SoundPackName;      // Default: "aero"
+  categories: {
+    interaction: boolean;    // Default: true
+    navigation: boolean;     // Default: true
+    notification: boolean;   // Default: true
+    overlay: boolean;        // Default: true
+    hero: boolean;           // Default: false
+  };
+  overrides: Record<string, string>;  // URL or base64 data URI
+  reducedMotion: "inherit" | "force-off" | "force-on";  // Default: "inherit"
+}
+```
+
+---
+
+## Component Sound Props
+
+Every sound prop accepts `SoundRole | false` (`false` silences it) plus an optional per-component `volume` multiplier (0–1, default `1`) that stacks multiplicatively with the provider's master volume. Four families exist:
+
+### Single-sound parts
+
+Each interactive part carries its own `sound` prop with a part-specific default:
+
+```ts
+interface PartSoundProps {
+  sound?: SoundRole | false;   // Default: part-specific (see below)
+  volume?: number;             // Default: 1 (per-component multiplier)
+}
+```
+
+- `Button` (`interaction.tap`), `Checkbox` / `Radio Group` / `Switch` / `Toggle` / `Toggle Group` (`interaction.toggle`), `Slider` (`interaction.subtle`), `Tabs` (`navigation.tab`)
+- `CarouselPrevious` (`navigation.backward`) / `CarouselNext` (`navigation.forward`)
+- `PaginationLink` (`navigation.tab`) / `PaginationPrevious` (`navigation.backward`) / `PaginationNext` (`navigation.forward`)
+- `CommandInput` (`interaction.subtle`) / `CommandItem` (`interaction.tap`) — note `CommandDialog` is re-exported unwrapped and takes no sound props
+- `MenubarTrigger` (`overlay.open`) / `MenubarItem` (`interaction.tap`)
+- `NavigationMenuTrigger` (`overlay.open`) / `NavigationMenuLink` (`navigation.tab`)
+
+### Open / close (root-level)
+
+For components that open and close as a unit — the root takes both props:
+
+```ts
+interface OpenCloseSoundProps {
+  sound?: SoundRole | false;      // Default: "overlay.open"
+  closeSound?: SoundRole | false; // Default: "overlay.close"
+  volume?: number;                // Default: 1
+}
+```
+
+**Components:** Alert Dialog, Context Menu, Dialog, Drawer, Dropdown Menu, Popover, Select, Sheet
+
+### Open sound / close sound
+
+Same open/close shape under different prop names (`openSound` instead of `sound`):
+
+```ts
+interface OpenSoundProps {
+  openSound?: SoundRole | false;  // Default: see below
+  closeSound?: SoundRole | false; // Default: see below
+  volume?: number;                // Default: 1
+}
+```
+
+**Components:** Collapsible (`overlay.expand` / `overlay.collapse`), Sidebar provider (`overlay.open` / `overlay.close`)
+
+### Expand / collapse
+
+```ts
+interface ExpandCollapseSoundProps {
+  expandSound?: SoundRole | false;    // Default: "overlay.expand"
+  collapseSound?: SoundRole | false;  // Default: "overlay.collapse"
+  volume?: number;                    // Default: 1
+}
+```
+
+**Components:** Accordion
+
+---
+
+## Sound Hooks
+
+Components read `playSound` from the provider context:
+
+```ts
+import { useSensoryUI } from "@/components/ui/sensory-ui/config/provider";
+
+const { playSound, enabled } = useSensoryUI();
+await playSound("interaction.tap", { volume: 0.5 });
+```
+
+For custom components, the `usePlaySound` convenience hook binds a role once and returns a memoised trigger:
+
+```ts
+import { usePlaySound } from "@/components/ui/sensory-ui/config/use-play-sound";
+
+function CustomComponent() {
+  const { play, enabled } = usePlaySound({
+    sound: "notification.success",
+    volume: 0.5,
+  });
+
+  return <button onClick={play}>Play sound</button>;
+}
+```
+
+```ts
+function playSound(
+  role: SoundRole,
+  options?: PlaySoundOptions
+): Promise<SoundPlayback | null>;
+
+interface PlaySoundOptions {
+  volume?: number;        // Per-call volume multiplier (0–1, default 1)
+  playbackRate?: number;  // Playback speed (default 1, buffer sources only)
+  onEnd?: () => void;     // Called when playback ends
+}
+
+interface SoundPlayback {
+  stop: () => void;    // Cancel playback
+}
+```
+
+---
+
+## resolveRole Utility
+
+```ts
+import { resolveRole } from "@/components/ui/sensory-ui/config/config";
+
+function resolveRole(
+  role: SoundRole,
+  config: SensoryUIConfig
+): SoundSource | null;
+```
+
+Returns the synthesizer function (or custom URL / data-URI string) for a role, or `null` if the category is disabled or the role is not found.
+
+---
+
+## Engine API
+
+```ts
+import { playSound } from "@/components/ui/sensory-ui/config/engine";
+
+function playSound(
+  source: SoundSource,
+  options?: PlaySoundOptions
+): Promise<SoundPlayback>;
+```
+
+The engine is a lazy singleton — the `AudioContext` is created on the first `playSound` call and reused for the lifetime of the page.
+
+---
+
+## External Resources
+
+| Resource | Link |
+|----------|------|
+| shadcn/ui Documentation | [ui.shadcn.com/docs](https://ui.shadcn.com/docs) |
+| shadcn CLI Reference | [ui.shadcn.com/docs/cli](https://ui.shadcn.com/docs/cli) |
+| Web Audio API — MDN | [developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) |
+| AudioContext — MDN | [developer.mozilla.org/en-US/docs/Web/API/AudioContext](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext) |
+| prefers-reduced-motion — MDN | [developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion) |
+| React Context API | [react.dev/learn/passing-data-deeply-with-context](https://react.dev/learn/passing-data-deeply-with-context) |
+| Next.js App Router | [nextjs.org/docs/app](https://nextjs.org/docs/app) |
+| Next.js Pages Router | [nextjs.org/docs/pages](https://nextjs.org/docs/pages) |
+| GitHub Repository | [github.com/SatyamVyas04/sensory-ui](https://github.com/SatyamVyas04/sensory-ui) |
+| GitHub Sponsors | [github.com/sponsors/SatyamVyas04](https://github.com/sponsors/SatyamVyas04) |

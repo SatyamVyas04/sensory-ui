@@ -1,0 +1,151 @@
+---
+title: "Drawer"
+description: "A drawer component that slides in from the edge of the screen. Plays open and close sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { DrawerDocsDemo } from "@/app/docs/_components/demos/drawer-demo";
+
+
+A drawer component that slides in from the edge of the screen. The sensory-ui Drawer plays sounds when opening and closing, reinforcing the sliding motion.
+
+**Pattern:** Open / close
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <DrawerDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-drawer
+```
+
+## Import
+
+```tsx
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/sensory-ui/drawer";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the drawer opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the drawer closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Usage
+
+```tsx
+<Drawer>
+  <DrawerTrigger>Open</DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Are you sure?</DrawerTitle>
+      <DrawerDescription>This action cannot be undone.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerFooter>
+      <DrawerClose>Cancel</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+### Custom sounds
+
+```tsx
+<Drawer sound="interaction.tap" closeSound="interaction.subtle">
+  {/* ... */}
+</Drawer>
+```
+
+### Disable sounds
+
+```tsx
+<Drawer sound={false} closeSound={false}>
+  {/* ... */}
+</Drawer>
+```
+
+## Customizations
+
+### Mobile menu drawer
+
+```tsx
+<Drawer sound="overlay.open" closeSound="overlay.close">
+  <DrawerTrigger>Menu</DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Navigation</DrawerTitle>
+    </DrawerHeader>
+    {/* Nav links */}
+  </DrawerContent>
+</Drawer>
+```
+
+### Filter drawer
+
+```tsx
+<Drawer sound="overlay.open" closeSound="overlay.close">
+  <DrawerTrigger>Filters</DrawerTrigger>
+  <DrawerContent>
+    {/* Filter options */}
+  </DrawerContent>
+</Drawer>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"overlay.open"` |
+| `closeSound` | `"overlay.close"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Mobile menu | `overlay.open` / `overlay.close` | Default — clear slide cue |
+| Filter panel | `overlay.open` / `overlay.close` | Structural movement |
+| Cart / basket | `notification.info` | Informational overlay |
+| Bottom sheet | `overlay.open` / `overlay.close` | Consistent with Sheet |
+
+## When to Use
+
+- **Mobile menus** — Bottom navigation, hamburger menus
+- **Filter panels** — Mobile filter drawers
+- **Cart views** — Shopping cart overlays
+- **Action sheets** — iOS-style action sheets
+
+### Avoid sound on
+
+- Drawers that auto-open on page load
+- Drawers on desktop where Sheet might be more appropriate
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Drawer opens | `overlay.open` |
+| Drawer closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Drawer](https://ui.shadcn.com/docs/components/drawer) documentation.

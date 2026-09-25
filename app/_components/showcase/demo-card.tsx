@@ -29,6 +29,7 @@ export function DemoCard({
 
   return (
     <motion.div
+      className="min-w-0"
       initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
       transition={{ duration: 0.25, ease }}
       viewport={{ once: true, margin: "-80px", amount: 0.2 }}

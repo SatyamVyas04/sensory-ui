@@ -1,0 +1,134 @@
+---
+title: "Slider"
+description: "An input where the user selects a value from a given range. Plays a subtle sound during interaction."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { SliderDocsDemo } from "@/app/docs/_components/demos/slider-demo";
+
+
+An input where the user selects a value from a given range. The sensory-ui Slider plays a subtle sound while the user drags, providing continuous audio feedback.
+
+**Pattern:** Single-sound
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <SliderDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-slider
+```
+
+## Import
+
+```tsx
+import { Slider } from "@/components/ui/sensory-ui/slider";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.subtle"` | Sound played during drag. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.subtle`
+
+## Usage
+
+```tsx
+<Slider defaultValue={[50]} max={100} step={1} />
+```
+
+### Custom sounds
+
+```tsx
+<Slider sound="interaction.toggle" volume={0.5} />
+```
+
+### Disable sounds
+
+```tsx
+<Slider sound={false} />
+```
+
+## Customizations
+
+### Volume control
+
+```tsx
+<Slider
+  defaultValue={[35]}
+  max={100}
+  step={1}
+  sound="interaction.subtle"
+  volume={0.3}
+/>
+```
+
+### Price range filter
+
+```tsx
+<Slider
+  defaultValue={[0, 100]}
+  max={1000}
+  step={10}
+  sound="interaction.subtle"
+  volume={0.4}
+/>
+```
+
+### Brightness control
+
+```tsx
+<Slider
+  defaultValue={[80]}
+  max={100}
+  sound="navigation.tab"
+  volume={0.5}
+/>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"interaction.subtle"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Volume control | `interaction.subtle` | Default — continuous feedback |
+| Price range | `interaction.subtle` | Lighter for filtering |
+| Brightness/opacity | `navigation.tab` | Step-like progression |
+| Silent slider | `false` | When sounds distract |
+
+## When to Use
+
+- **Volume controls** — Audio/video volume
+- **Price filters** — Min/max price range
+- **Brightness/opacity** — Visual adjustments
+- **Any continuous input** — Where drag feedback helps
+
+### Avoid sound on
+
+- Sliders with very small ranges (step sounds overlap)
+- Sliders that auto-apply values (sound may be premature)
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Drag | `interaction.subtle` |
+
+## shadcn/ui Reference
+
+View the original [Slider](https://ui.shadcn.com/docs/components/slider) documentation.

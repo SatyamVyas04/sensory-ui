@@ -13,7 +13,6 @@ import Image from "next/image";
 import Link from "next/link";
 import posthog from "posthog-js";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/sensory-ui/button";
 import { GITHUB_REGISTRY } from "@/lib/github-registry";
 import WritingLogo from "@/public/try-me";
@@ -155,6 +154,7 @@ export function Hero({ stars }: HeroProps) {
               aria-hidden="true"
               className="size-6 rounded-full"
               height={256}
+              priority
               src="/sensory-ui-logo-small.png"
               style={{
                 filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.15))",
@@ -164,8 +164,37 @@ export function Hero({ stars }: HeroProps) {
             <span>sensory-ui</span>
           </Link>
 
-          <nav aria-label="Site links" className="flex items-center gap-2">
-            <ModeToggle />
+          <nav
+            aria-label="Site links"
+            className="flex items-center gap-1 sm:gap-2"
+          >
+            <div className="mr-1 hidden items-center gap-1 md:flex">
+              {[
+                { label: "Docs", href: "/docs" },
+                { label: "Components", href: "/docs/components" },
+                { label: "Blocks", href: "/docs/blocks" },
+              ].map((item) => (
+                <Button
+                  asChild
+                  className="bg-transparent text-muted-foreground hover:text-foreground"
+                  key={item.href}
+                  size="sm"
+                  sound="navigation.tab"
+                  variant="ghost"
+                >
+                  <Link
+                    href={item.href}
+                    onClick={() =>
+                      posthog.capture("hero_nav_link_clicked", {
+                        link: item.label.toLowerCase(),
+                      })
+                    }
+                  >
+                    {item.label}
+                  </Link>
+                </Button>
+              ))}
+            </div>
             <Button asChild className="size-8 bg-transparent" variant="outline">
               <Link
                 aria-label="Twitter/X - @SatyamVyas04"
@@ -260,7 +289,7 @@ export function Hero({ stars }: HeroProps) {
                 { value: "24", label: "components" },
                 { value: "17", label: "sound cues" },
                 { value: "9", label: "sound packs" },
-                { value: "~26kb", label: "gzipped" },
+                { value: "~28kb", label: "gzipped" },
               ].map(({ value, label }, index, array) => (
                 <div
                   className="flex flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-baseline"
@@ -296,14 +325,12 @@ export function Hero({ stars }: HeroProps) {
               sound="interaction.toggle"
             >
               <Link
-                href="https://github.com/SatyamVyas04/sensory-ui#readme"
+                href="/docs"
                 onClick={() =>
                   posthog.capture("hero_cta_clicked", {
                     button: "get_started",
                   })
                 }
-                rel="noopener noreferrer"
-                target="_blank"
               >
                 Get Started
                 <IconArrowRight aria-hidden="true" className="size-4" />

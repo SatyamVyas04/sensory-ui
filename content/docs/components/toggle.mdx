@@ -1,0 +1,121 @@
+---
+title: "Toggle"
+description: "A two-state button that can be either on or off. Plays a toggle sound."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { ToggleDocsDemo } from "@/app/docs/_components/demos/toggle-demo";
+
+
+A two-state button that can be either on or off. The sensory-ui Toggle plays a toggle sound on state change, confirming the state transition.
+
+**Pattern:** Single-sound
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <ToggleDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-toggle
+```
+
+## Import
+
+```tsx
+import { Toggle, toggleVariants } from "@/components/ui/sensory-ui/toggle";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.toggle"` | Sound played on toggle. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.toggle`
+
+## Usage
+
+```tsx
+<Toggle aria-label="Toggle bold">B</Toggle>
+```
+
+### Custom sounds
+
+```tsx
+<Toggle sound="interaction.confirm" volume={0.8}>
+  B
+</Toggle>
+```
+
+### Disable sounds
+
+```tsx
+<Toggle sound={false}>
+  B
+</Toggle>
+```
+
+## Customizations
+
+### Formatting toolbar
+
+```tsx
+<div className="flex gap-1">
+  <Toggle aria-label="Toggle bold" sound="interaction.toggle">B</Toggle>
+  <Toggle aria-label="Toggle italic" sound="interaction.toggle">I</Toggle>
+  <Toggle aria-label="Toggle underline" sound="interaction.toggle">U</Toggle>
+</div>
+```
+
+### Favorite/like button
+
+```tsx
+<Toggle aria-label="Toggle favorite" sound="interaction.confirm">
+  <IconHeart className="size-4" />
+</Toggle>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"interaction.toggle"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Formatting toolbar | `interaction.toggle` | Standard state change |
+| Favorite/like | `interaction.confirm` | More rewarding feedback |
+| Mute/unmute | `interaction.toggle` | State change confirmation |
+| Silent toggle | `false` | For rapid toggling |
+
+## When to Use
+
+- **Formatting toolbars** — Bold, italic, underline
+- **Favorite/like buttons** — Toggle favorited state
+- **Mute/unmute** — Audio/video mute toggle
+- **Any binary state** — Where on/off needs confirmation
+
+### Avoid sound on
+
+- Toggles that trigger immediately (auto-save)
+- Toggles used in rapid succession
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Toggle on/off | `interaction.toggle` |
+
+## shadcn/ui Reference
+
+View the original [Toggle](https://ui.shadcn.com/docs/components/toggle) documentation.

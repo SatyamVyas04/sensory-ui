@@ -1,0 +1,131 @@
+---
+title: "Radio Group"
+description: "A set of checkable buttons where only one can be checked at a time. Plays a toggle sound."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { RadioGroupDocsDemo } from "@/app/docs/_components/demos/radio-group-demo";
+
+
+A set of checkable buttons where only one can be checked at a time. The sensory-ui Radio Group plays a toggle sound on selection, confirming the choice.
+
+**Pattern:** Single-sound
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <RadioGroupDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-radio-group
+```
+
+## Import
+
+```tsx
+import { RadioGroup, RadioGroupItem } from "@/components/ui/sensory-ui/radio-group";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"interaction.toggle"` | Sound played on selection. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`interaction.toggle`
+
+## Usage
+
+```tsx
+<RadioGroup defaultValue="comfortable">
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="default" id="r1" />
+    <Label htmlFor="r1">Default</Label>
+  </div>
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="comfortable" id="r2" />
+    <Label htmlFor="r2">Comfortable</Label>
+  </div>
+</RadioGroup>
+```
+
+### Custom sounds
+
+```tsx
+<RadioGroup sound="interaction.confirm" volume={0.8}>
+  {/* ... */}
+</RadioGroup>
+```
+
+### Disable sounds
+
+```tsx
+<RadioGroup sound={false}>
+  {/* ... */}
+</RadioGroup>
+```
+
+## Customizations
+
+### Plan selection
+
+```tsx
+<RadioGroup sound="interaction.confirm" defaultValue="pro">
+  <RadioGroupItem value="free" id="free" />
+  <Label htmlFor="free">Free</Label>
+  <RadioGroupItem value="pro" id="pro" />
+  <Label htmlFor="pro">Pro</Label>
+</RadioGroup>
+```
+
+### Settings options
+
+```tsx
+<RadioGroup sound="interaction.toggle" volume={0.5}>
+  {/* Quieter for frequent settings changes */}
+</RadioGroup>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"interaction.toggle"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Plan selection | `interaction.confirm` | Significant choice |
+| Settings options | `interaction.toggle` | Standard state change |
+| Form options | `interaction.toggle` | Standard toggle |
+| Silent selection | `false` | For rapid selection flows |
+
+## When to Use
+
+- **Plan selection** — Pricing tier choices
+- **Settings** — Radio-style options (theme, layout)
+- **Forms** — Any single-select option group
+- **Filters** — Single-select filter categories
+
+### Avoid sound on
+
+- Radio groups with many options (sound on every selection)
+- Radio groups inside modals that already play sounds
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Option selected | `interaction.toggle` |
+
+## shadcn/ui Reference
+
+View the original [Radio Group](https://ui.shadcn.com/docs/components/radio-group) documentation.

@@ -1,0 +1,207 @@
+---
+title: "Contribution"
+description: "Contribute to sensory-ui — extend support to new frameworks, add components, or improve existing ones."
+---
+
+
+sensory-ui is open source and welcomes contributions. Whether you want to fix a bug, add a component, or extend support to a new framework, this guide covers the process.
+
+---
+
+## Ways to Contribute
+
+| Contribution | Difficulty | Description |
+|--------------|------------|-------------|
+| Fix a bug | Easy | Fix an issue in existing components or the engine |
+| Add a component | Medium | Add a new shadcn/ui component with sound support |
+| Extend framework support | Medium | Add support for Angular, Svelte, Vue, etc. |
+| Add a sound pack | Medium | Create a new instrument-based sound pack |
+| Improve docs | Easy | Fix typos, clarify explanations, add examples |
+| Sponsor | Easy | Support the project financially |
+
+---
+
+## Development Setup
+
+### Prerequisites
+
+- **Node.js 18+**
+- **Bun** (recommended) or npm
+- **Git**
+
+### Clone and Install
+
+```bash
+git clone https://github.com/SatyamVyas04/sensory-ui.git
+cd sensory-ui
+bun install
+```
+
+### Available Commands
+
+| Command | Purpose |
+|---------|---------|
+| `bun run dev` | Start development server |
+| `bun run build` | Production build |
+| `bun run check` | Lint with Biome/Ultracite |
+| `bun run fix` | Auto-fix lint issues |
+| `npx tsc --noEmit` | TypeScript check |
+| `bun run registry:build` | Build and validate registry |
+
+---
+
+## Project Structure
+
+```
+sensory-ui/
+  app/
+    docs/              ← Docs routes (Fumadocs layout + `[[...slug]]` page)
+    _components/       ← Showcase demo components
+  content/
+    docs/              ← Documentation pages (MDX + `meta.json`)
+  components/
+    ui/
+      sensory-ui/      ← Core library (distributed via registry)
+        config/        ← Engine, provider, config, types
+        sounds/        ← Sound synthesis modules
+        *.tsx          ← Enhanced shadcn/ui components
+      *.tsx            ← Base shadcn/ui components
+  registry.json        ← Root registry manifest
+```
+
+---
+
+## Adding a New Component
+
+1. **Check the base component** — Ensure the shadcn/ui component exists in `components/ui/`
+2. **Create the sensory-ui version** in `components/ui/sensory-ui/`:
+   - Copy the base component
+   - Add sound props (`sound`, `closeSound`, `openSound`, `expandSound`, `collapseSound`, `volume` — only the ones that fit the interaction model)
+   - Import `useSensoryUI` from `config/provider` and call its `playSound(role, { volume })` on the appropriate events
+   - Keep the `"use client"` directive (all sensory-ui modules are client components)
+3. **Add to the registry** — Register the component in `components/ui/sensory-ui/registry.json` (and add any new shared modules, e.g. `sounds/core/*.ts`, to `sensory-ui-core` files)
+4. **Write documentation** — Create a page in `content/docs/components/` and add it to `content/docs/components/meta.json`
+
+### Sound Role Selection
+
+Choose sound roles that match the component's interaction model:
+
+| Interaction Type | Recommended Roles |
+|------------------|-------------------|
+| Click / Tap | `interaction.tap` |
+| Subtle feedback | `interaction.subtle` |
+| Toggle on/off | `interaction.toggle` |
+| Confirmation | `interaction.confirm` |
+| Open / Close | `overlay.open` / `overlay.close` |
+| Expand / Collapse | `overlay.expand` / `overlay.collapse` |
+| Forward navigation | `navigation.forward` |
+| Backward navigation | `navigation.backward` |
+| Tab switching | `navigation.tab` |
+| System notifications | `notification.info`, `notification.success`, `notification.warning`, `notification.error` |
+
+---
+
+## Extending Framework Support
+
+sensory-ui currently supports **Next.js** (App Router + Pages Router) via React. To extend support to other frameworks:
+
+### Angular
+
+1. Create an Angular wrapper for the Web Audio engine (`engine.ts`)
+2. Create an Angular service for `playSound` (equivalent to the React hook)
+3. Create Angular components with sound inputs
+4. Publish as an Angular library or adapt the registry model
+
+### Svelte
+
+1. Create a Svelte store for the audio context (equivalent to React context)
+2. Create Svelte components with sound props
+3. Use Svelte actions for event binding
+4. Publish as a Svelte package
+
+### Vue
+
+1. Create a Vue composable for `playSound` (equivalent to the React hook)
+2. Create Vue components with sound props
+3. Use Vue's event system for interaction binding
+4. Publish as a Vue library
+
+### Key Considerations
+
+- The **Web Audio API engine** (`engine.ts`) is framework-agnostic — it's pure TypeScript
+- The **sound synthesis** (`sounds/`) is framework-agnostic — pure functions
+- Only the **provider/hook** and **components** need framework-specific implementations
+- Maintain the same `SoundRole` type and registry structure across all frameworks
+
+---
+
+## Adding a Sound Pack
+
+1. **Design an instrument** — Choose oscillator type, filter settings, effects
+2. **Add to `sounds/core/instruments.ts`**:
+   ```ts
+   myPack: {
+     filterFreq: 4000,
+     q: 5,
+     oscType: "triangle",
+     decayMult: 1.0,
+     gainMult: 0.85,
+     pitchMult: 1.1,
+     effects: [],
+   }
+   ```
+3. **Add to `sounds/packs.ts`** — Export the generated pack (use `generateSoundPack` for the full 17 roles, or `generateCustomSoundPack` for per-role tune/instrument overrides plus hand-crafted hero sounds) and register it in `soundPacks`
+4. No type update needed — `SoundPackName` is derived automatically as `keyof typeof soundPacks`
+
+---
+
+## Code Style
+
+- **TypeScript** — Strict mode, explicit types
+- **Biome/Ultracite** — Run `bun run check` before committing
+- **No comments** — Code should be self-documenting
+- **Minimal dependencies** — Zero runtime dependencies for the core library
+- **Accessibility** — All components must support keyboard interaction and `prefers-reduced-motion`
+
+---
+
+## Previewing your changes
+
+```bash
+bun run dev      # Iterate — docs live at http://localhost:3000/docs
+bun run build    # Verify — every page must prerender cleanly
+```
+
+New docs pages go in `content/docs/` with a `title` in frontmatter, ordered via the nearest `meta.json`. New demos go in `app/docs/_components/demos/` and render inside `<DemoBlock>`.
+
+## Pull Request Process
+
+1. **Fork** the repository
+2. **Create a branch** — `feat/add-angular-support` or `fix/button-sound-on-enter`
+3. **Make your changes** — Follow the code style above
+4. **Test locally** — `bun run dev`, `bun run build`, `npx tsc --noEmit`
+5. **Validate registry** — `bun run registry:build`
+6. **Submit a PR** — Include a clear description of changes
+
+<Callout type="tip">
+  For large contributions (new framework support, new sound packs), open an issue
+  first to discuss the approach.
+</Callout>
+
+---
+
+## Reporting Issues
+
+- **Bug reports** — Include reproduction steps, browser version, and console output
+- **Feature requests** — Describe the use case and proposed solution
+- **Sound issues** — Specify which sound pack, browser, and OS
+
+[Open an issue on GitHub](https://github.com/SatyamVyas04/sensory-ui/issues)
+
+---
+
+## Sponsorship
+
+If you find sensory-ui useful, consider sponsoring the project. Sponsorship helps maintain and improve the library.
+
+[Become a sponsor](https://github.com/sponsors/SatyamVyas04)

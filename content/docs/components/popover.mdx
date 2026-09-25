@@ -1,0 +1,139 @@
+---
+title: "Popover"
+description: "A floating element that opens from a trigger. Plays open and close sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { PopoverDocsDemo } from "@/app/docs/_components/demos/popover-demo";
+
+
+A floating element that opens from a trigger. The sensory-ui Popover plays sounds when opening and closing, confirming the floating panel interaction.
+
+**Pattern:** Open / close
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <PopoverDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-popover
+```
+
+## Import
+
+```tsx
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/sensory-ui/popover";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the popover opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the popover closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Usage
+
+```tsx
+<Popover>
+  <PopoverTrigger>Open</PopoverTrigger>
+  <PopoverContent>Place content for the popover here.</PopoverContent>
+</Popover>
+```
+
+### Custom sounds
+
+```tsx
+<Popover sound="interaction.tap" closeSound="interaction.subtle">
+  {/* ... */}
+</Popover>
+```
+
+### Disable sounds
+
+```tsx
+<Popover sound={false} closeSound={false}>
+  {/* ... */}
+</Popover>
+```
+
+## Customizations
+
+### Color picker
+
+```tsx
+<Popover sound="overlay.open" closeSound="overlay.close">
+  <PopoverTrigger>
+    <Button variant="outline">Pick color</Button>
+  </PopoverTrigger>
+  <PopoverContent>
+    <ColorPicker />
+  </PopoverContent>
+</Popover>
+```
+
+### Date picker
+
+```tsx
+<Popover sound="overlay.open" closeSound="overlay.close">
+  <PopoverTrigger>
+    <Button variant="outline">Select date</Button>
+  </PopoverTrigger>
+  <PopoverContent>
+    <Calendar />
+  </PopoverContent>
+</Popover>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"overlay.open"` |
+| `closeSound` | `"overlay.close"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Color picker | `overlay.open` / `overlay.close` | Default — panel cue |
+| Date picker | `overlay.open` / `overlay.close` | Consistent overlay |
+| Settings popover | `interaction.tap` / `interaction.subtle` | Lighter utility |
+| Tooltip-like | `false` | For hover-triggered popovers |
+
+## When to Use
+
+- **Color pickers** — Color selection panels
+- **Date pickers** — Calendar selection
+- **Settings** — Quick setting adjustments
+- **Filters** — Inline filter panels
+
+### Avoid sound on
+
+- Hover-triggered popovers (sounds would be premature)
+- Popovers that appear as tooltips
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Popover opens | `overlay.open` |
+| Popover closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Popover](https://ui.shadcn.com/docs/components/popover) documentation.

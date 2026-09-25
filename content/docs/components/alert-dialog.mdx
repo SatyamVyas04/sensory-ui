@@ -1,0 +1,152 @@
+---
+title: "Alert Dialog"
+description: "A modal dialog that interrupts the user with important content and expects a response. Plays open and close sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { AlertDialogDocsDemo } from "@/app/docs/_components/demos/alert-dialog-demo";
+
+
+A modal dialog that interrupts the user with important content and expects a response. The sensory-ui AlertDialog plays sounds on open and close, signaling the shift in focus to the modal.
+
+**Pattern:** Open / close
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <AlertDialogDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-alert-dialog
+```
+
+## Import
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/sensory-ui/alert-dialog";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` | `SoundRole \| false` | `"overlay.open"` | Sound played when the dialog opens. |
+| `closeSound` | `SoundRole \| false` | `"overlay.close"` | Sound played when the dialog closes. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on open, `overlay.close` on close.
+
+## Usage
+
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger>Open</AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action cannot be undone.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction>Continue</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+### Custom sounds
+
+```tsx
+<AlertDialog sound="notification.warning" closeSound="interaction.subtle">
+  {/* ... */}
+</AlertDialog>
+```
+
+### Disable sounds
+
+```tsx
+<AlertDialog sound={false} closeSound={false}>
+  {/* ... */}
+</AlertDialog>
+```
+
+## Customizations
+
+### Destructive confirmation
+
+```tsx
+<AlertDialog sound="notification.warning" closeSound="overlay.close">
+  <AlertDialogTrigger>Delete account</AlertDialogTrigger>
+  <AlertDialogContent>
+    {/* Warning content */}
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+### Informational alert
+
+```tsx
+<AlertDialog sound="notification.info" closeSound="interaction.subtle">
+  <AlertDialogTrigger>View details</AlertDialogTrigger>
+  <AlertDialogContent>
+    {/* Info content */}
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `sound` | `"overlay.open"` |
+| `closeSound` | `"overlay.close"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Destructive action | `notification.warning` | Warns of consequence |
+| Informational alert | `notification.info` | Neutral, informative |
+| Success confirmation | `notification.success` | Positive reinforcement |
+| Generic modal | `overlay.open` / `overlay.close` | Default — clear overlay cue |
+
+## When to Use
+
+- **Destructive confirmations** — Delete, remove, unsubscribe
+- **Important warnings** — Irreversible actions, data loss
+- **Form validation errors** — Required field warnings
+- **Critical decisions** — Payment confirmation, account changes
+
+### Avoid sound on
+
+- Modals that appear automatically (not user-triggered)
+- Modals with form inputs that will be interacted with repeatedly
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Dialog opens | `overlay.open` |
+| Dialog closes | `overlay.close` |
+
+## shadcn/ui Reference
+
+View the original [Alert Dialog](https://ui.shadcn.com/docs/components/alert-dialog) documentation.

@@ -28,7 +28,7 @@ function StaggerColumn({
 
   return (
     <motion.div
-      className="flex flex-col gap-4 *:w-full *:max-w-full"
+      className="flex min-w-0 flex-col gap-4 *:w-full *:min-w-0 *:max-w-full"
       initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
       transition={{
         duration: 0.25,
@@ -45,7 +45,7 @@ function StaggerColumn({
 
 export function ShowcaseGrid() {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+    <div className="grid min-w-0 gap-4 overflow-x-clip md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
       {/* Column 1 - Interaction */}
       <StaggerColumn index={0}>
         <ButtonDemo />

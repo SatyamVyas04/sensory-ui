@@ -1,0 +1,143 @@
+---
+title: "Carousel"
+description: "A carousel with motion and swipe support. Plays navigation sounds for forward and backward."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { CarouselDocsDemo } from "@/app/docs/_components/demos/carousel-demo";
+
+
+A carousel with motion and swipe support. The sensory-ui Carousel plays navigation sounds when moving between slides, giving directional feedback.
+
+**Pattern:** Single-sound parts (`CarouselPrevious` + `CarouselNext`)
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <CarouselDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-carousel
+```
+
+## Import
+
+```tsx
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/sensory-ui/carousel";
+```
+
+## Sound Props
+
+Each arrow button carries its own `sound` prop.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` (CarouselPrevious) | `SoundRole \| false` | `"navigation.backward"` | Sound played when going to the previous slide. |
+| `sound` (CarouselNext) | `SoundRole \| false` | `"navigation.forward"` | Sound played when going to the next slide. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`navigation.backward` when going to the previous slide, `navigation.forward` when going to the next.
+
+## Usage
+
+```tsx
+<Carousel>
+  <CarouselContent>
+    <CarouselItem>1</CarouselItem>
+    <CarouselItem>2</CarouselItem>
+    <CarouselItem>3</CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
+
+### Custom sounds
+
+```tsx
+<CarouselPrevious sound="interaction.tap" volume={0.5} />
+<CarouselNext sound="interaction.tap" volume={0.5} />
+```
+
+### Disable sounds
+
+```tsx
+<CarouselPrevious sound={false} />
+<CarouselNext sound={false} />
+```
+
+## Customizations
+
+### Product image gallery
+
+```tsx
+<Carousel>
+  <CarouselContent>
+    {images.map((img) => (
+      <CarouselItem key={img.id}>
+        <img src={img.src} alt={img.alt} />
+      </CarouselItem>
+    ))}
+  </CarouselContent>
+  <CarouselPrevious volume={0.6} />
+  <CarouselNext volume={0.6} />
+</Carousel>
+```
+
+### Testimonial slider
+
+```tsx
+<CarouselPrevious sound="navigation.tab" volume={0.4} />
+<CarouselNext sound="navigation.tab" volume={0.4} />
+{/* Quieter, more subtle for content browsing */}
+
+## Default Props
+
+| Part | Prop | Value |
+|------|------|-------|
+| CarouselPrevious | `sound` | `"navigation.backward"` |
+| CarouselNext | `sound` | `"navigation.forward"` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Image gallery | `navigation.forward` / `navigation.backward` | Default — directional |
+| Product carousel | `navigation.forward` / `navigation.backward` | Clear slide movement |
+| Testimonial slider | `navigation.tab` | Lighter, tab-like |
+| Onboarding steps | `navigation.forward` | Forward progression |
+| Silent browsing | `false` | When sounds distract from content |
+
+## When to Use
+
+- **Image galleries** — Product photos, portfolio showcases
+- **Content sliders** — Testimonials, featured items
+- **Onboarding flows** — Step-by-step walkthroughs
+- **Media players** — Image or video carousels
+
+### Avoid sound on
+
+- Auto-playing carousels (sounds would be repetitive)
+- Carousels with many rapid interactions
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Previous slide | `navigation.backward` |
+| Next slide | `navigation.forward` |
+
+## shadcn/ui Reference
+
+View the original [Carousel](https://ui.shadcn.com/docs/components/carousel) documentation.

@@ -1,0 +1,137 @@
+---
+title: "Collapsible"
+description: "An interactive component which expands and collapses a panel. Plays expand and collapse sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { CollapsibleDocsDemo } from "@/app/docs/_components/demos/collapsible-demo";
+
+
+An interactive component which expands and collapses a panel. The sensory-ui Collapsible plays distinct sounds for expand and collapse actions, reinforcing the content movement.
+
+**Pattern:** Open sound / close sound
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <CollapsibleDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-collapsible
+```
+
+## Import
+
+```tsx
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/sensory-ui/collapsible";
+```
+
+## Sound Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `openSound` | `SoundRole \| false` | `"overlay.expand"` | Sound played when expanding. |
+| `closeSound` | `SoundRole \| false` | `"overlay.collapse"` | Sound played when collapsing. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.expand` on expand, `overlay.collapse` on collapse.
+
+## Usage
+
+```tsx
+<Collapsible>
+  <CollapsibleTrigger>Toggle</CollapsibleTrigger>
+  <CollapsibleContent>
+    Content goes here.
+  </CollapsibleContent>
+</Collapsible>
+```
+
+### Custom sounds
+
+```tsx
+<Collapsible openSound="interaction.confirm" closeSound="interaction.subtle">
+  {/* ... */}
+</Collapsible>
+```
+
+### Disable sounds
+
+```tsx
+<Collapsible openSound={false} closeSound={false}>
+  {/* ... */}
+</Collapsible>
+```
+
+## Customizations
+
+### Sidebar section
+
+```tsx
+<Collapsible openSound="overlay.expand" closeSound="overlay.collapse">
+  <CollapsibleTrigger>Show filters</CollapsibleTrigger>
+  <CollapsibleContent>
+    {/* Filter options */}
+  </CollapsibleContent>
+</Collapsible>
+```
+
+### Inline reveal
+
+```tsx
+<Collapsible openSound="interaction.tap" closeSound="interaction.subtle">
+  <CollapsibleTrigger>Read more</CollapsibleTrigger>
+  <CollapsibleContent>
+    {/* Extended content */}
+  </CollapsibleContent>
+</Collapsible>
+```
+
+## Default Props
+
+| Prop | Value |
+|------|-------|
+| `openSound` | `"overlay.expand"` |
+| `closeSound` | `"overlay.collapse"` |
+| `volume` | `1` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Filter panels | `overlay.expand` / `overlay.collapse` | Clear spatial expansion |
+| Read more links | `interaction.tap` / `interaction.subtle` | Lighter content reveal |
+| Settings sections | `overlay.expand` / `overlay.collapse` | Structural movement |
+| FAQ items | `overlay.expand` / `overlay.collapse` | Consistent with Accordion |
+
+## When to Use
+
+- **Filter panels** — Show/hide filter options
+- **Content previews** — Read more / show less
+- **Settings sections** — Collapsible settings groups
+- **Sidebar items** — Collapsible navigation sections
+
+### Avoid sound on
+
+- Multiple collapsibles open at the same time
+- Collapsibles used for critical navigation
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Panel expands | `overlay.expand` |
+| Panel collapses | `overlay.collapse` |
+
+## shadcn/ui Reference
+
+View the original [Collapsible](https://ui.shadcn.com/docs/components/collapsible) documentation.

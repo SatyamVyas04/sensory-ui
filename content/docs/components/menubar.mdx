@@ -1,0 +1,157 @@
+---
+title: "Menubar"
+description: "A visually persistent menu bar with nested dropdown menus. Plays open and tap sounds."
+---
+
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { MenubarDocsDemo } from "@/app/docs/_components/demos/menubar-demo";
+
+
+A visually persistent menu bar with nested dropdown menus. The sensory-ui Menubar plays sounds when menus open and when items are selected, reinforcing the desktop application feel.
+
+**Pattern:** Single-sound parts (`MenubarTrigger` + `MenubarItem`)
+
+## Demo
+
+<DemoBlock title="Live demo" description="Switch sound packs to compare">
+  <MenubarDocsDemo />
+</DemoBlock>
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-menubar
+```
+
+## Import
+
+```tsx
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarLabel,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from "@/components/ui/sensory-ui/menubar";
+```
+
+## Sound Props
+
+Each part carries its own `sound` prop — there is no root-level `closeSound`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sound` (MenubarTrigger) | `SoundRole \| false` | `"overlay.open"` | Sound played when the trigger is clicked. |
+| `sound` (MenubarItem) | `SoundRole \| false` | `"interaction.tap"` | Sound played when the item is selected. |
+| `volume` | `number` | `1` | Per-component volume multiplier (0–1). |
+
+## Default Sound Role
+
+`overlay.open` on trigger click, `interaction.tap` on item select.
+
+## Usage
+
+```tsx
+<Menubar>
+  <MenubarMenu>
+    <MenubarTrigger>File</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem>New Tab</MenubarItem>
+      <MenubarItem>New Window</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>
+```
+
+### Custom sounds
+
+```tsx
+<MenubarMenu>
+  <MenubarTrigger sound="navigation.tab">File</MenubarTrigger>
+  <MenubarContent>
+    <MenubarItem sound="interaction.confirm">Save</MenubarItem>
+  </MenubarContent>
+</MenubarMenu>
+```
+
+### Disable sounds
+
+```tsx
+<MenubarMenu>
+  <MenubarTrigger sound={false}>File</MenubarTrigger>
+  <MenubarContent>
+    <MenubarItem sound={false}>About</MenubarItem>
+  </MenubarContent>
+</MenubarMenu>
+```
+
+## Customizations
+
+### Desktop app menubar
+
+```tsx
+<MenubarMenu>
+  <MenubarTrigger sound="overlay.open">File</MenubarTrigger>
+  <MenubarContent>
+    <MenubarItem>New File <MenubarShortcut>Ctrl+N</MenubarShortcut></MenubarItem>
+    <MenubarItem>Open <MenubarShortcut>Ctrl+O</MenubarShortcut></MenubarItem>
+  </MenubarContent>
+</MenubarMenu>
+```
+
+### Dashboard navigation
+
+```tsx
+<MenubarMenu>
+  {/* Tab-like navigation between sections */}
+  <MenubarTrigger sound="navigation.tab">Dashboard</MenubarTrigger>
+</MenubarMenu>
+```
+
+## Default Props
+
+| Part | Prop | Value |
+|------|------|-------|
+| MenubarTrigger | `sound` | `"overlay.open"` |
+| MenubarItem | `sound` | `"interaction.tap"` |
+
+## Tasteful Sound Choices
+
+| Situation | Recommended Sound | Why |
+|-----------|-------------------|-----|
+| Desktop app menu | `overlay.open` / `interaction.tap` | Default — app-like feel |
+| Dashboard nav | `navigation.tab` / `interaction.tap` | Tab-like switching |
+| Settings menu | `overlay.open` / `interaction.tap` | Structural menu |
+| Silent workspace | `false` / `false` | For power users |
+
+## When to Use
+
+- **Desktop applications** — File, Edit, View menus
+- **Dashboards** — Persistent navigation bars
+- **IDE-like interfaces** — Application menus
+- **Admin panels** — Navigation and settings
+
+### Avoid sound on
+
+- Menubars that are always visible (sounds on every interaction)
+- Power-user interfaces where sounds feel intrusive
+
+## Event Triggers
+
+| Event | Default Sound |
+| --- | --- |
+| Menu opens | `overlay.open` |
+| Item selected | `interaction.tap` |
+
+## shadcn/ui Reference
+
+View the original [Menubar](https://ui.shadcn.com/docs/components/menubar) documentation.

@@ -83,7 +83,7 @@ export function Showcase() {
   return (
     <section
       aria-labelledby="showcase-heading"
-      className="border-border border-t py-24"
+      className="overflow-x-clip border-border border-t py-24"
       id="showcase"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">

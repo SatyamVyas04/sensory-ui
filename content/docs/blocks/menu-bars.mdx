@@ -1,0 +1,245 @@
+---
+title: "Menu Bars"
+description: "Sound-enhanced menubars and dropdown menus with open, close, and item selection feedback."
+---
+import { DemoBlock } from "@/app/docs/_components/demo-block";
+import { MenubarBlockLive } from "@/app/docs/_components/demos/blocks/menubar-block-live";
+import { DropdownBlockLive } from "@/app/docs/_components/demos/blocks/dropdown-block-live";
+import { ContextMenuBlockLive } from "@/app/docs/_components/demos/blocks/context-block-live";
+
+
+
+Menubars and dropdown menus with audio feedback. Each menu open, item selection, and submenu toggle gets a distinct sound that reinforces the interaction hierarchy.
+
+---
+
+## Installation
+
+```bash
+npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-menubar SatyamVyas04/sensory-ui/sensory-ui-dropdown-menu SatyamVyas04/sensory-ui/sensory-ui-context-menu
+```
+
+## Desktop Menubar
+
+A traditional desktop-style menubar where each menu plays `overlay.open` on expand and `interaction.tap` on item selection.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="File, Edit, and View menus with item sounds">
+  <MenubarBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Menu open | `overlay.open` | Overlay expansion feedback |
+| Menu close | `overlay.close` | Overlay collapse feedback |
+| Item click | `interaction.tap` | Selection confirmation |
+| Submenu toggle | `overlay.expand` / `overlay.collapse` | Expand/collapse feedback |
+
+### Code
+
+```tsx
+"use client";
+
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarTrigger,
+} from "@/components/ui/sensory-ui/menubar";
+
+export function MenubarBlock() {
+  return (
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>File</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>New Tab</MenubarItem>
+          <MenubarItem>New Window</MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem>Share</MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem>Print</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+
+      <MenubarMenu>
+        <MenubarTrigger>Edit</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>Undo</MenubarItem>
+          <MenubarItem>Redo</MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem>Cut</MenubarItem>
+          <MenubarItem>Copy</MenubarItem>
+          <MenubarItem>Paste</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+
+      <MenubarMenu>
+        <MenubarTrigger>View</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>Zoom In</MenubarItem>
+          <MenubarItem>Zoom Out</MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem>Fullscreen</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
+  );
+}
+```
+
+### Customization
+
+```tsx
+// Use a more prominent sound for destructive actions
+<MenubarItem sound="notification.warning">Delete</MenubarItem>
+
+// Silence a specific item
+<MenubarItem sound={false}>About</MenubarItem>
+```
+
+### When to Use
+
+- Desktop applications with traditional menu patterns
+- Admin dashboards with file/edit/view menus
+- IDE-like interfaces
+- Any app that needs a persistent menu bar
+
+### shadcn/ui Reference
+
+- [Menubar](/docs/components/menubar)
+
+---
+
+## Dropdown Menu
+
+A button-triggered dropdown with open/close sounds and item tap feedback.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Trigger plus destructive item sounds">
+  <DropdownBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Trigger click | `overlay.open` | Menu expansion |
+| Item click | `interaction.tap` | Selection |
+| Menu close | `overlay.close` | Menu collapse |
+
+### Code
+
+```tsx
+"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/sensory-ui/dropdown-menu";
+import { IconDots } from "@tabler/icons-react";
+
+export function DropdownBlock() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon">
+          <IconDots className="size-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <DropdownMenuItem>Duplicate</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Archive</DropdownMenuItem>
+        <DropdownMenuItem className="text-destructive">
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+```
+
+### When to Use
+
+- Action menus on cards, rows, or toolbar buttons
+- Context-sensitive options
+- Settings overflow menus
+- Any trigger that reveals a list of actions
+
+### shadcn/ui Reference
+
+- [Dropdown Menu](/docs/components/dropdown-menu)
+
+---
+
+## Context Menu
+
+A right-click context menu with overlay sounds.
+
+### Live demo
+
+<DemoBlock title="Live demo" description="Right-click area with item sounds">
+  <ContextMenuBlockLive />
+</DemoBlock>
+
+### Sound Roles
+
+| Element | Role | Why |
+|---------|------|-----|
+| Menu open | `overlay.open` | Context menu appearance |
+| Item click | `interaction.tap` | Selection |
+| Menu close | `overlay.close` | Menu dismissal |
+
+### Code
+
+```tsx
+"use client";
+
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/sensory-ui/context-menu";
+
+export function ContextMenuBlock() {
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="flex h-48 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+        Right click here
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem>Back</ContextMenuItem>
+        <ContextMenuItem>Forward</ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem>Reload</ContextMenuItem>
+        <ContextMenuItem>View Source</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
+```
+
+### When to Use
+
+- File managers or list views
+- Canvas or editor interfaces
+- Any area where right-click provides contextual actions
+- Desktop-like web applications
+
+### shadcn/ui Reference
+
+- [Context Menu](/docs/components/context-menu)

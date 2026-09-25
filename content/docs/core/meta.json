@@ -1,0 +1,12 @@
+{
+  "title": "Core",
+  "pages": [
+    "overview",
+    "sound-roles",
+    "sound-packs",
+    "engine",
+    "provider",
+    "registry",
+    "testing"
+  ]
+}

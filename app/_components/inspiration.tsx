@@ -3,6 +3,7 @@
 import { IconArrowUpRight, IconPlayerPlayFilled } from "@tabler/icons-react";
 import { motion, useReducedMotion } from "motion/react";
 import posthog from "posthog-js";
+import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import type { SoundRole } from "@/components/ui/sensory-ui/config/sound-roles";
 import { usePlaySound } from "@/components/ui/sensory-ui/config/use-play-sound";
 
@@ -13,31 +14,31 @@ const CATEGORIES = [
     name: "interaction",
     roles: ["tap", "subtle", "toggle", "confirm"] as const,
     description: "Direct user actions",
-    ms: "8–90ms",
+    ms: "8–50ms",
   },
   {
     name: "overlay",
     roles: ["open", "close", "expand", "collapse"] as const,
     description: "Surface state changes",
-    ms: "60–200ms",
+    ms: "120–270ms",
   },
   {
     name: "navigation",
     roles: ["forward", "backward", "tab"] as const,
     description: "Spatial movement",
-    ms: "100–250ms",
+    ms: "40–250ms",
   },
   {
     name: "notification",
     roles: ["info", "success", "warning", "error"] as const,
     description: "System messages",
-    ms: "200–600ms",
+    ms: "200–450ms",
   },
   {
     name: "hero",
     roles: ["complete", "milestone"] as const,
     description: "Celebratory moments",
-    ms: "800–1800ms",
+    ms: "350–1900ms",
   },
 ] as const;
 
@@ -172,49 +173,51 @@ export function Inspiration() {
             </div>
           </motion.div>
 
-          {/* Right column - sound categories */}
-          <div>
-            <motion.p
-              className="mb-4 font-mono text-muted-foreground text-xs uppercase tracking-widest"
-              initial={{ opacity: 0 }}
-              transition={{ duration: 0.25, ease }}
-              viewport={{ once: true, margin: "-80px" }}
-              whileInView={{ opacity: 1 }}
-            >
-              17 sound cues across 5 categories
-            </motion.p>
+          {/* Right column - sound categories, played in the glass pack */}
+          <SensoryUIProvider config={{ theme: "glass" }}>
+            <div>
+              <motion.p
+                className="mb-4 font-mono text-muted-foreground text-xs uppercase tracking-widest"
+                initial={{ opacity: 0 }}
+                transition={{ duration: 0.25, ease }}
+                viewport={{ once: true, margin: "-80px" }}
+                whileInView={{ opacity: 1 }}
+              >
+                17 sound cues across 5 categories
+              </motion.p>
 
-            <div className="space-y-3">
-              {CATEGORIES.map(({ name, roles, description, ms }, i) => (
-                <motion.div
-                  className="group/category relative border border-border p-3.5"
-                  initial={{
-                    opacity: 0,
-                    y: prefersReduced ? 0 : 12,
-                  }}
-                  key={name}
-                  transition={{ duration: 0.25, ease, delay: i * 0.05 }}
-                  viewport={{ once: true, margin: "-80px" }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                >
-                  <div className="mb-3 flex items-center justify-between gap-2">
-                    <span className="absolute top-3 right-3 translate-y-3 font-mono font-semibold text-primary text-sm opacity-0 transition-all group-hover/category:translate-y-0 group-hover/category:opacity-100">
-                      {name}
-                    </span>
-                    <div className="flex items-center gap-4 text-muted-foreground text-xs">
-                      <span className="font-mono tabular-nums">{ms}</span>
-                      <span>{description}</span>
+              <div className="space-y-3">
+                {CATEGORIES.map(({ name, roles, description, ms }, i) => (
+                  <motion.div
+                    className="group/category relative border border-border p-3.5"
+                    initial={{
+                      opacity: 0,
+                      y: prefersReduced ? 0 : 12,
+                    }}
+                    key={name}
+                    transition={{ duration: 0.25, ease, delay: i * 0.05 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                  >
+                    <div className="mb-3 flex items-center justify-between gap-2">
+                      <span className="absolute top-3 right-3 translate-y-3 font-mono font-semibold text-primary text-sm opacity-0 transition-all group-hover/category:translate-y-0 group-hover/category:opacity-100">
+                        {name}
+                      </span>
+                      <div className="flex items-center gap-4 text-muted-foreground text-xs">
+                        <span className="font-mono tabular-nums">{ms}</span>
+                        <span>{description}</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {roles.map((role) => (
-                      <RoleButton category={name} key={role} role={role} />
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
+                    <div className="flex flex-wrap gap-2">
+                      {roles.map((role) => (
+                        <RoleButton category={name} key={role} role={role} />
+                      ))}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
+          </SensoryUIProvider>
         </div>
       </div>
     </section>
