@@ -23,15 +23,15 @@ export function Book({
   return (
     <Link
       aria-label={title}
-      className="group block w-full outline-none [perspective:900px] focus-visible:ring-2 focus-visible:ring-ring"
+      className="group perspective-[900px] block w-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
       href={href}
     >
-      <div className="relative mx-auto aspect-[5/7] w-full max-w-52 transition-transform duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] [transform-style:preserve-3d] [transform:rotateY(0deg)] group-hover:[transform:rotateY(-16deg)_translateY(-6px)]">
+      <div className="transform-3d transform-[rotateY(0deg)] group-hover:transform-[rotateY(-16deg)_translateY(-6px)] relative mx-auto aspect-5/7 w-full max-w-52 transition-transform duration-200 ease-[cubic-bezier(0.32,0.72,0,1)]">
         {/* Back cover */}
-        <div className="absolute inset-0 rounded-r-md rounded-l-sm bg-black/60 [transform:translateZ(-14px)]" />
+        <div className="transform-[translateZ(-14px)] absolute inset-0 rounded-r-md rounded-l-sm bg-black/60" />
         {/* Page edges */}
         <div
-          className="absolute top-[3px] bottom-[3px] w-[14px] rounded-r-sm [transform:rotateY(12deg)_translateZ(0px)]"
+          className="transform-[rotateY(12deg)_translateZ(0px)] absolute top-0.75 bottom-0.75 w-3.5 rounded-r-sm"
           style={{
             right: "-7px",
             backgroundImage:
@@ -41,7 +41,7 @@ export function Book({
         {/* Front cover */}
         <div
           className={cn(
-            "absolute inset-0 flex flex-col justify-between overflow-hidden rounded-r-md rounded-l-[2px] p-4 text-white shadow-lg ring-1 ring-white/20 transition-shadow duration-200 [transform:translateZ(14px)] group-hover:shadow-2xl",
+            "transform-[translateZ(14px)] absolute inset-0 flex flex-col justify-between overflow-hidden rounded-r-md rounded-l-[2px] p-4 text-white shadow-lg ring-1 ring-white/20 transition-shadow duration-200 group-hover:shadow-2xl",
             coverClassName
           )}
         >
@@ -60,7 +60,7 @@ export function Book({
         {/* Spine */}
         <div
           className={cn(
-            "absolute top-0 bottom-0 left-0 w-[10px] rounded-l-sm brightness-[0.6] [transform-origin:left_center] [transform:rotateY(-84deg)_translateX(-5px)]",
+            "transform-[rotateY(-84deg)_translateX(-5px)] absolute top-0 bottom-0 left-0 w-2.5 origin-[left_center] rounded-l-sm brightness-[0.6]",
             spineClassName ?? coverClassName
           )}
         />
