@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import { type ComponentProps, useEffect, useState } from "react";
 import DitherVeil from "@/components/reactbits/dither-veil";
 
@@ -52,7 +53,7 @@ function FadeInVeil({
       className={`relative h-full w-full ${className}`.trim()}
       style={{
         opacity: ready ? 1 : 0,
-        transition: ready ? "opacity 1200ms ease-out" : "none",
+        transition: ready ? "opacity 350ms ease-out" : "none",
       }}
     >
       {ready && <DitherVeil src={src} {...props} />}
@@ -142,47 +143,6 @@ function useThemeColor(cssVar: string) {
   return color;
 }
 
-/**
- * Tracks whether the veil images have finished loading (with a timeout
- * fallback), so a theme-colored cover can fade away to reveal them instead
- * of flashing half-loaded pixels on first paint.
- */
-function useRevealReady() {
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    let loaded = 0;
-    const done = () => {
-      loaded += 1;
-      if (loaded >= 2 && active) {
-        setReady(true);
-      }
-    };
-    for (const src of [
-      "/hero-background-light.webp",
-      "/hero-background-dark.webp",
-    ]) {
-      const img = new Image();
-      img.decoding = "async";
-      img.onload = done;
-      img.onerror = done;
-      img.src = src;
-    }
-    const fallback = window.setTimeout(() => {
-      if (active) {
-        setReady(true);
-      }
-    }, 2500);
-    return () => {
-      active = false;
-      window.clearTimeout(fallback);
-    };
-  }, []);
-
-  return ready;
-}
-
 const grain = (tone: 0 | 1, opacity: number) => {
   const svg =
     `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>` +
@@ -223,7 +183,21 @@ function Grain() {
 
 export function HeroBackground() {
   const bg = useThemeColor("--background");
-  const revealed = useRevealReady();
+  const { resolvedTheme } = useTheme();
+  const [deferred, setDeferred] = useState(false);
+
+  // Let the nav + hero text finish their entrance before the veil
+  // initializes (WebGL context, texture uploads, mipmap generation).
+  // Anything the veil does before that reads as layout jank.
+  useEffect(() => {
+    const t = window.setTimeout(() => setDeferred(true), 600);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  // Render only the active veil: mounting both doubles GPU + decode
+  // contention on first paint for a canvas the user never sees.
+  const showLight = deferred && bg && resolvedTheme === "light";
+  const showDark = deferred && bg && resolvedTheme === "dark";
 
   return (
     <>
@@ -231,35 +205,26 @@ export function HeroBackground() {
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 hidden w-full select-none lg:block"
+        style={{ contain: "strict" }}
       >
-        {bg && (
+        {showLight && (
           <>
             {/* Light theme: assumes paper is the ground color. Swap to
                 inkColor={bg} if the light image renders the other way round */}
             <FadeInVeil
-              key={`light-${bg}`}
               {...veilProps}
-              className="dark:hidden"
               paperColor={bg}
               src="/hero-background-light.webp"
             />
-            {/* Dark theme: ink is the ground color */}
-            <FadeInVeil
-              key={`dark-${bg}`}
-              {...veilProps}
-              className="hidden dark:block"
-              inkColor={bg}
-              src="/hero-background-dark.webp"
-            />
           </>
         )}
-
-        {/* Theme-colored cover: hides half-loaded pixels, then fades away */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-background transition-opacity duration-1000 ease-out"
-          style={{ opacity: revealed ? 0 : 1 }}
-        />
+        {showDark && (
+          <FadeInVeil
+            {...veilProps}
+            inkColor={bg}
+            src="/hero-background-dark.webp"
+          />
+        )}
 
         {/* Left fade to blend with content */}
         <div

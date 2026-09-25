@@ -173,8 +173,19 @@ export function Inspiration() {
             </div>
           </motion.div>
 
-          {/* Right column - sound categories, played in the glass pack */}
-          <SensoryUIProvider config={{ theme: "glass" }}>
+          {/* Right column - sound categories, played in the crisp pack */}
+          <SensoryUIProvider
+            config={{
+              theme: "crisp",
+              categories: {
+                interaction: true,
+                navigation: true,
+                notification: true,
+                overlay: true,
+                hero: true,
+              },
+            }}
+          >
             <div>
               <motion.p
                 className="mb-4 font-mono text-muted-foreground text-xs uppercase tracking-widest"

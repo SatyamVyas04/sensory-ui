@@ -28,7 +28,7 @@ function StaggerColumn({
 
   return (
     <motion.div
-      className="flex min-w-0 flex-col gap-4 *:w-full *:min-w-0 *:max-w-full"
+      className="flex min-w-0 flex-col gap-4 pl-0.25 *:w-full *:min-w-0 *:max-w-full"
       initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
       transition={{
         duration: 0.25,

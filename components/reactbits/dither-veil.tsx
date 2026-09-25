@@ -30,6 +30,8 @@ const MASK_SCALE = 0.5;
 const MAX_BURSTS = 4;
 const BURST_SECONDS = 1.2;
 const HOLD = 1.6;
+const INTRO_MS = 700;
+const INTRO_FLOOR = 0.45;
 
 const GL_RGBA16F = 0x881a;
 const GL_HALF_FLOAT = 0x140b;
@@ -282,6 +284,7 @@ uniform float uRim;
 uniform float uContrast;
 uniform float uBrightness;
 uniform float uReverse;
+uniform float uIntro;
 uniform float uHold;
 uniform vec3 uMatte;
 uniform float uKey;
@@ -377,7 +380,10 @@ void main() {
   color = mix(color, uRimColor, step(low, shown) * step(0.001, uRim));
   color = mix(color, photo, step(low + uRim, shown));
 
-  fragColor = vec4(color, 1.0);
+  vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);
+  float spread = length((cellUv - 0.5) * aspect) / length(aspect * 0.5);
+  float appear = step(spread * 0.72 + bayer(cell + vec2(3.0, 5.0)) * 0.28, uIntro * 1.001);
+  fragColor = vec4(mix(uInk, color, appear), 1.0);
 }
 `;
 
@@ -564,6 +570,7 @@ const DitherVeil = ({
       uContrast: { value: 1 },
       uBrightness: { value: 0 },
       uReverse: { value: 0 },
+      uIntro: { value: 0 },
       uHold: { value: HOLD },
       uMatte: { value: [0, 0, 0] },
       uKey: { value: 0 },
@@ -580,6 +587,7 @@ const DitherVeil = ({
     const samplerContext = sampler.getContext("2d", { willReadFrequently: true });
 
     let image: HTMLImageElement | null = null;
+    let introStart = 0;
     let diffusedKey = "";
     let diffusionBlocked = false;
     let width = 1;
@@ -781,10 +789,18 @@ const DitherVeil = ({
       viewUniforms.uContrast.value = s.contrast;
       viewUniforms.uBrightness.value = s.brightness;
       viewUniforms.uReverse.value = s.reverse ? 1 : 0;
+      const intro = image ? Math.min(1, (now - introStart) / INTRO_MS) : 0;
+      viewUniforms.uIntro.value =
+        INTRO_FLOOR + (1 - INTRO_FLOOR) * (1 - Math.pow(1 - intro, 2));
       renderer.render({ scene: viewMesh });
 
       const busy =
-        pointer.inside || wanderOn || presence > 0.002 || bursts.length > 0 || now < trailUntil;
+        pointer.inside ||
+        wanderOn ||
+        presence > 0.002 ||
+        bursts.length > 0 ||
+        now < trailUntil ||
+        (image && intro < 1);
       if (busy && visible) raf = requestAnimationFrame(frame);
     };
 
@@ -810,6 +826,7 @@ const DitherVeil = ({
       } catch {
         // ignore matte measurement failures
       }
+      introStart = performance.now();
       wake();
     };
     img.src = src;

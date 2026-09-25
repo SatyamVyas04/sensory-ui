@@ -124,7 +124,7 @@ export function Hero({ stars }: HeroProps) {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative flex min-h-svh items-center overflow-hidden"
+      className="relative flex min-h-dvh items-center overflow-hidden"
     >
       {/* Skip to main content */}
       <a
@@ -142,7 +142,7 @@ export function Hero({ stars }: HeroProps) {
         animate={{ opacity: 1, y: 0 }}
         className="absolute top-0 right-0 left-0 z-50"
         initial={{ opacity: 0, y: prefersReduced ? 0 : -8 }}
-        transition={{ duration: 0.25, ease }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link
@@ -179,7 +179,7 @@ export function Hero({ stars }: HeroProps) {
                   className="bg-transparent text-muted-foreground hover:text-foreground"
                   key={item.href}
                   size="sm"
-                  sound="navigation.tab"
+                  sound="interaction.tap"
                   variant="ghost"
                 >
                   <Link
@@ -195,7 +195,12 @@ export function Hero({ stars }: HeroProps) {
                 </Button>
               ))}
             </div>
-            <Button asChild className="size-8 bg-transparent" variant="outline">
+            <Button
+              asChild
+              className="size-8 bg-transparent"
+              sound="interaction.tap"
+              variant="outline"
+            >
               <Link
                 aria-label="Twitter/X - @SatyamVyas04"
                 href="https://x.com/SatyamVyas04"
@@ -211,6 +216,7 @@ export function Hero({ stars }: HeroProps) {
             <Button
               asChild
               className="relative bg-transparent"
+              sound="interaction.tap"
               variant="outline"
             >
               <Link

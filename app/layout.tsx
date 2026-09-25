@@ -140,6 +140,20 @@ export default function RootLayout({
         media="(prefers-color-scheme: dark)"
         rel="preload"
       />
+      <link
+        as="font"
+        crossOrigin="anonymous"
+        href="/be-vietnam-pro-body-font/BeVietnamPro-Regular.ttf"
+        rel="preload"
+        type="font/ttf"
+      />
+      <link
+        as="font"
+        crossOrigin="anonymous"
+        href="/cardo-heading-font/Cardo-Regular.ttf"
+        rel="preload"
+        type="font/ttf"
+      />
       <body
         className={`${geistMono.variable} bg-size-[10px_10px] bg-fixed font-sans antialiased`}
         style={{
@@ -157,7 +171,7 @@ export default function RootLayout({
           <TooltipProvider>
             <SensoryUIProvider
               config={{
-                theme: "glass",
+                theme: "crisp",
                 volume: 0.75,
                 categories: {
                   interaction: true,
