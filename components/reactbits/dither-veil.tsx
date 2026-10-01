@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { Mesh, Program, RenderTarget, Renderer, Texture, Triangle } from "ogl";
 
@@ -459,6 +459,7 @@ const DitherVeil = ({
   style,
 }: DitherVeilProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
   const settingsRef = useRef<Settings | null>(null);
   const wakeRef = useRef<() => void>(() => {});
 
@@ -488,6 +489,7 @@ const DitherVeil = ({
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return undefined;
+    setLoaded(false);
 
     const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     let renderer: Renderer;
@@ -684,6 +686,10 @@ const DitherVeil = ({
       raf = 0;
       const s = settingsRef.current;
       if (!s) return;
+      // Don't paint the ink/paper dither field until the photo texture
+      // is decoded and uploaded — otherwise the first frames are just
+      // black dots on a solid ground.
+      if (!image) return;
       const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
       last = now;
 
@@ -827,6 +833,7 @@ const DitherVeil = ({
         // ignore matte measurement failures
       }
       introStart = performance.now();
+      setLoaded(true);
       wake();
     };
     img.src = src;
@@ -901,7 +908,17 @@ const DitherVeil = ({
     };
   }, [src]);
 
-  return <div ref={containerRef} className={`relative h-full w-full overflow-hidden touch-pan-y ${className}`.trim()} style={style} />;
+  return (
+    <div
+      ref={containerRef}
+      className={`relative h-full w-full overflow-hidden touch-pan-y ${className}`.trim()}
+      style={{
+        ...style,
+        opacity: loaded ? (style?.opacity ?? 1) : 0,
+        transition: loaded ? "opacity 350ms ease-out" : "none",
+      }}
+    />
+  );
 };
 
 export default DitherVeil;

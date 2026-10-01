@@ -186,6 +186,19 @@ export function HeroBackground() {
   const { resolvedTheme } = useTheme();
   const [deferred, setDeferred] = useState(false);
 
+  // Start downloading both hero images on mount — not after the 600ms
+  // defer — so FadeInVeil + DitherVeil hit the HTTP cache when they mount.
+  useEffect(() => {
+    for (const src of [
+      "/hero-background-light.webp",
+      "/hero-background-dark.webp",
+    ]) {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = src;
+    }
+  }, []);
+
   // Let the nav + hero text finish their entrance before the veil
   // initializes (WebGL context, texture uploads, mipmap generation).
   // Anything the veil does before that reads as layout jank.
