@@ -21,8 +21,8 @@ module.exports = {
 ```
 
 Overrides can point to:
-- **URL paths** — files in your `public/` directory (e.g., `/sounds/custom/click.mp3`)
-- **Base64 data URIs** — inline audio (e.g., `data:audio/mp3;base64,//uQx...`)
+- **URL paths:** files in your `public/` directory (e.g., `/sounds/custom/click.mp3`)
+- **Base64 data URIs:** inline audio (e.g., `data:audio/mp3;base64,//uQx...`)
 
 <Callout type="tip">
   Custom overrides bypass the synthesizer entirely. The engine fetches them by URL
@@ -40,7 +40,7 @@ When providing custom audio files:
 | Bit depth | 16-bit |
 | Channels | Mono preferred (stereo allowed) |
 | Peak normalization | −1.0 dBTP |
-| Leading silence | None — trimmed to first transient |
+| Leading silence | None: trimmed to first transient |
 | Trailing silence | ≤ 20 ms |
 | Per-file size | ≤ 15 KB recommended |
 
@@ -123,7 +123,7 @@ All effects support a `mix` parameter (0–1) for wet/dry balance.
 
 | Pack | Effects | Character |
 |------|---------|-----------|
-| aero | reverb (long tail, 2s) | Airy, ethereal — needs space |
+| aero | reverb (long tail, 2s) | Airy, ethereal: needs space |
 | glass | reverb (1.5s) + chorus | Crystalline shimmer |
 | retro | chorus + delay | Analog warmth |
 | industrial | distortion | Metallic grit |
@@ -142,7 +142,7 @@ All effects support a `mix` parameter (0–1) for wet/dry balance.
 | Nothing fits your product's voice | Design a new instrument + `generateSoundPack` | A day |
 | A moment needs real recorded audio | Override with a file and keep synthesis for the rest | Minutes |
 
-Start from the [pack dossiers](/docs/concepts/sound-packs) to find the closest character, and check [Designing with Sound](/docs/guides/designing-with-sound) before adding new sounds — most products need fewer custom sounds than they think.
+Start from the [pack dossiers](/docs/core/sound-packs) to find the closest character, and check [Designing with Sound](/docs/guides/designing-with-sound) before adding new sounds. Most products need fewer custom sounds than they think.
 
 <Callout type="info">
   Sound synthesis patterns adapted from

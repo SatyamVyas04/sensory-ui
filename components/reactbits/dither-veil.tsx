@@ -687,7 +687,7 @@ const DitherVeil = ({
       const s = settingsRef.current;
       if (!s) return;
       // Don't paint the ink/paper dither field until the photo texture
-      // is decoded and uploaded — otherwise the first frames are just
+      // is decoded and uploaded. Otherwise the first frames are just
       // black dots on a solid ground.
       if (!image) return;
       const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));

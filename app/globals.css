@@ -8,7 +8,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ---------------------------------------------------------------------------
-   Font Faces — Be Vietnam Pro (body) + Cardo (headings)
+   Font Faces: Be Vietnam Pro (body) + Cardo (headings)
    --------------------------------------------------------------------------- */
 
 @font-face {
@@ -184,7 +184,7 @@
   ::-moz-selection {
     @apply bg-primary text-white;
   }
-  /* Docs typography — Serif for headings, Sans for body.
+  /* Docs typography: Serif for headings, Sans for body.
      `.prose` is only rendered by Fumadocs docs pages. */
   .prose {
     font-family: var(--font-sans);

@@ -9,7 +9,7 @@ import { MultistepBlockLive } from "@/app/docs/_components/demos/blocks/multiste
 
 
 
-Countdown timers with sound-enhanced milestones. Each second tick plays a subtle navigation sound, milestones get a special chime, and completion triggers a celebratory sound — optionally paired with confetti.
+Countdown timers with sound-enhanced milestones. Each second tick plays a subtle navigation sound, milestones get a special chime, and completion triggers a celebratory sound, optionally paired with confetti.
 
 ---
 
@@ -25,7 +25,7 @@ A Pomodoro-style countdown timer that plays sounds at key moments: every tick, h
 
 ### Live demo
 
-<DemoBlock title="Live demo" description="10-second demo — a tick every second, milestone at half, fanfare at zero">
+<DemoBlock title="Live demo" description="10-second demo: a tick every second, milestone at half, fanfare at zero">
   <CountdownBlockLive />
 </DemoBlock>
 
@@ -158,7 +158,7 @@ export function CountdownTimerBlock() {
         </Button>
       </div>
       <p className="text-muted-foreground text-xs">
-        10-second demo — a tick every second, milestone at half, fanfare at
+        10-second demo: a tick every second, milestone at half, fanfare at
         zero.
       </p>
     </div>
@@ -194,7 +194,7 @@ A button that fires real confetti alongside the `hero.complete` sound.
 | Element | Role | Why |
 |---------|------|-----|
 | Completion | `hero.complete` | Celebration sound |
-| Confetti | — | Visual celebration (no sound, pairs with hero.complete) |
+| Confetti | None | Visual celebration (no sound, pairs with hero.complete) |
 
 ### Code
 
@@ -258,7 +258,7 @@ export function ConfettiBlock() {
       </Button>
       <p className="text-xs text-muted-foreground">
         {fired
-          ? "Fanfare plus a canvas-confetti cannon — fire away."
+          ? "Fanfare plus a canvas-confetti cannon. Fire away."
           : "Real confetti via canvas-confetti, fired from the button."}
       </p>
     </div>
@@ -272,7 +272,7 @@ export function ConfettiBlock() {
 bun add canvas-confetti @types/canvas-confetti
 ```
 
-The burst below uses [`canvas-confetti`](https://www.npmjs.com/package/canvas-confetti) (see [magicui Confetti](https://magicui.design/docs/components/confetti)) — one cannon from the button plus side cannons 250ms later. The fanfare comes from the button’s `sound="hero.complete"` prop.
+The burst below uses [`canvas-confetti`](https://www.npmjs.com/package/canvas-confetti) (see [magicui Confetti](https://magicui.design/docs/components/confetti)): one cannon from the button plus side cannons 250ms later. The fanfare comes from the button’s `sound="hero.complete"` prop.
 
 ### When to Use
 

@@ -186,8 +186,8 @@ export function HeroBackground() {
   const { resolvedTheme } = useTheme();
   const [deferred, setDeferred] = useState(false);
 
-  // Start downloading both hero images on mount — not after the 600ms
-  // defer — so FadeInVeil + DitherVeil hit the HTTP cache when they mount.
+  // Start downloading both hero images on mount, not after the 600ms
+  // defer, so FadeInVeil + DitherVeil hit the HTTP cache when they mount.
   useEffect(() => {
     for (const src of [
       "/hero-background-light.webp",

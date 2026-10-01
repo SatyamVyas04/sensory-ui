@@ -115,8 +115,7 @@ export function CountdownBlockLive() {
         </Button>
       </div>
       <p className="text-muted-foreground text-xs">
-        10-second demo — a tick every second, milestone at half, fanfare at
-        zero.
+        10-second demo: a tick every second, milestone at half, fanfare at zero.
       </p>
     </div>
   );

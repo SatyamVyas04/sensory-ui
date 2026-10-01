@@ -16,17 +16,17 @@ The sound engine is the single runtime module responsible for decoding audio dat
 | Concern | `new Audio()` | Web Audio API |
 | --- | --- | --- |
 | Latency | High (50–200 ms depending on browser) | Very low (< 10 ms with decoded buffer) |
-| Buffer reuse | Impossible — new decode each play | Buffer decoded once, reused ∞ |
-| Volume control | `.volume` property only | Gain node — precise and composable |
+| Buffer reuse | Impossible: new decode each play | Buffer decoded once, reused ∞ |
+| Volume control | `.volume` property only | Gain node: precise and composable |
 | Playback rate | Limited | [`BufferSourceNode.playbackRate`](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/playbackRate) |
-| Concurrent plays | Unreliable | Clean — new source node per play |
+| Concurrent plays | Unreliable | Clean: new source node per play |
 | SSR safety | Needs guard | Needs guard (same) |
 
 ---
 
 ## Architecture
 
-Every playback walks the same path — resolve the role, then take the fast lane (synthesizer) or the decode lane (file):
+Every playback walks the same path: resolve the role, then take the fast lane (synthesizer) or the decode lane (file):
 
 <img src="/diagrams/engine-state-lr-light.png" alt="Engine playback flow" className="hidden rounded-lg lg:block dark:hidden" />
 <img src="/diagrams/engine-state-lr-dark.png" alt="Engine playback flow" className="hidden rounded-lg dark:lg:block" />
@@ -45,7 +45,7 @@ Reads `packRegistry[theme]` plus config overrides. Returns a `SoundSynthesizer` 
 
 ### Synthesizer? Call it directly
 
-`call synthesizer(ctx, options)` — no decoding, no network. Returns `SoundPlayback` immediately. All 9 built-in packs take this lane.
+`call synthesizer(ctx, options)`: no decoding, no network. Returns `SoundPlayback` immediately. All 9 built-in packs take this lane.
 
 ### String? Decode, then play
 
@@ -57,13 +57,13 @@ The engine tracks the latest playback in `activePlayback` and stops it when a ne
 
 </Steps>
 
-Full mermaid diagrams are a planned future upgrade — this flow shows the whole path today.
+Full mermaid diagrams are a planned future upgrade. This flow shows the whole path today.
 
 ---
 
 ## Lazy Singleton AudioContext
 
-The engine uses a **lazy singleton AudioContext** — created on first use, reused for all subsequent plays. If the cached context was closed (e.g., after `closeAudioContext()` or a browser-initiated close), it is recreated so playback can recover.
+The engine uses a **lazy singleton AudioContext**, created on first use and reused for all subsequent plays. If the cached context was closed (e.g., after `closeAudioContext()` or a browser-initiated close), it is recreated so playback can recover.
 
 ```ts
 let audioContext: AudioContext | null = null;
@@ -88,7 +88,7 @@ export function getAudioContext(): AudioContext {
 
 ## SoundSynthesizer
 
-The preferred audio source is a `SoundSynthesizer` function — called directly with the `AudioContext`, no decode step needed:
+The preferred audio source is a `SoundSynthesizer` function, called directly with the `AudioContext` with no decode step needed:
 
 ```ts
 export type SoundSynthesizer = (
@@ -120,7 +120,7 @@ const bufferCache = new Map<string, AudioBuffer>();
 
 - **Cache key:** The audio source string (base64 data URI or URL)
 - **Built-in sounds:** Use the full data URI as the cache key
-- **Custom overrides:** The URL becomes the cache key — original and overridden sounds can both be cached simultaneously
+- **Custom overrides:** The URL becomes the cache key, so original and overridden sounds can both be cached simultaneously
 - **Invalidation:** Never automatic in production. `clearBufferCache()` is available for development tooling or runtime pack switches.
 
 ---
@@ -131,7 +131,7 @@ The `decodeAudioData` function handles both regular URLs and base64 data URIs:
 
 ```ts
 export async function decodeAudioData(source: string): Promise<AudioBuffer> {
-  // Handle base64 data URIs directly — no network fetch needed
+  // Handle base64 data URIs directly: no network fetch needed
   if (source.startsWith("data:")) {
     return decodeBase64DataUri(source);
   }
@@ -260,7 +260,7 @@ This check is cheap and must be the **first line** in any function that could to
 Modern browsers require a user gesture before an `AudioContext` can produce audio. The engine handles this by calling `ctx.resume()` before every playback attempt if `ctx.state === "suspended"`.
 
 - The first sound will play correctly if triggered from a user interaction (click, keydown, pointer event).
-- Sounds triggered programmatically without a user gesture will be silently blocked — this is by design.
+- Sounds triggered programmatically without a user gesture will be silently blocked. This is by design.
 
 ---
 
@@ -280,7 +280,7 @@ finalVolume = masterVolume × localVolume
 - Does not manage a global `AudioContext` exposed outside the module
 - Does not create any long-lived nodes (no master gain bus, no reverb node)
 - Does not trigger any React state updates
-- Does not read from `sensory.config.js` directly — config resolution is handled by the caller
+- Does not read from `sensory.config.js` directly, as config resolution is handled by the caller
 
 ---
 
@@ -319,8 +319,8 @@ export async function closeAudioContext(): Promise<void> {
 
 ## Reference Links
 
-- [Web Audio API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
-- [AudioContext — MDN](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)
-- [decodeAudioData — MDN](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/decodeAudioData)
-- [AudioBufferSourceNode — MDN](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode)
-- [GainNode — MDN](https://developer.mozilla.org/en-US/docs/Web/API/GainNode)
+- [Web Audio API (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [AudioContext (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)
+- [decodeAudioData (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/decodeAudioData)
+- [AudioBufferSourceNode (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode)
+- [GainNode (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/GainNode)

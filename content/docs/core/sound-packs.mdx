@@ -4,7 +4,7 @@ description: "9 sound packs with instrument-based architecture, effects system, 
 ---
 
 
-sensory-ui includes **9 distinct sound packs**, each with a unique character. Swap between them by changing the `theme` value in `sensory.config.js`. All built-in packs generate audio **programmatically via the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)** — no audio files, no base64 blobs, no network requests.
+sensory-ui includes **9 distinct sound packs**, each with a unique character. Swap between them by changing the `theme` value in `sensory.config.js`. All built-in packs generate audio **programmatically via the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)**. No audio files, no base64 blobs, no network requests.
 
 <Callout type="info">
   Synthesis patterns adapted from [Generating Sounds with
@@ -92,30 +92,30 @@ All effects support a `mix` parameter (0–1) for wet/dry balance.
 
 | Pack | Effects | Character Rationale |
 | --- | --- | --- |
-| aero | reverb (long tail, 2s) | Airy, ethereal — needs space |
-| glass | reverb (1.5s) + chorus | Crystalline shimmer — chorus adds sparkle |
-| retro | chorus + delay | Analog warmth — chorus widens, delay echoes |
-| industrial | distortion | Metallic grit — distortion adds bite |
-| organic | reverb (short room, 0.4s) | Natural warmth — subtle room ambience |
-| soft | reverb (medium warm, 0.8s) | Gentle presence — warm reverb body |
-| arcade | (dry) | Chiptune — dry is authentic |
-| minimal | (dry) | Pure — no processing |
-| crisp | (dry) | Precise — dry keeps transients sharp |
+| aero | reverb (long tail, 2s) | Airy, ethereal: needs space |
+| glass | reverb (1.5s) + chorus | Crystalline shimmer: chorus adds sparkle |
+| retro | chorus + delay | Analog warmth: chorus widens, delay echoes |
+| industrial | distortion | Metallic grit: distortion adds bite |
+| organic | reverb (short room, 0.4s) | Natural warmth: subtle room ambience |
+| soft | reverb (medium warm, 0.8s) | Gentle presence: warm reverb body |
+| arcade | (dry) | Chiptune: dry is authentic |
+| minimal | (dry) | Pure: no processing |
+| crisp | (dry) | Precise: dry keeps transients sharp |
 
 ---
 
 ## Built-in Sound Packs (9 total)
 
 <Cards>
-  <Card title="soft" description="Warm, rounded, gentle — felt mallets on soft pads." />
-  <Card title="aero" description="Airy, breathy, ethereal — wind through chimes. Default." />
-  <Card title="arcade" description="8-bit chiptune — square waves, punchy." />
-  <Card title="organic" description="Natural, warm, wooden — marimba, wood blocks." />
-  <Card title="glass" description="Crystalline, bright — struck glass or bells." />
-  <Card title="industrial" description="Metallic, harsh, mechanical — machines and metal." />
-  <Card title="minimal" description="Clean, sparse, understated — pure tones only." />
-  <Card title="retro" description="Analog synth — vintage synthesizers." />
-  <Card title="crisp" description="Sharp, defined, precise — high-quality headphones." />
+  <Card title="soft" description="Warm, rounded, gentle: felt mallets on soft pads." />
+  <Card title="aero" description="Airy, breathy, ethereal: wind through chimes. Default." />
+  <Card title="arcade" description="8-bit chiptune: square waves, punchy." />
+  <Card title="organic" description="Natural, warm, wooden: marimba, wood blocks." />
+  <Card title="glass" description="Crystalline, bright: struck glass or bells." />
+  <Card title="industrial" description="Metallic, harsh, mechanical: machines and metal." />
+  <Card title="minimal" description="Clean, sparse, understated: pure tones only." />
+  <Card title="retro" description="Analog synth: vintage synthesizers." />
+  <Card title="crisp" description="Sharp, defined, precise: high-quality headphones." />
 </Cards>
 
 ---
@@ -238,8 +238,8 @@ export const myPack = generateSoundPack(myInstrument);
 
 ## Reference Links
 
-- [Web Audio API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
-- [OscillatorNode — MDN](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode)
-- [BiquadFilterNode — MDN](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode)
+- [Web Audio API (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [OscillatorNode (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode)
+- [BiquadFilterNode (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode)
 - [Generating Sounds with AI](https://www.userinterface.wiki/generating-sounds-with-ai)
 - [@web-kits/audio](https://audio.raphaelsalaja.com)

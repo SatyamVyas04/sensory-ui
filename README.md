@@ -157,11 +157,11 @@ Packs with effects chains (reverb, delay, chorus, distortion) for spatial/timbra
 
 ## Components
 
-24 sound-enabled components — each a drop-in shadcn/ui replacement with a `sound` prop.
+24 sound-enabled components, each a drop-in shadcn/ui replacement with a `sound` prop.
 
 `accordion` · `alert-dialog` · `button` · `carousel` · `checkbox` · `collapsible` · `command` · `context-menu` · `dialog` · `drawer` · `dropdown-menu` · `menubar` · `navigation-menu` · `pagination` · `popover` · `radio-group` · `select` · `sheet` · `sidebar` · `slider` · `switch` · `tabs` · `toggle` · `toggle-group`
 
-Plus `core` (engine, provider, config, sounds) — installed automatically as a dependency of every component.
+Plus `core` (engine, provider, config, sounds), installed automatically as a dependency of every component.
 
 ---
 
@@ -182,5 +182,5 @@ The dev server runs the landing page at `localhost:3000` with an interactive com
 [MIT](./LICENSE) - free for personal and commercial use.
 
 <div align="center">
-  <sub>Built by <a href="https://X.com/SatyamVyas04">@SatyamVyas04</a></sub>
+  <sub>Built by <a href="https://x.com/SatyamVyas04">@SatyamVyas04</a></sub>
 </div>

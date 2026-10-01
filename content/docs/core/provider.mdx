@@ -4,7 +4,7 @@ description: "React provider architecture, context shape, reduced motion hook, a
 ---
 
 
-The `SensoryUIProvider` is a React context provider that wraps the entire application. It acts as the global configuration hub for the sound engine — managing whether sounds are enabled, what volume to use, and providing the `playSound` function to any sensory-ui component deep in the tree.
+The `SensoryUIProvider` is a React context provider that wraps the entire application. It acts as the global configuration hub for the sound engine, managing whether sounds are enabled, what volume to use, and providing the `playSound` function to any sensory-ui component deep in the tree.
 
 **File:** `components/ui/sensory-ui/config/provider.tsx`
 
@@ -14,7 +14,7 @@ The `SensoryUIProvider` is a React context provider that wraps the entire applic
 
 Without a provider, each sensory-ui component would need to independently read the config, check accessibility preferences, and call the engine. This creates several problems:
 
-1. **Navigation persistence**: In [Next.js App Router](https://nextjs.org/docs/app), layout components persist across navigations. A provider mounted at the root layout keeps the `AudioContext` alive across page transitions — no re-initialization cost or audio gap mid-navigation.
+1. **Navigation persistence**: In [Next.js App Router](https://nextjs.org/docs/app), layout components persist across navigations. A provider mounted at the root layout keeps the `AudioContext` alive across page transitions, avoiding re-initialization cost or audio gaps mid-navigation.
 2. **Global state**: Whether sounds are enabled, muted, or at a certain volume is a cross-cutting concern. It belongs in one place.
 3. **Single AudioContext**: The browser allows (and prefers) a single `AudioContext` per page. The provider ensures only one is ever created.
 4. **HMR safety**: In development, the provider can close and re-open the `AudioContext` on hot module replacement, preventing stale state.
@@ -204,7 +204,7 @@ function useReducedMotion(pref: SensoryUIConfig["reducedMotion"]): boolean {
 
   if (pref === "force-off") return true;  // Always suppress
   if (pref === "force-on") return false;  // Always play, ignore preference
-  return matches;                          // "inherit" — respect OS setting
+  return matches;                          // "inherit": respect OS setting
 }
 ```
 
@@ -254,7 +254,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
 <Callout type="tip">
   The provider is a client component. Your root layout can remain a server
-  component — [Next.js](https://nextjs.org/docs) allows client components to
+  component, as [Next.js](https://nextjs.org/docs) allows client components to
   receive and render server component children transparently.
 </Callout>
 
@@ -264,11 +264,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
 The provider uses:
 
-- `useState` — to manage the muted state
-- `useEffect` — to watch `prefers-reduced-motion` changes and clean up on unmount
-- `useCallback` / `useMemo` — to stabilise context values
+- `useState`: to manage the muted state
+- `useEffect`: to watch `prefers-reduced-motion` changes and clean up on unmount
+- `useCallback` / `useMemo`: to stabilise context values
 
-All of these require a client boundary. Every sensory-ui module carries its own `"use client"` directive — the provider, the `usePlaySound` hook, and each of the 24 component files — so any file that imports `useSensoryUI` is a client component.
+All of these require a client boundary. Every sensory-ui module carries its own `"use client"` directive (the provider, the `usePlaySound` hook, and each of the 24 component files), so any file that imports `useSensoryUI` is a client component.
 
 ---
 
@@ -276,7 +276,7 @@ All of these require a client boundary. Every sensory-ui module carries its own 
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `children` | `ReactNode` | — | Required. The entire application tree. |
+| `children` | `ReactNode` | None | Required. The entire application tree. |
 | `config` | `Partial<SensoryUIConfig>` | `undefined` | Optional runtime config overrides, merged on top of `sensory.config.js`. |
 
 ---
@@ -306,5 +306,5 @@ Pass a `config` override to disable sounds or mock them:
 - [React useContext](https://react.dev/reference/react/useContext)
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [Next.js Pages Router](https://nextjs.org/docs/pages)
-- [prefers-reduced-motion — MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
-- [Web Audio API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [prefers-reduced-motion (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
+- [Web Audio API (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)

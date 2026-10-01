@@ -1,6 +1,6 @@
 ---
 title: "Contribution"
-description: "Contribute to sensory-ui — extend support to new frameworks, add components, or improve existing ones."
+description: "Contribute to sensory-ui: extend support to new frameworks, add components, or improve existing ones."
 ---
 
 
@@ -73,14 +73,14 @@ sensory-ui/
 
 ## Adding a New Component
 
-1. **Check the base component** — Ensure the shadcn/ui component exists in `components/ui/`
+1. **Check the base component:** Ensure the shadcn/ui component exists in `components/ui/`
 2. **Create the sensory-ui version** in `components/ui/sensory-ui/`:
    - Copy the base component
-   - Add sound props (`sound`, `closeSound`, `openSound`, `expandSound`, `collapseSound`, `volume` — only the ones that fit the interaction model)
+   - Add sound props (`sound`, `closeSound`, `openSound`, `expandSound`, `collapseSound`, `volume`, only the ones that fit the interaction model)
    - Import `useSensoryUI` from `config/provider` and call its `playSound(role, { volume })` on the appropriate events
    - Keep the `"use client"` directive (all sensory-ui modules are client components)
-3. **Add to the registry** — Register the component in `components/ui/sensory-ui/registry.json` (and add any new shared modules, e.g. `sounds/core/*.ts`, to `sensory-ui-core` files)
-4. **Write documentation** — Create a page in `content/docs/components/` and add it to `content/docs/components/meta.json`
+3. **Add to the registry:** Register the component in `components/ui/sensory-ui/registry.json` (and add any new shared modules, e.g. `sounds/core/*.ts`, to `sensory-ui-core` files)
+4. **Write documentation:** Create a page in `content/docs/components/` and add it to `content/docs/components/meta.json`
 
 ### Sound Role Selection
 
@@ -128,8 +128,8 @@ sensory-ui currently supports **Next.js** (App Router + Pages Router) via React.
 
 ### Key Considerations
 
-- The **Web Audio API engine** (`engine.ts`) is framework-agnostic — it's pure TypeScript
-- The **sound synthesis** (`sounds/`) is framework-agnostic — pure functions
+- The **Web Audio API engine** (`engine.ts`) is framework-agnostic: it's pure TypeScript
+- The **sound synthesis** (`sounds/`) is framework-agnostic: pure functions
 - Only the **provider/hook** and **components** need framework-specific implementations
 - Maintain the same `SoundRole` type and registry structure across all frameworks
 
@@ -137,7 +137,7 @@ sensory-ui currently supports **Next.js** (App Router + Pages Router) via React.
 
 ## Adding a Sound Pack
 
-1. **Design an instrument** — Choose oscillator type, filter settings, effects
+1. **Design an instrument:** Choose oscillator type, filter settings, effects
 2. **Add to `sounds/core/instruments.ts`**:
    ```ts
    myPack: {
@@ -150,26 +150,26 @@ sensory-ui currently supports **Next.js** (App Router + Pages Router) via React.
      effects: [],
    }
    ```
-3. **Add to `sounds/packs.ts`** — Export the generated pack (use `generateSoundPack` for the full 17 roles, or `generateCustomSoundPack` for per-role tune/instrument overrides plus hand-crafted hero sounds) and register it in `soundPacks`
-4. No type update needed — `SoundPackName` is derived automatically as `keyof typeof soundPacks`
+3. **Add to `sounds/packs.ts`:** Export the generated pack (use `generateSoundPack` for the full 17 roles, or `generateCustomSoundPack` for per-role tune/instrument overrides plus hand-crafted hero sounds) and register it in `soundPacks`
+4. No type update needed. `SoundPackName` is derived automatically as `keyof typeof soundPacks`
 
 ---
 
 ## Code Style
 
-- **TypeScript** — Strict mode, explicit types
-- **Biome/Ultracite** — Run `bun run check` before committing
-- **No comments** — Code should be self-documenting
-- **Minimal dependencies** — Zero runtime dependencies for the core library
-- **Accessibility** — All components must support keyboard interaction and `prefers-reduced-motion`
+- **TypeScript:** Strict mode, explicit types
+- **Biome/Ultracite:** Run `bun run check` before committing
+- **No comments:** Code should be self-documenting
+- **Minimal dependencies:** Zero runtime dependencies for the core library
+- **Accessibility:** All components must support keyboard interaction and `prefers-reduced-motion`
 
 ---
 
 ## Previewing your changes
 
 ```bash
-bun run dev      # Iterate — docs live at http://localhost:3000/docs
-bun run build    # Verify — every page must prerender cleanly
+bun run dev      # Iterate: docs live at http://localhost:3000/docs
+bun run build    # Verify: every page must prerender cleanly
 ```
 
 New docs pages go in `content/docs/` with a `title` in frontmatter, ordered via the nearest `meta.json`. New demos go in `app/docs/_components/demos/` and render inside `<DemoBlock>`.
@@ -177,11 +177,11 @@ New docs pages go in `content/docs/` with a `title` in frontmatter, ordered via 
 ## Pull Request Process
 
 1. **Fork** the repository
-2. **Create a branch** — `feat/add-angular-support` or `fix/button-sound-on-enter`
-3. **Make your changes** — Follow the code style above
-4. **Test locally** — `bun run dev`, `bun run build`, `npx tsc --noEmit`
-5. **Validate registry** — `bun run registry:build`
-6. **Submit a PR** — Include a clear description of changes
+2. **Create a branch:** `feat/add-angular-support` or `fix/button-sound-on-enter`
+3. **Make your changes:** Follow the code style above
+4. **Test locally:** `bun run dev`, `bun run build`, `npx tsc --noEmit`
+5. **Validate registry:** `bun run registry:build`
+6. **Submit a PR:** Include a clear description of changes
 
 <Callout type="tip">
   For large contributions (new framework support, new sound packs), open an issue
@@ -192,9 +192,9 @@ New docs pages go in `content/docs/` with a `title` in frontmatter, ordered via 
 
 ## Reporting Issues
 
-- **Bug reports** — Include reproduction steps, browser version, and console output
-- **Feature requests** — Describe the use case and proposed solution
-- **Sound issues** — Specify which sound pack, browser, and OS
+- **Bug reports:** Include reproduction steps, browser version, and console output
+- **Feature requests:** Describe the use case and proposed solution
+- **Sound issues:** Specify which sound pack, browser, and OS
 
 [Open an issue on GitHub](https://github.com/SatyamVyas04/sensory-ui/issues)
 

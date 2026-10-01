@@ -38,12 +38,12 @@ bun run dev
 ```
 
 Open `http://localhost:3000` and use the interactive showcase to test:
-- **Button demo** — Click to hear `interaction.tap`
-- **Checkbox/Switch demo** — Toggle to hear `interaction.toggle`
-- **Slider demo** — Drag to hear `interaction.subtle`
-- **Tabs demo** — Switch tabs to hear `navigation.tab`
-- **Overlay demos** — Dialog/sheet for `overlay.open`/`overlay.close`
-- **Notification demos** — Toasts for all notification roles
+- **Button demo:** Click to hear `interaction.tap`
+- **Checkbox/Switch demo:** Toggle to hear `interaction.toggle`
+- **Slider demo:** Drag to hear `interaction.subtle`
+- **Tabs demo:** Switch tabs to hear `navigation.tab`
+- **Overlay demos:** Dialog/sheet for `overlay.open`/`overlay.close`
+- **Notification demos:** Toasts for all notification roles
 
 ## Component-Level Testing
 
@@ -140,9 +140,9 @@ npx shadcn@latest view SatyamVyas04/sensory-ui/sensory-ui-core
 
 The engine cancels previous sounds when a new sound is triggered rapidly:
 
-1. Rapidly clicking a button — only the latest click sound plays
-2. Rapidly toggling a checkbox — no overlapping toggle sounds
-3. Dragging a slider quickly — subtle ticks don't pile up
+1. Rapidly clicking a button: only the latest click sound plays
+2. Rapidly toggling a checkbox: no overlapping toggle sounds
+3. Dragging a slider quickly: subtle ticks don't pile up
 
 This is handled by `activePlayback` tracking in `engine.ts`.
 

@@ -1,6 +1,6 @@
 ---
 title: "Sound Usage & Choreography"
-description: "Hierarchy, pairing open/close sounds, directional navigation, and notification tiers — applied Material choreography for sensory-ui."
+description: "Hierarchy, pairing open/close sounds, directional navigation, and notification tiers: applied Material choreography for sensory-ui."
 ---
 
 
@@ -16,13 +16,13 @@ How to combine sounds across a flow so the interface feels coherent. Adapted fro
 
 Rules:
 
-1. Never play two foreground sounds together — queue or pick the most important.
+1. Never play two foreground sounds together. Queue or pick the most important.
 2. A foreground sound suppresses background ticks (e.g. success toast after submit: play `notification.success`, skip the button `tap`).
 3. `hero.*` is disabled by default (double opt-in: enable category + set `sound` prop).
 
 ## Pairing: open ↔ close, expand ↔ collapse
 
-From [Sound choreography](https://m2.material.io/design/sound/sound-choreography.html#hierarchy): paired actions should be tonal inversions — same voice, opposite arc.
+From [Sound choreography](https://m2.material.io/design/sound/sound-choreography.html#hierarchy): paired actions should be tonal inversions: same voice, opposite arc.
 
 | Open | Close | Components |
 | --- | --- | --- |
@@ -63,7 +63,7 @@ From [Sound choreography](https://m2.material.io/design/sound/sound-choreography
 | `notification.warning` | Two-note semitone ascent (A4 → A♯4) | Quota, confirm-needed, destructive preview |
 | `notification.error` | Filtered descending sweep (320 → 140 Hz) | Failed, disconnected, invalid |
 
-Don't upgrade info to success for emphasis — frequency of success sounds dilutes them.
+Don't upgrade info to success for emphasis. Frequency of success sounds dilutes them.
 
 ## Attributes: pitch, timbre, loudness
 
@@ -86,16 +86,16 @@ From [Sound attributes](https://m2.material.io/design/sound/sound-attributes.htm
 ## Worked example: checkout flow
 
 ```tsx
-// 1. Shipping form — rewarded submit, not a plain tap
+// 1. Shipping form: rewarded submit, not a plain tap
 <Button sound="interaction.confirm">Continue to payment</Button>
 
-// 2. Confirm dialog — paired open/close, no stacked button sound
+// 2. Confirm dialog: paired open/close, no stacked button sound
 <Dialog sound="overlay.open" closeSound="overlay.close">...</Dialog>
 
-// 3. Payment success — foreground success suppresses the button tick
+// 3. Payment success: foreground success suppresses the button tick
 playSound("notification.success"); // skip the tap underneath
 
-// 4. Order placed — the one moment worthy of a hero sound
+// 4. Order placed: the one moment worthy of a hero sound
 playSound("hero.complete"); // categories.hero must be enabled
 ```
 
@@ -106,4 +106,4 @@ Each step uses exactly one foreground sound. Compare with the [taste rules](/doc
 - [Applying sound to UI](https://m2.material.io/design/sound/applying-sound-to-ui.html#sound-use-cases)
 - [Sound attributes](https://m2.material.io/design/sound/sound-attributes.html#representing-sound)
 - [Sound choreography](https://m2.material.io/design/sound/sound-choreography.html#hierarchy)
-- [Sound roles](/docs/core/sound-roles) — durations and triggers for all 17 roles
+- [Sound roles](/docs/core/sound-roles): durations and triggers for all 17 roles

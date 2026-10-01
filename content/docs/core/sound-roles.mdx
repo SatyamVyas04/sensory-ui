@@ -4,7 +4,7 @@ description: "All 17 semantic sound roles across 5 categories with TypeScript ty
 ---
 
 
-sensory-ui defines **17 semantic sound roles** organized into 5 categories. Each role maps to a specific UI interaction type — no random audio, every sound has meaning.
+sensory-ui defines **17 semantic sound roles** organized into 5 categories. Each role maps to a specific UI interaction type. No random audio, every sound has meaning.
 
 <Cards>
   <Card href="#category-interaction" title="interaction" description="4 roles · taps, toggles, confirms." />
@@ -26,13 +26,13 @@ sensory-ui defines **17 semantic sound roles** organized into 5 categories. Each
 | `notification` | 4 | Yes | 200–450 ms | Two-tier intensity |
 | `hero` | 2 | **No** | 350–1900 ms | Celebratory, longer form |
 
-Durations are base tune lengths — the active pack's instrument stretches them via its decay multiplier, and hero sounds are hand-crafted per pack so they vary the most.
+Durations are base tune lengths: the active pack's instrument stretches them via its decay multiplier, and hero sounds are hand-crafted per pack so they vary the most.
 
 ---
 
 ## Category: `interaction`
 
-Fired when the user performs a direct action — pressing a button, toggling a state, confirming a form, or providing subtle feedback during continuous interactions.
+Fired when the user performs a direct action: pressing a button, toggling a state, confirming a form, or providing subtle feedback during continuous interactions.
 
 | Role | Full Key | Duration | Description | Typical Trigger |
 | --- | --- | --- | --- | --- |
@@ -42,7 +42,7 @@ Fired when the user performs a direct action — pressing a button, toggling a s
 | Confirm | `interaction.confirm` | ~12 ms | Crisp noise click, bandpass 5500 Hz. Brighter than tap. | Form submit, save confirm |
 
 <Callout type="info">
-  There is no `interaction.disabled` role — disabled buttons cannot be clicked,
+  There is no `interaction.disabled` role because disabled buttons cannot be clicked,
   so no sound is needed.
 </Callout>
 
@@ -60,7 +60,7 @@ Fired when UI surfaces open, close, expand, or collapse. These are structural ch
 | Collapse | `overlay.collapse` | ~120 ms | Paired with expand. Content hides. | Accordion collapse, collapsible close |
 
 <Callout type="tip">
-  `overlay.open` / `overlay.close` are a **tonal inversion pair** — if open
+  `overlay.open` / `overlay.close` are a **tonal inversion pair**: if open
   rises in pitch, close falls. The same applies to expand/collapse.
 </Callout>
 
@@ -68,7 +68,7 @@ Fired when UI surfaces open, close, expand, or collapse. These are structural ch
 
 ## Category: `navigation`
 
-Fired when the user moves through space — between pages, tabs, or steps.
+Fired when the user moves through space: between pages, tabs, or steps.
 
 | Role | Full Key | Duration | Description | Typical Trigger |
 | --- | --- | --- | --- | --- |
@@ -78,14 +78,14 @@ Fired when the user moves through space — between pages, tabs, or steps.
 
 <Callout type="info">
   `navigation.forward` and `navigation.backward` should be **tonal inversions**
-  of each other — same harmonic content, opposite pitch arc.
+  of each other (same harmonic content, opposite pitch arc).
 </Callout>
 
 ---
 
 ## Category: `notification`
 
-Fired when the system delivers feedback to the user — toasts, alerts, banners, inline validation messages.
+Fired when the system delivers feedback to the user: toasts, alerts, banners, inline validation messages.
 
 | Role | Full Key | Duration | Description | Typical Trigger |
 | --- | --- | --- | --- | --- |
@@ -98,7 +98,7 @@ Fired when the system delivers feedback to the user — toasts, alerts, banners,
 
 ## Category: `hero`
 
-Fired for significant completion moments — task completion, onboarding milestones, achievement unlocks. These are special-occasion sounds and are **disabled by default**.
+Fired for significant completion moments: task completion, onboarding milestones, achievement unlocks. These are special-occasion sounds and are **disabled by default**.
 
 | Role | Full Key | Duration | Description | Typical Trigger |
 | --- | --- | --- | --- | --- |
@@ -107,7 +107,7 @@ Fired for significant completion moments — task completion, onboarding milesto
 
 <Callout type="warning">
   Hero sounds are disabled by default. You must explicitly enable the category
-  (`config={{ categories: { hero: true } }}`) and then assign the `sound` prop — a double opt-in
+  (`config={{ categories: { hero: true } }}`) and then assign the `sound` prop, a double opt-in that
   prevents accidental hero sounds in production.
 </Callout>
 
@@ -234,13 +234,13 @@ When providing custom audio source overrides via `config.overrides`, files shoul
 
 | Requirement | Spec |
 | --- | --- |
-| Format | `.mp3` (primary) — maximum browser compatibility |
+| Format | `.mp3` (primary): maximum browser compatibility |
 | Fallback format | `.ogg` (optional) |
 | Sample rate | 44.1 kHz or 48 kHz |
 | Bit depth | 16-bit |
 | Channels | Mono (L+R identical) preferred |
 | Peak normalization | −1.0 dBTP (true peak) |
-| Leading silence | None — trimmed to first transient |
+| Leading silence | None: trimmed to first transient |
 | Trailing silence | ≤ 20 ms tail, then trimmed |
 | Per-category size budget | ≤ 50 KB total per category |
 | Per-file size guideline | ≤ 15 KB per file |
@@ -254,6 +254,6 @@ When providing custom audio source overrides via `config.overrides`, files shoul
 
 ## Reference Links
 
-- [Web Audio API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
-- [OscillatorNode — MDN](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode)
-- [AudioBufferSourceNode — MDN](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode)
+- [Web Audio API (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [OscillatorNode (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode)
+- [AudioBufferSourceNode (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode)

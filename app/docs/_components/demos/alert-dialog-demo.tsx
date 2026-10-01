@@ -23,8 +23,8 @@ export function AlertDialogDocsDemo() {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            The dialog itself opens and closes with overlay sounds — the confirm
-            button is a plain action with no extra sound.
+            The dialog itself opens and closes with overlay sounds, while the
+            confirm button is a plain action with no extra sound.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

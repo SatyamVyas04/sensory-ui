@@ -4,7 +4,7 @@ description: "How sensory-ui is distributed as a shadcn/ui registry package."
 ---
 
 
-sensory-ui is published as a **GitHub registry** — a `registry.json` at the repository root tells the shadcn CLI how to install items.
+sensory-ui is published as a **GitHub registry**: a `registry.json` at the repository root tells the shadcn CLI how to install items.
 
 ## Installation
 
@@ -19,7 +19,7 @@ npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-core
 npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button
 ```
 
-No registry server required — the CLI reads files directly from the public GitHub repository.
+No registry server required. The CLI reads files directly from the public GitHub repository.
 
 ## Registry Structure
 
@@ -109,5 +109,5 @@ The `--overwrite` flag replaces engine, config, primitives, and sound modules. U
 <Callout type="info">
   The registry format is defined by the
   [shadcn/ui schema](https://ui.shadcn.com/docs/registry). sensory-ui uses
-  GitHub as the hosting backend — no custom server needed.
+  GitHub as the hosting backend, so no custom server is needed.
 </Callout>

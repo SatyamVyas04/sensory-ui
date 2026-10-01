@@ -85,7 +85,7 @@ import { Switch } from "@/components/ui/sensory-ui/switch";
 
 ```tsx
 <Switch id="auto-save" sound={false} />
-{/* No sound for auto-save — it happens frequently */}
+{/* No sound for auto-save: it happens frequently */}
 ```
 
 ## Default Props
@@ -99,17 +99,17 @@ import { Switch } from "@/components/ui/sensory-ui/switch";
 
 | Situation | Recommended Sound | Why |
 |-----------|-------------------|-----|
-| Settings toggle | `interaction.toggle` | Default — standard state change |
+| Settings toggle | `interaction.toggle` | Default: standard state change |
 | Feature enable | `interaction.confirm` | More significant toggle |
 | Destructive toggle | `notification.warning` | Warns of consequence |
 | Auto-save / frequent | `false` | Sound would be repetitive |
 
 ## When to Use
 
-- **Settings** — Feature toggles, notification preferences
-- **Forms** — Binary option inputs
-- **Profile** — Public/private, active/inactive
-- **Any on/off control** — Where state change needs confirmation
+- **Settings:** Feature toggles, notification preferences
+- **Forms:** Binary option inputs
+- **Profile:** Public/private, active/inactive
+- **Any on/off control:** Where state change needs confirmation
 
 ### Avoid sound on
 
@@ -126,3 +126,4 @@ import { Switch } from "@/components/ui/sensory-ui/switch";
 ## shadcn/ui Reference
 
 View the original [Switch](https://ui.shadcn.com/docs/components/switch) documentation.
+

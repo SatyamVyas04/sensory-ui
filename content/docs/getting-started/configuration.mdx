@@ -1,19 +1,19 @@
 ---
 title: "Configuration"
-description: "Configure sensory-ui with sensory.config.js — sound packs, volume, categories, and overrides."
+description: "Configure sensory-ui with sensory.config.js: sound packs, volume, categories, and overrides."
 ---
 
 
-sensory-ui is configured through the `config` object passed to `<SensoryUIProvider>`. Many projects keep these values in a user-owned `sensory.config.js` at the project root and spread it into the provider — that file is a convention, never overwritten by updates.
+sensory-ui is configured through the `config` object passed to `<SensoryUIProvider>`. Many projects keep these values in a user-owned `sensory.config.js` at the project root and spread it into the provider. That file is a convention, never overwritten by updates.
 
 The runtime config is split into two parts:
 
-1. **`sensory.config.js`** — the user-facing config file at the project root (plain JavaScript, passed to `<SensoryUIProvider config={...}>`)
-2. **`config.ts`** — exports `defaultConfig`, `mergeConfig()`, and `resolveRole()` for internal use by the provider and engine
+1. **`sensory.config.js`:** the user-facing config file at the project root (plain JavaScript, passed to `<SensoryUIProvider config={...}>`)
+2. **`config.ts`:** exports `defaultConfig`, `mergeConfig()`, and `resolveRole()` for internal use by the provider and engine
 
 ---
 
-## sensory.config.js — Full Reference
+## sensory.config.js: Full Reference
 
 ```js
 // sensory.config.js
@@ -74,7 +74,7 @@ module.exports = {
 
 ---
 
-## Config Options — Quick Reference
+## Config Options: Quick Reference
 
 | Key | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -86,7 +86,7 @@ module.exports = {
 | `categories.notification` | `boolean` | `true` | Enable/disable all notification sounds. |
 | `categories.overlay` | `boolean` | `true` | Enable/disable all overlay sounds. |
 | `categories.hero` | `boolean` | `false` | Enable/disable hero sounds (off by default). |
-| `overrides["role.name"]` | `string` | — | Custom audio source for a role (URL or base64). |
+| `overrides["role.name"]` | `string` | None | Custom audio source for a role (URL or base64). |
 | `reducedMotion` | `"inherit" \| "force-off" \| "force-on"` | `"inherit"` | Reduced-motion behaviour. |
 
 ### Theme values
@@ -119,7 +119,7 @@ import {
 
 ## Volume Guidelines
 
-The default master volume is `0.35` (35%). This is intentionally low — UI sounds should be background-level, noticeable but not distracting.
+The default master volume is `0.35` (35%). This is intentionally low. UI sounds should be background-level, noticeable but not distracting.
 
 | Scenario | Recommended `volume` |
 | --- | --- |
@@ -145,7 +145,7 @@ categories: {
 }
 ```
 
-All components with `sound="overlay.open"` or `sound="overlay.close"` will silently no-op. The `sound` prop is still valid — it just resolves to `null` in the engine when the category is off.
+All components with `sound="overlay.open"` or `sound="overlay.close"` will silently no-op. The `sound` prop is still valid; it just resolves to `null` in the engine when the category is off.
 
 <Callout type="info">
   The `hero` category is disabled by default. If your app uses hero sounds,
@@ -168,7 +168,7 @@ When `playSound` is called with a role, the audio source is resolved in this ord
 User overrides always take the highest priority. If the active theme is not found in the registry, the engine falls back to the `"aero"` pack automatically.
 
 <Callout type="warning">
-  Overrides must be a URL string or base64 data URI — not a synthesizer
+  Overrides must be a URL string or base64 data URI, not a synthesizer
   function. The override system is designed for file-based audio replacement.
 </Callout>
 
@@ -198,6 +198,6 @@ This is the recommended pattern for keeping audio out of automated test runs wit
 
 ## Reference Links
 
-- [Web Audio API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
-- [AudioContext — MDN](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)
-- [prefers-reduced-motion — MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
+- [Web Audio API (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [AudioContext (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)
+- [prefers-reduced-motion (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)

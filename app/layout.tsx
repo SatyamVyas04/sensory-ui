@@ -18,6 +18,10 @@ const siteUrl = "https://sensory-ui.com";
 const siteTitle = "sensory-ui";
 const siteDescription =
   "Add semantic sound to your shadcn/ui components with a single prop. 17 sound cues, 24 React components. Web Audio API powered, zero audio files.";
+const ogImage = "/api/og?mode=home";
+
+// TODO(seo): paste Search Console / Bing verification codes here once claimed.
+// verification: { google: "...", other: { "msvalidate.01": "..." } },
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -51,7 +55,13 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Satyam Vyas", url: "https://x.com/SatyamVyas04" }],
   creator: "Satyam Vyas",
+  publisher: "Satyam Vyas",
   category: "technology",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   robots: {
     index: true,
     follow: true,
@@ -94,7 +104,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/hero-background-dark.jpg",
+        url: ogImage,
         width: 1200,
         height: 630,
         alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
@@ -109,7 +119,7 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: "/hero-background-dark.jpg",
+        url: ogImage,
         alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
       },
     ],

@@ -4,12 +4,12 @@ description: "Project overview, philosophy, architecture layers, and non-goals o
 ---
 
 
-sensory-ui is a semantic, modular, opt-in sound layer for React and Next.js apps, distributed as a [shadcn/ui](https://ui.shadcn.com/docs) registry package. It adds meaningful, non-intrusive sound feedback to UI interactions — not a sound effects library, not a music player, not a game audio engine.
+sensory-ui is a semantic, modular, opt-in sound layer for React and Next.js apps, distributed as a [shadcn/ui](https://ui.shadcn.com/docs) registry package. It adds meaningful, non-intrusive sound feedback to UI interactions. It is not a sound effects library, not a music player, not a game audio engine.
 
 <Callout type="info">
   **Target platform:** Next.js (App Router and Pages Router) + React
   **Distribution:** [shadcn/ui registry](https://ui.shadcn.com/docs/cli) (CLI installable)
-  **Runtime footprint:** Minimal — built-in audio is synthesized programmatically via the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API). No public/ assets, no base64 blobs for built-in packs. No global side effects, no forced re-renders.
+  **Runtime footprint:** Minimal. Built-in audio is synthesized programmatically via the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API). No public/ assets, no base64 blobs for built-in packs. No global side effects, no forced re-renders.
 </Callout>
 
 ---
@@ -29,7 +29,7 @@ sensory-ui is a semantic, modular, opt-in sound layer for React and Next.js apps
 
 ## Architecture Layers
 
-sensory-ui is composed of four runtime layers. Sound travels one path — a user event becomes a command, the command passes policy, resolves to a handler, and the engine plays the effect:
+sensory-ui is composed of four runtime layers. Sound travels one path: a user event becomes a command, the command passes policy, resolves to a handler, and the engine plays the effect:
 
 <img src="/diagrams/arch-state-lr-light.png" alt="Architecture states" className="hidden rounded-lg lg:block dark:hidden" />
 <img src="/diagrams/arch-state-lr-dark.png" alt="Architecture states" className="hidden rounded-lg dark:lg:block" />
@@ -80,7 +80,7 @@ components/ui/sensory-ui/
 ```
 
 <Callout type="tip">
-  Built-in sounds are synthesized programmatically via the Web Audio API — no
+  Built-in sounds are synthesized programmatically via the Web Audio API. No
   files in `public/sounds/`, no base64 blobs, no network requests for built-in
   packs. Custom role overrides may load audio from URLs or base64 data URIs.
 </Callout>
@@ -134,7 +134,7 @@ These are explicitly out of scope for the initial version:
 
 ## Reference Links
 
-- [Web Audio API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [Web Audio API (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
 - [shadcn/ui Documentation](https://ui.shadcn.com/docs)
 - [React Context API](https://react.dev/learn/passing-data-deeply-with-context)
-- [prefers-reduced-motion — MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
+- [prefers-reduced-motion (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)

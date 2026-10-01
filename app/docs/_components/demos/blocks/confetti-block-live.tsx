@@ -64,7 +64,7 @@ export function ConfettiBlockLive() {
       </Button>
       <p className="text-muted-foreground text-xs">
         {fired
-          ? "Fanfare plus a canvas-confetti cannon — fire away."
+          ? "Fanfare plus a canvas-confetti cannon. Fire away."
           : "Real confetti via canvas-confetti, fired from the button."}
       </p>
     </div>
