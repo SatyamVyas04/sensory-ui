@@ -10,7 +10,10 @@ export function baseOptions(): BaseLayoutProps {
             alt="sensory-ui"
             className="size-6 rounded-full"
             height={24}
-            src="/sensory-ui-logo-small.png"
+            src="/sensory-ui-logo-small.svg"
+            style={{
+              filter: "drop-shadow(2px 2px 2px rgba(0,0,0,0.35))",
+            }}
             width={24}
           />
           sensory-ui

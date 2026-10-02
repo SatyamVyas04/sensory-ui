@@ -21,9 +21,6 @@ const siteDescription =
   "Add semantic sound to your shadcn/ui components with a single prop. 17 sound cues, 24 React components. Web Audio API powered, zero audio files.";
 const ogImage = "/api/og?mode=home";
 
-// TODO(seo): paste Search Console / Bing verification codes here once claimed.
-// verification: { google: "...", other: { "msvalidate.01": "..." } },
-
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   applicationName: "sensory-ui",
@@ -83,14 +80,8 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/sensory-ui-logo-small.png",
-        sizes: "128x128",
-        type: "image/png",
-      },
-      {
-        url: "/sensory-ui-logo-large.png",
-        sizes: "512x512",
-        type: "image/png",
+        url: "/sensory-ui-logo-small.svg",
+        type: "image/svg+xml",
       },
     ],
     apple: [
@@ -100,7 +91,7 @@ export const metadata: Metadata = {
         type: "image/png",
       },
     ],
-    shortcut: "/sensory-ui-logo-small.png",
+    shortcut: "/sensory-ui-logo-small.svg",
   },
   openGraph: {
     type: "website",

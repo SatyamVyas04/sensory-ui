@@ -22,6 +22,12 @@ const vietnamRegular = await readFile(
     "public/be-vietnam-pro-body-font/BeVietnamPro-Regular.ttf"
   )
 );
+// Brand mark for the OG wordmark (small size, 2px shadow to match site).
+const logoSvg = await readFile(
+  join(process.cwd(), "public/sensory-ui-logo-small.svg"),
+  "utf8"
+);
+const logoSrc = `data:image/svg+xml;base64,${Buffer.from(logoSvg).toString("base64")}`;
 
 const SIZE = { width: 1200, height: 630 };
 
@@ -43,8 +49,6 @@ function truncate(value: string | null, max: number, fallback: string) {
  * One 1200x630 PNG serves X/Twitter, WhatsApp, and LinkedIn (all three
  * accept this size; metadata declares width/height/alt for each crawler).
  * Theme matches the homepage: deep ink ground with a reddish glow.
- *
- * TODO(images): swap the "s" disc for the final brand mark once it lands.
  */
 export function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -135,23 +139,14 @@ export function GET(request: Request) {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <div
-            style={{
-              width: 58,
-              height: 58,
-              borderRadius: 29,
-              backgroundColor: "#e84840",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontFamily: SERIF,
-              fontSize: 34,
-              fontWeight: 700,
-              color: "#0b0a10",
-            }}
-          >
-            s
-          </div>
+          {/* biome-ignore lint/performance/noImgElement: next/og ImageResponse requires <img>; next/image is unavailable here */}
+          <img
+            alt="sensory-ui logo"
+            height={58}
+            src={logoSrc}
+            style={{ borderRadius: 29 }}
+            width={58}
+          />
           <div style={{ fontSize: 34, fontWeight: 600, letterSpacing: -0.5 }}>
             sensory-ui
           </div>
