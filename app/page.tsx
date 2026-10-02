@@ -28,6 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://sensory-ui.com",
+    siteName: "sensory-ui",
     title: "sensory-ui - Semantic Sound for shadcn/ui",
     description:
       "Sound-enabled shadcn/ui components. Add meaningful audio feedback with a single prop - no audio files required.",
@@ -42,6 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: "@SatyamVyas04",
+    creator: "@SatyamVyas04",
     title: "sensory-ui - Semantic Sound for shadcn/ui",
     description:
       "Sound-enabled shadcn/ui components. Add meaningful audio feedback with a single prop - no audio files required.",

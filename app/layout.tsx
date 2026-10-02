@@ -1,8 +1,9 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { RootProvider } from "fumadocs-ui/provider/next";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono } from "next/font/google";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { SensoryUIProvider } from "@/components/ui/sensory-ui/config/provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +26,7 @@ const ogImage = "/api/og?mode=home";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: "sensory-ui",
   title: {
     default: siteTitle,
     template: `%s - ${siteTitle}`,
@@ -61,6 +63,11 @@ export const metadata: Metadata = {
     email: false,
     address: false,
     telephone: false,
+  },
+  appleWebApp: {
+    capable: true,
+    title: "sensory-ui",
+    statusBarStyle: "black-translucent",
   },
   robots: {
     index: true,
@@ -129,6 +136,10 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0b0a10",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -193,7 +204,7 @@ export default function RootLayout({
               }}
             >
               <div className="mx-auto min-w-0 max-w-500 bg-background shadow-xl">
-                {children}
+                <SmoothScroll>{children}</SmoothScroll>
               </div>
               <Analytics />
               <SpeedInsights />

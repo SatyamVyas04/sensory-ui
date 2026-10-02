@@ -48,6 +48,13 @@ export default async function Page(props: {
 
   const MDX = page.data.body;
   const url = `${SITE_URL}${page.url}`;
+  // Docs landing: title only, no description line, tightened spacing.
+  // Frontmatter description stays for SEO metadata + OG images.
+  const isDocsHome = !params.slug || params.slug.length === 0;
+  // Installation guide doubles as a HowTo so answer engines can quote
+  // the setup steps directly.
+  const isInstallPage =
+    (params.slug ?? []).join("/") === "getting-started/installation";
 
   // Per-page structured data: article for search, breadcrumbs for
   // rich results. Kept textual, with no image dependencies.
@@ -71,6 +78,44 @@ export default async function Page(props: {
         },
         mainEntityOfPage: url,
       },
+      ...(isInstallPage
+        ? [
+            {
+              "@type": "HowTo",
+              name: "How to install sensory-ui",
+              description:
+                "Install sensory-ui with the shadcn CLI, wrap your app in SensoryUIProvider, and pass a sound prop to any component.",
+              totalTime: "PT10M",
+              step: [
+                {
+                  "@type": "HowToStep",
+                  name: "Install one component",
+                  text: "Run npx shadcn@latest add SatyamVyas04/sensory-ui/sensory-ui-button. This pulls the core engine plus the Button.",
+                },
+                {
+                  "@type": "HowToStep",
+                  name: "Choose a sound pack",
+                  text: "Pass a theme to the provider, for example config={{ theme: 'arcade' }}. The default pack is aero.",
+                },
+                {
+                  "@type": "HowToStep",
+                  name: "Wrap the app in SensoryUIProvider",
+                  text: "Wrap the component tree in SensoryUIProvider so the AudioContext persists and playSound is available.",
+                },
+                {
+                  "@type": "HowToStep",
+                  name: "Pass a sound prop",
+                  text: 'Use any component with a sound prop, for example <Button sound="interaction.tap">. All other props match shadcn/ui.',
+                },
+                {
+                  "@type": "HowToStep",
+                  name: "Verify installation",
+                  text: "Click the component after a user gesture. Browsers suspend AudioContext until interaction; the engine resumes it on first playSound call.",
+                },
+              ],
+            },
+          ]
+        : []),
       {
         "@type": "BreadcrumbList",
         itemListElement: [
@@ -104,8 +149,12 @@ export default async function Page(props: {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         type="application/ld+json"
       />
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription>{page.data.description}</DocsDescription>
+      <DocsTitle className={isDocsHome ? "mb-4" : undefined}>
+        {page.data.title}
+      </DocsTitle>
+      {isDocsHome ? null : (
+        <DocsDescription>{page.data.description}</DocsDescription>
+      )}
       <DocsBody>
         <MDX
           components={getMDXComponents({
@@ -161,6 +210,8 @@ export async function generateMetadata(props: {
     },
     twitter: {
       card: "summary_large_image",
+      site: "@SatyamVyas04",
+      creator: "@SatyamVyas04",
       title: `${page.data.title} - sensory-ui ${badge}`,
       description: page.data.description,
       images: [
