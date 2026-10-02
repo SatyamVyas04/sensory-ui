@@ -22,17 +22,26 @@ const vietnamRegular = await readFile(
     "public/be-vietnam-pro-body-font/BeVietnamPro-Regular.ttf"
   )
 );
-// Brand mark for the OG wordmark (small size, 2px shadow to match site).
+// Brand mark for the OG wordmark.
 const logoSvg = await readFile(
   join(process.cwd(), "public/sensory-ui-logo-small.svg"),
   "utf8"
 );
 const logoSrc = `data:image/svg+xml;base64,${Buffer.from(logoSvg).toString("base64")}`;
 
+const gridSvg = `<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='630'><defs><pattern id='g' width='72' height='72' patternUnits='userSpaceOnUse'><path d='M72 0H0V72' fill='none' stroke='rgb(255,255,255)' stroke-opacity='0.055' stroke-width='1'/></pattern></defs><rect width='1200' height='630' fill='url(#g)'/></svg>`;
+const gridSrc = `data:image/svg+xml;base64,${Buffer.from(gridSvg).toString("base64")}`;
+
 const SIZE = { width: 1200, height: 630 };
 
 const SERIF = "Cardo";
 const SANS = "Be Vietnam Pro";
+const INK = "#08070b";
+const RED = "#e84840";
+const RED_SOFT = "#f07067";
+const PAPER = "#f4f1ea";
+const MUTED = "#a09aa9";
+const FAINT = "#6f6a7a";
 
 function truncate(value: string | null, max: number, fallback: string) {
   const text = (value ?? "").trim() || fallback;
@@ -48,7 +57,7 @@ function truncate(value: string | null, max: number, fallback: string) {
  *
  * One 1200x630 PNG serves X/Twitter, WhatsApp, and LinkedIn (all three
  * accept this size; metadata declares width/height/alt for each crawler).
- * Theme matches the homepage: deep ink ground with a reddish glow.
+ * Design: dark stage, faint grid, red glow beams, centered serif headline.
  */
 export function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -74,159 +83,189 @@ export function GET(request: Request) {
         display: "flex",
         position: "relative",
         overflow: "hidden",
-        backgroundColor: "#0b0a10",
-        color: "#f4f1ea",
+        backgroundColor: INK,
+        color: PAPER,
         fontFamily: SANS,
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      {/* Reddish glow blobs (layered translucency, no blur needed) */}
+      {/* Faint grid */}
+      {/* biome-ignore lint/performance/noImgElement: next/og ImageResponse requires <img>; next/image is unavailable here */}
+      <img
+        alt=""
+        height={630}
+        src={gridSrc}
+        style={{ position: "absolute", left: 0, top: 0 }}
+        width={1200}
+      />
+      {/* Diagonal red glow beams */}
       <div
         style={{
           position: "absolute",
-          left: -220,
-          top: -260,
-          width: 720,
-          height: 720,
-          borderRadius: 360,
-          backgroundColor: "#e84840",
-          opacity: 0.16,
+          left: -40,
+          top: -320,
+          width: 250,
+          height: 1250,
+          transform: "rotate(18deg)",
+          backgroundImage: `linear-gradient(180deg, transparent, ${RED} 42%, ${RED} 58%, transparent)`,
+          opacity: 0.42,
         }}
       />
       <div
         style={{
           position: "absolute",
-          left: -80,
-          top: -120,
-          width: 440,
-          height: 440,
-          borderRadius: 220,
-          backgroundColor: "#e84840",
-          opacity: 0.16,
+          right: -30,
+          top: -320,
+          width: 190,
+          height: 1250,
+          transform: "rotate(-16deg)",
+          backgroundImage: `linear-gradient(180deg, transparent, ${RED} 42%, ${RED} 58%, transparent)`,
+          opacity: 0.36,
         }}
       />
+      {/* Warm wash, bottom-left */}
       <div
         style={{
           position: "absolute",
-          right: -200,
-          bottom: -280,
+          left: -260,
+          bottom: -320,
           width: 640,
           height: 640,
           borderRadius: 320,
-          backgroundColor: "#e84840",
-          opacity: 0.1,
+          backgroundColor: RED,
+          opacity: 0.22,
         }}
       />
-      {/* Hairline frame */}
+      {/* Edge fades to keep text readable */}
       <div
         style={{
           position: "absolute",
-          left: 24,
-          top: 24,
-          width: 1152,
-          height: 582,
-          border: "1px solid rgba(232, 72, 64, 0.28)",
+          left: 0,
+          top: 0,
+          width: 320,
+          height: 630,
+          backgroundImage: `linear-gradient(90deg, ${INK}, transparent)`,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 0,
+          width: 320,
+          height: 630,
+          backgroundImage: `linear-gradient(270deg, ${INK}, transparent)`,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          bottom: 0,
+          width: 1200,
+          height: 220,
+          backgroundImage: `linear-gradient(0deg, ${INK}, transparent)`,
         }}
       />
 
+      {/* Centered content */}
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          width: "100%",
-          height: "100%",
-          padding: "64px 84px",
+          alignItems: "center",
+          textAlign: "center",
+          gap: 26,
+          padding: "0 90px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           {/* biome-ignore lint/performance/noImgElement: next/og ImageResponse requires <img>; next/image is unavailable here */}
           <img
             alt="sensory-ui logo"
-            height={58}
+            height={52}
             src={logoSrc}
-            style={{ borderRadius: 29 }}
-            width={58}
+            style={{ borderRadius: 26 }}
+            width={52}
           />
-          <div style={{ fontSize: 34, fontWeight: 600, letterSpacing: -0.5 }}>
+          <div style={{ fontSize: 30, fontWeight: 600, letterSpacing: 0.5 }}>
             sensory-ui
           </div>
-          {mode === "docs" ? (
-            <div
-              style={{
-                marginLeft: 12,
-                fontSize: 22,
-                fontWeight: 600,
-                color: "#f07067",
-                border: "2px solid #e84840",
-                borderRadius: 999,
-                padding: "6px 22px",
-                letterSpacing: 1,
-              }}
-            >
-              {badge}
-            </div>
-          ) : null}
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-          {mode === "docs" ? (
+        {mode === "docs" ? (
+          <div
+            style={{
+              fontSize: 20,
+              fontWeight: 600,
+              color: RED_SOFT,
+              border: `2px solid ${RED}`,
+              borderRadius: 999,
+              padding: "6px 22px",
+              letterSpacing: 2,
+            }}
+          >
+            {badge}
+          </div>
+        ) : null}
+
+        {mode === "docs" ? (
+          <div
+            style={{
+              fontFamily: SERIF,
+              fontSize: 84,
+              fontWeight: 700,
+              lineHeight: 1.05,
+              letterSpacing: -1,
+              textAlign: "center",
+            }}
+          >
+            {title}
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              fontFamily: SERIF,
+              fontSize: 92,
+              fontWeight: 700,
+              lineHeight: 1.08,
+              letterSpacing: -1,
+              textAlign: "center",
+            }}
+          >
+            <div>Your website speaks.</div>
             <div
               style={{
-                fontFamily: SERIF,
-                fontSize: 82,
-                fontWeight: 700,
-                lineHeight: 1.08,
-                letterSpacing: -1,
-              }}
-            >
-              {title}
-            </div>
-          ) : (
-            <div
-              style={{
-                fontFamily: SERIF,
-                fontSize: 96,
-                fontWeight: 700,
-                lineHeight: 1.08,
-                letterSpacing: -1,
-              }}
-            >
-              Your website speaks.
-            </div>
-          )}
-          {mode === "docs" ? (
-            <div style={{ fontSize: 29, color: "#b9b3c4", lineHeight: 1.4 }}>
-              {description}
-            </div>
-          ) : (
-            <div
-              style={{
-                fontFamily: SERIF,
-                fontSize: 96,
                 fontStyle: "italic",
                 fontWeight: 400,
-                lineHeight: 1.08,
-                letterSpacing: -1,
-                color: "#f07067",
+                color: RED_SOFT,
               }}
             >
               Give it a voice.
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            fontSize: 23,
-            color: "#8a8496",
-            letterSpacing: 0.5,
-          }}
-        >
-          <div>sensory-ui.com</div>
-          <div>17 sound roles · 9 packs · 24 components</div>
+        {mode === "docs" ? (
+          <div
+            style={{
+              fontSize: 26,
+              color: MUTED,
+              lineHeight: 1.45,
+              maxWidth: 880,
+              textAlign: "center",
+            }}
+          >
+            {description}
+          </div>
+        ) : null}
+
+        <div style={{ fontSize: 26, color: FAINT, letterSpacing: 0.5 }}>
+          sensory-ui.com
         </div>
       </div>
     </div>,
