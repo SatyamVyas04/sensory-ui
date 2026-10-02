@@ -158,24 +158,16 @@ export function GET(request: Request) {
           {mode === "docs" ? (
             <div
               style={{
-                display: "flex",
-                justifyContent: "center",
-                width: "100%",
+                fontFamily: SERIF,
+                fontSize: 80,
+                fontWeight: 400,
+                lineHeight: 1.1,
+                letterSpacing: 0,
+                maxWidth: 960,
+                textAlign: "center",
               }}
             >
-              <div
-                style={{
-                  fontFamily: SERIF,
-                  fontSize: 80,
-                  fontWeight: 400,
-                  lineHeight: 1.1,
-                  letterSpacing: 0,
-                  maxWidth: 960,
-                  textWrap: "balance",
-                }}
-              >
-                {title}
-              </div>
+              {title}
             </div>
           ) : (
             <div
@@ -183,33 +175,25 @@ export function GET(request: Request) {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                width: "100%",
+                maxWidth: 960,
                 fontFamily: SERIF,
                 fontSize: 84,
                 fontWeight: 400,
                 lineHeight: 1.12,
                 letterSpacing: 0,
-                maxWidth: 960,
+                textAlign: "center",
               }}
             >
+              <div style={{ textAlign: "center" }}>Your website speaks.</div>
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  width: "100%",
-                }}
-              >
-                <div>Your website speaks.</div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  width: "100%",
+                  textAlign: "center",
                   fontStyle: "italic",
                   color: RED,
                 }}
               >
-                <div>Give it a voice.</div>
+                Give it a voice.
               </div>
             </div>
           )}
@@ -217,22 +201,15 @@ export function GET(request: Request) {
           {mode === "docs" ? (
             <div
               style={{
-                display: "flex",
-                justifyContent: "center",
-                width: "100%",
+                fontSize: 25,
+                color: MUTED,
+                lineHeight: 1.45,
+                maxWidth: 880,
+                textAlign: "center",
+                textWrap: "balance",
               }}
             >
-              <div
-                style={{
-                  fontSize: 25,
-                  color: MUTED,
-                  lineHeight: 1.45,
-                  maxWidth: 880,
-                  textWrap: "balance",
-                }}
-              >
-                {description}
-              </div>
+              {description}
             </div>
           ) : null}
         </div>
