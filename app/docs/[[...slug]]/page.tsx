@@ -186,6 +186,10 @@ export async function generateMetadata(props: {
     page.data.description ?? "",
     badge
   );
+  // Static pre-rendered fallback: crawlers use the first reachable image,
+  // so if the API route ever fails the card still resolves.
+  const slug = params.slug ?? [];
+  const fallbackImage = `/og-preview/og-${slug.length === 0 ? "docs-index" : slug.join("-")}.png`;
 
   return {
     title: page.data.title,
@@ -206,6 +210,12 @@ export async function generateMetadata(props: {
           height: 630,
           alt: `${page.data.title} - sensory-ui docs`,
         },
+        {
+          url: fallbackImage,
+          width: 1200,
+          height: 630,
+          alt: `${page.data.title} - sensory-ui docs`,
+        },
       ],
     },
     twitter: {
@@ -217,6 +227,10 @@ export async function generateMetadata(props: {
       images: [
         {
           url: ogImage,
+          alt: `${page.data.title} - sensory-ui docs`,
+        },
+        {
+          url: fallbackImage,
           alt: `${page.data.title} - sensory-ui docs`,
         },
       ],

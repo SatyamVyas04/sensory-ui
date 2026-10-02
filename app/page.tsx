@@ -39,6 +39,12 @@ export const metadata: Metadata = {
         height: 630,
         alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
       },
+      {
+        url: "/og-preview/og-home.png",
+        width: 1200,
+        height: 630,
+        alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
+      },
     ],
   },
   twitter: {
@@ -51,6 +57,10 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/api/og?mode=home",
+        alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
+      },
+      {
+        url: "/og-preview/og-home.png",
         alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
       },
     ],
@@ -93,6 +103,17 @@ const jsonLd = {
       name: "sensory-ui",
       url: "https://sensory-ui.com",
       publisher: { "@id": "https://sensory-ui.com/#person" },
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://sensory-ui.com/#org",
+      name: "sensory-ui",
+      url: "https://sensory-ui.com",
+      logo: "https://sensory-ui.com/sensory-ui-logo-large.svg",
+      sameAs: [
+        "https://x.com/SatyamVyas04",
+        "https://github.com/SatyamVyas04/sensory-ui",
+      ],
     },
     {
       "@type": "FAQPage",
