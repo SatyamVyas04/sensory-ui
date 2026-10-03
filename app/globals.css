@@ -203,3 +203,14 @@
     font-weight: 700;
   }
 }
+
+/* Sharp docs: match the hero's 0-roundness inside /docs. `.docs-sharp`
+   wraps GlassLayout in app/docs/layout.tsx (display:contents, so it adds
+   no layout box). Unlayered so it wins over radius utilities; scoped so
+   landing pages are untouched. Covers scale utilities (rounded-sm…4xl),
+   bare `rounded`, directional variants, and `rounded-full` pills.
+   Note: Radix portals (dialogs, dropdowns, tooltips, select menus) mount
+   under document.body, outside this scope, and keep their rounding. */
+.docs-sharp :is([class*="rounded-"], .rounded) {
+  border-radius: 0;
+}

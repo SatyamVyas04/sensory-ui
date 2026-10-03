@@ -34,12 +34,6 @@ export const metadata: Metadata = {
       "Sound-enabled shadcn/ui components. Add meaningful audio feedback with a single prop - no audio files required.",
     images: [
       {
-        url: "/api/og?mode=home",
-        width: 1200,
-        height: 630,
-        alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
-      },
-      {
         url: "/og-preview/og-home.png",
         width: 1200,
         height: 630,
@@ -55,10 +49,6 @@ export const metadata: Metadata = {
     description:
       "Sound-enabled shadcn/ui components. Add meaningful audio feedback with a single prop - no audio files required.",
     images: [
-      {
-        url: "/api/og?mode=home",
-        alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",
-      },
       {
         url: "/og-preview/og-home.png",
         alt: "sensory-ui - semantic audio feedback for shadcn/ui React components",

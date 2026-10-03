@@ -79,10 +79,10 @@ export function Footer() {
   // configured defaultTheme is "system"), so default to System on the
   // very first paint instead of highlighting nothing. Gating on
   // `mounted` keeps server HTML and the hydration pass identical.
-  const activeTheme = !mounted ? "system" : (theme ?? "system");
+  const activeTheme = mounted ? (theme ?? "system") : "system";
 
   return (
-    <footer className="relative max-h-225 bg-foreground">
+    <footer className="relative max-h-225 min-h-90 bg-foreground">
       {/* Waves shader background */}
       <div className="pointer-events-none absolute inset-0">
         <ShaderBackground className="h-full w-full dark:rotate-180" />
@@ -115,14 +115,14 @@ export function Footer() {
 
         {/* Giant branding text */}
         <div className="mt-12 sm:mt-24">
-          <p className="select-none break-words text-right font-serif text-5xl text-white leading-none tracking-tight sm:text-8xl md:text-9xl lg:text-[200px] min-[400px]:text-7xl">
+          <p className="select-none break-words text-right font-serif text-6xl text-white leading-none tracking-tight sm:text-8xl md:text-9xl lg:text-[200px] min-[400px]:text-7xl">
             sensory-ui
           </p>
         </div>
 
         {/* Bottom: links + theme toggle + copyright */}
         <div className="flex flex-col items-start justify-between gap-3 border-white/15 border-t py-5 sm:flex-row sm:items-center sm:gap-4 sm:py-6">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-white/60 sm:gap-x-5 sm:text-xs">
+          <div className="flex flex-wrap items-center w-full sm:w-auto justify-end sm:justify-start gap-x-4 gap-y-1 text-[11px] text-white/60 sm:gap-x-5 sm:text-xs">
             <Link
               className="transition-colors hover:text-white"
               href="/docs"
@@ -156,10 +156,10 @@ export function Footer() {
             </a>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-white/40 sm:gap-2 sm:text-xs">
-            &copy; {new Date().getFullYear()} sensory-ui. Built by{" "}
+          <div className="flex w-full flex-col items-end gap-2 text-right text-[11px] text-white/40 sm:w-auto sm:flex-row sm:items-center sm:gap-2 sm:text-left sm:text-xs">
+            <span>&copy; {new Date().getFullYear()} sensory-ui</span>
             <a
-              className="-translate-x-1 underline underline-offset-2 transition-colors hover:text-white"
+              className="underline underline-offset-2 transition-colors hover:text-white"
               href="https://github.com/SatyamVyas04"
               onClick={() =>
                 posthog.capture("footer_brand_clicked", {
@@ -169,10 +169,10 @@ export function Footer() {
               rel="noopener noreferrer"
               target="_blank"
             >
-              Satyam
+              Built by Satyam
             </a>
             {/* Theme toggle pill */}
-            <div className="group flex items-center gap-0 rounded-full border border-white/20 bg-white/5 p-1 transition-all hover:border-white/30 hover:bg-white/10">
+            <div className="group flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 transition-all hover:border-white/30 hover:bg-white/10">
               {THEMES.map((t, i) => {
                 const Icon = ICONS[i];
                 const isActive = activeTheme === t.value;

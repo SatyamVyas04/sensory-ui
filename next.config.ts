@@ -51,4 +51,14 @@ const nextConfig: NextConfig = {
 
 const withMDX = createMDX();
 
-export default withMDX(nextConfig);
+const config = withMDX(nextConfig);
+
+// fumadocs-mdx@15 injects `turbopack.rules` using `condition.query`, which
+// Next 16.1's config validator rejects ("Unrecognized key(s) in object").
+// This project builds and serves with webpack (see the `--webpack` flags in
+// package.json scripts), so the turbopack section is inert — empty it to
+// silence the warning. If those flags are ever removed, restore this:
+// Turbopack needs those rules to load .mdx and meta .json/.yaml files.
+config.turbopack = {};
+
+export default config;

@@ -5,9 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        // Explicitly allow the OG image API: social crawlers must be able
-        // to fetch /api/og?... even though the rest of /api/ is closed.
-        allow: ["/", "/api/og"],
+        allow: ["/"],
         disallow: ["/r/", "/api/"],
       },
       {

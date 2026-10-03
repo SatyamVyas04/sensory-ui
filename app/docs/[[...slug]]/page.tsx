@@ -27,16 +27,6 @@ function sectionLabel(slug?: string[]) {
   return SECTION_LABELS[slug[0]] ?? "Docs";
 }
 
-function ogImageFor(title: string, description: string, badge: string) {
-  const params = new URLSearchParams({
-    mode: "docs",
-    badge,
-    title,
-    description,
-  });
-  return `/api/og?${params.toString()}`;
-}
-
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
 }) {
@@ -181,15 +171,10 @@ export async function generateMetadata(props: {
 
   const url = `${SITE_URL}${page.url}`;
   const badge = sectionLabel(params.slug);
-  const ogImage = ogImageFor(
-    page.data.title,
-    page.data.description ?? "",
-    badge
-  );
-  // Static pre-rendered fallback: crawlers use the first reachable image,
-  // so if the API route ever fails the card still resolves.
+  // Static pre-rendered image, one per page: crawlers and link unfurlers
+  // (Discord renders every og:image tag, so only one is emitted).
   const slug = params.slug ?? [];
-  const fallbackImage = `/og-preview/og-${slug.length === 0 ? "docs-index" : slug.join("-")}.png`;
+  const ogImage = `/og-preview/og-${slug.length === 0 ? "docs-index" : slug.join("-")}.png`;
 
   return {
     title: page.data.title,
@@ -210,12 +195,6 @@ export async function generateMetadata(props: {
           height: 630,
           alt: `${page.data.title} - sensory-ui docs`,
         },
-        {
-          url: fallbackImage,
-          width: 1200,
-          height: 630,
-          alt: `${page.data.title} - sensory-ui docs`,
-        },
       ],
     },
     twitter: {
@@ -227,10 +206,6 @@ export async function generateMetadata(props: {
       images: [
         {
           url: ogImage,
-          alt: `${page.data.title} - sensory-ui docs`,
-        },
-        {
-          url: fallbackImage,
           alt: `${page.data.title} - sensory-ui docs`,
         },
       ],
