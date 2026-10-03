@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import posthog from "posthog-js";
+import { useEffect, useState } from "react";
 import { ShaderBackground } from "@/components/ui/waves-shader";
 
 const THEMES = [
@@ -72,6 +73,13 @@ const ICONS = [SunIcon, MoonIcon, SystemIcon] as const;
 
 export function Footer() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  // next-themes only resolves the stored value on the client (its
+  // configured defaultTheme is "system"), so default to System on the
+  // very first paint instead of highlighting nothing. Gating on
+  // `mounted` keeps server HTML and the hydration pass identical.
+  const activeTheme = !mounted ? "system" : (theme ?? "system");
 
   return (
     <footer className="relative max-h-225 bg-foreground">
@@ -167,7 +175,7 @@ export function Footer() {
             <div className="group flex items-center gap-0 rounded-full border border-white/20 bg-white/5 p-1 transition-all hover:border-white/30 hover:bg-white/10">
               {THEMES.map((t, i) => {
                 const Icon = ICONS[i];
-                const isActive = theme === t.value;
+                const isActive = activeTheme === t.value;
                 return (
                   <button
                     aria-label={`Switch to ${t.label} mode`}
