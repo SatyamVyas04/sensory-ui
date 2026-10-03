@@ -214,3 +214,12 @@
 .docs-sharp :is([class*="rounded-"], .rounded) {
   border-radius: 0;
 }
+
+/* The glass DocsPage always renders its own breadcrumb (parent folder
+   only, non-sticky). On mobile our sticky DocsBreadcrumb replaces it, so
+   hide the stock one there. Desktop keeps the stock breadcrumb. */
+@media (max-width: 767px) {
+  .docs-sharp article > div.flex.items-center.gap-1\.5.text-sm {
+    display: none;
+  }
+}

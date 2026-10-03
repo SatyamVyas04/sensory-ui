@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { source } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
+import { DocsBreadcrumb } from "../_components/docs-breadcrumb";
 
 const SITE_URL = "https://sensory-ui.com";
 
@@ -155,6 +156,7 @@ export default async function Page(props: {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         type="application/ld+json"
       />
+      <DocsBreadcrumb />
       <DocsTitle className={isDocsHome ? "mb-4" : undefined}>
         {page.data.title}
       </DocsTitle>
