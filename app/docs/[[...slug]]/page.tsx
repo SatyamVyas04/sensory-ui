@@ -27,6 +27,22 @@ function sectionLabel(slug?: string[]) {
   return SECTION_LABELS[slug[0]] ?? "Docs";
 }
 
+function ogImageFor(
+  file: string,
+  title: string,
+  description: string,
+  badge: string
+) {
+  const params = new URLSearchParams({
+    file,
+    mode: "docs",
+    badge,
+    title,
+    description,
+  });
+  return `/api/og?${params.toString()}`;
+}
+
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
 }) {
@@ -171,10 +187,16 @@ export async function generateMetadata(props: {
 
   const url = `${SITE_URL}${page.url}`;
   const badge = sectionLabel(params.slug);
-  // Static pre-rendered image, one per page: crawlers and link unfurlers
-  // (Discord renders every og:image tag, so only one is emitted).
+  // Single image URL per page: the route serves the checked-in static
+  // preview when it exists, otherwise generates the card on the fly.
   const slug = params.slug ?? [];
-  const ogImage = `/og-preview/og-${slug.length === 0 ? "docs-index" : slug.join("-")}.png`;
+  const file = `og-${slug.length === 0 ? "docs-index" : slug.join("-")}.png`;
+  const ogImage = ogImageFor(
+    file,
+    page.data.title,
+    page.data.description ?? "",
+    badge
+  );
 
   return {
     title: page.data.title,

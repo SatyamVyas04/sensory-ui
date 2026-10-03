@@ -19,7 +19,7 @@ const siteUrl = "https://sensory-ui.com";
 const siteTitle = "sensory-ui";
 const siteDescription =
   "Add semantic sound to your shadcn/ui components with a single prop. 17 sound cues, 24 React components. Web Audio API powered, zero audio files.";
-const ogImage = "/og-preview/og-home.png";
+const ogImage = "/api/og?file=og-home.png&mode=home";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
