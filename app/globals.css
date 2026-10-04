@@ -215,11 +215,33 @@
   border-radius: 0;
 }
 
-/* The glass DocsPage always renders its own breadcrumb (parent folder
-   only, non-sticky). On mobile our sticky DocsBreadcrumb replaces it, so
-   hide the stock one there. Desktop keeps the stock breadcrumb. */
+/* The stock glass Breadcrumb renders as the first child of the main
+   content div (ours is an <ol> inside DocsToolbar, so this exact-match
+   selector only ever hits the stock one). Ours replaces it. */
+.docs-sharp div[data-fd-full]
+  > div[class="flex items-center gap-1.5 text-sm text-fd-muted-foreground"] {
+  display: none;
+}
+
+/* The stock glass TOC becomes a fixed dots rail on small screens, but
+   mobile uses the custom subtopic + progress accordion instead. */
 @media (max-width: 767px) {
-  .docs-sharp article > div.flex.items-center.gap-1\.5.text-sm {
+  .docs-sharp #nd-toc {
     display: none;
   }
+}
+
+/* Dual-icon theme toggle (sidebar footer, drawer bar, collapsed toolbar):
+   32px sharp box to match the homepage buttons. Inner glyphs keep their
+   stock size; the container padding just shrinks to fit h-8. */
+.docs-sharp [data-theme-toggle] {
+  height: 2rem;
+  padding: 2px 6px;
+  border-radius: 0;
+}
+
+/* Full search trigger kbd: sharp + body font. */
+.docs-sharp [data-search-full] kbd {
+  font-family: var(--font-sans);
+  border-radius: 0;
 }

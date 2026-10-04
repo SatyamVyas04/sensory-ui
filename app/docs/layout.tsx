@@ -10,7 +10,10 @@ export default function Layout({ children }: { children: ReactNode }) {
     <div className="docs-sharp contents">
       <GlassLayout
         {...baseOptions()}
-        slots={{ sidebar: docsSidebarSlots, header: DocsHeader }}
+        slots={{
+          sidebar: docsSidebarSlots,
+          header: DocsHeader,
+        }}
         tree={source.pageTree}
       >
         {children}

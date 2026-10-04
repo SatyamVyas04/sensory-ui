@@ -5,7 +5,7 @@ export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
       title: (
-        <span className="flex items-center gap-2 font-semibold">
+        <span className="flex items-center gap-2.5 font-semibold text-[15px]">
           <Image
             alt="sensory-ui"
             className="size-6 rounded-full"

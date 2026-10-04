@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { source } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
-import { DocsBreadcrumb } from "../_components/docs-breadcrumb";
+import { DocsToolbar } from "../_components/docs-toolbar";
 
 const SITE_URL = "https://sensory-ui.com";
 
@@ -156,12 +156,12 @@ export default async function Page(props: {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         type="application/ld+json"
       />
-      <DocsBreadcrumb />
-      <DocsTitle className={isDocsHome ? "mb-4" : undefined}>
-        {page.data.title}
-      </DocsTitle>
+      <DocsToolbar />
+      <DocsTitle className="mt-20 mb-2 lg:mt-0">{page.data.title}</DocsTitle>
       {isDocsHome ? null : (
-        <DocsDescription>{page.data.description}</DocsDescription>
+        <DocsDescription className="text-md">
+          {page.data.description}
+        </DocsDescription>
       )}
       <DocsBody>
         <MDX
