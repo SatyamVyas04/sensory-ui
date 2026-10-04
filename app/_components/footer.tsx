@@ -122,7 +122,7 @@ export function Footer() {
 
         {/* Bottom: links + theme toggle + copyright */}
         <div className="flex flex-col items-start justify-between gap-3 border-white/15 border-t py-5 sm:flex-row sm:items-center sm:gap-4 sm:py-6">
-          <div className="flex flex-wrap items-center w-full sm:w-auto justify-end sm:justify-start gap-x-4 gap-y-1 text-[11px] text-white/60 sm:gap-x-5 sm:text-xs">
+          <div className="flex w-full flex-wrap items-center justify-end gap-x-4 gap-y-1 text-[11px] text-white/60 sm:w-auto sm:justify-start sm:gap-x-5 sm:text-xs">
             <Link
               className="transition-colors hover:text-white"
               href="/docs"
